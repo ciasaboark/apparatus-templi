@@ -1,9 +1,12 @@
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(10, 11);
 
+//char termChar = '0x0a';
+String terminator = "\n";
+
 void setup() {
   Serial.begin(9600);
-  Serial.println("Goodnight moon!");
+//  Serial.print("Goodnight moon!");
   mySerial.begin(4800);
   mySerial.println("Test");
 }
@@ -17,34 +20,28 @@ void loop() {
     mySerial.write(Serial.read());
   }
   
-  Serial.println("LED_FLASH:5");
-  Serial.flush();
+  Serial.print("LED_FLASH:5" + terminator);
   delay(5000);
   
-  Serial.println("LED_FLASH:9");
-  Serial.flush();
+  Serial.print("LED_FLASH:9" + terminator);
   delay(5000);
   
-  Serial.println("LED_FLASH:6");
-  Serial.flush();
+  Serial.print("LED_FLASH:6" + terminator);
   delay(5000);
   
   //this is out of range
-  Serial.println("LED_FLASH:3");
-  Serial.flush();
+  Serial.print("LED_FLASH:3" + terminator);
   delay(5000);
   
   //simulate gibberish
-  Serial.println("LED_FLASH:asdfas");
+  Serial.print("LED_FLASH:asdfas" + terminator);
   delay(5000);
   
   //send a message to an unknown module
-  Serial.println("TEST_MODULE:abcdef");
-  Serial.flush();
+  Serial.print("TEST_MODULE:abcdef" + terminator);
   delay(5000);
   
   //ask all modules to respond with their name
-  Serial.println("ALL:NAME");
-  Serial.flush();
+  Serial.print("ALL:READY?" + terminator);
   delay(5000);
 }

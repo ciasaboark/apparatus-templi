@@ -21,6 +21,8 @@ String debug_tag = "DEBUG";
 //whether or not to send debugging messages over the network
 const boolean DEBUG = true;
 
+String terminator = "\n";
+//char terminator = '0x0A';
 
 void setup() {
 	Serial.begin(9600);
@@ -56,6 +58,7 @@ void loop() {
 		if (message.startsWith(broadcast_tag + ':')) {
 			//This message was broadcast to every remote module
 			//+ For now just respond with the module's name
+                        debugMessage("Received broadcast message");
 			sendMessage("READY");
 		} else if (message.startsWith(module_name + ':')) {
 			//This message was send specifically to this module.
@@ -103,12 +106,9 @@ void loop() {
 
 //Send message over the network, prefixed with the module name
 void sendMessage(String mess) {
- if (mess.endsWith("\n")) {
-	 Serial.print(module_name + ":" + mess);
- } else {
-	 Serial.println(module_name + ":" + mess);
- }
- Serial.flush();
+ //TODO convert any bytes matching the terminator byte into an escaped double byte
+  Serial.print(module_name + ":" + mess + terminator);
+  Serial.flush();
 }
 
 
@@ -116,17 +116,12 @@ void sendMessage(String mess) {
 //+ Output can be disabled by modifying the DEBUG
 //+ const boolean in the header.
 void debugMessage(String mess) {
-	if (DEBUG) {
-		if (mess.endsWith("\n")) {
-			Serial.print("DEBUG" + (String)':' + module_name + ":" + mess);
-		} else {
-			Serial.println("DEBUG" + (String)':' + module_name + ":" + mess);
-		}
-		Serial.flush();
-	}
+  //TODO convert any bytes matching the terminator byte into an escaped double byte
+  Serial.print("DEBUG" + (String)':' + module_name + ":" + mess + terminator);
+  Serial.flush();
 }
 
-String[] splitCommands(String command, char delimeter) {
+/*String[] splitCommands(String command, char delimeter) {
 	//Break the command into seperate strings based on the
 	//+ given delimeter
 }
@@ -134,4 +129,4 @@ String[] splitCommands(String command, char delimeter) {
 void processCommands(String[] commands) {
 	//walk through the commands processing each
   
-}
+}*/
