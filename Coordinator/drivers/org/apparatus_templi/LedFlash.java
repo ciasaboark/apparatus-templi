@@ -5,7 +5,7 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	private volatile boolean running = true;
 	
 	/*
-	 * I'm uncertain what the best way to impliment this is.  Either
+	 * I'm uncertain what the best way to implement this is.  Either
 	 * we can return back the strings "Controller","Sensor","Combo",
 	 * or change the interfaces to require an isSensorModule() and
 	 * isControllerModule().  I think the latter would be best, since
