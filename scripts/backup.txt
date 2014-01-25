@@ -1,0 +1,198 @@
+btdevices.conf
+10:40:F3:7A:74:AB
+C4:43:8F:0F:2B:25
+00:02:76:2F:AF:7C
+
+pi@raspberrypi ~/.bin $ cat btping.sh 
+#!/bin/bash
+#LOGFILE=~/.log/btping.log
+
+BTADDRESS=$1
+
+#each line begins with the current time in seconds
+DATE=`date +%s`
+
+
+#followed by the first matching devices mac address
+MACADDRESS=`l2ping -t 2 -c 1 $BTADDRESS | \
+        #filter out the header and footer parts
+        #so that only the successful pings are matched
+        grep "time"  | \
+        #match the first lines mac address
+        grep -m 1 -o -i '[0-9A-F]\{2\}\(:[0-9A-F]\{2\}\)\{5\}'`
+#if [[ !-z "$MACADDRESS"]]; then
+	echo "$DATE $MACADDRESS" # >> $LOGFILE
+#fi
+
+
+
+pi@raspberrypi ~/.bin $ cat pair_bt_device.sh 
+#!/bin/sh
+BTADDRESS=$1;
+
+#remove the device from the database if it exists
+#bluez-test-device remove $BTADDRESS
+
+#pair with the device
+hcitool cc $BTADDRESS; hcitool auth $BTADDRESS 
+
+
+pi@raspberrypi ~/.bin $ cat ping-devices.sh 
+#!/bin/bash
+
+#device addresses stored in btdevices.conf
+
+while read p; do
+	/home/pi/.bin/btping.sh $p 2> /dev/null
+done < /home/pi/.bin/btdevices.conf
+pi@raspberrypi ~/.bin $ 
+
+
+pi@raspberrypi ~/.bin $ ls
+btdevices.conf  btping.sh  pair_bt_device.sh  ping-devices.sh  process_proximity_log.pl  process_temp_log.pl  read-temp.py
+pi@raspberrypi ~/.bin $ cat process_proximity_log.pl 
+#!/usr/bin/perl -w
+use DBI;
+$dbh = DBI->connect('dbi:mysql:scheduler', 'sched-updater','oxbs2jkk')
+or die "Connection Error: $DBI::errstr\n";
+$dbh->{mysql_auto_reconnect} = 1;
+
+$logdir = "/home/pi/.log/";
+
+$logfile = "proximity.log";
+#if ($ARGV[0] eq '') {
+#	die "First argument must be log file";
+#} else {
+#	$logfile = $ARGV[0];
+#}
+
+$curtime = scalar(localtime(time + 0));
+$newlogname = "proximity-$curtime.log";
+
+$oldfile = $logdir . $logfile;
+$newfile = $logdir . $newlogname;
+
+$file_moved = rename $oldfile, $newfile;
+
+if ($file_moved) {
+	open LOGFILE, "$newfile" or die $!;
+	while (my $line = <LOGFILE>) {
+		chomp($line);
+		print "$line\n";
+		my @linevals = split (" ", $line);
+		my $timestamp = shift (@linevals);
+		print "\ttimestamp: $timestamp\n";
+	
+		foreach (@linevals) {
+			print "\tdevice: $_\n";
+			$device_id = $dbh->selectrow_array("select device_id from devices where device_bt_address='$_'");
+			if ($device_id) {
+				print "\tFound known id: $device_id, inserting...\n";
+				$sql_insert = "insert into proximity_log (time, device_id) values (from_unixtime('$timestamp'), '$device_id')";
+				$sth = $dbh->prepare($sql_insert)
+					or die "prepare: $$sql_insert: $DBI::errstr\n";
+				$sth->execute
+					#Dont die when failing to insert, just move on to the next entry
+					or print "execute: $sql_insert: $DBI::errstr\n";
+				#$sth->finish();
+			} else {
+				print "\tid: UNKNOWN, skipping\n";
+			}
+		}
+	}
+} else {
+	die "Log file could not be moved, aborting\n";
+}
+
+$dbh->disconnect();
+pi@raspberrypi ~/.bin $ 
+pi@raspberrypi ~/.bin $ 
+pi@raspberrypi ~/.bin $ cat process_temp_log.pl 
+#!/usr/bin/perl -w
+use DBI;
+$dbh = DBI->connect('dbi:mysql:scheduler', 'sched-updater','oxbs2jkk')
+or die "Connection Error: $DBI::errstr\n";
+$dbh->{mysql_auto_reconnect} = 1;
+
+$logdir = "/home/pi/.log/";
+$logfile = "temp.log";
+$curtime = scalar(localtime(time + 0));
+$newlogname = "temp-$curtime.log";
+
+$oldfile = $logdir . $logfile;
+$newfile = $logdir . $newlogname;
+
+$file_moved = rename $oldfile, $newfile;
+
+if ($file_moved) {
+	open LOGFILE, "$newfile" or die $!;
+	while (my $line = <LOGFILE>) {
+		chomp($line);
+		#print "$line\n";
+		my @linevals = split (" ", $line);
+		my $timestamp = $linevals[0];
+		my $inside_temp = $linevals[1];
+		my $inside_humidity = $linevals[2];
+		print "timestamp: $timestamp temp: $inside_temp humid: $inside_humidity\n";
+
+		$sql_insert = "insert into inside_temp_log (time, inside_temp, inside_humidity) values (from_unixtime('$timestamp'), '$inside_temp', '$inside_humidity')";
+		$sth = $dbh->prepare($sql_insert)
+			or die "prepare: $$sql_insert: $DBI::errstr\n";
+		$sth->execute
+			or die "execute: $sql_insert: $DBI::errstr\n";
+		$sth->finish();
+	}
+} else {
+	die "Log file could not be moved, aborting\n";
+}
+
+$dbh->disconnect();
+pi@raspberrypi ~/.bin $ 
+
+
+pi@raspberrypi ~/.bin $ cat read-temp.py 
+#!/usr/bin/python
+# http://shallowsky.com/blog/2011/Oct/16/                                       
+                                                                                
+import serial                                                                   
+import time                                                                     
+# import select                                                                   
+# import sys                                                                      
+
+#usb address on mac                                                                                
+#s = serial.Serial("/dev/tty.usbmodem", 9600, timeout=6)
+
+#usb address linux
+s = serial.Serial("/dev/ttyACM0", 9600, timeout=6)                   
+                                                                                                                                                  
+# Check whether the user has typed anything (timeout of .2 sec):            
+#inp, outp, err = select.select([sys.stdin, serialport], [], [], .2)         
+                                                                            
+#handle the opening handshake
+#s.write("")
+#s.flush()
+message = s.readline()
+if (message == "READY"):
+	print ("Arduino just finished setup, sending OK signal")
+	s.write('O')
+	s.write('K')
+	s.flush()
+
+epoch_time = int(time.time()) 
+
+s.write("t")   
+s.flush()                                                         
+# time.sleep(2);                                               
+temp = s.readline().strip()
+
+s.write("h")   
+s.flush()                                                         
+# time.sleep(2);                                               
+hum = s.readline().strip()
+
+print(str(epoch_time) + ' ' + temp + ' ' + hum)
+
+
+pi@raspberrypi ~/.bin $ 
+
+

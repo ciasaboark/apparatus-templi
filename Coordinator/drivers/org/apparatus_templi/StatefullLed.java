@@ -2,7 +2,6 @@ package org.apparatus_templi;
 
 /**
  * StatefullLed
- * @author Jonathan Nelson <ciasaboark@gmail.com>
  * A driver for a remote module with a number of LEDs.  Each LED
  * 	can be turned on or off, and the driver keeps track of the state
  * 	of each 'pixel'
@@ -19,10 +18,11 @@ package org.apparatus_templi;
  * 	"RESETOK" - the reset command was received and all LEDs
  * were reset to off.
  * 	"OK(int)" - the state of the LED on pin number (int) was
- * toggled. 
+ * toggled.
+ * @author Jonathan Nelson <ciasaboark@gmail.com> 
  */
 
-public class StatefullLed extends Coordinator implements ControllerModule, Runnable {
+public class StatefullLed implements ControllerModule, Runnable {
 	private String moduleName = "StatefullLED";
 	private boolean running = true;
 	
@@ -71,8 +71,8 @@ public class StatefullLed extends Coordinator implements ControllerModule, Runna
 		//since we don't know the state of the remote module at the beginning we
 		//+ tell it to reset to a default state (all LEDs off).  If the remote
 		//+ side does not respond within 3 seconds then the driver will terminate
-		if (super.isModulePresent(moduleName)) {
-			if (super.sendCommandAndWait(moduleName, "RESET", 3).equals("OKRESET")) {
+		if (Coordinator.isModulePresent(moduleName)) {
+			if (Coordinator.sendCommandAndWait(moduleName, "RESET", 3).equals("OKRESET")) {
 				for (boolean ledState: ledsState) {
 					ledState = false;
 				}
@@ -100,7 +100,7 @@ public class StatefullLed extends Coordinator implements ControllerModule, Runna
 		}
 		
 		//thread is terminating, do whatever cleanup is needed
-		super.sendCommand(moduleName, "RESET");
+		Coordinator.sendCommand(moduleName, "RESET");
 		Log.d(moduleName, "terminating");
 
 	}
@@ -108,7 +108,7 @@ public class StatefullLed extends Coordinator implements ControllerModule, Runna
 	private void toggleLED(int ledNum) {
 		Log.d(moduleName, "toggling LED " + ledNum + " on pin " + leds[ledNum] + " to state: " +
 				(ledsState[ledNum]? "OFF" : "ON"));
-		super.sendCommand(moduleName, String.valueOf(leds[ledNum]) + ":" + (ledsState[ledNum]? "0" : "1"));
+		Coordinator.sendCommand(moduleName, String.valueOf(leds[ledNum]) + ":" + (ledsState[ledNum]? "0" : "1"));
 		ledsState[ledNum] = !ledsState[ledNum];
 	}
 
@@ -127,7 +127,7 @@ public class StatefullLed extends Coordinator implements ControllerModule, Runna
 	@Override
 	public void tellController(String controllerName, String command) {
 		Log.d(moduleName, "tellController() not validating command, passing without verification");
-		super.sendCommand(moduleName, command);
+		Coordinator.sendCommand(moduleName, command);
 
 	}
 

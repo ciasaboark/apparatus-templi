@@ -1,11 +1,36 @@
 package org.apparatus_templi;
+import gnu.io.SerialPort;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+/**
+ * Coordinator
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ *
+ */
 public class Coordinator {
-	private String incommingBuffer;
-	private ArrayList<String> remoteModules;
-	private ArrayList<Driver> runningDrivers;
+	
+	
+	private static String incommingBuffer;
+	private static ArrayList<String> remoteModules = new ArrayList<String>();
+//	private static ArrayList<Driver> runningDrivers;
+	private static int portNum;
+	private static final int defaultPort = 2024;
+	private static String serialPortName;
+	private static final String TAG = "Coordinator";
+	private static SerialPort serialConnection = null;
+	
+	private static HashMap<String, Driver> runningDrivers = new HashMap<String, Driver>();
+	
 	
 	/**
 	 * Pass a message to the driver specified by name.
@@ -33,9 +58,7 @@ public class Coordinator {
 	private boolean serialDataAvailable() {
 		//TODO
 		return false;
-	}
-	
-	
+	}	
 	
 	
 	/*
@@ -50,7 +73,7 @@ public class Coordinator {
 	 * 	is 6 seconds.
 	 * @return the response string of the remote module or null if no response was found
 	 */
-	protected synchronized String sendCommandAndWait(String name, String command, int waitPeriod) {
+	public static synchronized String sendCommandAndWait(String name, String command, int waitPeriod) {
 		//TODO: this could easily be abused by the drivers to bring down the system.  It might need
 		//+ to be removed, or to limit the number of times any driver can call this method in a given
 		//+ time period.
@@ -62,7 +85,7 @@ public class Coordinator {
 	 * @param name the unique name of the remote module
 	 * @param command the command to send to the remote module
 	 */
-	protected synchronized void sendCommand(String name, String command) {
+	public static synchronized void sendCommand(String name, String command) {
 		//TODO
 	}
 	
@@ -77,7 +100,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous tag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	protected synchronized int storeData(String driverName, String dataTag, String data) {
+	public static synchronized int storeData(String driverName, String dataTag, String data) {
 		return 0;
 	}
 	
@@ -88,19 +111,10 @@ public class Coordinator {
 	 * @return the stored String data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	protected synchronized String readData(String driverName, String dataTag) {
+	public static synchronized String readData(String driverName, String dataTag) {
 		return null;
 	}
 	
-	/**
-	 * Writes the given message to the log file. The log entry will be formatted with the module
-	 * 	name.
-	 * @param moduleName the name of the calling module
-	 * @param message the message to be logged.
-	 */
-	protected synchronized void logMessage(String moduleName, String message) {
-		//TODO
-	}
 	
 	/**
 	 * Checks the list of known remote modules. If the module is not present the Coordinator
@@ -108,7 +122,7 @@ public class Coordinator {
 	 * @param moduleName the name of the remote module to check for
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
-	protected synchronized boolean isModulePresent(String moduleName) {
+	public static synchronized boolean isModulePresent(String moduleName) {
 		boolean result = false;
 		for (String name: remoteModules) {
 			if (name.equals(moduleName)) {
@@ -121,11 +135,104 @@ public class Coordinator {
 	
 	//TODO change this to a singleton
 	public Coordinator() {
+		super();
 		incommingBuffer = "";
 	}
 	
 	
 	public static void main(String argv[]) {
+		//Using apache commons cli to parse the command line options
+		Options options = new Options();
+		options.addOption("help", false, "Display this help message.");
+		Option portOption = OptionBuilder.withArgName("port")
+				.hasArg()
+				.withDescription("Bind the server to the given port number")
+				.create("portNum");
+		options.addOption(portOption);
+		
+		Option serialOption = OptionBuilder.withArgName("serial")
+				.hasArg()
+				.withDescription("Connect to the arduino on serial interface")
+				.create("serialName");
+		options.addOption(serialOption);
+		
+		
+		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
+		try {
+			CommandLine cmd = cliParser.parse(options, argv);
+			if (cmd.hasOption("help")) {
+				//show help message and exit
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.setOptPrefix("--");
+				formatter.setLongOptPrefix("--");
+
+				formatter.printHelp(TAG, options);
+				System.exit(0);
+			}
+			
+			if (cmd.hasOption("port")) {
+				try {
+					portNum = Integer.valueOf(cmd.getOptionValue("portNum"));
+				} catch (IllegalArgumentException e) {
+					Log.e("Coordinator", "Bad port number given, setting to default value");
+					portNum = defaultPort;
+				}
+			} else {
+				Log.d(TAG, "default port " + defaultPort + " selected");
+				portNum = defaultPort;
+			}
+			
+			//try to guess a good serial port if we weren't given one
+			if (cmd.hasOption("serial")) {
+					serialPortName = cmd.getOptionValue("serialName");
+			} else {
+				String osName = System.getProperty("os.name","").toLowerCase();
+				if ( osName.startsWith("windows") ) {
+			        Log.d(TAG, "detected windows OS, default serial port COM1"); 
+					serialPortName = "COM1";
+			      } else if (osName.startsWith("linux")) {
+			    	  Log.d(TAG, "detected linux OS, default serial port /dev/ttyUSB0");
+			    	  serialPortName = "/dev/ttyUSB0";
+			      } else if ( osName.startsWith("mac") ) {
+			    	  Log.d(TAG, "detected mac OS, default serial port /dev/tty.usbmodemfa121");
+			    	  serialPortName = "/dev/tty.usbmodemfa121";
+			      } else {
+			    	  Log.w(TAG, "Could not guess a good default serial port, trying COM1");
+			    	  serialPortName = "COM1";
+			      }
+			}
+		}  catch (ParseException e) {
+			System.out.println("Error processing options: " + e.getMessage());
+			new HelpFormatter().printHelp("Diff", options);
+			Log.e(TAG, "Error parsing options");
+			System.exit(1);
+		}
+		
+		//setup the serial connection
+		SerialConnection serialConnection = new SerialConnection();
+		serialConnection.connect(serialPortName);
+        if (serialConnection.getConnected() == true)
+        {
+            if (serialConnection.initIOStream() == true)
+            {
+                serialConnection.initListener();
+            }
+        }
+        
+        
+        //start the drivers
+        LedFlash driver1 = new LedFlash();
+        (new Thread(driver1)).start();
+        runningDrivers.put(driver1.getModuleName(), (Driver)driver1);
+        //right now just add the driver name to the remote module list
+        remoteModules.add(driver1.getModuleName());
+        
+		//enter main loop
+        while (true) {
+        	Thread.yield();
+        }
+		
+		
 		/*
 		 * TODO:
 		 * 	-wait for the local arduino to respond with "READY" on the serial line
@@ -135,39 +242,5 @@ public class Coordinator {
 		 * 	-start the web server to listen for connections from a frontend
 		 * 	-enter infinite loop checking for input from the local arduino
 		 */
-	}
-	
-	/**
-	 * Logging facilities for Coordinator and the drivers
-	 * @author Jonathan Nelson <ciasaboark@gmail.com>
-	 *
-	 */
-	protected static class Log {
-		/**
-		 * write debugging information to the log
-		 * @param tag a String to identify this message
-		 * @param message the debugging message to be logged
-		 */
-		public static void d(String tag, String message) {
-			System.out.println(System.currentTimeMillis() + ": " + tag + ":" +  message);
-		}
-		
-		/**
-		 * write warning message to the log
-		 * @param tag a String to identify this message
-		 * @param message the warning message to be logged
-		 */
-		public static void w(String tag, String message) {
-			System.out.println(System.currentTimeMillis() + ": " + tag + ":" +  message);
-		}
-		
-		/**
-		 * write error message to the log
-		 * @param tag a String to identify this message
-		 * @param message the error message to be logged
-		 */
-		public static void e(String tag, String message) {
-			System.err.println(System.currentTimeMillis() + ": " + tag + ":" + message);
-		}
 	}
 }

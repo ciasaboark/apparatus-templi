@@ -2,7 +2,6 @@ package org.apparatus_templi;
 
 /**
  * LedFlash
- * @author Jonathan Nelson <ciasaboark@gmail.com>
  * Controls a remote array of LED pixels.
  * 
  * Remote side expects commands in the form of:
@@ -11,11 +10,20 @@ package org.apparatus_templi;
  * Valid values are 4 - 9
  * 
  * Driver does not listen for any responses
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 
-public class LedFlash extends Coordinator implements ControllerModule, Runnable {
+public class LedFlash implements ControllerModule, Runnable {
 	private String moduleName = "LED_FLASH";
 	private volatile boolean running = true;
+	
+	public LedFlash() {
+		
+	}
+	
+	public LedFlash(String message) {
+		
+	}
 	
 	/*
 	 * I'm uncertain what the best way to implement this is.  Either
@@ -102,16 +110,16 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	public void tellController(String controllerName, String command) {
 		switch (controllerName) {
 			case "LED 1":
-				super.sendCommand(moduleName, "4");
+				Coordinator.sendCommand(moduleName, "4");
 				break;
 			case "LED 2":
-				super.sendCommand(moduleName, "5");
+				Coordinator.sendCommand(moduleName, "5");
 				break;
 			case "LED 3":
-				super.sendCommand(moduleName, "6");
+				Coordinator.sendCommand(moduleName, "6");
 				break;
 			default:
-				super.logMessage(moduleName, "tellController() Given invalid LED name");
+				Log.e(moduleName, "tellController() Given invalid LED name");
 				break;
 		}
 	}
@@ -130,7 +138,7 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	 */
 	@Override
 	public void run() {
-		if (super.isModulePresent(moduleName)) {
+		if (Coordinator.isModulePresent(moduleName)) {
 			while (running) {
 				/*
 				 * This is our main loop.  All of the processing will happen here
@@ -138,7 +146,8 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 				 * remote module, sleeping 5 seconds between each message.
 				 */
 				for (int i = 3; i < 6; i++) {
-					super.sendCommand(moduleName, String.valueOf(i));
+					Log.d(moduleName, "flashing LED on pin " + i);
+					Coordinator.sendCommand(moduleName, String.valueOf(i));
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {
