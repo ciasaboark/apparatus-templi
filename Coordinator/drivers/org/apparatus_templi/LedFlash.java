@@ -1,5 +1,18 @@
 package org.apparatus_templi;
 
+/**
+ * LedFlash
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * Controls a remote array of LED pixels.
+ * 
+ * Remote side expects commands in the form of:
+ * 	"(int)"
+ * where (int) is the single digit value of the pin number to power.
+ * Valid values are 4 - 9
+ * 
+ * Driver does not listen for any responses
+ */
+
 public class LedFlash extends Coordinator implements ControllerModule, Runnable {
 	private String moduleName = "LED_FLASH";
 	private volatile boolean running = true;
@@ -39,6 +52,7 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	 */
 	@Override
 	public String getControllerListXML() {
+		Log.d(moduleName, "getControllerListXML() returning hard coded value for now");
 		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 							"<controlerList>" +
 								"<controler>" +
@@ -62,6 +76,7 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	 */
 	@Override
 	public String getControllerStatusXML(String controllerName) {
+		Log.d(moduleName, "getControllerStatusXML() returning hard coded value for now");
 		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 							"<controller>" +
 								"<name>" + controllerName + "</name>" +
@@ -139,14 +154,16 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	 * We don't care about any response messages.
 	 */
 	@Override
-	public void receiveMessage(String message) {}
+	public void receiveMessage(String message) {
+		Log.d(moduleName, "received message, ignoring");
+	}
 
 	/*
 	 * The XML format for the widget needs to be standardized
 	 */
 	@Override
 	public String getWidgetXML() {
-		// TODO Auto-generated method stub
+		Log.w(moduleName, "getWidgetXML() unimplimented");
 		return null;
 	}
 
@@ -155,7 +172,7 @@ public class LedFlash extends Coordinator implements ControllerModule, Runnable 
 	 */
 	@Override
 	public String getFullPageXML() {
-		// TODO Auto-generated method stub
+		Log.w(moduleName, "getFullPageXML() unimplimented");
 		return null;
 	}
 
