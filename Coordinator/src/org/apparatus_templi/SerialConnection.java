@@ -1,21 +1,21 @@
 package org.apparatus_templi;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.TooManyListenersException;
-
-import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
 
 
 public class SerialConnection implements SerialPortEventListener {
+	
+	private final String TAG = "SerialConnection";
 
 	
 	public SerialConnection() {
@@ -26,23 +26,11 @@ public class SerialConnection implements SerialPortEventListener {
 	/*
 	 * BEGIN IMPORTED CODE
 	 */
-	//for containing the ports that will be found
-    private  Enumeration ports = null;
-    //map the port names to CommPortIdentifiers
-    private  HashMap<String,  CommPortIdentifier> portMap = new HashMap<String,  CommPortIdentifier>();
-
-    //this is the object that contains the opened port
-    private  CommPortIdentifier selectedPortIdentifier = null;
     private  SerialPort serialPort = null;
 
     //input and output streams for sending and receiving data
     private  InputStream input = null;
     private  OutputStream output = null;
-
-    //just a boolean flag that i use for enabling
-    //and disabling buttons depending on whether the program
-    //is connected to a serial port or not
-    private boolean bConnected = false;
 
     //the timeout value for connecting with the port
     final  int TIMEOUT = 2000;
@@ -59,97 +47,84 @@ public class SerialConnection implements SerialPortEventListener {
   //search for all the serial ports
     //pre style="font-size: 11px;": none
     //post: adds all the found ports to a combo box on the GUI
-    public  void searchForPorts()
-    {
-        ports = CommPortIdentifier.getPortIdentifiers();
-
-        while (ports.hasMoreElements())
-        {
-            CommPortIdentifier curPort = (CommPortIdentifier)ports.nextElement();
-
-            //get only serial ports
-            if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL)
-            {
-                //window.cboxPorts.addItem(curPort.getName());
-                portMap.put(curPort.getName(), curPort);
-            }
-        }
-    }
+//    public  void searchForPorts()
+//    {
+//        ports = CommPortIdentifier.getPortIdentifiers();
+//
+//        while (ports.hasMoreElements())
+//        {
+//            CommPortIdentifier curPort = (CommPortIdentifier)ports.nextElement();
+//
+//            //get only serial ports
+//            if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL)
+//            {
+//                //window.cboxPorts.addItem(curPort.getName());
+//                portMap.put(curPort.getName(), curPort);
+//            }
+//        }
+//    }
     
     //connect to the selected port in the combo box
     //pre style="font-size: 11px;": ports are already found by using the searchForPorts
     //method
     //post: the connected comm port is stored in commPort, otherwise,
     //an exception is generated
-    public  void connect(String selectedPort)
+    public boolean connect(String selectedPort)
     {
-//        String selectedPort = (String)window.cboxPorts.getSelectedItem();
-        selectedPortIdentifier = (CommPortIdentifier)portMap.get(selectedPort);
-
-        CommPort commPort = null;
-
-        try
-        {
-            //the method below returns an object of type CommPort
-            commPort = selectedPortIdentifier.open("TigerControlPanel", TIMEOUT);
-            //the CommPort object can be casted to a SerialPort object
-            serialPort = (SerialPort)commPort;
-
-            //for controlling GUI elements
-            //setConnected(true);
-
-            //logging
-            logText = selectedPort + " opened successfully.";
-//            window.txtLog.setForeground(Color.black);
-//            window.txtLog.append(logText + "\n");
-
-            //CODE ON SETTING BAUD RATE ETC OMITTED
-            //XBEE PAIR ASSUMED TO HAVE SAME SETTINGS ALREADY
-
-            //enables the controls on the GUI if a successful connection is made
-//            window.keybindingController.toggleControls();
+    	boolean connected = false;
+    	try {
+	    	CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(selectedPort);
+	    	serialPort = (SerialPort) portId.open(TAG, 5000);
+            Log.d(TAG, selectedPort + " opened successfully.");
+            connected = true;
+            
+            //set the port parameters
+            int baudRate = 57600; // 57600bps
+            try {
+            	// Set serial port to 57600bps-8N1..my favourite
+            	serialPort.setSerialPortParams(
+                baudRate,
+                SerialPort.DATABITS_8,
+                SerialPort.STOPBITS_1,
+                SerialPort.PARITY_NONE);
+            } catch (UnsupportedCommOperationException ex) {
+            	System.err.println(ex.getMessage());
+            }
+            
+            try {
+            	serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            	// OR
+            	// If CTS/RTS is needed
+            	//serialPort.setFlowControlMode(
+            	//      SerialPort.FLOWCONTROL_RTSCTS_IN | 
+            	//      SerialPort.FLOWCONTROL_RTSCTS_OUT);
+            	} catch (UnsupportedCommOperationException ex) {
+            		System.err.println(ex.getMessage());
+            	}
+            
+        } catch (PortInUseException e) {
+            Log.e(TAG, "port " + selectedPort + " is in use. (" + e.toString() + ")");
+        } catch (Exception e) {
+        	Log.e(TAG, "Failed to open " + selectedPort + "(" + e.toString() + ")");
         }
-        catch (PortInUseException e)
-        {
-            logText = selectedPort + " is in use. (" + e.toString() + ")";
-
-//            window.txtLog.setForeground(Color.RED);
-//            window.txtLog.append(logText + "\n");
-        }
-        catch (Exception e)
-        {
-            logText = "Failed to open " + selectedPort + "(" + e.toString() + ")";
-//            window.txtLog.append(logText + "\n");
-//            window.txtLog.setForeground(Color.RED);
-        }
+    	
+    	return connected;
     }
     
-    public boolean getConnected() {
-    	return bConnected;
-    }
    
     
-  //open the input and output streams
-    //pre style="font-size: 11px;": an open port
-    //post: initialized input and output streams for use to communicate data
-    public  boolean initIOStream()
-    {
-        //return value for whether opening the streams is successful or not
+    public  boolean initIOStream() {
         boolean successful = false;
 
         try {
-            //
             input = serialPort.getInputStream();
             output = serialPort.getOutputStream();
-            writeData(0, 0);
+            writeData("TEST");
 
             successful = true;
             return successful;
-        }
-        catch (IOException e) {
-            logText = "I/O Streams failed to open. (" + e.toString() + ")";
-//            window.txtLog.setForeground(Color.red);
-//            window.txtLog.append(logText + "\n");
+        } catch (IOException e) {
+            Log.e(TAG, "I/O Streams failed to open. (" + e.toString() + ")");
             return successful;
         }
     }
@@ -182,7 +157,7 @@ public class SerialConnection implements SerialPortEventListener {
         //close the serial port
         try
         {
-            writeData(0, 0);
+            writeData("TEST");
 
             serialPort.removeEventListener();
             serialPort.close();
@@ -211,6 +186,8 @@ public class SerialConnection implements SerialPortEventListener {
     public void serialEvent(SerialPortEvent evt) {
         if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE)
         {
+        	Log.d(TAG, "serial data available for reading");
+        	Coordinator.setIoReady(true);
             try
             {
                 byte singleData = (byte)input.read();
@@ -227,7 +204,7 @@ public class SerialConnection implements SerialPortEventListener {
             }
             catch (Exception e)
             {
-                logText = "Failed to read data. (" + e.toString() + ")";
+                Log.e(TAG, "Failed to read data. (" + e.toString() + ")");
 //                window.txtLog.setForeground(Color.red);
 //                window.txtLog.append(logText + "\n");
             }
@@ -238,20 +215,12 @@ public class SerialConnection implements SerialPortEventListener {
     //method that can be called to send data
     //pre style="font-size: 11px;": open serial port
     //post: data sent to the other device
-    public  void writeData(int leftThrottle, int rightThrottle)
+    public  void writeData(String data)
     {
         try
         {
-            output.write(leftThrottle);
-            output.flush();
-            //this is a delimiter for the data
-            output.write(DASH_ASCII);
-            output.flush();
-
-            output.write(rightThrottle);
-            output.flush();
-            //will be read as a byte so it is a space key
-            output.write(SPACE_ASCII);
+        	Log.d(TAG, "writing message to output");
+            output.write(data.getBytes());
             output.flush();
         }
         catch (Exception e)

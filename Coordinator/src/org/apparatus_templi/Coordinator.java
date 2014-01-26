@@ -25,9 +25,10 @@ public class Coordinator {
 //	private static ArrayList<Driver> runningDrivers;
 	private static int portNum;
 	private static final int defaultPort = 2024;
-	private static String serialPortName;
+	private static String serialPortName = "";
 	private static final String TAG = "Coordinator";
-	private static SerialPort serialConnection = null;
+	private static SerialConnection serialConnection = null;
+	private static boolean ioReady = false;
 	
 	private static HashMap<String, Driver> runningDrivers = new HashMap<String, Driver>();
 	
@@ -80,13 +81,18 @@ public class Coordinator {
 		return null;
 	}
 	
+	public static synchronized void setIoReady(boolean state) {
+		ioReady = state;
+	}
+	
 	/**
 	 * Sends the given command to a specific remote module
 	 * @param name the unique name of the remote module
 	 * @param command the command to send to the remote module
 	 */
 	public static synchronized void sendCommand(String name, String command) {
-		//TODO
+		ioReady = true;
+		serialConnection.writeData(name + ":" + command + "\n");
 	}
 	
 	/**
@@ -147,13 +153,13 @@ public class Coordinator {
 		Option portOption = OptionBuilder.withArgName("port")
 				.hasArg()
 				.withDescription("Bind the server to the given port number")
-				.create("portNum");
+				.create("port");
 		options.addOption(portOption);
 		
 		Option serialOption = OptionBuilder.withArgName("serial")
 				.hasArg()
 				.withDescription("Connect to the arduino on serial interface")
-				.create("serialName");
+				.create("serial");
 		options.addOption(serialOption);
 		
 		
@@ -172,7 +178,7 @@ public class Coordinator {
 			
 			if (cmd.hasOption("port")) {
 				try {
-					portNum = Integer.valueOf(cmd.getOptionValue("portNum"));
+					portNum = Integer.valueOf(cmd.getOptionValue("port"));
 				} catch (IllegalArgumentException e) {
 					Log.e("Coordinator", "Bad port number given, setting to default value");
 					portNum = defaultPort;
@@ -209,12 +215,9 @@ public class Coordinator {
 		}
 		
 		//setup the serial connection
-		SerialConnection serialConnection = new SerialConnection();
-		serialConnection.connect(serialPortName);
-        if (serialConnection.getConnected() == true)
-        {
-            if (serialConnection.initIOStream() == true)
-            {
+		serialConnection = new SerialConnection();
+		if (serialConnection.connect("/dev/tty.usbmodemfa131")) {
+            if (serialConnection.initIOStream() == true) {
                 serialConnection.initListener();
             }
         }
@@ -229,7 +232,26 @@ public class Coordinator {
         
 		//enter main loop
         while (true) {
+        	//wait for input or output to be ready
+        	while (!ioReady) {
+
+        	}
+        	
+        	try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+        	ioReady = false;
         	Thread.yield();
+        	try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
 		
 		
