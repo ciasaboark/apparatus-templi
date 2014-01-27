@@ -138,6 +138,7 @@ public class LedFlash implements ControllerModule, Runnable {
 	 */
 	@Override
 	public void run() {
+		Log.d(moduleName, "starting");
 		if (Coordinator.isModulePresent(moduleName)) {
 			while (running) {
 				/*
@@ -149,13 +150,15 @@ public class LedFlash implements ControllerModule, Runnable {
 					Log.d(moduleName, "flashing LED on pin " + i);
 					Coordinator.sendCommand(moduleName, String.valueOf(i));
 					try {
-						Thread.sleep(15000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
+		} else {
+			Log.w(moduleName, "remote module not present, shutting down");
 		}
 	}
 

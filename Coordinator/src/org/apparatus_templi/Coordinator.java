@@ -1,8 +1,10 @@
 package org.apparatus_templi;
-import gnu.io.SerialPort;
-
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -27,8 +29,21 @@ public class Coordinator {
 	private static final int defaultPort = 2024;
 	private static String serialPortName = "";
 	private static final String TAG = "Coordinator";
-	private static SerialConnection serialConnection = null;
+	private static SerialConnectionOld serialConnectionOld = null;
 	private static boolean ioReady = false;
+	
+	//bitmask flags for the transmission header
+	private static byte textTransmission = (byte)0b0010_0000;
+	private static byte binTransmission  = (byte)0b1010_0000;
+	private static byte protocolVersion  = (byte)0b0000_0000;	//current protocol is version 0
+	
+	private static String headerSeperator = ":";
+	private static String footer = "\n";
+	
+	private static SerialConnection serialConnection;
+	
+	
+	
 	
 	private static HashMap<String, Driver> runningDrivers = new HashMap<String, Driver>();
 	
@@ -39,7 +54,7 @@ public class Coordinator {
 	 * @param message the message to pass
 	 */
 	private void passMessage(String driverName, String message) {
-		//TODO
+		//
 	}
 	
 	/**
@@ -62,6 +77,70 @@ public class Coordinator {
 	}	
 	
 	
+	/**
+	 * Sends the given command to a specific remote module
+	 * @param name the unique name of the remote module
+	 * @param command the command to send to the remote module
+	 */
+	public static synchronized void sendCommand(String name, String command) {
+		ioReady = true;
+		//the arduino expects chars as 1 byte instead of two, convert command
+		//+ to ascii byte array, then tack on the header, name, and footer
+		byte headerByte = (byte)(textTransmission | protocolVersion);
+		byte[] destinationBytes = {0b0};
+		byte[] headerSeperatorByte = {0b0};
+		byte[] commandBytes = {0b0};
+		byte[] footerByte = {0b0};
+		
+		boolean sendMessage = true;
+		
+		//convert the destination address to ascii byte array
+		try {
+			destinationBytes = name.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting remote module name '" + name + "' to US-ASCII encoding.");
+			sendMessage = false;
+		}
+		
+		//convert the destination separator to ascii byte array
+		try {
+			headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting header seperator to ascii byte array.");
+			sendMessage = false;
+		}
+		
+		//convert the command to ascii byte array
+		try {
+			commandBytes = command.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting command '" + command +"' to US-ASCII encoding.");
+			sendMessage = false;
+		}
+		
+		//convert the footer to ascii byte
+		try {
+			footerByte = footer.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting message footer to US-ASCII encoding");
+			sendMessage = false;
+		}
+		
+		if (sendMessage) {
+			ByteBuffer bBuffer = ByteBuffer.allocate(destinationBytes.length + headerSeperatorByte.length + commandBytes.length + footerByte.length);
+//			bBuffer.put(headerByte);
+			bBuffer.put(destinationBytes);
+			bBuffer.put(headerSeperatorByte);
+			bBuffer.put(commandBytes);
+			bBuffer.put(footerByte);
+			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
+			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
+			serialConnection.writeData(bBuffer.array());
+		} else {
+			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
+		}
+	}
+
 	/*
 	 * Protected methods.  The drivers should make use of these 
 	 */
@@ -81,18 +160,17 @@ public class Coordinator {
 		return null;
 	}
 	
+	/**
+	 * Sends binary data over the serial connection
+	 * @param moduleName the unique name of the remote module
+	 * @param data command the binary data to send
+	 */
+	public static synchronized void sendBinary(String moduleName, byte[] data) {
+		
+	}
+
 	public static synchronized void setIoReady(boolean state) {
 		ioReady = state;
-	}
-	
-	/**
-	 * Sends the given command to a specific remote module
-	 * @param name the unique name of the remote module
-	 * @param command the command to send to the remote module
-	 */
-	public static synchronized void sendCommand(String name, String command) {
-		ioReady = true;
-		serialConnection.writeData(name + ":" + command + "\n");
 	}
 	
 	/**
@@ -190,7 +268,7 @@ public class Coordinator {
 			
 			//try to guess a good serial port if we weren't given one
 			if (cmd.hasOption("serial")) {
-					serialPortName = cmd.getOptionValue("serialName");
+					serialPortName = cmd.getOptionValue("serial");
 			} else {
 				String osName = System.getProperty("os.name","").toLowerCase();
 				if ( osName.startsWith("windows") ) {
@@ -210,25 +288,38 @@ public class Coordinator {
 		}  catch (ParseException e) {
 			System.out.println("Error processing options: " + e.getMessage());
 			new HelpFormatter().printHelp("Diff", options);
-			Log.e(TAG, "Error parsing options");
+			Log.e(TAG, "Error parsing command line options, exiting");
 			System.exit(1);
 		}
 		
-		//setup the serial connection
+//		//setup the serial connection
+//		serialConnection = new SerialConnection();
+//		if (serialConnection.connect(serialPortName)) {
+//            if (serialConnection.initIOStream() == true) {
+//                serialConnection.initListener();
+//            }
+//        } else {
+//        	//writing to both STDERR and the log file
+//        	String errMsg = "Unable to open serial port " + serialPortName + ", exiting";
+//        	System.err.println(errMsg);
+//        	Log.e(TAG, errMsg);
+//        	System.exit(1);
+//        }
+		
 		serialConnection = new SerialConnection();
-		if (serialConnection.connect("/dev/tty.usbmodemfa131")) {
-            if (serialConnection.initIOStream() == true) {
-                serialConnection.initListener();
-            }
-        }
+		if (!serialConnection.initialize()) {
+			Log.e(TAG, "could not connect to serial port, exiting");
+			System.err.println("could not connect to serial port, exiting");
+			System.exit(1);
+		}
         
         
         //start the drivers
         LedFlash driver1 = new LedFlash();
-        (new Thread(driver1)).start();
         runningDrivers.put(driver1.getModuleName(), (Driver)driver1);
         //right now just add the driver name to the remote module list
         remoteModules.add(driver1.getModuleName());
+        (new Thread(driver1)).start();
         
 		//enter main loop
         while (true) {
