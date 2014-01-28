@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -19,12 +20,7 @@ public class SerialConnection implements SerialPortEventListener {
 	
 	SerialPort serialPort;
         /** The port we're normally going to use. */
-	private static final String PORT_NAMES[] = { 
-			"/dev/tty.usbmodemfa131", // Mac OS X
-			"/dev/tty.usbmodemfd121",
-			"/dev/ttyUSB0", // Linux
-			"COM3", // Windows
-	};
+	private static LinkedHashSet<String> portNames;
 	
 	/**
 	* A BufferedReader which will be fed by a InputStreamReader 
@@ -39,13 +35,28 @@ public class SerialConnection implements SerialPortEventListener {
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
-
-	public boolean initialize() {
-		return initialize("");
+	
+	private boolean connected = false;
+	
+	public SerialConnection() {
+		this(null);
+	}
+//preferred
+	public SerialConnection(String preferredConnection) {
+		portNames = new LinkedHashSet<String>();
+//		if (connectionName != null) {
+//			portNames.add(connectionName);
+//		}
+		portNames.add("/dev/tty.usbmodemfa131");	//MacOS
+		portNames.add("/dev/tty.usbmodemfd121");	//MacOS
+		portNames.add("/dev/ttyUSB0");				//Linux
+		portNames.add("COM3");						//Windows
+		
+		this.initialize(preferredConnection);
 	}
 	
-	public boolean initialize(String serialPortName) {
-		boolean connected = false;
+	private void initialize(String preferredConnection) {
+		connected = false;
 		
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
@@ -53,8 +64,12 @@ public class SerialConnection implements SerialPortEventListener {
 		//First, Find an instance of serial port as set in PORT_NAMES.
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-			for (String portName : PORT_NAMES) {
+			for (String portName : portNames) {
 				if (currPortId.getName().equals(portName)) {
+					if (!preferredConnection.equals(currPortId.getName())) {
+						Log.w(TAG,  "could not connect using preferred port, using " +
+								currPortId.getName() + " instead");
+					}
 					portId = currPortId;
 					break;
 				}
@@ -87,6 +102,9 @@ public class SerialConnection implements SerialPortEventListener {
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		}
+	}
+	
+	public boolean isConnected() {
 		return connected;
 	}
 
@@ -119,7 +137,25 @@ public class SerialConnection implements SerialPortEventListener {
 		// Ignore all the other eventTypes, but you should consider the other ones.
 	}
 	
-	 public void writeData(byte[] data) {
+	public synchronized boolean isDataAvailable() {
+		boolean available = false;
+		try {
+				if (input.available() > 0) {
+					available = true;
+				}
+		} catch (IOException e) {
+			Log.e(TAG, "isDataAvaiable() error reading input stream");
+		}
+		return available;
+	}
+	
+	public synchronized int readInputByte() throws IOException {
+		return input.read();
+	}
+	
+	
+	
+	 public synchronized void writeData(byte[] data) {
 	    	try {
 	    		Log.d(TAG,  "writing byte[] data to output");
 				output.write(data);

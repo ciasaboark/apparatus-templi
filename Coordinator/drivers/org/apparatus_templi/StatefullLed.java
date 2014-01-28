@@ -22,7 +22,7 @@ package org.apparatus_templi;
  * @author Jonathan Nelson <ciasaboark@gmail.com> 
  */
 
-public class StatefullLed implements ControllerModule, Runnable {
+public class StatefullLed implements ControllerModule {
 	private String moduleName = "StatefullLED";
 	private boolean running = true;
 	
@@ -41,7 +41,7 @@ public class StatefullLed implements ControllerModule, Runnable {
 	}
 
 	@Override
-	public void receiveMessage(String message) {
+	public void receiveCommand(String message) {
 		//throw away the message for now
 		Log.d(moduleName, "received message, ignoring");
 

@@ -1,6 +1,6 @@
 package org.apparatus_templi;
 
-public class SimpleDriver extends Coordinator implements ControllerModule,Runnable {
+public class SimpleDriver implements ControllerModule {
 	private String moduleName = "SimpleDriver";
 	
 	@Override
@@ -32,7 +32,7 @@ public class SimpleDriver extends Coordinator implements ControllerModule,Runnab
 	}
 
 	@Override
-	public void receiveMessage(String message) {
+	public void receiveCommand(String message) {
 		// TODO Auto-generated method stub
 		
 	}

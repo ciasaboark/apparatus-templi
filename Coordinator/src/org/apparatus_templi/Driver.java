@@ -1,10 +1,10 @@
 package org.apparatus_templi;
 
-public interface Driver {
+public interface Driver extends Runnable {
 
 	public String getModuleType();
 	public String getModuleName();
-	public void receiveMessage(String message);
+	public void receiveCommand(String command);
 	public void terminate();
 	
 	public String getWidgetXML();

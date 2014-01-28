@@ -1,4 +1,5 @@
 package org.apparatus_templi;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -22,49 +23,71 @@ import org.apache.commons.cli.ParseException;
 public class Coordinator {
 	
 	
-	private static String incommingBuffer;
+//	private static  incommingBuffer;
 	private static ArrayList<String> remoteModules = new ArrayList<String>();
-//	private static ArrayList<Driver> runningDrivers;
+	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
-	private static final int defaultPort = 2024;
+	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = "";
 	private static final String TAG = "Coordinator";
-	private static SerialConnectionOld serialConnectionOld = null;
 	private static boolean ioReady = false;
 	
-	//bitmask flags for the transmission header
-	private static byte textTransmission = (byte)0b0010_0000;
-	private static byte binTransmission  = (byte)0b1010_0000;
-	private static byte protocolVersion  = (byte)0b0000_0000;	//current protocol is version 0
+	//bitmask flags for the transmission start byte
+	private static final byte TEXT_TRANSMISSION = (byte)0b0000_0000;
+	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
+	//the safety bit is reserved and always 1.  This is to make sure that the
+	//+ header byte is never equal to 0x0A (the termination byte)
+	private static final byte SAFETY_BIT  = (byte)0b0010_0000;
+	private static final byte PROTOCOL_V0  = (byte)0b0000_0000;
+	private static final byte PROTOCOL_V1  = (byte)0b0000_0001;
+	private static final byte PROTOCOL_V2  = (byte)0b0000_0010;
 	
+	private static final byte protocolVersion = PROTOCOL_V0;
+	
+	//Separates the destination from the command
 	private static String headerSeperator = ":";
-	private static String footer = "\n";
+	
+	//a single line-feed char marks the end of the transmission.  If the command
+	//+ contains any matching bytes they must be doubled to avoid early term.
+	private static byte termByte = (byte)0x0A;
 	
 	private static SerialConnection serialConnection;
 	
 	
 	
 	
-	private static HashMap<String, Driver> runningDrivers = new HashMap<String, Driver>();
-	
-	
-	/**
-	 * Pass a message to the driver specified by name.
-	 * @param driverName the unique name of the driver
-	 * @param message the message to pass
-	 */
-	private void passMessage(String driverName, String message) {
-		//
+	//TODO change this to a singleton
+	public Coordinator() {
+		super();
 	}
-	
+
+	/**
+	 * broadcasts a command to all points in the Zigbee network
+	 * 	This addresses to header to the reserved destination "ALL".
+	 * 	Any remote modules that go into a sleep state might not
+	 * 	receive the message.
+	 * @param command the command to broadcast.
+	 * TODO add list of available broadcast commands
+	 */
+	private void broadCastCommand(String command) {
+		
+	}
+
 	/**
 	 * Reads a single byte of data from the incoming serial connection
 	 * @return the Byte value of the read byte, null if there was nothing
 	 * 	to read or if the read failed.
 	 */
 	private Byte readSerial() {
-		//TODO
-		return null;
+		Byte b = null;
+		if (serialDataAvailable()) {
+			try {
+				b = new Byte((byte)serialConnection.readInputByte());
+			} catch (IOException e) {
+				Log.e(TAG, "readSerial() error reading input byte");
+			}
+		}
+		return b;
 	}
 	
 	/**
@@ -74,31 +97,65 @@ public class Coordinator {
 	private boolean serialDataAvailable() {
 		//TODO
 		return false;
-	}	
-	
+	}
 	
 	/**
-	 * Sends the given command to a specific remote module
-	 * @param name the unique name of the remote module
-	 * @param command the command to send to the remote module
+	 * Send a command using protocol version 0
+	 * @param moduleName
+	 * @param command
 	 */
-	public static synchronized void sendCommand(String name, String command) {
+	private static synchronized void sendCommandV0(String moduleName, String command) {
+		Log.d(TAG, "sending message as protocol 0");
+		boolean sendMessage = true;
+		byte[] bytes = {0b0};
+		
+		String message = moduleName + ":" + command + "\n";
+		try {
+			bytes = message.getBytes("US-ASCII");
+			Log.d(TAG, "message in hex: '" + DatatypeConverter.printHexBinary(bytes) + "'");
+			Log.d(TAG, "message in ascii (trimmed): '" + new String(bytes).trim() + "'");
+		} catch (UnsupportedEncodingException e) {
+			Log.e(TAG, "sendCommandV0() error converting message to ASCII, discarding");
+			sendMessage = false;
+		}
+		
+		if (sendMessage) {
+			serialConnection.writeData(bytes);
+		}
+	}
+	
+	/**
+	 * Send a command using protocol version 1
+	 * @param moduleName
+	 * @param command
+	 */
+	private static synchronized void sendCommandV1(String moduleName, String command) {
+		Log.d(TAG, "sending message as protocol 1");
+		//TODO make sure size of command bytes is not larger than a single zigbee packet,
+		//+ break into chunks if needed
+		
+		//TODO check command for line-feed chars, replace with double newlines (or refuse
+		//+ to route the command).
+		
+		if (!serialConnection.isConnected()) {
+			return;
+		}
+		
 		ioReady = true;
 		//the arduino expects chars as 1 byte instead of two, convert command
 		//+ to ascii byte array, then tack on the header, name, and footer
-		byte headerByte = (byte)(textTransmission | protocolVersion);
+		byte startByte = (byte)(TEXT_TRANSMISSION | SAFETY_BIT | protocolVersion);
 		byte[] destinationBytes = {0b0};
 		byte[] headerSeperatorByte = {0b0};
 		byte[] commandBytes = {0b0};
-		byte[] footerByte = {0b0};
 		
 		boolean sendMessage = true;
 		
 		//convert the destination address to ascii byte array
 		try {
-			destinationBytes = name.getBytes("US-ASCII");
+			destinationBytes = moduleName.getBytes("US-ASCII");
 		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting remote module name '" + name + "' to US-ASCII encoding.");
+			Log.e(TAG, "error converting remote module name '" + moduleName + "' to US-ASCII encoding.");
 			sendMessage = false;
 		}
 		
@@ -106,7 +163,7 @@ public class Coordinator {
 		try {
 			headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
 		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting header seperator to ascii byte array.");
+			Log.e(TAG, "error converting header seperator to ascii byte array.");
 			sendMessage = false;
 		}
 		
@@ -114,25 +171,20 @@ public class Coordinator {
 		try {
 			commandBytes = command.getBytes("US-ASCII");
 		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting command '" + command +"' to US-ASCII encoding.");
+			Log.e(TAG, "error converting command '" + command +"' to US-ASCII encoding.");
 			sendMessage = false;
 		}
 		
-		//convert the footer to ascii byte
-		try {
-			footerByte = footer.getBytes("US-ASCII");
-		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting message footer to US-ASCII encoding");
-			sendMessage = false;
-		}
 		
 		if (sendMessage) {
-			ByteBuffer bBuffer = ByteBuffer.allocate(destinationBytes.length + headerSeperatorByte.length + commandBytes.length + footerByte.length);
-//			bBuffer.put(headerByte);
+			//reserve enough room for the start/term bytes, the header, and the command
+			ByteBuffer bBuffer = ByteBuffer.allocate(1 + destinationBytes.length + headerSeperatorByte.length + commandBytes.length + 1);
+			bBuffer.put(startByte);
 			bBuffer.put(destinationBytes);
 			bBuffer.put(headerSeperatorByte);
 			bBuffer.put(commandBytes);
-			bBuffer.put(footerByte);
+			bBuffer.put(termByte);
+			
 			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
 			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
 			serialConnection.writeData(bBuffer.array());
@@ -140,9 +192,27 @@ public class Coordinator {
 			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
 		}
 	}
+	
+	/**
+	 * Sends the given command to a specific remote module
+	 * @param moduleName the unique name of the remote module
+	 * @param command the command to send to the remote module
+	 */
+	static synchronized void sendCommand(String moduleName, String command) {
+		switch (protocolVersion) {
+			case 0:
+				sendCommandV0(moduleName, command);
+				break;
+			case 1:
+				sendCommandV1(moduleName, command);
+				break;
+			default:
+				Log.e(TAG, "unknown protocol version: " + (int)protocolVersion + ", discarding message");
+		}
+	}
 
 	/*
-	 * Protected methods.  The drivers should make use of these 
+	 * Public methods.  The drivers should make use of these 
 	 */
 	
 	/**
@@ -153,60 +223,151 @@ public class Coordinator {
 	 * 	is 6 seconds.
 	 * @return the response string of the remote module or null if no response was found
 	 */
-	public static synchronized String sendCommandAndWait(String name, String command, int waitPeriod) {
-		//TODO: this could easily be abused by the drivers to bring down the system.  It might need
-		//+ to be removed, or to limit the number of times any driver can call this method in a given
-		//+ time period.
+	static synchronized String sendCommandAndWait(String name, String command, int waitPeriod) {
+		//TODO: since this is a blocking method this could easily be abused by the drivers to bring down
+		//+ the system.  It might need to be removed, or to limit the number of times any driver can call
+		//+ this method in a given time period.
 		return null;
 	}
 	
 	/**
-	 * Sends binary data over the serial connection
+	 * Sends binary data over the serial connection to a remote module.
+	 * 	Does not yet break byte[] into chunks for transmission.  Make sure
+	 * 	that the size of the transmission is not larger than a single packet.
 	 * @param moduleName the unique name of the remote module
-	 * @param data command the binary data to send
+	 * @param data the binary data to send
 	 */
-	public static synchronized void sendBinary(String moduleName, byte[] data) {
+	static synchronized void sendBinary(String moduleName, byte[] data) {
+		//TODO find out the max size of a single Zigbee packet and break the data into
+		//+ chunks for multiple transmissions.
 		
+		//TODO look for bytes matching 0x0A in the data and replace with 0x0A0A
+		
+		if (!serialConnection.isConnected()) {
+			return;
+		}
+		
+		ioReady = true;
+		//the arduino expects chars as 1 byte instead of two, convert command
+		//+ to ascii byte array, then tack on the header, name, and footer
+		byte startByte = (byte)(BIN_TRANSMISSION | SAFETY_BIT | protocolVersion);
+		byte[] destinationBytes = {0b0};
+		byte[] headerSeperatorByte = {0b0};
+		
+		boolean sendMessage = true;
+		
+		//convert the destination address to ascii byte array
+		try {
+			destinationBytes = moduleName.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting remote module name '" + moduleName + "' to US-ASCII encoding.");
+			sendMessage = false;
+		}
+		
+		//convert the destination separator to ascii byte array
+		try {
+			headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "error converting header seperator to ascii byte array.");
+			sendMessage = false;
+		}
+				
+		
+		if (sendMessage) {
+			//reserve enough room for the start/term bytes, the header, and the command
+			ByteBuffer bBuffer = ByteBuffer.allocate(1 + destinationBytes.length + headerSeperatorByte.length + data.length + 1);
+			bBuffer.put(startByte);
+			bBuffer.put(destinationBytes);
+			bBuffer.put(headerSeperatorByte);
+			bBuffer.put(data);
+			bBuffer.put(termByte);
+			
+			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
+			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
+			serialConnection.writeData(bBuffer.array());
+		} else {
+			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
+		}
 	}
 
-	public static synchronized void setIoReady(boolean state) {
-		ioReady = state;
-	}
-	
 	/**
 	 * Stores the given data to persistent storage. Data is tagged with both the driver
 	 * 	name as well as a data tag.
-	 * @param driverName the name of the module
+	 * @param driverName the name of the driver to store the data under
 	 * @param dataTag a tag to assign to this data.  This tag should be specific for each data block
-	 * 	that your driver stores.  If there already exits data for the given tag the old data
+	 * 	that your driver stores.  If there already exits data for the given dataTag the old data
 	 * 	will be overwritten.
 	 * @param data the string of data to store
-	 * @return -1 if data overwrote information from a previous tag. 1 if data was written successfully.
+	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	public static synchronized int storeData(String driverName, String dataTag, String data) {
+	static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		return 0;
 	}
 	
 	/**
-	 * Returns data previously stored under the given module name and tag.
+	 * Stores the given data to persistent storage. Data is stored based off the given driverName
+	 * 	and dataTag.
+	 * @param driverName the name of the driver to store the data under
+	 * @param dataTag a unique tag to assign to this data. This tag should be specific for each data
+	 * 	block that will be stored. If data has already been stored with the same driverName and
+	 * 	dataTag the old data will be overwritten.
+	 * @param data the data to be stored
+	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
+	 * 	0 if the data could not be written.
+	 */
+	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+		return 0;
+	}
+	
+	/**
+	 * Returns text data previously stored under the given module name and tag.
 	 * @param driverName the name of the calling driver
 	 * @param dataTag the tag to uniquely identify the data
 	 * @return the stored String data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	public static synchronized String readData(String driverName, String dataTag) {
+	static synchronized String readTextData(String driverName, String dataTag) {
+		return null;
+	}
+	
+	/**
+	 * Returns binary data previously stored under the given module name and tag.
+	 * @param driverName the name of the calling driver
+	 * @param dataTag the tag to uniquely identify the data
+	 * @return the stored binary data, or null if no data has been stored under the given driver name
+	 * 	and tag.
+	 */
+	static synchronized Byte[] readBinData(String driverName, String dataTag) {
 		return null;
 	}
 	
 	
+	/**
+	 * Pass a message to the driver specified by name.
+	 * @param toDriver the unique name of the driver
+	 * @param fromDriver the source of this message, either the name of the calling driver
+	 * 	or null. If null, this command originated from the Coordinator
+	 * @param command the command to pass
+	 */
+	synchronized boolean passCommand(String toDriver, String fromDriver, String command) {
+		//TODO verify source name
+		//TODO check for reserved name in toDriver
+		boolean messagePassed = false;
+		if (loadedDrivers.containsKey(toDriver)) {
+			loadedDrivers.get(toDriver).receiveCommand(command);
+			messagePassed = true;
+		}
+		return messagePassed;
+	}
+
 	/**
 	 * Checks the list of known remote modules. If the module is not present the Coordinator
 	 * 	may re-query the remote modules for updates.
 	 * @param moduleName the name of the remote module to check for
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
-	public static synchronized boolean isModulePresent(String moduleName) {
+	static synchronized boolean isModulePresent(String moduleName) {
 		boolean result = false;
 		for (String name: remoteModules) {
 			if (name.equals(moduleName)) {
@@ -217,13 +378,24 @@ public class Coordinator {
 		return result;
 	}
 	
-	//TODO change this to a singleton
-	public Coordinator() {
-		super();
-		incommingBuffer = "";
+	/**
+	 * Returns a list of all loaded drivers.
+	 * @return an ArrayList<String> of driver names.
+	 */
+	static synchronized ArrayList<String> getLoadedDrivers() {
+		ArrayList<String> driverList = new ArrayList<String>();
+		for (String driverName: loadedDrivers.keySet()) {
+			driverList.add(driverName);
+		}
+		
+		return driverList;
 	}
 	
 	
+	static synchronized void setIoReady(boolean state) {
+		ioReady = state;
+	}
+
 	public static void main(String argv[]) {
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
@@ -259,11 +431,11 @@ public class Coordinator {
 					portNum = Integer.valueOf(cmd.getOptionValue("port"));
 				} catch (IllegalArgumentException e) {
 					Log.e("Coordinator", "Bad port number given, setting to default value");
-					portNum = defaultPort;
+					portNum = DEFAULT_PORT;
 				}
 			} else {
-				Log.d(TAG, "default port " + defaultPort + " selected");
-				portNum = defaultPort;
+				Log.d(TAG, "default port " + DEFAULT_PORT + " selected");
+				portNum = DEFAULT_PORT;
 			}
 			
 			//try to guess a good serial port if we weren't given one
@@ -292,34 +464,27 @@ public class Coordinator {
 			System.exit(1);
 		}
 		
-//		//setup the serial connection
-//		serialConnection = new SerialConnection();
-//		if (serialConnection.connect(serialPortName)) {
-//            if (serialConnection.initIOStream() == true) {
-//                serialConnection.initListener();
-//            }
-//        } else {
-//        	//writing to both STDERR and the log file
-//        	String errMsg = "Unable to open serial port " + serialPortName + ", exiting";
-//        	System.err.println(errMsg);
-//        	Log.e(TAG, errMsg);
-//        	System.exit(1);
-//        }
-		
-		serialConnection = new SerialConnection();
-		if (!serialConnection.initialize()) {
+		serialConnection = new SerialConnection(serialPortName);
+		if (!serialConnection.isConnected()) {
 			Log.e(TAG, "could not connect to serial port, exiting");
 			System.err.println("could not connect to serial port, exiting");
 			System.exit(1);
 		}
         
         
-        //start the drivers
+        //initialize the drivers
         LedFlash driver1 = new LedFlash();
-        runningDrivers.put(driver1.getModuleName(), (Driver)driver1);
+        loadedDrivers.put(driver1.getModuleName(), (Driver)driver1);
         //right now just add the driver name to the remote module list
         remoteModules.add(driver1.getModuleName());
-        (new Thread(driver1)).start();
+        
+        //start the drivers
+        for (String driverName: loadedDrivers.keySet()) {
+        	(new Thread(loadedDrivers.get(driverName))).start();
+        }
+        
+        //start the web interface
+        new SimpleHttpServer(portNum).start();
         
 		//enter main loop
         while (true) {

@@ -13,7 +13,7 @@ package org.apparatus_templi;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 
-public class LedFlash implements ControllerModule, Runnable {
+public class LedFlash implements ControllerModule {
 	private String moduleName = "LED_FLASH";
 	private volatile boolean running = true;
 	
@@ -146,7 +146,7 @@ public class LedFlash implements ControllerModule, Runnable {
 				 * Our simple driver will repeatedly send three messages to the
 				 * remote module, sleeping 5 seconds between each message.
 				 */
-				for (int i = 3; i < 6; i++) {
+				for (int i = 3; i < 10; i++) {
 					Log.d(moduleName, "flashing LED on pin " + i);
 					Coordinator.sendCommand(moduleName, String.valueOf(i));
 					try {
@@ -166,8 +166,8 @@ public class LedFlash implements ControllerModule, Runnable {
 	 * We don't care about any response messages.
 	 */
 	@Override
-	public void receiveMessage(String message) {
-		Log.d(moduleName, "received message, ignoring");
+	public void receiveCommand(String command) {
+		Log.d(moduleName, "received command, ignoring");
 	}
 
 	/*
