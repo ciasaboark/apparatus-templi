@@ -1,4 +1,5 @@
 package org.apparatus_templi;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -22,8 +23,8 @@ import org.apache.commons.cli.ParseException;
  */
 public class Coordinator {
 	
-	
-//	private static  incommingBuffer;
+	//TODO check that 1000 bytes enough
+	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 	private static ArrayList<String> remoteModules = new ArrayList<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
@@ -52,6 +53,7 @@ public class Coordinator {
 	private static byte termByte = (byte)0x0A;
 	
 	private static SerialConnection serialConnection;
+	private static boolean connectionReady = false;
 	
 	
 	
@@ -105,15 +107,15 @@ public class Coordinator {
 	 * @param command
 	 */
 	private static synchronized void sendCommandV0(String moduleName, String command) {
-		Log.d(TAG, "sending message as protocol 0");
+//		Log.d(TAG, "sending message as protocol 0");
 		boolean sendMessage = true;
 		byte[] bytes = {0b0};
 		
 		String message = moduleName + ":" + command + "\n";
 		try {
 			bytes = message.getBytes("US-ASCII");
-			Log.d(TAG, "message in hex: '" + DatatypeConverter.printHexBinary(bytes) + "'");
-			Log.d(TAG, "message in ascii (trimmed): '" + new String(bytes).trim() + "'");
+//			Log.d(TAG, "message in hex: '" + DatatypeConverter.printHexBinary(bytes) + "'");
+//			Log.d(TAG, "message in ascii (trimmed): '" + new String(bytes).trim() + "'");
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "sendCommandV0() error converting message to ASCII, discarding");
 			sendMessage = false;
@@ -193,21 +195,76 @@ public class Coordinator {
 		}
 	}
 	
+	private static synchronized void processMessage(byte[] byteArray) {
+		//TODO check the protocol version based off the first byte
+		//Since we only support protocol version 0 right now we only need to
+		//+ convert this to a string using ASCII encoding
+		String inMessage = "";
+		try {
+			inMessage = new String(byteArray, "US-ASCII");
+//			Log.d(TAG, "processing incomming message: '" + inMessage + "'");
+		} catch (UnsupportedEncodingException e) {
+			Log.e(TAG, "unable to format incomming message as ASCII text, discarding");
+		}
+		
+		
+		String destination;
+		String command;
+		
+		//the local arduino will send "READY\n" after it is finished with
+		//+ its setup.  Since this can sometimes become garbled (i.e. "REAREADY\N")
+		//+ we have to be a bit loose in how the message is matched.
+		if (inMessage.indexOf(";") == -1 && inMessage.trim().endsWith("READY")) {
+			//TODO
+			Log.d(TAG, "local arduino link is ready");
+			connectionReady = true;
+		} else if (inMessage.indexOf(":") != -1) {
+			destination = inMessage.substring(0, inMessage.indexOf(":"));
+			command = inMessage.substring(inMessage.indexOf(":") + 1, inMessage.length());
+			Log.d(TAG, "read incomming message to: '" + destination + "' contents: '" + command + "'");
+			
+			if (destination.equals("DEBUG")) {
+				Log.d(TAG, "requested debug from remote module '" + command + "'");
+			} else {
+				//route the message to the appropriate driver
+				if (loadedDrivers.containsKey(destination)) {
+					Driver destDriver = loadedDrivers.get(destination);
+					if (destDriver.getState() != Thread.State.TERMINATED) {
+						Log.d(TAG, "passing message to driver");
+						destDriver.receiveCommand(command);
+					} else {
+						//TODO re-launch the driver passing in the command
+						Log.w(TAG, "could not route incomming message to driver because it is terminated");
+					}
+				} else {
+					Log.d(TAG, "incomming message could not be routed to a running driver");
+				}
+			}
+		} else {
+			//the incomming message does not match any known format
+			Log.w(TAG, "incomming message does not match any known formats");
+		}
+	}
+
 	/**
 	 * Sends the given command to a specific remote module
 	 * @param moduleName the unique name of the remote module
 	 * @param command the command to send to the remote module
 	 */
 	static synchronized void sendCommand(String moduleName, String command) {
-		switch (protocolVersion) {
-			case 0:
-				sendCommandV0(moduleName, command);
-				break;
-			case 1:
-				sendCommandV1(moduleName, command);
-				break;
-			default:
-				Log.e(TAG, "unknown protocol version: " + (int)protocolVersion + ", discarding message");
+		if (connectionReady) {
+			switch (protocolVersion) {
+				case 0:
+					sendCommandV0(moduleName, command);
+					break;
+				case 1:
+					sendCommandV1(moduleName, command);
+					break;
+				default:
+					Log.e(TAG, "unknown protocol version: " + (int)protocolVersion + ", discarding message");
+			}
+		} else {
+			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 		}
 	}
 
@@ -396,7 +453,7 @@ public class Coordinator {
 		ioReady = state;
 	}
 
-	public static void main(String argv[]) {
+	public static void main(String argv[]) throws InterruptedException {
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
@@ -503,25 +560,39 @@ public class Coordinator {
 		//enter main loop
         while (true) {
         	//wait for input or output to be ready
-        	while (!ioReady) {
+//        	while (!ioReady) {
+//        	}
 
-        	}
-        	
-        	try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	//check for incomming serial data
+        	if (serialConnection.isDataAvailable()) {
+        		//read a byte
+        		int readInt = -1;
+        		try {
+        			readInt = serialConnection.readInputByte();
+//        			Log.d(TAG, "read incomming byte: " + readInt);
+        		} catch (IOException e) {
+        			Log.e(TAG, "error reading from serial connection");
+        		}
+        		
+        		//if the buffer is not empty
+        		if (readInt != -1) {
+        			byte b = (byte)readInt;
+//        			Log.d(TAG, "read byte: " + new String(new byte[]{b}));
+        			//if this is a termination byte then we need to process the incomming message
+        			if (b == 0x0A) {
+        				processMessage(byteBuffer.toByteArray());
+        				byteBuffer = new ByteArrayOutputStream();
+        			} else {
+        				byteBuffer.write(b);
+        			}
+        		} else {
+            		Log.d(TAG, "no data to read");
+            	}
+        	} 
         	
         	ioReady = false;
         	Thread.yield();
-        	try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	Thread.sleep(100);
         }
 		
 		

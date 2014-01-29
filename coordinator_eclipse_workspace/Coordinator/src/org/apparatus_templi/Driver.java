@@ -25,5 +25,9 @@ public abstract class Driver implements Runnable {
 		return this.name;
 	}
 	
+	Thread.State getState() {
+		return Thread.currentThread().getState();
+	}
+	
 	
 }

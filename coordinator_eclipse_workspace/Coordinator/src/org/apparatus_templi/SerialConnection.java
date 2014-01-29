@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
-
-import javax.xml.bind.DatatypeConverter;
 
 
 public class SerialConnection implements SerialPortEventListener {
@@ -107,7 +106,7 @@ public class SerialConnection implements SerialPortEventListener {
 		}
 	}
 	
-	public boolean isConnected() {
+	boolean isConnected() {
 		return connected;
 	}
 
@@ -115,7 +114,7 @@ public class SerialConnection implements SerialPortEventListener {
 	 * This should be called when you stop using the port.
 	 * This will prevent port locking on platforms like Linux.
 	 */
-	public synchronized void close() {
+	synchronized void close() {
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 			serialPort.close();
@@ -128,19 +127,20 @@ public class SerialConnection implements SerialPortEventListener {
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-//				String inputLine = bReader.readLine();
-				byte[] inputByte = new byte[1];
-				input.read(inputByte);
-				Log.d(TAG, "read hex value: " + DatatypeConverter.printHexBinary(inputByte));
-				Log.d(TAG, "Read char value: " + new String(inputByte));
+//				byte[] inputByte = new byte[1];
+//				input.read(inputByte);
+//				Log.d(TAG, "read hex value: " + DatatypeConverter.printHexBinary(inputByte));
+//				Log.d(TAG, "Read char value: " + new String(inputByte));
+				
+				//notify the coordinator that incoming data is available
+				Coordinator.setIoReady(true);
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
 		}
-		// Ignore all the other eventTypes, but you should consider the other ones.
 	}
 	
-	public synchronized boolean isDataAvailable() {
+	synchronized boolean isDataAvailable() {
 		boolean available = false;
 		try {
 				if (input.available() > 0) {
@@ -152,15 +152,15 @@ public class SerialConnection implements SerialPortEventListener {
 		return available;
 	}
 	
-	public synchronized int readInputByte() throws IOException {
+	synchronized int readInputByte() throws IOException {
 		return input.read();
 	}
 	
 	
 	
-	 public synchronized void writeData(byte[] data) {
+	 synchronized void writeData(byte[] data) {
 	    	try {
-	    		Log.d(TAG,  "writing byte[] data to output");
+//	    		Log.d(TAG,  "writing byte[] data to output");
 				output.write(data);
 				output.flush();
 			} catch (IOException e) {
