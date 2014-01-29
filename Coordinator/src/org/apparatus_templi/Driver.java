@@ -1,5 +1,4 @@
 package org.apparatus_templi;
-// Kim -testing commit from Eclipse'
 
 public interface Driver extends Runnable {
 
