@@ -1,0 +1,14 @@
+package org.apparatus_templi;
+
+public abstract class ControllerModule extends Driver {	
+	/*
+ 	 * Abstract methods to be implemented in subclass
+	 */
+	public abstract String getControllerListXML();
+	public abstract String getControllerStatusXML(String controllerName);
+	public abstract void tellController(String controllerName, String command);
+	
+	String getModuleType() {
+		return "Controller";
+	}
+}

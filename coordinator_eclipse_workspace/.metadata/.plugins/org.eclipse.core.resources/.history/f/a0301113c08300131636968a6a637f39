@@ -1,0 +1,6 @@
+package org.apparatus_templi;
+
+public interface SensorModule extends RemoteModule {
+	public String getSensorList();
+	public String getSensorData(String sensorName);
+}

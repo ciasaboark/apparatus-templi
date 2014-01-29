@@ -1,0 +1,7 @@
+package org.apparatus_templi;
+
+public interface ControlerModule extends Driver {
+	public String getControlerList();
+	public String getControlerStatus(String controllerName);
+	public void tellController(String controllerName, String command);
+}

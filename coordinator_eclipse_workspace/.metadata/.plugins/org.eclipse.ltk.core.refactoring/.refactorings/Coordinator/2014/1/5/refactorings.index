@@ -1,0 +1,29 @@
+1390765361739	Move method
+1390765368284	Move method
+1390776580677	Rename type 'SerialConnection'
+1390776600204	Rename type 'SerialTest'
+1390847740939	Rename local variable 'name'
+1390847754807	Rename local variable 'modumeName'
+1390853405503	Move field
+1390854101255	Rename field 'runningDrivers'
+1390872321912	Move method
+1390872387826	Move method
+1390873350986	Move method
+1390873383259	Move method
+1390873428072	Rename local variable 'message'
+1390873465920	Rename method 'receiveMessage'
+1390873476622	Rename local variable 'message'
+1390873536544	Rename method 'passMessage'
+1390873818743	Change method 'passCommand'
+1390878609216	Rename field 'defaultPort'
+1390878628204	Rename field 'textTransmission'
+1390878642612	Rename field 'binTransmission'
+1390878653377	Rename field 'safetyBit'
+1390878664659	Rename field 'protocol0'
+1390878673318	Rename field 'protocol1'
+1390878682545	Rename field 'protocol2'
+1390959301363	Rename type 'Driver'
+1390959312743	Rename type 'ControllerModule'
+1390959326925	Rename type 'SensorModule'
+1390962374463	Delete elements
+1390962405544	Delete element

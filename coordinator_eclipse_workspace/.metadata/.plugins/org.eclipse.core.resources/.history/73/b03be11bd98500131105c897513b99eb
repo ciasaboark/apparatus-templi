@@ -1,0 +1,108 @@
+package org.apparatus_templi;
+
+/**
+ * StatefullLed
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * A driver for a remote module with a number of LEDs.  Each LED
+ * 	can be turned on or off, and the driver keeps track of the state
+ * 	of each 'pixel'
+ * 
+ * Remote side expects one of the following commands:
+ * 	"RESET" - reset all attached LEDs to their off state
+ * 	"(int):(int)" - set the state of the LED attached to 
+ * the first (int) to the boolean value of the second int.
+ * Valid values for the first int are 4-9.
+ * The second int may be any valid signed int value, with 0
+ * equating to false, all other values to true.
+ * 
+ * Driver listens for the following responses:
+ * 	"RESETOK" - the reset command was received and all LEDs
+ * were reset to off.
+ * 	"OK(int)" - the state of the LED on pin number (int) was
+ * toggled. 
+ */
+public class StatefullLed extends Coordinator implements ControllerModule, Runnable {
+	private String moduleName = "StatefullLED";
+	private boolean running = true;
+	
+	//our remote module has three LEDs attached
+	private boolean led1;
+	private boolean led2;
+	private boolean led3;
+	
+	@Override
+	public String getModuleType() {
+		// TODO Auto-generated method stub
+		return "Controller";
+	}
+
+	@Override
+	public String getModuleName() {
+		// TODO Auto-generated method stub
+		return moduleName;
+	}
+
+	@Override
+	public void receiveMessage(String message) {
+		//throw away the message for now
+		Log.d(moduleName, "received message, ignoring");
+
+	}
+
+	@Override
+	public void terminate() {
+		running = false;
+
+	}
+
+	@Override
+	public String getWidgetXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getFullPageXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void run() {
+		//since we don't know the state of the remote module at the beginning we
+		//+ tell it to reset to a default state (all LEDs off).  If the remote
+		//+ side does not respond within 3 seconds then the driver will terminate
+		if (super.sendCommandAndWait(moduleName, "RESET", 3).equals("OKRESET")) {
+			led1 = false;
+			led2 = false;
+			led3 = false;
+		} else {
+			terminate();
+		}
+		
+		
+		while (running) {
+			
+		}
+
+	}
+
+	@Override
+	public String getControllerListXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getControllerStatusXML(String controllerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void tellController(String controllerName, String command) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
