@@ -58,18 +58,18 @@ void loop() {
 		if (message.startsWith(broadcast_tag + ':')) {
 			//This message was broadcast to every remote module
 			//+ For now just respond with the module's name
-                        debugMessage("Received broadcast message");
+//                        debugMessage("Received broadcast message");
 			sendMessage("READY");
 		} else if (message.startsWith(module_name + ':')) {
 			//This message was send specifically to this module.
 			//This example module expects commands in the form
 			//+ of a single digit int, indicating the pin number
 			//+ of the LED to flash.
-			debugMessage("Got a new message: " + message);
+//			debugMessage("Got a new message: " + message);
 			
 			//strip the header from the message
 			String command = message.substring(message.indexOf(':') + 1);
-			debugMessage("Command received: " + command);
+//			debugMessage("Command received: " + command);
 			
 			//convert the string to an int.  If the string does not represent
 			//+ an integer value pin_num will be given a value of 0
@@ -77,14 +77,14 @@ void loop() {
 			
 			if (pin_num == 0) {
 				//the command could not be parsed
-				debugMessage("Error converting " + command + " to an integer value");
+//				debugMessage("Error converting " + command + " to an integer value");
 				sendMessage("FAIL");
 			} else if (pin_num < 4 || pin_num > 9) {
 				//the given value was out of range
-				debugMessage("Value of " + (String)pin_num + " is out of range");
+//				debugMessage("Value of " + (String)pin_num + " is out of range");
 				sendMessage("FAIL");
 			} else {
-				debugMessage("Flashing LED num " + (String)pin_num);
+//				debugMessage("Flashing LED num " + (String)pin_num);
 				
 				//flash the LED
 				digitalWrite(pin_num, HIGH);
@@ -95,7 +95,7 @@ void loop() {
 				sendMessage("OK");
 			}
 		} else {
-			debugMessage("Received a message for a different module: " + message);
+//			debugMessage("Received a message for a different module: " + message);
 		}
 		
 		//erase the current message
