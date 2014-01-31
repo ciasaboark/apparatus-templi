@@ -33,7 +33,7 @@ public class Coordinator {
 	private static final String TAG = "Coordinator";
 	private static boolean ioReady = false;
 	
-	//bitmask flags for the transmission start byte
+	//bit-mask flags for the transmission start byte
 	private static final byte TEXT_TRANSMISSION = (byte)0b0000_0000;
 	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
 	//the safety bit is reserved and always 1.  This is to make sure that the
