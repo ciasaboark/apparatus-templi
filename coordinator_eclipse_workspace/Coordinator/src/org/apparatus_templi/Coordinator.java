@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -25,7 +26,7 @@ public class Coordinator {
 	
 	//TODO check that 1000 bytes enough
 	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-	private static ArrayList<String> remoteModules = new ArrayList<String>();
+	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
@@ -195,7 +196,7 @@ public class Coordinator {
 		}
 	}
 	
-	private static synchronized void processMessage(byte[] byteArray) {
+	static synchronized void processMessage(byte[] byteArray) {
 		//TODO check the protocol version based off the first byte
 		//Since we only support protocol version 0 right now we only need to
 		//+ convert this to a string using ASCII encoding
@@ -214,7 +215,7 @@ public class Coordinator {
 		//the local arduino will send "READY\n" after it is finished with
 		//+ its setup.  Since this can sometimes become garbled (i.e. "REAREADY\N")
 		//+ we have to be a bit loose in how the message is matched.
-		if (inMessage.indexOf(";") == -1 && inMessage.trim().endsWith("READY")) {
+		if (inMessage.indexOf(":") == -1 && inMessage.trim().endsWith("READY")) {
 			//TODO
 			Log.d(TAG, "local arduino link is ready");
 			connectionReady = true;
@@ -225,6 +226,15 @@ public class Coordinator {
 			
 			if (destination.equals("DEBUG")) {
 				Log.d(TAG, "requested debug from remote module '" + command + "'");
+			} else if (command.equals("READY")) {
+				//this was a response to the broadcast, add this remote module
+				//+ to the known list.
+				if (remoteModules.contains(destination)) {
+					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
+				} else {
+					Log.d(TAG, "adding module " + destination + " to the list of known modules");
+					remoteModules.add(destination);
+				}
 			} else {
 				//route the message to the appropriate driver
 				if (loadedDrivers.containsKey(destination)) {
@@ -241,9 +251,16 @@ public class Coordinator {
 				}
 			}
 		} else {
-			//the incomming message does not match any known format
+			//the incoming message does not match any known format
 			Log.w(TAG, "incomming message does not match any known formats");
 		}
+	}
+	
+	/**
+	 * Sends a query string to all remote modules "ALL:READY?"
+	 */
+	private static void queryRemoteModules() {
+		sendCommand("ALL", "READY?");
 	}
 
 	/**
@@ -425,14 +442,7 @@ public class Coordinator {
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
-		boolean result = false;
-		for (String name: remoteModules) {
-			if (name.equals(moduleName)) {
-				result = true;
-				break;
-			}
-		}
-		return result;
+		return remoteModules.contains(moduleName);
 	}
 	
 	/**
@@ -513,8 +523,29 @@ public class Coordinator {
 			System.err.println("could not connect to serial port, exiting");
 			System.exit(1);
 		}
+		
+		//block until the local arduino is ready
+		Log.d(TAG, "waiting for local link to be ready");
+		for (int i = 0; i < 100; i++) {
+			if (!connectionReady) {
+				Thread.sleep(500);
+			}
+		}
+		if (!connectionReady) {
+			Log.e(TAG, "could not find a local arduino connection, exiting");
+			System.exit(1);
+		}
+		
+		//query for remote modules.  Since the modules may be slow in responding
+		//+ we will wait for a few seconds to make sure we get a complete list
+		Log.d(TAG, "querying remote modules");
+		queryRemoteModules();
+		for (int i = 0; i < 60; i++) {
+			Thread.sleep(100);
+		}
         
         
+		Log.d(TAG, "initializing drivers");
         //initialize the drivers
         Driver driver1 = new LedFlash();
         
@@ -522,13 +553,11 @@ public class Coordinator {
         Driver driver2 = new LedFlash();
      
         //only drivers with valid names are added
+        //TODO make this generic
         if (driver1.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(driver1.getModuleName())) {
-		        remoteModules.add(driver1.getModuleName());
+		        loadedDrivers.put(driver1.getModuleName(), driver1);
 		        Log.d(TAG, "driver " + driver1.getModuleName() + " of type " + driver1.getModuleType() + " initialized");
-		        
-		        //right now just add the driver name to the remote module list
-		        loadedDrivers.put(driver1.getModuleName(), (Driver)driver1);
         	} else {
         		Log.w(TAG, "error loading driver " + driver1.getClass().getName() + "a driver with the name " +
         				driver1.getModuleName() + " already exists");
@@ -537,11 +566,8 @@ public class Coordinator {
         
         if (driver2.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
-		        remoteModules.add(driver2.getModuleName());
+		        loadedDrivers.put(driver2.getModuleName(), driver2);
 		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
-		        
-		        //right now just add the driver name to the remote module list
-		        loadedDrivers.put(driver2.getModuleName(), (Driver)driver2);
         	} else {
         		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
         				driver2.getModuleName() + " already exists");

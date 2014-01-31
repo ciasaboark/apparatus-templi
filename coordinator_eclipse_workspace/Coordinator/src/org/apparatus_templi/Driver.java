@@ -11,7 +11,7 @@ public abstract class Driver implements Runnable {
 	abstract String getFullPageXML();
 	
 
-	void terminate() {
+	final void terminate() {
 		running = false; //call the subclass implementation
 	}
 
@@ -21,11 +21,11 @@ public abstract class Driver implements Runnable {
          * name. 
  	 */
 	
-	String getModuleName() {
+	final String getModuleName() {
 		return this.name;
 	}
 	
-	Thread.State getState() {
+	final Thread.State getState() {
 		return Thread.currentThread().getState();
 	}
 	

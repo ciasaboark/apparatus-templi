@@ -35,10 +35,6 @@ public class StatefullLed extends ControllerModule {
 		return "Controller";
 	}
 
-	@Override
-	public String getModuleName() {
-		return moduleName;
-	}
 
 	@Override
 	public void receiveCommand(String message) {
@@ -47,12 +43,6 @@ public class StatefullLed extends ControllerModule {
 
 	}
 
-	@Override
-	public void terminate() {
-		Log.d(moduleName, "told to terminate");
-		running = false;
-
-	}
 
 	@Override
 	public String getWidgetXML() {

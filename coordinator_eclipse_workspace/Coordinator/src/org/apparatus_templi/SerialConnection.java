@@ -5,6 +5,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,8 +34,10 @@ public class SerialConnection implements SerialPortEventListener {
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
-	private static final int DATA_RATE = 9600;
+//	private static final int DATA_RATE = 9600;
+	private static final int DATA_RATE = 115200;
 	private static String preferredConnection;
+	private static ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	
 	private boolean connected = false;
 	
@@ -127,13 +130,14 @@ public class SerialConnection implements SerialPortEventListener {
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-//				byte[] inputByte = new byte[1];
-//				input.read(inputByte);
-//				Log.d(TAG, "read hex value: " + DatatypeConverter.printHexBinary(inputByte));
-//				Log.d(TAG, "Read char value: " + new String(inputByte));
-				
-				//notify the coordinator that incoming data is available
-				Coordinator.setIoReady(true);
+				int readInt = input.read();
+				if (readInt != -1) {
+					if ((byte)readInt == 0x0A) {
+						Coordinator.processMessage(buffer.toByteArray());
+					} else {
+						buffer.write((byte)readInt);
+					}
+				}
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
