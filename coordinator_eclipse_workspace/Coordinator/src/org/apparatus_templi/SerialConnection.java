@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 
@@ -19,15 +19,7 @@ public class SerialConnection implements SerialPortEventListener {
 	private static final String TAG = "SerialTest";
 	
 	SerialPort serialPort;
-        /** The port we're normally going to use. */
 	private static LinkedHashSet<String> portNames;
-	
-	/**
-	* A BufferedReader which will be fed by a InputStreamReader 
-	* converting the bytes into characters 
-	* making the displayed results codepage independent
-	*/
-	private BufferedReader bReader;
 	private InputStream input;
 	/** The output stream to the port */
 	private OutputStream output;
@@ -36,8 +28,6 @@ public class SerialConnection implements SerialPortEventListener {
 	/** Default bits per second for COM port. */
 //	private static final int DATA_RATE = 9600;
 	private static final int DATA_RATE = 115200;
-	private static String preferredConnection;
-	private static ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	
 	private boolean connected = false;
 	
@@ -53,7 +43,11 @@ public class SerialConnection implements SerialPortEventListener {
 		portNames.add("/dev/tty.usbmodemfa131");	//MacOS
 		portNames.add("/dev/tty.usbmodemfd121");	//MacOS
 		portNames.add("/dev/ttyUSB0");				//Linux
+		portNames.add("/dev/ttyUSB1");				//Linux
+		portNames.add("/dev/ttyUSB2");				//Linux
 		portNames.add("COM3");						//Windows
+		portNames.add("COM2");						//Windows
+		portNames.add("COM1");						//Windows
 		
 		this.initialize(preferredConnection);
 	}
@@ -62,6 +56,7 @@ public class SerialConnection implements SerialPortEventListener {
 		connected = false;
 		
 		CommPortIdentifier portId = null;
+		@SuppressWarnings("rawtypes")
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
 		//First, Find an instance of serial port as set in PORT_NAMES.
@@ -97,7 +92,6 @@ public class SerialConnection implements SerialPortEventListener {
 
 			// open the streams
 			input = serialPort.getInputStream();
-			bReader = new BufferedReader(new InputStreamReader(input));
 			output = serialPort.getOutputStream();
 
 			// add event listeners
@@ -125,25 +119,23 @@ public class SerialConnection implements SerialPortEventListener {
 	}
 
 	/**
-	 * Handle an event on the serial port. Read the data and print it.
+	 * reads a single byte of data from the serial connection
+	 * Since SerialConnection does not understand the protocol
+	 * 	formats it passes the byte back to Coordinator for processing
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				int readInt = input.read();
 				if (readInt != -1) {
-					if ((byte)readInt == 0x0A) {
-						Coordinator.processMessage(buffer.toByteArray());
-					} else {
-						buffer.write((byte)readInt);
-					}
+					Coordinator.incomingSerial((byte)readInt);
 				}
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
 		}
 	}
-	
+
 	synchronized boolean isDataAvailable() {
 		boolean available = false;
 		try {
@@ -163,15 +155,13 @@ public class SerialConnection implements SerialPortEventListener {
 	
 	
 	 synchronized void writeData(byte[] data) {
-	    	try {
-//	    		Log.d(TAG,  "writing byte[] data to output");
-				output.write(data);
-				output.flush();
-			} catch (IOException e) {
-				Log.e(TAG, "error writing byte[] data to output, trying to re-connect:");
-				initialize(null);
-			}
-			
-	    	
-	    }
+    	try {
+//	    	Log.d(TAG,  "writing byte[] data to output");
+			output.write(data);
+			output.flush();
+		} catch (IOException e) {
+			Log.e(TAG, "error writing byte[] data to output, trying to re-connect:");
+			initialize(null);
+		}
+	}
 }

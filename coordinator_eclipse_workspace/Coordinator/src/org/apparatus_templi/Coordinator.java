@@ -23,18 +23,16 @@ import org.apache.commons.cli.ParseException;
  *
  */
 public class Coordinator {
-	
-	//TODO check that 1000 bytes enough
+	private static final String TAG = "Coordinator";
 	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
-	private static final String TAG = "Coordinator";
-	private static boolean ioReady = false;
-	
-	//bitmask flags for the transmission start byte
+	/*
+	 * Bit-mask flags for the transmission start byte
+	 */
 	private static final byte TEXT_TRANSMISSION = (byte)0b0000_0000;
 	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
 	//the safety bit is reserved and always 1.  This is to make sure that the
@@ -144,7 +142,6 @@ public class Coordinator {
 			return;
 		}
 		
-		ioReady = true;
 		//the arduino expects chars as 1 byte instead of two, convert command
 		//+ to ascii byte array, then tack on the header, name, and footer
 		byte startByte = (byte)(TEXT_TRANSMISSION | SAFETY_BIT | protocolVersion);
@@ -321,7 +318,6 @@ public class Coordinator {
 			return;
 		}
 		
-		ioReady = true;
 		//the arduino expects chars as 1 byte instead of two, convert command
 		//+ to ascii byte array, then tack on the header, name, and footer
 		byte startByte = (byte)(BIN_TRANSMISSION | SAFETY_BIT | protocolVersion);
@@ -459,8 +455,17 @@ public class Coordinator {
 	}
 	
 	
-	static synchronized void setIoReady(boolean state) {
-		ioReady = state;
+//	static synchronized void setIoReady(boolean state) {
+//		ioReady = state;
+//	}
+
+	static void incomingSerial(byte b) {
+		//Log.d(TAG, "incoming byte " + (char)b);
+		if (b == 0x0A) {
+			Coordinator.processMessage(byteBuffer.toByteArray());
+		} else {
+			byteBuffer.write(b);
+		}
 	}
 
 	public static void main(String argv[]) throws InterruptedException {
@@ -616,20 +621,8 @@ public class Coordinator {
             	}
         	} 
         	
-        	ioReady = false;
         	Thread.yield();
         	Thread.sleep(100);
         }
-		
-		
-		/*
-		 * TODO:
-		 * 	-wait for the local arduino to respond with "READY" on the serial line
-		 * 	-broadcast a message to every remote module asking for their name
-		 * 	-store those names
-		 * 	-load all drivers
-		 * 	-start the web server to listen for connections from a frontend
-		 * 	-enter infinite loop checking for input from the local arduino
-		 */
 	}
 }
