@@ -2,7 +2,7 @@
 SoftwareSerial xbee(10, 11);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   xbee.begin(9600);
   Serial.write("READY");
   Serial.write('\n');

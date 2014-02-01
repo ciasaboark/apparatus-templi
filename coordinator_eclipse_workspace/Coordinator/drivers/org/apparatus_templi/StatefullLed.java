@@ -24,11 +24,18 @@ package org.apparatus_templi;
 
 public class StatefullLed extends ControllerModule {
 	private String moduleName = "StatefullLED";
-	private boolean running = true;
 	
 	//our remote module has three LEDs attached
 	private int[] leds = {4, 5, 6};
 	private boolean[] ledsState = {false, false, false};
+	
+	public StatefullLed() {
+		this(null);
+	}
+	
+	public StatefullLed(String command) {
+		this.name = moduleName;
+	}
 	
 	@Override
 	public String getModuleType() {

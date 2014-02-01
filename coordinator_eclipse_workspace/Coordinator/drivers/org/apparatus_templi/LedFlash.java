@@ -15,7 +15,6 @@ package org.apparatus_templi;
 
 public class LedFlash extends ControllerModule {
 	private String moduleName = "LED_FLASH";
-	private volatile boolean running = true;
 	
 	public LedFlash() {
 		this(null);

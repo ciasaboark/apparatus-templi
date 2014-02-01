@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 
 
 public class SerialConnection implements SerialPortEventListener {
-	private static final String TAG = "SerialTest";
+	private static final String TAG = "SerialConnection";
 	
 	SerialPort serialPort;
 	private static LinkedHashSet<String> portNames;
@@ -26,8 +26,8 @@ public class SerialConnection implements SerialPortEventListener {
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
-//	private static final int DATA_RATE = 9600;
-	private static final int DATA_RATE = 115200;
+	private static final int DATA_RATE = 9600;
+//	private static final int DATA_RATE = 115200;
 	
 	private boolean connected = false;
 	
@@ -40,8 +40,8 @@ public class SerialConnection implements SerialPortEventListener {
 		if (preferredConnection != null) {
 			portNames.add(preferredConnection);
 		}
-		portNames.add("/dev/tty.usbmodemfa131");	//MacOS
 		portNames.add("/dev/tty.usbmodemfd121");	//MacOS
+		portNames.add("/dev/tty.usbmodemfa131");	//MacOS
 		portNames.add("/dev/ttyUSB0");				//Linux
 		portNames.add("/dev/ttyUSB1");				//Linux
 		portNames.add("/dev/ttyUSB2");				//Linux
@@ -156,7 +156,7 @@ public class SerialConnection implements SerialPortEventListener {
 	
 	 synchronized void writeData(byte[] data) {
     	try {
-//	    	Log.d(TAG,  "writing byte[] data to output");
+//	    	Log.d(TAG,  "writing byte[] data to output: " + new String(data));
 			output.write(data);
 			output.flush();
 		} catch (IOException e) {

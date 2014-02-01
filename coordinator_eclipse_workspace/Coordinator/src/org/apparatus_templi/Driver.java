@@ -3,7 +3,7 @@ package org.apparatus_templi;
 public abstract class Driver implements Runnable {
 	protected String name = null; //name of the device Empty String as default or could assign a random name if not assigned one
 	
-	protected boolean running = true;
+	protected volatile boolean running = true;
 
 	abstract String getModuleType();
 	abstract void receiveCommand(String command);
@@ -12,7 +12,7 @@ public abstract class Driver implements Runnable {
 	
 
 	final void terminate() {
-		running = false; //call the subclass implementation
+		this.running = false; //call the subclass implementation
 	}
 
 	/*

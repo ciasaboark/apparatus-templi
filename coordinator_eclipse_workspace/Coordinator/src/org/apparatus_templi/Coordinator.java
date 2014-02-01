@@ -73,23 +73,6 @@ public class Coordinator {
 	private void broadCastCommand(String command) {
 		
 	}
-
-	/**
-	 * Reads a single byte of data from the incoming serial connection
-	 * @return the Byte value of the read byte, null if there was nothing
-	 * 	to read or if the read failed.
-	 */
-	private Byte readSerial() {
-		Byte b = null;
-		if (serialDataAvailable()) {
-			try {
-				b = new Byte((byte)serialConnection.readInputByte());
-			} catch (IOException e) {
-				Log.e(TAG, "readSerial() error reading input byte");
-			}
-		}
-		return b;
-	}
 	
 	/**
 	 * Checks the serial connection to see if there is any data available for reading
@@ -193,7 +176,7 @@ public class Coordinator {
 		}
 	}
 	
-	static synchronized void processMessage(byte[] byteArray) {
+	private static synchronized void processMessage(byte[] byteArray) {
 		//TODO check the protocol version based off the first byte
 		//Since we only support protocol version 0 right now we only need to
 		//+ convert this to a string using ASCII encoding
@@ -219,32 +202,34 @@ public class Coordinator {
 		} else if (inMessage.indexOf(":") != -1) {
 			destination = inMessage.substring(0, inMessage.indexOf(":"));
 			command = inMessage.substring(inMessage.indexOf(":") + 1, inMessage.length());
-			Log.d(TAG, "read incomming message to: '" + destination + "' contents: '" + command + "'");
+//			Log.d(TAG, "read incoming message to: '" + destination + "' contents: '" + command + "'");
 			
-			if (destination.equals("DEBUG")) {
-				Log.d(TAG, "requested debug from remote module '" + command + "'");
-			} else if (command.equals("READY")) {
-				//this was a response to the broadcast, add this remote module
-				//+ to the known list.
+			//add this remote module to the known list if it isn't already there
+			if (destination != null) {
 				if (remoteModules.contains(destination)) {
-					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
+//					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
 				} else {
 					Log.d(TAG, "adding module " + destination + " to the list of known modules");
 					remoteModules.add(destination);
 				}
+			}
+			
+			
+			if (destination.equals("DEBUG")) {
+				Log.d(TAG, "requested debug from remote module '" + command + "'");
 			} else {
 				//route the message to the appropriate driver
 				if (loadedDrivers.containsKey(destination)) {
 					Driver destDriver = loadedDrivers.get(destination);
 					if (destDriver.getState() != Thread.State.TERMINATED) {
-						Log.d(TAG, "passing message to driver");
+//						Log.d(TAG, "passing message to driver");
 						destDriver.receiveCommand(command);
 					} else {
 						//TODO re-launch the driver passing in the command
 						Log.w(TAG, "could not route incomming message to driver because it is terminated");
 					}
 				} else {
-					Log.d(TAG, "incomming message could not be routed to a running driver");
+//					Log.d(TAG, "incoming message could not be routed to a running driver");
 				}
 			}
 		} else {
@@ -463,12 +448,14 @@ public class Coordinator {
 		//Log.d(TAG, "incoming byte " + (char)b);
 		if (b == 0x0A) {
 			Coordinator.processMessage(byteBuffer.toByteArray());
+			byteBuffer.reset();
 		} else {
 			byteBuffer.write(b);
 		}
 	}
 
 	public static void main(String argv[]) throws InterruptedException {
+		Log.c(TAG, "Starting");
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
@@ -530,32 +517,43 @@ public class Coordinator {
 		}
 		
 		//block until the local arduino is ready
-		Log.d(TAG, "waiting for local link to be ready");
-		for (int i = 0; i < 100; i++) {
+		Log.c(TAG, "Waiting for local link to be ready...");
+		for (int i = 0; i < 6; i++) {
 			if (!connectionReady) {
-				Thread.sleep(500);
+				Thread.sleep(1000);
+			} else {
+				break;
 			}
 		}
 		if (!connectionReady) {
 			Log.e(TAG, "could not find a local arduino connection, exiting");
 			System.exit(1);
+		} else {
+			Log.c(TAG, "Local link ready.");
 		}
 		
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
-		Log.d(TAG, "querying remote modules");
-		queryRemoteModules();
-		for (int i = 0; i < 60; i++) {
-			Thread.sleep(100);
+		Log.c(TAG, "Querying remote modules...");
+		
+		for (int i = 0; i < 6; i++) {
+			queryRemoteModules();
+			Thread.sleep(1000);
+		}
+		
+		if (remoteModules.size() > 0) {
+			Log.c(TAG, "Found " + remoteModules.size() + " remote modules");
+		} else {
+			Log.c(TAG, "Did not find any remote modules.");
 		}
         
         
-		Log.d(TAG, "initializing drivers");
+		Log.c(TAG, "Initializing drivers...");
         //initialize the drivers
         Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
-        Driver driver2 = new LedFlash();
+        Driver driver2 = new StatefullLed();
      
         //only drivers with valid names are added
         //TODO make this generic
@@ -582,47 +580,18 @@ public class Coordinator {
         
         //start the drivers
         for (String driverName: loadedDrivers.keySet()) {
+        	Log.c(TAG, "Starting driver " + driverName);
         	(new Thread(loadedDrivers.get(driverName))).start();
         }
         
         //start the web interface
+        Log.c(TAG, "Starting web server on port " + portNum);
         new SimpleHttpServer(portNum).start();
         
 		//enter main loop
-        while (true) {
-        	//wait for input or output to be ready
-//        	while (!ioReady) {
-//        	}
-
-        	//check for incomming serial data
-        	if (serialConnection.isDataAvailable()) {
-        		//read a byte
-        		int readInt = -1;
-        		try {
-        			readInt = serialConnection.readInputByte();
-//        			Log.d(TAG, "read incomming byte: " + readInt);
-        		} catch (IOException e) {
-        			Log.e(TAG, "error reading from serial connection");
-        		}
-        		
-        		//if the buffer is not empty
-        		if (readInt != -1) {
-        			byte b = (byte)readInt;
-//        			Log.d(TAG, "read byte: " + new String(new byte[]{b}));
-        			//if this is a termination byte then we need to process the incomming message
-        			if (b == 0x0A) {
-        				processMessage(byteBuffer.toByteArray());
-        				byteBuffer = new ByteArrayOutputStream();
-        			} else {
-        				byteBuffer.write(b);
-        			}
-        		} else {
-            		Log.d(TAG, "no data to read");
-            	}
-        	} 
-        	
-        	Thread.yield();
-        	Thread.sleep(100);
+        while (true) {        		
+	    	Thread.yield();
+	    	Thread.sleep(100);
         }
 	}
 }
