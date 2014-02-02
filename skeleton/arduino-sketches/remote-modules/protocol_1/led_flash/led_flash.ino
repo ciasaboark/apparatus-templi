@@ -20,84 +20,39 @@
 #include <XBee.h>
 #include <SoftwareSerial.h>
 
+const byte TEXT_TRANSMISSION = (byte)0b00000000;
+const byte BIN_TRANSMISSION  = (byte)0b10000000;
+const byte SAFETY_BIT        = (byte)0b00100000;
+const byte PROTOCOL_V0       = (byte)0b00000000;
+const byte PROTOCOL_V1       = (byte)0b00000001;
+const byte PROTOCOL_V2       = (byte)0b00000010;
+
+const byte procotolVersion = PROTOCOL_V1;
+
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "LED_FLASH";
 
 SoftwareSerial softSerial = SoftwareSerial(10, 11);
 XBee xbee = XBee();
 XBeeResponse response = XBeeResponse();
-// create reusable response objects for responses we expect to handle 
 ZBRxResponse rx = ZBRxResponse();
 ModemStatusResponse msr = ModemStatusResponse();
 
-uint8_t payload[] = { 0, 0 };
-
-// SH + SL Address of receiving XBee
-XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x403e0f30);
-ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
-ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-
-int statusLed = 6;
-int errorLed = 5;
-int dataLed = 7;
-
-void flashLed(int pin, int times, int wait) {
-    
-    for (int i = 0; i < times; i++) {
-      digitalWrite(pin, HIGH);
-      delay(wait);
-      digitalWrite(pin, LOW);
-      
-      if (i + 1 < times) {
-        delay(wait);
-      }
-    }
-}
-
-void setup() {
-  pinMode(statusLed, OUTPUT);
-  pinMode(errorLed, OUTPUT);
-  pinMode(dataLed,  OUTPUT);
-  
+void setup() {  
   // start serial
   Serial.begin(9600);
   softSerial.begin(9600);
   
-  xbee.begin(softSerial);
+  xbee.begin(softSerial);  //xbee is connected to pins 10 & 11
+  
   //set pins 4 - 9 to output mode
   for (int i = 4; i < 10; i++) {
     pinMode(i, OUTPUT);
   }
-  flashLed(statusLed, 3, 50);
-  
 }
 
-uint8_t incomingSerial [3600] = {0};  //max frame size of 3600 bytes
-int bytePos = 0;
-
 // continuously reads packets, looking for ZB Receive or Modem Status
-void loop() {
-//  //read a byte from the usb serial
-//  if (Serial.available() > 0) {
-//    flashLed(7, 1, 100);
-//    uint8_t inByte = Serial.read();
-//    if (inByte != 0x0A) {
-//      flashLed(statusLed, 1, 100);
-//      incomingSerial[bytePos] = inByte;
-//      bytePos++;
-//    } else {
-//      flashLed(statusLed, 2, 100);
-//      processMessage(incomingSerial, bytePos);
-//      bytePos = 0;
-//      //clear the message buffer
-//      for (int i = 0; i < sizeof(incomingSerial); i++) {
-//        incomingSerial[i] = 0x00;
-//      }
-//      
-//    }
-//  }  
-  
-  
+void loop() {  
     xbee.readPacket(30);
     
     if (xbee.getResponse().isAvailable()) {
@@ -111,27 +66,16 @@ void loop() {
             
         if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
             // the sender got an ACK
-            flashLed(statusLed, 10, 10);
         } else {
             // we got it (obviously) but sender didn't get an ACK
-            flashLed(errorLed, 2, 20);
         }
-        // set dataLed PWM to value of the first byte in the data
-          uint8_t data[rx.getDataLength()];
-          Serial.print("data length: ");
-          Serial.println(rx.getDataLength());
-          Serial.print("sizeof: ");
-          Serial.println(sizeof(data));
+        uint8_t data[rx.getDataLength()];
           
-          for (int i = 0; i < rx.getDataLength(); i++) {
-            data[i] = rx.getData(i);
-          }
-          
-          for (int i = 0; i < sizeof(data); i++) {
-            Serial.write(data[i]);
-          }
-          Serial.write('\n');
-          processMessage(data, sizeof(data));
+        for (int i = 0; i < rx.getDataLength(); i++) {
+          data[i] = rx.getData(i);
+        }
+
+        processMessage(data, sizeof(data));
           
       } else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
         xbee.getResponse().getModemStatusResponse(msr);
@@ -139,17 +83,13 @@ void loop() {
         
         if (msr.getStatus() == ASSOCIATED) {
           // yay this is great.  flash led
-          flashLed(statusLed, 10, 10);
         } else if (msr.getStatus() == DISASSOCIATED) {
           // this is awful.. flash led to show our discontent
-          flashLed(errorLed, 10, 10);
         } else {
           // another status
-          flashLed(statusLed, 5, 10);
         }
       } else {
-        // not something we were expecting
-        flashLed(errorLed, 1, 25);    
+        // not something we were expecting   
       }
     } else if (xbee.getResponse().isError()) {
       //nss.print("Error reading packet.  Error code: ");  
@@ -160,19 +100,15 @@ void loop() {
 void processMessage(uint8_t inData[], int inDataLength) {
   Serial.flush();
   byte startByte = inData[0];
-  Serial.println("processmessage given data size: ");
-  Serial.println(inDataLength);
   
   //read in the destination address
   String destination; // = String((char*)inData[1, sizeof(inData)]);
   int headerEnd = 0;
   for (int i = 1; i < inDataLength; i++) {
     if ((char)inData[i] != (char)0x3A) {
-      Serial.println("appending to destination");Serial.flush();
       destination += (char)inData[i];
       headerEnd++;
     } else {
-      Serial.println("found :");Serial.flush();
       headerEnd++;
       break;
     }
@@ -187,10 +123,6 @@ void processMessage(uint8_t inData[], int inDataLength) {
     for (int i = headerEnd + 1; i < inDataLength - 1; i++) {
       command += (char)inData[i];
     }
-    
-    Serial.println("header end: " + headerEnd); Serial.flush();
-    Serial.println("destination: '" + destination + "'");Serial.flush();
-    Serial.println("command: '" + command + "'");Serial.flush();
     
     processCommand(destination, command);
   } else {
@@ -225,6 +157,36 @@ void processCommand(String destination, String command) {
  }
 }
 
-void sendMessage(String message) {
-  //TODO
+void sendMessage(String command) {
+  byte startByte = procotolVersion | TEXT_TRANSMISSION | SAFETY_BIT;
+  
+  uint8_t payload [1 + MODULE_NAME.length() + 1 + command.length() + 1];
+  int pos = 1;
+  
+  //write the start byte
+  payload[0] = startByte;
+
+  //write the module name as the address field
+  for (int i = 0; i < MODULE_NAME.length(); i++, pos++) {
+    payload[pos] = MODULE_NAME[i];
+  }
+  
+  //write the header terminator
+  payload[pos++] = 0x3A;  //":"
+  
+  //write the command field
+  for (int i = 0; i < command.length(); i++, pos++) {
+    payload[pos] = command[i];
+  }
+  
+  //write the terminator
+  payload[pos] = 0x0A;
+  
+  XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //address to the coordinator
+  ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+  xbee.send(zbTx); 
+}
+
+void sendBinary(byte data[]) {
+  //TODO 
 }
