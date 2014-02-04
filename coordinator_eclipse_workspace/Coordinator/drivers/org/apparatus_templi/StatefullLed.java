@@ -30,10 +30,6 @@ public class StatefullLed extends ControllerModule {
 	private boolean[] ledsState = {false, false, false};
 	
 	public StatefullLed() {
-		this(null);
-	}
-	
-	public StatefullLed(String command) {
 		this.name = moduleName;
 	}
 	
@@ -135,6 +131,12 @@ public class StatefullLed extends ControllerModule {
 		Log.d(moduleName, "tellController() not validating command, passing without verification");
 		Coordinator.sendCommand(moduleName, command);
 
+	}
+
+	@Override
+	void processMessage(byte[] message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -17,12 +17,7 @@ public class LedFlash extends ControllerModule {
 	private String moduleName = "LED_FLASH";
 	
 	public LedFlash() {
-		this(null);
-	}
-	
-	public LedFlash(String command) {
 		this.name = "LED_FLASH";
-		//TODO if the driver was woken with a command, then it should be processed.
 	}
 	
 	/*
@@ -120,6 +115,11 @@ public class LedFlash extends ControllerModule {
 	@Override
 	public void run() {
 		Log.d(moduleName, "starting");
+		//check for any queued messages
+		while (queuedMessages.size() > 0) {
+			processMessage(queuedMessages.pop());
+		}
+		
 		if (Coordinator.isModulePresent(moduleName)) {
 			while (running) {
 				/*
@@ -169,6 +169,12 @@ public class LedFlash extends ControllerModule {
 	public String getFullPageXML() {
 		Log.w(moduleName, "getFullPageXML() unimplimented");
 		return null;
+	}
+
+	@Override
+	void processMessage(byte[] message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -23,6 +23,7 @@ import org.apache.commons.cli.ParseException;
 public class Coordinator {
 	private static final String TAG = "Coordinator";
 	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+//	private static HashMap<String, Integer> remoteModules = new HashMap<String, Integer>();
 	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
@@ -165,14 +166,17 @@ public class Coordinator {
 		//TODO check the protocol version based off the first byte
 		//Since we only support protocol version 0 right now we only need to
 		//+ convert this to a string using ASCII encoding
+		
 		String inMessage = "";
 		byte startByte = byteArray[0];
 		try {
 			inMessage = new String(Arrays.copyOfRange(byteArray, 1, byteArray.length), "US-ASCII");
-//			Log.d(TAG, "processing incomming message: '" + inMessage + "'");
+//			Log.d(TAG, "processing incoming message: '" + inMessage + "'");
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "unable to format incomming message as ASCII text, discarding");
 		}
+		
+		Integer transProt = (startByte & 0x0F);
 		
 		
 		String destination;
@@ -237,8 +241,12 @@ public class Coordinator {
 	 * @param command the command to send to the remote module
 	 */
 	static synchronized void sendCommand(String moduleName, String command) {
+		//TODO should this return a boolean?  It would be nice to know if the message was delivered
+		//TODO use the protocol version that the remote side speaks, not the preferred version
+		//+ of the coordinator
+//		int moduleProtocol = remoteModules.get(moduleName);
 		if (connectionReady) {
-			switch (protocolVersion) {
+			switch (protocolVersion) { //todo switch on desired protocol
 				case 0:
 					sendCommandV0(moduleName, command);
 					break;
@@ -280,8 +288,8 @@ public class Coordinator {
 	 * @param data the binary data to send
 	 */
 	static synchronized void sendBinary(String moduleName, byte[] data) {
-		//TODO, check which protocol version the remote size supports and
-		//+ 
+		//TODO, check which protocol version the remote side supports and
+		//+ use that for the transmission
 		
 //		//TODO find out the max size of a single Zigbee packet and break the data into
 //		//+ chunks for multiple transmissions.
@@ -528,7 +536,7 @@ public class Coordinator {
 		
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
-		System.out.print(TAG + ":" + "Querying remote modules.");
+		System.out.print(TAG + ":" + "Querying modules.");
 		
 		for (int i = 0; i < 6; i++) {
 			queryRemoteModules();
@@ -538,7 +546,7 @@ public class Coordinator {
 		System.out.println();
 		
 		if (remoteModules.size() > 0) {
-			Log.c(TAG, "Found " + remoteModules.size() + " remote modules");
+			Log.c(TAG, "Found " + remoteModules.size() + " modules :" + remoteModules.toString());
 		} else {
 			Log.c(TAG, "Did not find any remote modules.");
 		}
@@ -585,7 +593,10 @@ public class Coordinator {
         new SimpleHttpServer(portNum).start();
         
 		//enter main loop
-        while (true) {        		
+        while (true) {
+        	//TODO keep track of the last time a message was sent to/received from each remote module
+        	//+ if the time period is too great, then re-query the remote modules, possibly removing
+        	//+ them from the known list
 	    	Thread.yield();
 	    	Thread.sleep(100);
         }
