@@ -1,7 +1,7 @@
 package org.apparatus_templi;
 
 public abstract class Driver implements Runnable {
-	protected String name = null; //name of the device Empty String as default or could assign a random name if not assigned one
+	protected String name = null;
 	
 	protected volatile boolean running = true;
 
@@ -12,14 +12,8 @@ public abstract class Driver implements Runnable {
 	
 
 	final void terminate() {
-		this.running = false; //call the subclass implementation
+		this.running = false;
 	}
-
-	/*
-	 * If the device is not given a name during creation, it will have an empty string as default
-	 * The thread's begin_execution() function (make shift constructor) can handle this. It can assign it a random
-         * name. 
- 	 */
 	
 	final String getModuleName() {
 		return this.name;

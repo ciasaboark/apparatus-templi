@@ -160,6 +160,7 @@ void processCommand(String destination, String command) {
 void sendMessage(String command) {
   byte startByte = procotolVersion | TEXT_TRANSMISSION | SAFETY_BIT;
   
+  //the payload will hold the entire application layer protocol
   uint8_t payload [1 + MODULE_NAME.length() + 1 + command.length() + 1];
   int pos = 1;
   

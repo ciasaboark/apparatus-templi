@@ -131,7 +131,7 @@ public class LedFlash extends ControllerModule {
 					Log.d(moduleName, "flashing LED on pin " + i);
 					Coordinator.sendCommand(moduleName, String.valueOf(i));
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -139,8 +139,10 @@ public class LedFlash extends ControllerModule {
 				}
 			}
 		} else {
-			Log.w(moduleName, "remote module not present, shutting down");
+			Log.e(moduleName, "remote module not present, shutting down");
 		}
+		
+		Log.d(moduleName, "terminating");
 	}
 
 	/*
@@ -148,7 +150,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public void receiveCommand(String command) {
-		Log.d(moduleName, "received command, ignoring");
+//		Log.d(moduleName, "received command, ignoring");
 	}
 
 	/*

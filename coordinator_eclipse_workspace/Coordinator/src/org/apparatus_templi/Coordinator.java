@@ -3,10 +3,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -36,12 +35,12 @@ public class Coordinator {
 	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
 	//the safety bit is reserved and always 1.  This is to make sure that the
 	//+ header byte is never equal to 0x0A (the termination byte)
-	private static final byte SAFETY_BIT   = (byte)0b0010_0000;
-	private static final byte PROTOCOL_V0  = (byte)0b0000_0000;
-	private static final byte PROTOCOL_V1  = (byte)0b0000_0001;
-	private static final byte PROTOCOL_V2  = (byte)0b0000_0010;
+	private static final byte SAFETY_BIT   		= (byte)0b0010_0000;
+	private static final byte PROTOCOL_V0 	 	= (byte)0b0000_0000;
+	private static final byte PROTOCOL_V1  		= (byte)0b0000_0001;
+	private static final byte PROTOCOL_V2  		= (byte)0b0000_0010;
 	
-	private static final byte protocolVersion = PROTOCOL_V0;
+	private static final byte protocolVersion = PROTOCOL_V1;
 	
 	//Separates the destination from the command
 	private static String headerSeperator = ":";
@@ -59,27 +58,6 @@ public class Coordinator {
 	//TODO change this to a singleton
 	public Coordinator() {
 		super();
-	}
-
-	/**
-	 * broadcasts a command to all points in the Zigbee network
-	 * 	This addresses to header to the reserved destination "ALL".
-	 * 	Any remote modules that go into a sleep state might not
-	 * 	receive the message.
-	 * @param command the command to broadcast.
-	 * TODO add list of available broadcast commands
-	 */
-	private void broadCastCommand(String command) {
-		
-	}
-	
-	/**
-	 * Checks the serial connection to see if there is any data available for reading
-	 * @return true if data is available for reading, false otherwise
-	 */
-	private boolean serialDataAvailable() {
-		//TODO
-		return false;
 	}
 	
 	/**
@@ -113,7 +91,7 @@ public class Coordinator {
 	 * @param command
 	 */
 	private static synchronized void sendCommandV1(String moduleName, String command) {
-		Log.d(TAG, "sending message as protocol 1");
+//		Log.d(TAG, "sending message as protocol 1");
 		//TODO make sure size of command bytes is not larger than a single zigbee packet,
 		//+ break into chunks if needed
 		
@@ -167,12 +145,20 @@ public class Coordinator {
 			bBuffer.put(commandBytes);
 			bBuffer.put(termByte);
 			
-			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
-			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
+//			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
+//			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
 			serialConnection.writeData(bBuffer.array());
 		} else {
 			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
 		}
+	}
+	
+	private static synchronized void sendBinaryV0(String moduleName, byte[] data) {
+		Log.e(TAG, "error, binary transmission not supported under protocol v0");
+	}
+	
+	private static synchronized void sendBinaryV1(String moduleName, byte[] data) {
+		//TODO, waiting on transition to protocol v1
 	}
 	
 	private static synchronized void processMessage(byte[] byteArray) {
@@ -180,8 +166,9 @@ public class Coordinator {
 		//Since we only support protocol version 0 right now we only need to
 		//+ convert this to a string using ASCII encoding
 		String inMessage = "";
+		byte startByte = byteArray[0];
 		try {
-			inMessage = new String(byteArray, "US-ASCII");
+			inMessage = new String(Arrays.copyOfRange(byteArray, 1, byteArray.length), "US-ASCII");
 //			Log.d(TAG, "processing incomming message: '" + inMessage + "'");
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "unable to format incomming message as ASCII text, discarding");
@@ -196,7 +183,7 @@ public class Coordinator {
 		//+ we have to be a bit loose in how the message is matched.
 		if (inMessage.indexOf(":") == -1 && inMessage.trim().endsWith("READY")) {
 			//TODO
-			Log.d(TAG, "local arduino link is ready");
+//			Log.d(TAG, "local arduino link is ready");
 			connectionReady = true;
 		} else if (inMessage.indexOf(":") != -1) {
 			destination = inMessage.substring(0, inMessage.indexOf(":"));
@@ -208,7 +195,7 @@ public class Coordinator {
 				if (remoteModules.contains(destination)) {
 //					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
 				} else {
-					Log.d(TAG, "adding module " + destination + " to the list of known modules");
+//					Log.d(TAG, "adding module " + destination + " to the list of known modules");
 					remoteModules.add(destination);
 				}
 			}
@@ -233,7 +220,7 @@ public class Coordinator {
 			}
 		} else {
 			//the incoming message does not match any known format
-			Log.w(TAG, "incomming message does not match any known formats");
+			Log.w(TAG, "incomming message '" + inMessage + "' does not match any known formats");
 		}
 	}
 	
@@ -293,55 +280,58 @@ public class Coordinator {
 	 * @param data the binary data to send
 	 */
 	static synchronized void sendBinary(String moduleName, byte[] data) {
-		//TODO find out the max size of a single Zigbee packet and break the data into
-		//+ chunks for multiple transmissions.
+		//TODO, check which protocol version the remote size supports and
+		//+ 
 		
-		//TODO look for bytes matching 0x0A in the data and replace with 0x0A0A
-		
-		if (!serialConnection.isConnected()) {
-			return;
-		}
-		
-		//the arduino expects chars as 1 byte instead of two, convert command
-		//+ to ascii byte array, then tack on the header, name, and footer
-		byte startByte = (byte)(BIN_TRANSMISSION | SAFETY_BIT | protocolVersion);
-		byte[] destinationBytes = {0b0};
-		byte[] headerSeperatorByte = {0b0};
-		
-		boolean sendMessage = true;
-		
-		//convert the destination address to ascii byte array
-		try {
-			destinationBytes = moduleName.getBytes("US-ASCII");
-		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting remote module name '" + moduleName + "' to US-ASCII encoding.");
-			sendMessage = false;
-		}
-		
-		//convert the destination separator to ascii byte array
-		try {
-			headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
-		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "error converting header seperator to ascii byte array.");
-			sendMessage = false;
-		}
-				
-		
-		if (sendMessage) {
-			//reserve enough room for the start/term bytes, the header, and the command
-			ByteBuffer bBuffer = ByteBuffer.allocate(1 + destinationBytes.length + headerSeperatorByte.length + data.length + 1);
-			bBuffer.put(startByte);
-			bBuffer.put(destinationBytes);
-			bBuffer.put(headerSeperatorByte);
-			bBuffer.put(data);
-			bBuffer.put(termByte);
-			
-			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
-			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
-			serialConnection.writeData(bBuffer.array());
-		} else {
-			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
-		}
+//		//TODO find out the max size of a single Zigbee packet and break the data into
+//		//+ chunks for multiple transmissions.
+//		
+//		//TODO look for bytes matching 0x0A in the data and replace with 0x0A0A
+//		
+//		if (!serialConnection.isConnected()) {
+//			return;
+//		}
+//		
+//		//the arduino expects chars as 1 byte instead of two, convert command
+//		//+ to ascii byte array, then tack on the header, name, and footer
+//		byte startByte = (byte)(BIN_TRANSMISSION | SAFETY_BIT | protocolVersion);
+//		byte[] destinationBytes = {0b0};
+//		byte[] headerSeperatorByte = {0b0};
+//		
+//		boolean sendMessage = true;
+//		
+//		//convert the destination address to ascii byte array
+//		try {
+//			destinationBytes = moduleName.getBytes("US-ASCII");
+//		} catch (UnsupportedEncodingException e) {
+//			Log.w(TAG, "error converting remote module name '" + moduleName + "' to US-ASCII encoding.");
+//			sendMessage = false;
+//		}
+//		
+//		//convert the destination separator to ascii byte array
+//		try {
+//			headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
+//		} catch (UnsupportedEncodingException e) {
+//			Log.w(TAG, "error converting header seperator to ascii byte array.");
+//			sendMessage = false;
+//		}
+//				
+//		
+//		if (sendMessage) {
+//			//reserve enough room for the start/term bytes, the header, and the command
+//			ByteBuffer bBuffer = ByteBuffer.allocate(1 + destinationBytes.length + headerSeperatorByte.length + data.length + 1);
+//			bBuffer.put(startByte);
+//			bBuffer.put(destinationBytes);
+//			bBuffer.put(headerSeperatorByte);
+//			bBuffer.put(data);
+//			bBuffer.put(termByte);
+//			
+//			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
+//			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
+//			serialConnection.writeData(bBuffer.array());
+//		} else {
+//			Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
+//		}
 	}
 
 	/**
@@ -404,13 +394,16 @@ public class Coordinator {
 	 * 	or null. If null, this command originated from the Coordinator
 	 * @param command the command to pass
 	 */
-	synchronized boolean passCommand(String toDriver, String fromDriver, String command) {
+	synchronized boolean passCommand(String fromDriver, String toDriver, String command) {
 		//TODO verify source name
 		//TODO check for reserved name in toDriver
 		boolean messagePassed = false;
 		if (loadedDrivers.containsKey(toDriver)) {
-			loadedDrivers.get(toDriver).receiveCommand(command);
-			messagePassed = true;
+			Driver destDriver = loadedDrivers.get(toDriver);
+			if (destDriver.getState() != Thread.State.TERMINATED) {
+				loadedDrivers.get(toDriver).receiveCommand(command);
+				messagePassed = true;
+			}
 		}
 		return messagePassed;
 	}
@@ -516,11 +509,13 @@ public class Coordinator {
 		}
 		
 		//block until the local arduino is ready
-		Log.c(TAG, "Waiting for local link to be ready...");
+		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
 		for (int i = 0; i < 6; i++) {
 			if (!connectionReady) {
+				System.out.print(".");
 				Thread.sleep(1000);
 			} else {
+				System.out.println();
 				break;
 			}
 		}
@@ -533,12 +528,14 @@ public class Coordinator {
 		
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
-		Log.c(TAG, "Querying remote modules...");
+		System.out.print(TAG + ":" + "Querying remote modules.");
 		
 		for (int i = 0; i < 6; i++) {
 			queryRemoteModules();
+			System.out.print(".");
 			Thread.sleep(1000);
 		}
+		System.out.println();
 		
 		if (remoteModules.size() > 0) {
 			Log.c(TAG, "Found " + remoteModules.size() + " remote modules");

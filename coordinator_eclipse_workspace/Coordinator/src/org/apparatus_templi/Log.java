@@ -1,7 +1,5 @@
 package org.apparatus_templi;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Logging facilities for Coordinator and the drivers

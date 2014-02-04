@@ -4,13 +4,9 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 
@@ -39,15 +35,16 @@ public class SerialConnection implements SerialPortEventListener {
 		portNames = new LinkedHashSet<String>();
 		if (preferredConnection != null) {
 			portNames.add(preferredConnection);
+		} else {
+			portNames.add("/dev/tty.usbmodemfd121");	//MacOS
+			portNames.add("/dev/tty.usbmodemfa131");	//MacOS
+			portNames.add("/dev/ttyUSB0");				//Linux
+			portNames.add("/dev/ttyUSB1");				//Linux
+			portNames.add("/dev/ttyUSB2");				//Linux
+			portNames.add("COM3");						//Windows
+			portNames.add("COM2");						//Windows
+			portNames.add("COM1");						//Windows
 		}
-		portNames.add("/dev/tty.usbmodemfd121");	//MacOS
-		portNames.add("/dev/tty.usbmodemfa131");	//MacOS
-		portNames.add("/dev/ttyUSB0");				//Linux
-		portNames.add("/dev/ttyUSB1");				//Linux
-		portNames.add("/dev/ttyUSB2");				//Linux
-		portNames.add("COM3");						//Windows
-		portNames.add("COM2");						//Windows
-		portNames.add("COM1");						//Windows
 		
 		this.initialize(preferredConnection);
 	}
@@ -60,6 +57,7 @@ public class SerialConnection implements SerialPortEventListener {
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
 		//First, Find an instance of serial port as set in PORT_NAMES.
+		//TODO clean this up.  if a preferred port is given only try to connect to that port, else scan the defaults list
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
 			for (String portName : portNames) {
