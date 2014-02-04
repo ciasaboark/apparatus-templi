@@ -152,14 +152,17 @@ public class SerialConnection implements SerialPortEventListener {
 	
 	
 	
-	 synchronized void writeData(byte[] data) {
-    	try {
+	 synchronized boolean writeData(byte[] data) {
+		 boolean dataWritten = false;
+		 try {
 //	    	Log.d(TAG,  "writing byte[] data to output: " + new String(data));
-			output.write(data);
-			output.flush();
-		} catch (IOException e) {
-			Log.e(TAG, "error writing byte[] data to output, trying to re-connect:");
-			initialize(null);
-		}
-	}
+			 output.write(data);
+			 output.flush();
+			 dataWritten = true;
+		 } catch (IOException e) {
+			 Log.e(TAG, "error writing byte[] data to output, trying to re-connect:");
+			 initialize(null);
+		 }
+		 return dataWritten;
+	 }
 }

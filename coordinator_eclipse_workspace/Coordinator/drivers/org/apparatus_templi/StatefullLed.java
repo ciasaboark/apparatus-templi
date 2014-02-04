@@ -48,6 +48,12 @@ public class StatefullLed extends ControllerModule {
 
 
 	@Override
+	void receiveBinary(byte[] data) {
+		Log.d(moduleName, "received binary, ignoring");
+		
+	}
+
+	@Override
 	public String getWidgetXML() {
 		Log.w(moduleName, "getWidgetXML() unimplimented");
 		return null;
@@ -62,9 +68,16 @@ public class StatefullLed extends ControllerModule {
 	@Override
 	public void run() {
 		Log.d(moduleName, "starting");
+		
+		//check for any queued messages
+		while (queuedCommands.size() > 0) {
+			receiveCommand(queuedCommands.pop());
+		}
+				
+				
 		//since we don't know the state of the remote module at the beginning we
 		//+ tell it to reset to a default state (all LEDs off).  If the remote
-		//+ side does not respond within 3 seconds then the driver will terminate
+		//+ module is not there then terminate
 		if (Coordinator.isModulePresent(moduleName)) {
 			Coordinator.sendCommand(moduleName, "RESET");
 			for (boolean state: ledsState) {
@@ -77,7 +90,7 @@ public class StatefullLed extends ControllerModule {
 		
 		
 		while (running) {
-			//run through a hardcoded loop for now.
+			//run through a hard-coded loop for now.
 			int ledNum = 0 + (int)(Math.random() * ((2 - 0) + 1));
 			toggleLED(ledNum);
 			try {
@@ -86,15 +99,6 @@ public class StatefullLed extends ControllerModule {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			for (int i = 0; i < 3; i++) {
-//				toggleLED(i);
-//				try {
-//					Thread.sleep(5000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-			
 		}
 		
 		//thread is terminating, do whatever cleanup is needed
@@ -131,12 +135,6 @@ public class StatefullLed extends ControllerModule {
 		Log.d(moduleName, "tellController() not validating command, passing without verification");
 		Coordinator.sendCommand(moduleName, command);
 
-	}
-
-	@Override
-	void processMessage(byte[] message) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

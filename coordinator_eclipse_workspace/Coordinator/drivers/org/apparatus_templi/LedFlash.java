@@ -116,8 +116,12 @@ public class LedFlash extends ControllerModule {
 	public void run() {
 		Log.d(moduleName, "starting");
 		//check for any queued messages
-		while (queuedMessages.size() > 0) {
-			processMessage(queuedMessages.pop());
+		while (queuedCommands.size() > 0) {
+			receiveCommand(queuedCommands.poll());
+		}
+		
+		while (queuedBinary.size() > 0) {
+			receiveBinary(queuedBinary.poll());
 		}
 		
 		if (Coordinator.isModulePresent(moduleName)) {
@@ -125,7 +129,7 @@ public class LedFlash extends ControllerModule {
 				/*
 				 * This is our main loop.  All of the processing will happen here
 				 * Our simple driver will repeatedly send three messages to the
-				 * remote module, sleeping 5 seconds between each message.
+				 * remote module, sleeping a few seconds between each message.
 				 */
 				for (int i = 3; i < 10; i++) {
 					Log.d(moduleName, "flashing LED on pin " + i);
@@ -149,8 +153,14 @@ public class LedFlash extends ControllerModule {
 	 * We don't care about any response messages.
 	 */
 	@Override
-	public void receiveCommand(String command) {
+	void receiveCommand(String command) {
 //		Log.d(moduleName, "received command, ignoring");
+	}
+
+	@Override
+	void receiveBinary(byte[] data) {
+		Log.d(moduleName, "received binary, ignoring");
+		
 	}
 
 	/*
@@ -169,12 +179,6 @@ public class LedFlash extends ControllerModule {
 	public String getFullPageXML() {
 		Log.w(moduleName, "getFullPageXML() unimplimented");
 		return null;
-	}
-
-	@Override
-	void processMessage(byte[] message) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
