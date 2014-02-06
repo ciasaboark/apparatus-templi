@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
@@ -58,8 +57,6 @@ public class Coordinator {
 	
 	private static SerialConnection serialConnection;
 	private static boolean connectionReady = false;
-	
-	
 	
 	
 	//TODO change this to a singleton
@@ -626,7 +623,7 @@ public class Coordinator {
 	 */
 	static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
-		return 0;
+		return DatabaseInterface.storeTextData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -642,7 +639,7 @@ public class Coordinator {
 	 */
 	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
-		return 0;
+		return DatabaseInterface.storeBinData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -654,7 +651,7 @@ public class Coordinator {
 	 */
 	static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
-		return null;
+		return DatabaseInterface.readTextData(driverName, dataTag);
 	}
 	
 	/**
@@ -666,7 +663,7 @@ public class Coordinator {
 	 */
 	static synchronized Byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
-		return null;
+		return DatabaseInterface.readBinData(driverName, dataTag);
 	}
 	
 	
