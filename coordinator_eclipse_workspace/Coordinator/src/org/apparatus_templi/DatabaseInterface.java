@@ -1,6 +1,8 @@
 package org.apparatus_templi;
 
 public class DatabaseInterface {
+	private static final String TAG = "DatabaseInterface";
+	
 	/**
 	 * Stores the given data to persistent storage. Data is tagged with both the driver
 	 * 	name as well as a data tag.
@@ -13,6 +15,7 @@ public class DatabaseInterface {
 	 * 	0 if the data could not be written.
 	 */
 	static synchronized int storeTextData(String driverName, String dataTag, String data) {
+		Log.d(TAG, "storing text data");
 		return 0;
 	}
 	
@@ -28,6 +31,7 @@ public class DatabaseInterface {
 	 * 	0 if the data could not be written.
 	 */
 	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+		Log.d(TAG, "storing binary data");
 		return 0;
 	}
 	
@@ -39,6 +43,7 @@ public class DatabaseInterface {
 	 * 	and tag.
 	 */
 	static synchronized String readTextData(String driverName, String dataTag) {
+		Log.d(TAG, "reading text data");
 		return null;
 	}
 	
@@ -50,6 +55,7 @@ public class DatabaseInterface {
 	 * 	and tag.
 	 */
 	static synchronized Byte[] readBinData(String driverName, String dataTag) {
+		Log.d(TAG, "reading binary data");
 		return null;
 	}
 	
