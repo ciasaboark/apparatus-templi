@@ -1,33 +1,57 @@
 package org.apparatus_templi;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public abstract class Driver implements Runnable {
-	protected String name = null; //name of the device Empty String as default or could assign a random name if not assigned one
+	protected String name = null;
 	
-	protected boolean running = true;
+	protected volatile boolean running = true;
+	protected volatile Deque<String> queuedCommands = new ArrayDeque<String>();
+	protected volatile Deque<byte[]> queuedBinary = new ArrayDeque<byte[]>();
 
 	abstract String getModuleType();
 	abstract void receiveCommand(String command);
+	abstract void receiveBinary(byte[] data);
 	abstract String getWidgetXML();
 	abstract String getFullPageXML();
+//	abstract void processMessage(byte[] message);
 	
 
-	void terminate() {
-		running = false; //call the subclass implementation
+	final void terminate() {
+		this.running = false;
 	}
-
-	/*
-	 * If the device is not given a name during creation, it will have an empty string as default
-	 * The thread's begin_execution() function (make shift constructor) can handle this. It can assign it a random
-         * name. 
- 	 */
 	
-	String getModuleName() {
+	final String getModuleName() {
 		return this.name;
 	}
 	
-	Thread.State getState() {
+	final Thread.State getState() {
 		return Thread.currentThread().getState();
 	}
 	
+	final void queueCommand(String command) {
+		queuedCommands.add(command);
+	}
+	
+	final void queueBinary(byte[] data) {
+		queuedBinary.add(data);
+	}
+	
+	protected final String readQueuedCommand() {
+		String message = null;
+		if (queuedCommands.peek() != null) {
+			message = queuedCommands.poll();
+		}
+		return message;
+	}
+	
+	protected final byte[] readQueuedBinary() {
+		byte[] data = null;
+		if (queuedBinary.peek() != null) {
+			data = queuedBinary.poll();
+		}
+		return data;
+	}
 	
 }

@@ -23,35 +23,34 @@ package org.apparatus_templi;
  */
 
 public class StatefullLed extends ControllerModule {
-	private String moduleName = "StatefullLED";
-	private boolean running = true;
+	private String moduleName = "LOCAL";
 	
 	//our remote module has three LEDs attached
-	private int[] leds = {4, 5, 6};
+	private int[] leds = {5, 6, 7};
 	private boolean[] ledsState = {false, false, false};
+	
+	public StatefullLed() {
+		this.name = moduleName;
+	}
 	
 	@Override
 	public String getModuleType() {
 		return "Controller";
 	}
 
-	@Override
-	public String getModuleName() {
-		return moduleName;
-	}
 
 	@Override
 	public void receiveCommand(String message) {
 		//throw away the message for now
-		Log.d(moduleName, "received message, ignoring");
+//		Log.d(moduleName, "received message '"+ message + "', ignoring");
 
 	}
 
-	@Override
-	public void terminate() {
-		Log.d(moduleName, "told to terminate");
-		running = false;
 
+	@Override
+	void receiveBinary(byte[] data) {
+		Log.d(moduleName, "received binary, ignoring");
+		
 	}
 
 	@Override
@@ -68,17 +67,21 @@ public class StatefullLed extends ControllerModule {
 
 	@Override
 	public void run() {
+		Log.d(moduleName, "starting");
+		
+		//check for any queued messages
+		while (queuedCommands.size() > 0) {
+			receiveCommand(queuedCommands.pop());
+		}
+				
+				
 		//since we don't know the state of the remote module at the beginning we
 		//+ tell it to reset to a default state (all LEDs off).  If the remote
-		//+ side does not respond within 3 seconds then the driver will terminate
+		//+ module is not there then terminate
 		if (Coordinator.isModulePresent(moduleName)) {
-			if (Coordinator.sendCommandAndWait(moduleName, "RESET", 3).equals("OKRESET")) {
-				for (boolean ledState: ledsState) {
-					ledState = false;
-				}
-			} else {
-				Log.e(moduleName, "did not get a response from the remote side, exiting");
-				terminate();
+			Coordinator.sendCommand(moduleName, "RESET");
+			for (boolean state: ledsState) {
+				state = false;
 			}
 		} else {
 			Log.e(moduleName, "remote module is not present, shutting down");
@@ -87,16 +90,15 @@ public class StatefullLed extends ControllerModule {
 		
 		
 		while (running) {
-			//run through a hardcoded loop for now.
-			for (int i = 0; i < 2; i++) {
-				toggleLED(i);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			//run through a hard-coded loop for now.
+			int ledNum = 0 + (int)(Math.random() * ((2 - 0) + 1));
+			toggleLED(ledNum);
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
 		}
 		
 		//thread is terminating, do whatever cleanup is needed
@@ -106,10 +108,14 @@ public class StatefullLed extends ControllerModule {
 	}
 	
 	private void toggleLED(int ledNum) {
-		Log.d(moduleName, "toggling LED " + ledNum + " on pin " + leds[ledNum] + " to state: " +
-				(ledsState[ledNum]? "OFF" : "ON"));
-		Coordinator.sendCommand(moduleName, String.valueOf(leds[ledNum]) + ":" + (ledsState[ledNum]? "0" : "1"));
-		ledsState[ledNum] = !ledsState[ledNum];
+		if (ledNum > 2 || ledNum < 0) {
+			Log.e(moduleName, "toggleLED() given invalid led number");
+		} else {
+			Log.d(moduleName, "toggling LED " + ledNum + " on pin " + leds[ledNum] + " to state: " +
+					(ledsState[ledNum]? "OFF" : "ON"));
+			Coordinator.sendCommand(moduleName, String.valueOf(leds[ledNum]) + (ledsState[ledNum]? "0" : "1"));
+			ledsState[ledNum] = !ledsState[ledNum];
+		}
 	}
 
 	@Override

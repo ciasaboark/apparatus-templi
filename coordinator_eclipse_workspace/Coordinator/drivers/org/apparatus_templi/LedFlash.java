@@ -15,15 +15,9 @@ package org.apparatus_templi;
 
 public class LedFlash extends ControllerModule {
 	private String moduleName = "LED_FLASH";
-	private volatile boolean running = true;
 	
 	public LedFlash() {
-		this(null);
-	}
-	
-	public LedFlash(String command) {
 		this.name = "LED_FLASH";
-		//TODO if the driver was woken with a command, then it should be processed.
 	}
 	
 	/*
@@ -121,18 +115,31 @@ public class LedFlash extends ControllerModule {
 	@Override
 	public void run() {
 		Log.d(moduleName, "starting");
+		//check for any queued messages
+		while (queuedCommands.size() > 0) {
+			receiveCommand(queuedCommands.poll());
+		}
+		
+		while (queuedBinary.size() > 0) {
+			receiveBinary(queuedBinary.poll());
+		}
+		
 		if (Coordinator.isModulePresent(moduleName)) {
 			while (running) {
 				/*
 				 * This is our main loop.  All of the processing will happen here
 				 * Our simple driver will repeatedly send three messages to the
-				 * remote module, sleeping 5 seconds between each message.
+				 * remote module, sleeping a few seconds between each message.
 				 */
-				for (int i = 3; i < 10; i++) {
+				for (int i = 5; i < 10; i++) {
 					Log.d(moduleName, "flashing LED on pin " + i);
-					Coordinator.sendCommand(moduleName, String.valueOf(i));
+					if (Coordinator.sendCommand(moduleName, String.valueOf(i))) {
+						Log.d(moduleName, "message sent");
+					} else {
+						Log.d(moduleName, "message could not be sent");
+					}
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -140,16 +147,24 @@ public class LedFlash extends ControllerModule {
 				}
 			}
 		} else {
-			Log.w(moduleName, "remote module not present, shutting down");
+			Log.e(moduleName, "remote module not present, shutting down");
 		}
+		
+		Log.d(moduleName, "terminating");
 	}
 
 	/*
 	 * We don't care about any response messages.
 	 */
 	@Override
-	public void receiveCommand(String command) {
+	void receiveCommand(String command) {
 		Log.d(moduleName, "received command, ignoring");
+	}
+
+	@Override
+	void receiveBinary(byte[] data) {
+		Log.d(moduleName, "received binary, ignoring");
+		
 	}
 
 	/*

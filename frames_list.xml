@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+  <loop>false</loop>
+  <repeat_times>1</repeat_times>
+  <repeat_period>500</repeat_period>
+  <frames_list>
+    <frame name="ALL:READY?">
+      <payload>7E001A1001000000000000FFFFFFFE0000FF414C4C3A52454144593F0A23</payload>
+    </frame>
+    <frame name="LED_FLASH:OK">
+      <payload>7E001C10010000000000000000FFFE0000FF4C45445F464C4153483A4F4B0A72</payload>
+    </frame>
+    <frame name="LED_FLASH:5">
+      <payload>7E001B1001000000000000FFFFFFFE0000FF4C45445F464C4153483A350AD9</payload>
+    </frame>
+    <frame name="LED_FLASH:6">
+      <payload>7E001B10010013A200408BAF1CFFFE0000FF4C45445F464C4153483A360A8B</payload>
+    </frame>
+    <frame name="LED_FLASH:7">
+      <payload>7E001B10010013A200408BAF1CFFFE0000FF4C45445F464C4153483A370A8A</payload>
+    </frame>
+  </frames_list>
+</data>

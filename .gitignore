@@ -1,3 +1,5 @@
 .DS_Store
-.history
-
+.history/
+bin/
+.metadata/
+!org.eclipse.core.resources/
