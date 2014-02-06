@@ -16,7 +16,7 @@ package org.apparatus_templi;
 public class LedFlash extends ControllerModule { 
 	private String moduleName = "LED_FLASH"; 
 	
-	public LedFlash() {//testing
+	public LedFlash() {
 		this.name = "LED_FLASH";
 	}
 	
