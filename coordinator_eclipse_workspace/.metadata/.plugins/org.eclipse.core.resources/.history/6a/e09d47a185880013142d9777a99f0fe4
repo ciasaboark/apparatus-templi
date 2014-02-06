@@ -1,6 +1,0 @@
-package org.apparatus_templi;
-
-public interface SensorModule extends DriverInterface {
-	public String getSensorList();
-	public String getSensorData(String sensorName);
-}

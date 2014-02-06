@@ -140,11 +140,11 @@ void processCommand(String destination, String command) {
    if (pin_num == 0) {
      //the command could not be parsed
      //debugMessage("Error converting " + command + " to an integer value");
-     sendMessage("FAIL");
+     // sendMessage("FAIL");
    } else if (pin_num < 4 || pin_num > 9) {
      //the given value was out of range
      //debugMessage("Value of " + (String)pin_num + " is out of range");
-     sendMessage("FAIL");
+     // sendMessage("FAIL");
    } else {
      //debugMessage("Flashing LED num " + (String)pin_num);
      //flash the LED
@@ -152,7 +152,7 @@ void processCommand(String destination, String command) {
      delay(300);
      digitalWrite(pin_num, LOW);
      //respond to the controler to indicate that the LED was flashed
-     sendMessage("OK");
+     // sendMessage("OK");
    }
  }
 }

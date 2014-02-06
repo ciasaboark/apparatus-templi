@@ -2,10 +2,12 @@ package org.apparatus_templi;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,7 +25,9 @@ import org.apache.commons.cli.ParseException;
 public class Coordinator {
 	private static final String TAG = "Coordinator";
 //	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-	private static ArrayDeque<Byte> byteBuffer = new ArrayDeque<Byte>();
+//	private static byte[] overflowBuffer;
+	private static LinkedBlockingDeque<Byte> byteBuffer = new LinkedBlockingDeque<Byte>();
+//	private static ArrayDeque<Byte> byteBuffer = new ArrayDeque<Byte>();
 	private static HashMap<String, Integer> remoteModules = new HashMap<String, Integer>();
 //	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
@@ -70,6 +74,7 @@ public class Coordinator {
 	 */
 	@Deprecated
 	private static synchronized boolean sendCommand_V0(String moduleName, String command) {
+		Log.d(TAG, "sendCommand_v0()");
 		boolean messageSent = false;
 		boolean sendMessage = true;
 //		Log.d(TAG, "sending message as protocol 0");
@@ -98,6 +103,7 @@ public class Coordinator {
 	 * @param command
 	 */
 	private static synchronized boolean sendCommand_V1(String moduleName, String command) {
+		Log.d(TAG, "sendCommand_v1()");
 		boolean messageSent = false;
 //		Log.d(TAG, "sending message as protocol 1");
 		//TODO make sure size of command bytes is not larger than a single zigbee packet,
@@ -157,6 +163,8 @@ public class Coordinator {
 			} else {
 				Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
 			}
+		} else {
+			Log.d(TAG, "sendCommand_v1() connection is not up, message dropped");
 		}
 		
 		return messageSent;
@@ -164,15 +172,81 @@ public class Coordinator {
 	
 	@Deprecated
 	private static synchronized boolean sendBinary_V0(String moduleName, byte[] data) {
+		Log.d(TAG, "sendBinary_v0()");
 		Log.e(TAG, "error, binary transmission not supported under protocol v0");
 		return false;
 	}
 	
 	private static synchronized boolean sendBinary_V1(String moduleName, byte[] data) {
+		Log.d(TAG, "sendBinary_v1()");
 		Log.e(TAG, "error, binary transmission for protocol version 1 not yet completed");
 		return false;
 	}
 	
+	private static synchronized void beginMessageRead() throws InterruptedException {
+		Log.d(TAG, "beginMessageRead()");
+		if (byteBuffer.size() > 0) {
+//			Log.d(TAG, "beginMessageRead()");
+			//read the start byte
+			byte startByte = getIncomingByte();
+			int transType = startByte & (1 << 7);
+			int transProtocol = (startByte & 0x0F);
+			
+			switch (transProtocol) {
+				case 1:
+					switch (transType) {
+						case 0:
+//							Log.d(TAG, "incoming text message with protocol 1");
+							readTextMessage_V1(startByte);
+							break;
+						case 1:
+//							Log.d(TAG, "incoming binary message with protocol 1");
+							readBinMessage_V1(startByte);
+							break;
+					}
+					break;
+				case 2:
+					Log.e(TAG, "incoming message with protocol version 2, not supported");
+					break;
+				default:
+					Log.e(TAG, "incoming message with unknown protocol version: '" + transProtocol + "' not supported");
+					break;
+			}
+		}
+	}
+	
+	private static void readTextMessage_V1(byte startByte) throws InterruptedException {
+		Log.d(TAG, "readTextMessage_v1()");
+//		Log.d(TAG, "readTextMessage() starting");
+		String message = "";
+		boolean messageDone = false;
+		while (!messageDone) {
+			//block until input is ready
+			int timeWaiting = 0;
+			while (byteBuffer.size() < 1 && timeWaiting < 1000){
+				Log.d(TAG, "readTextMessage_v1 waiting on input");
+				Thread.sleep(10);
+				timeWaiting += 10;
+			}
+			if (timeWaiting == 1000) {
+				Log.e(TAG, "error reading input message, timeout reached");
+				return;
+			} else {
+	//			Log.d(TAG, "readTextMessage() reading byte");
+				byte inByte = getIncomingByte();
+				if (inByte != (byte)0x0A) {
+	//				Log.d(TAG, "readTextMessage() byte '" + (char)inByte + "' was not a newline");
+					message += new String(new byte[] {inByte});
+				} else {
+	//				Log.d(TAG, "readTextMessage() byte was newline");
+					messageDone = true;
+				}
+			}
+		}
+		
+		processTextMessage(startByte, message);	
+	}
+
 	/**
 	 * Reads a full message from the input. The complexity of the code is due to
 	 * 	protocol v1 method of terminating a message. A properly formatted message
@@ -187,12 +261,13 @@ public class Coordinator {
 	 * @throws InterruptedException 
 	 */
 	private static void readBinMessage_V1(byte startByte) throws InterruptedException {
+		Log.d(TAG, "readBinMessage_v1()");
 		boolean messageDone = false;
 		ByteArrayOutputStream message = new ByteArrayOutputStream();
 		while (!messageDone) {
 			//block until input is available
 			while (byteBuffer.size() < 1){}
-			byte inByte = byteBuffer.poll();
+			byte inByte = getIncomingByte();
 			if (inByte == 0x0A) { //the newline
 				//check for a following newline
 				//Since we don't know that there will be more input incoming we need
@@ -202,15 +277,15 @@ public class Coordinator {
 				byte tmpByte;
 				for (int i = 0; i < 10; i++) {
 					if (byteBuffer.size() > 0) {
-						tmpByte = byteBuffer.poll();
+						tmpByte = getIncomingByte();
 						if (tmpByte == 0x0A) { //two newlines in a row, replace with a single
 							message.write(inByte);
 						} else {
 							//the transmission is done, place the tmpByte back onto the front
 							//+ of the queue for later processing
-							byteBuffer.addFirst(tmpByte);
+							putIncomingByteFirst(tmpByte);
 							messageDone = true;
-							processBinMessage(message.toByteArray());
+							processBinMessage(startByte, message.toByteArray());
 							break;
 						}
 					} else {
@@ -223,24 +298,8 @@ public class Coordinator {
 		}
 	}
 
-	private static void readTextMessage_V1(byte startByte) {
-		String message = "";
-		boolean messageDone = false;
-		while (!messageDone) {
-			//block until input is ready
-			while (byteBuffer.size() < 1){}
-			byte inByte = byteBuffer.poll();
-			if (inByte != 0x0A) {
-				message += new String(new byte[] {inByte});
-			} else {
-				messageDone = true;
-			}
-		}
-		
-		processTextMessage(message);	
-	}
-	
-	private static synchronized void processTextMessage(String message) {
+	private static synchronized void processTextMessage(byte startByte, String message) {
+		Log.d(TAG, "processTextMessage()");
 		//break the message into a destination and command
 		String destination = "";
 		String command = "";
@@ -258,16 +317,18 @@ public class Coordinator {
 		} else {
 			//pull out the destination
 			destination = message.substring(0, message.indexOf(":"));
-			command = message.substring(message.indexOf(":"), message.length());
+			command = message.substring(message.indexOf(":") + 1, message.length());
+			Log.d(TAG, "processTextMessage() destination:'" + destination + "' command:'" + command + "'");
 			routeMessage = true;
 		}
 		
 		if (routeMessage) {
-			routeIncomingMessage(destination, command);
+			routeIncomingMessage(startByte, destination, command);
 		}
 	}
 	
-	private static synchronized void processBinMessage(byte[] message) {
+	private static synchronized void processBinMessage(byte startByte, byte[] message) {
+		Log.d(TAG, "processBinMessage()");
 		String destination = "";
 		String messageAsString = new String(message);
 		int headerSeperator = messageAsString.indexOf(":");
@@ -295,11 +356,13 @@ public class Coordinator {
 		}
 		
 		if (routeMessage) {
-			routeIncomingMessage(destination, data);
+			routeIncomingMessage(startByte, destination, data);
 		}
 	}
 	
-	private static synchronized void routeIncomingMessage(String destination, String command) {
+	private static synchronized void routeIncomingMessage(byte startByte, String destination, String command) {
+		Log.d(TAG, "routeIncomingMessage()");
+		int transProtocol = (startByte & 0x0F);
 		if (loadedDrivers.containsKey(destination)) {
 			Driver driver = loadedDrivers.get(destination);
 			if (driver.getState() == Thread.State.TERMINATED) {
@@ -311,12 +374,25 @@ public class Coordinator {
 			}
 		} else if (destination.equals("DEBUG")) {
 			Log.d(TAG, "requested debug message from remote module: '" + command + "'");
+		} else if (destination.equals("LOG")) {
+			Log.d(TAG, "requested logging from remote module: '" + command + "'");
 		} else {
+			//add this remote module to the known list if it isn't already there
+			if (destination != null) {
+				if (remoteModules.containsKey(destination)) {
+					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
+				} else {
+					Log.d(TAG, "adding module " + destination + " to the list of known modules");
+					remoteModules.put(destination, transProtocol);
+				}
+			}
 			Log.w(TAG, "incoming message addressed to '" + destination + "' could not be delivered. No such driver exists");
 		}
 	}
 	
-	private static synchronized void routeIncomingMessage(String destination, byte[] data) {
+	private static synchronized void routeIncomingMessage(byte startByte, String destination, byte[] data) {
+		Log.d(TAG, "routeIncomingMessage()");
+		int transProtocol = (startByte & 0x0F);
 		if (loadedDrivers.containsKey(destination)) {
 			Driver driver = loadedDrivers.get(destination);
 			if (driver.getState() == Thread.State.TERMINATED) {
@@ -328,13 +404,24 @@ public class Coordinator {
 			}
 		} else if (destination.equals("DEBUG")) {
 			Log.d(TAG, "requested debug message from remote module: '" + data.toString().substring(0, 6) + "...'");
+		} else if (destination.equals("LOG")) {
+			Log.d(TAG, "requested logging from remote module: '" + data.toString().substring(0, 6) + "'...");
 		} else {
-			Log.w(TAG, "incoming message addressed to '" + destination + "' could not be delivered. No such driver exists");
+			if (destination != null) {
+				if (remoteModules.containsKey(destination)) {
+					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
+				} else {
+					Log.d(TAG, "adding module " + destination + " to the list of known modules");
+					remoteModules.put(destination, transProtocol);
+				}
+			}
+//			Log.w(TAG, "incoming message addressed to '" + destination + "' could not be delivered. No such driver exists");
 		}
 	}
 
 	@Deprecated
 	private static synchronized void processMessage(byte[] byteArray) {
+		Log.d(TAG, "processMessage()");
 		//TODO check the protocol version based off the first byte
 		//Since we only support protocol version 0 right now we only need to
 		//+ convert this to a string using ASCII encoding
@@ -406,8 +493,29 @@ public class Coordinator {
 	/**
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
-	private static void queryRemoteModules() {
+	private static synchronized void queryRemoteModules() {
+		Log.d(TAG, "queryRemoteModules()");
 		sendCommand("ALL", "READY?");
+	}
+	
+	private static  void putIncomingByte(byte b) throws InterruptedException {
+		Log.d(TAG, "putIncomingByte()");
+		byteBuffer.offer(b, 50, TimeUnit.MILLISECONDS);
+	}
+	
+	private static  void putIncomingByteFirst(byte b) {
+		Log.d(TAG, "putIncomingByteFirst()");
+		byteBuffer.addFirst(b);
+	}
+	
+	private static  Byte getIncomingByte() throws InterruptedException {
+		Log.d(TAG, "getIncomingByte()");
+		Byte result = null;
+		if (byteBuffer.size() > 0) {
+			result = byteBuffer.poll(50, TimeUnit.MILLISECONDS);
+			Log.d(TAG, "getIncomingByte read: '" + (char)(byte)result + "'");
+		}
+		return result;
 	}
 
 	/**
@@ -418,6 +526,7 @@ public class Coordinator {
 	 * @param command the command to send to the remote module
 	 */
 	static synchronized boolean sendCommand(String moduleName, String command) {
+		Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
 		//default to sending this message using the most recent protocol version
 		int preferredProtocol = (int)protocolVersion;
@@ -457,6 +566,7 @@ public class Coordinator {
 	 * 	was no response.
 	 */
 	static synchronized byte[] sendCommandAndWait(String name, String command, int waitPeriod) {
+		Log.d(TAG, "sendCommandAndWait()");
 		//TODO: since this is a blocking method this could easily be abused by the drivers to bring down
 		//+ the system.  It might need to be removed, or to limit the number of times any driver can call
 		//+ this method in a given time period.
@@ -474,6 +584,7 @@ public class Coordinator {
 	 * @param data the binary data to send
 	 */
 	static synchronized boolean sendBinary(String moduleName, byte[] data) {
+		Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 		//default to sending this message using the most recent protocol version
 		int preferredProtocol = (int)protocolVersion;
@@ -514,6 +625,7 @@ public class Coordinator {
 	 * 	0 if the data could not be written.
 	 */
 	static synchronized int storeTextData(String driverName, String dataTag, String data) {
+		Log.d(TAG, "storeTextData()");
 		return 0;
 	}
 	
@@ -529,6 +641,7 @@ public class Coordinator {
 	 * 	0 if the data could not be written.
 	 */
 	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+		Log.d(TAG, "storeBinData()");
 		return 0;
 	}
 	
@@ -540,6 +653,7 @@ public class Coordinator {
 	 * 	and tag.
 	 */
 	static synchronized String readTextData(String driverName, String dataTag) {
+		Log.d(TAG, "readTextData()");
 		return null;
 	}
 	
@@ -551,6 +665,7 @@ public class Coordinator {
 	 * 	and tag.
 	 */
 	static synchronized Byte[] readBinData(String driverName, String dataTag) {
+		Log.d(TAG, "readBinData()");
 		return null;
 	}
 	
@@ -563,6 +678,7 @@ public class Coordinator {
 	 * @param command the command to pass
 	 */
 	synchronized boolean passCommand(String fromDriver, String toDriver, String command) {
+		Log.d(TAG, "passCommand()");
 		//TODO verify source name
 		//TODO check for reserved name in toDriver
 		boolean messagePassed = false;
@@ -582,7 +698,8 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does
 	 * 	not exist
 	 */
-	synchronized String requestWidgetXml(String driverName) {
+	synchronized String requestWidgetXML(String driverName) {
+		Log.d(TAG, "requestWidgetXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver driver = loadedDrivers.get(driverName);
@@ -598,6 +715,7 @@ public class Coordinator {
 	 * 	not exist
 	 */
 	synchronized String requestFullPageXML(String driverName) {
+		Log.d(TAG, "requestFullPageXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver driver = loadedDrivers.get(driverName);
@@ -613,6 +731,7 @@ public class Coordinator {
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
+		Log.d(TAG, "isModulePresent()");
 		return remoteModules.containsKey(moduleName);
 	}
 	
@@ -621,6 +740,7 @@ public class Coordinator {
 	 * @return an ArrayList<String> of driver names.
 	 */
 	static synchronized ArrayList<String> getLoadedDrivers() {
+		Log.d(TAG, "getLoadedDrivers()");
 		ArrayList<String> driverList = new ArrayList<String>();
 		for (String driverName: loadedDrivers.keySet()) {
 			driverList.add(driverName);
@@ -629,11 +749,15 @@ public class Coordinator {
 		return driverList;
 	}
 
-	static synchronized void incomingSerial(byte b) {
-		byteBuffer.push(b);
+	static synchronized void incomingSerial(byte b) throws InterruptedException {
+		Log.d(TAG, "incomingSerial()");
+		putIncomingByte(b);
 	}
 
 	public static void main(String argv[]) throws InterruptedException {
+		//turn off debug messages
+//		Log.setLogLevel(Log.LEVEL_WARN);
+		
 		Log.c(TAG, "Starting");
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
@@ -700,6 +824,9 @@ public class Coordinator {
 		for (int i = 0; i < 6; i++) {
 			if (!connectionReady) {
 				System.out.print(".");
+				if (byteBuffer.size() > 0) {
+					beginMessageRead();
+				}
 				Thread.sleep(1000);
 			} else {
 				System.out.println();
@@ -716,9 +843,9 @@ public class Coordinator {
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
 		System.out.print(TAG + ":" + "Querying modules.");
-		
+		queryRemoteModules();
 		for (int i = 0; i < 6; i++) {
-			queryRemoteModules();
+			beginMessageRead();
 			System.out.print(".");
 			Thread.sleep(1000);
 		}
@@ -779,34 +906,7 @@ public class Coordinator {
         	
         	//Check for incoming messages, only process the first byte before breaking off
         	//+ to a more appropriate method
-        	if (byteBuffer.size() > 0) {
-        		//read the start byte
-        		byte startByte = byteBuffer.poll();
-        		int transType = startByte & (1 << 7);
-        		int transProtocol = (startByte & 0x0F);
-        		
-        		switch (transProtocol) {
-        			case 1:
-        				switch (transType) {
-        					case 0:
-        						Log.d(TAG, "incoming text message with protocol 1");
-        						readTextMessage_V1(startByte);
-        						break;
-        					case 1:
-        						Log.d(TAG, "incoming binary message with protocol 1");
-        						readBinMessage_V1(startByte);
-        						break;
-        				}
-        				break;
-        			case 2:
-        				Log.e(TAG, "incoming message with protocol version 2, not supported");
-        				break;
-        			default:
-        				Log.e(TAG, "incoming message with unknown protocol version: '" + transProtocol + "' not supported");
-        				break;
-        		}
-        		
-        	}
+        	beginMessageRead();
         	
         	
 	    	Thread.yield();

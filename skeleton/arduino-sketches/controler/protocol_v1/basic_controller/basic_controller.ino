@@ -49,7 +49,7 @@ void setup() {
 	pinMode(5, OUTPUT);
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
-	Serial.print("READYREADYREADY\n");
+	Serial.print("!!!!!READYREADY\n");
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
@@ -425,18 +425,18 @@ void executeCommand(String command) {
 		unsigned int state = st.toInt();
 		if (pin_num != 0) {
 			if (pin_num < 5 || pin_num > 7) {
-				sendMessage("FAIL" + pin);
+				// sendMessage("FAIL" + pin);
 			} else {
 				if (state == 1) {
 					digitalWrite(pin_num, HIGH);
-					sendMessage("OK" + pin);
+					// sendMessage("OK" + pin);
 				} else {
 					digitalWrite(pin_num, LOW);
-					sendMessage("OK" + pin);
+					// sendMessage("OK" + pin);
 				}
 			}
 		} else {
-			sendMessage("FAIL" + pin);
+			// sendMessage("FAIL" + pin);
 		}
 	}
 }
