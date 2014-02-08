@@ -126,7 +126,7 @@ public class SerialConnection implements SerialPortEventListener {
 			try {
 				int readInt = input.read();
 				if (readInt != -1) {
-					Coordinator.incomingSerial((byte)readInt);
+					MessageCenter.getInstance().incomingSerial((byte)readInt);
 				}
 			} catch (Exception e) {
 				System.err.println(e.toString());

@@ -1,13 +1,12 @@
 package org.apparatus_templi;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+<<<<<<< Updated upstream
 import java.util.concurrent.BlockingQueue;
+=======
+import java.util.HashSet;
+>>>>>>> Stashed changes
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -24,41 +23,17 @@ import org.apache.commons.cli.ParseException;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-//	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-//	private static byte[] overflowBuffer;
-	private static LinkedBlockingDeque<Byte> byteBuffer = new LinkedBlockingDeque<Byte>();
-//	private static ArrayDeque<Byte> byteBuffer = new ArrayDeque<Byte>();
-	private static HashMap<String, Integer> remoteModules = new HashMap<String, Integer>();
-//	private static HashSet<String> remoteModules = new HashSet<String>();
+
+	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
-	/*
-	 * Bit-mask flags for the transmission start byte
-	 */
-	private static final byte TEXT_TRANSMISSION = (byte)0b0000_0000;
-	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
-	//the safety bit is reserved and always 1.  This is to make sure that the
-	//+ header byte is never equal to 0x0A (the termination byte)
-	private static final byte SAFETY_BIT   		= (byte)0b0010_0000;
-	@Deprecated
-	private static final byte PROTOCOL_V0 	 	= (byte)0b0000_0000;
-	private static final byte PROTOCOL_V1  		= (byte)0b0000_0001;
-	private static final byte PROTOCOL_V2  		= (byte)0b0000_0010;
-	
-	private static final byte protocolVersion = PROTOCOL_V1;
-	
-	//Separates the destination from the command
-	private static String headerSeperator = ":";
-	
-	//a single line-feed char marks the end of the transmission.  If the command
-	//+ contains any matching bytes they must be doubled to avoid early term.
-	private static byte termByte = (byte)0x0A;
-	
 	private static SerialConnection serialConnection;
+	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;
 	
+<<<<<<< Updated upstream
 	
 	
 	
@@ -361,135 +336,37 @@ public class Coordinator {
 	}
 	
 	private static synchronized void routeIncomingMessage(byte startByte, String destination, String command) {
+=======
+	private static synchronized void routeIncomingMessage(Message m) {
+>>>>>>> Stashed changes
 		Log.d(TAG, "routeIncomingMessage()");
-		int transProtocol = (startByte & 0x0F);
-		if (loadedDrivers.containsKey(destination)) {
-			Driver driver = loadedDrivers.get(destination);
-			if (driver.getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
-				driver.queueCommand(command);
-				(new Thread(driver)).start();
-			} else {
-				driver.receiveCommand(command);
-			}
-		} else if (destination.equals("DEBUG")) {
-			Log.d(TAG, "requested debug message from remote module: '" + command + "'");
-		} else if (destination.equals("LOG")) {
-			Log.d(TAG, "requested logging from remote module: '" + command + "'");
-		} else {
-			//add this remote module to the known list if it isn't already there
-			if (destination != null) {
-				if (remoteModules.containsKey(destination)) {
-					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
-				} else {
-					Log.d(TAG, "adding module " + destination + " to the list of known modules");
-					remoteModules.put(destination, transProtocol);
-				}
-			}
-			Log.w(TAG, "incoming message addressed to '" + destination + "' could not be delivered. No such driver exists");
+		String destination = new String(m.getDestination());
+		if (!isModulePresent(destination)) {
+			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
+			remoteModules.add(destination);
 		}
-	}
-	
-	private static synchronized void routeIncomingMessage(byte startByte, String destination, byte[] data) {
-		Log.d(TAG, "routeIncomingMessage()");
-		int transProtocol = (startByte & 0x0F);
+		
 		if (loadedDrivers.containsKey(destination)) {
 			Driver driver = loadedDrivers.get(destination);
 			if (driver.getState() == Thread.State.TERMINATED) {
 				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
-				driver.queueBinary(data);
-				(new Thread(driver)).start();
-			} else {
-				driver.receiveBinary(data);
-			}
-		} else if (destination.equals("DEBUG")) {
-			Log.d(TAG, "requested debug message from remote module: '" + data.toString().substring(0, 6) + "...'");
-		} else if (destination.equals("LOG")) {
-			Log.d(TAG, "requested logging from remote module: '" + data.toString().substring(0, 6) + "'...");
-		} else {
-			if (destination != null) {
-				if (remoteModules.containsKey(destination)) {
-					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
+				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+					driver.queueBinary(m.getData());
 				} else {
-					Log.d(TAG, "adding module " + destination + " to the list of known modules");
-					remoteModules.put(destination, transProtocol);
+					driver.queueCommand(new String(m.getData()));
+				}
+			} else {
+				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+					driver.receiveBinary(m.getData());
+				} else {
+					driver.receiveCommand(new String(m.getData()));
 				}
 			}
-//			Log.w(TAG, "incoming message addressed to '" + destination + "' could not be delivered. No such driver exists");
+		} else {
+			Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
 		}
 	}
 
-	@Deprecated
-	private static synchronized void processMessage(byte[] byteArray) {
-		Log.d(TAG, "processMessage()");
-		//TODO check the protocol version based off the first byte
-		//Since we only support protocol version 0 right now we only need to
-		//+ convert this to a string using ASCII encoding
-		
-		String inMessage = "";
-		byte startByte = byteArray[0];
-		try {
-			inMessage = new String(Arrays.copyOfRange(byteArray, 1, byteArray.length), "US-ASCII");
-//			Log.d(TAG, "processing incoming message: '" + inMessage + "'");
-		} catch (UnsupportedEncodingException e) {
-			Log.e(TAG, "unable to format incomming message as ASCII text, discarding");
-		}
-		
-		//mask out the top 4 bits to get the protocol version
-		Integer transProt = (startByte & 0x0F);
-//		Log.d(TAG, "processing message with protocol " + transProt);
-		
-		
-		String destination;
-		String command;
-		
-		//the local arduino will send "READY\n" after it is finished with
-		//+ its setup.  Since this can sometimes become garbled (i.e. "REAREADY\N")
-		//+ we have to be a bit loose in how the message is matched.
-		if (inMessage.indexOf(":") == -1 && inMessage.trim().endsWith("READY")) {
-			//TODO
-//			Log.d(TAG, "local arduino link is ready");
-			connectionReady = true;
-		} else if (inMessage.indexOf(":") != -1) {
-			destination = inMessage.substring(0, inMessage.indexOf(":"));
-			command = inMessage.substring(inMessage.indexOf(":") + 1, inMessage.length());
-//			Log.d(TAG, "read incoming message to: '" + destination + "' contents: '" + command + "'");
-			
-			//add this remote module to the known list if it isn't already there
-			if (destination != null) {
-				if (remoteModules.containsKey(destination)) {
-//					Log.w(TAG, "remote module " + destination + " is already in the remote modules list");
-				} else {
-//					Log.d(TAG, "adding module " + destination + " to the list of known modules");
-					remoteModules.put(destination, transProt);
-				}
-			}
-			
-			
-			if (destination.equals("DEBUG")) {
-				Log.d(TAG, "requested debug from remote module '" + command + "'");
-			} else {
-				//route the message to the appropriate driver
-				if (loadedDrivers.containsKey(destination)) {
-					Driver destDriver = loadedDrivers.get(destination);
-					if (destDriver.getState() != Thread.State.TERMINATED) {
-//						Log.d(TAG, "passing message to driver");
-						destDriver.receiveCommand(command);
-					} else {
-						//TODO re-launch the driver passing in the command
-						destDriver.queueCommand(command);
-						Log.w(TAG, "could not route incomming message to driver because it is terminated");
-					}
-				} else {
-//					Log.d(TAG, "incoming message could not be routed to a running driver");
-				}
-			}
-		} else {
-			//the incoming message does not match any known format
-			Log.w(TAG, "incomming message '" + inMessage + "' does not match any known formats");
-		}
-	}
-	
 	/**
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
@@ -498,26 +375,6 @@ public class Coordinator {
 		sendCommand("ALL", "READY?");
 	}
 	
-	private static  void putIncomingByte(byte b) throws InterruptedException {
-		Log.d(TAG, "putIncomingByte()");
-		byteBuffer.offer(b, 50, TimeUnit.MILLISECONDS);
-	}
-	
-	private static  void putIncomingByteFirst(byte b) {
-		Log.d(TAG, "putIncomingByteFirst()");
-		byteBuffer.addFirst(b);
-	}
-	
-	private static  Byte getIncomingByte() throws InterruptedException {
-		Log.d(TAG, "getIncomingByte()");
-		Byte result = null;
-		if (byteBuffer.size() > 0) {
-			result = byteBuffer.poll(50, TimeUnit.MILLISECONDS);
-			Log.d(TAG, "getIncomingByte read: '" + (char)(byte)result + "'");
-		}
-		return result;
-	}
-
 	/**
 	 * Sends the given command to a specific remote module. The message will be formatted
 	 * 	to fit the protocol version that this module supports (if known), otherwise the
@@ -528,28 +385,11 @@ public class Coordinator {
 	static synchronized boolean sendCommand(String moduleName, String command) {
 		Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
-		//default to sending this message using the most recent protocol version
-		int preferredProtocol = (int)protocolVersion;
-		
-		//If the module is known, then we can format the message to use whatever
-		//+ protocol version it uses
-		if (remoteModules.containsKey(moduleName)) {
-			preferredProtocol = remoteModules.get(moduleName);
-		}
 		
 		if (connectionReady) {
-			switch (preferredProtocol) {
-				case 1:
-					messageSent = sendCommand_V1(moduleName, command);
-					break;
-				default:
-					Log.e(TAG, "unknown protocol version: " + (int)protocolVersion + ", discarding message");
-					messageSent = false;
-					break;
-			}
+			messageSent = messageCenter.sendCommand(moduleName, command);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
-			messageSent = false;
 		}
 		
 		return messageSent;
@@ -586,25 +426,9 @@ public class Coordinator {
 	static synchronized boolean sendBinary(String moduleName, byte[] data) {
 		Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
-		//default to sending this message using the most recent protocol version
-		int preferredProtocol = (int)protocolVersion;
-		
-		//If the module is known, then we can format the message to use whatever
-		//+ protocol version it uses
-		if (remoteModules.containsKey(moduleName)) {
-			preferredProtocol = remoteModules.get(moduleName);
-		}
 		
 		if (connectionReady) {
-			switch (preferredProtocol) {
-				case 1:
-					messageSent = sendBinary_V1(moduleName, data);
-					break;
-				default:
-					Log.e(TAG, "unknown protocol version: " + (int)protocolVersion + ", discarding message");
-					messageSent = false;
-					break;
-			}
+			messageCenter.sendBinary(moduleName, data);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 			messageSent = false;
@@ -732,7 +556,7 @@ public class Coordinator {
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
 		Log.d(TAG, "isModulePresent()");
-		return remoteModules.containsKey(moduleName);
+		return remoteModules.contains(moduleName);
 	}
 	
 	/**
@@ -747,11 +571,6 @@ public class Coordinator {
 		}
 		
 		return driverList;
-	}
-
-	static synchronized void incomingSerial(byte b) throws InterruptedException {
-		Log.d(TAG, "incomingSerial()");
-		putIncomingByte(b);
 	}
 
 	public static void main(String argv[]) throws InterruptedException {
@@ -812,6 +631,7 @@ public class Coordinator {
 			System.exit(1);
 		}
 		
+		//open the serial connection
 		serialConnection = new SerialConnection(serialPortName);
 		if (!serialConnection.isConnected()) {
 			Log.e(TAG, "could not connect to serial port, exiting");
@@ -819,22 +639,20 @@ public class Coordinator {
 			System.exit(1);
 		}
 		
-		//block until the local arduino is ready
+		//start the message center
+		messageCenter.getInstance();
+		messageCenter.setSerialConnection(serialConnection);
+		
+		//block until the local Arduino is ready
 		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
-		for (int i = 0; i < 6; i++) {
-			if (!connectionReady) {
-				System.out.print(".");
-				if (byteBuffer.size() > 0) {
-					beginMessageRead();
-				}
-				Thread.sleep(1000);
-			} else {
-				System.out.println();
-				break;
-			}
+		byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
+		String sString = new String(sBytes);
+		if (sString.endsWith("READY")) {
+			connectionReady = true;
 		}
+
 		if (!connectionReady) {
-			Log.e(TAG, "could not find a local arduino connection, exiting");
+			Log.e(TAG, "could not find a local Arduino connection, exiting");
 			System.exit(1);
 		} else {
 			Log.c(TAG, "Local link ready.");
@@ -845,7 +663,10 @@ public class Coordinator {
 		System.out.print(TAG + ":" + "Querying modules.");
 		queryRemoteModules();
 		for (int i = 0; i < 6; i++) {
-			beginMessageRead();
+			if (messageCenter.isMessageAvailable()) {
+				routeIncomingMessage(messageCenter.getMessage());
+			}
+			
 			System.out.print(".");
 			Thread.sleep(1000);
 		}
@@ -906,7 +727,9 @@ public class Coordinator {
         	
         	//Check for incoming messages, only process the first byte before breaking off
         	//+ to a more appropriate method
-        	beginMessageRead();
+        	if (messageCenter.isMessageAvailable()) {
+        		routeIncomingMessage(messageCenter.getMessage());
+        	}
         	
         	
 	    	Thread.yield();
