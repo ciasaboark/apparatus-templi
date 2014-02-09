@@ -1,8 +1,8 @@
 package org.apparatus_templi;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -42,30 +42,34 @@ public class Coordinator {
 
 	private static synchronized void routeIncomingMessage(Message m) {
 //		Log.d(TAG, "routeIncomingMessage()");
-		String destination = new String(m.getDestination());
-		if (!remoteModules.containsKey(destination)) {
-			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
-			remoteModules.put(destination, "");
-		}
-		
-		if (loadedDrivers.containsKey(destination)) {
-			Driver driver = loadedDrivers.get(destination);
-			if (driver.getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
-				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
-					driver.queueBinary(m.getData());
+		try {
+			String destination = new String(m.getDestination(), "UTF-8").trim();
+			if (!isModulePresent(destination)) {
+				Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
+				remoteModules.put(destination, "");
+			}
+			
+			if (loadedDrivers.containsKey(destination)) {
+				Driver driver = loadedDrivers.get(destination);
+				if (driver.getState() == Thread.State.TERMINATED) {
+					Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
+					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+						driver.queueBinary(m.getData());
+					} else {
+						driver.queueCommand(new String(m.getData()));
+					}
 				} else {
-					driver.queueCommand(new String(m.getData()));
+					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+						driver.receiveBinary(m.getData());
+					} else {
+						driver.receiveCommand(new String(m.getData()));
+					}
 				}
 			} else {
-				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
-					driver.receiveBinary(m.getData());
-				} else {
-					driver.receiveCommand(new String(m.getData()));
-				}
+				Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
 			}
-		} else {
-			Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "unable to convert message's destination field into a string, discarding");
 		}
 	}
 
@@ -257,18 +261,8 @@ public class Coordinator {
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
-		Log.d(TAG, "isModulePresent()");
-		Log.d(TAG, remoteModules.toString());
-		boolean found = false;
-//		return remoteModules.containsKey(moduleName);
-		for (String key: remoteModules.keySet()) {
-			Log.d(TAG, "comparing '" + key + "' to '" + moduleName + "' = " + key.compareToIgnoreCase(moduleName));
-			if (key.compareToIgnoreCase(moduleName) >= 0) {
-				found = true;
-				break;
-			}
-		}
-		return found;
+//		Log.d(TAG, "isModulePresent()");
+		return remoteModules.containsKey(moduleName);
 	}
 	
 	/**

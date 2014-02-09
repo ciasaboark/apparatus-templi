@@ -12,6 +12,7 @@ public class MessageCenter implements Runnable {
 	private static final String TAG = "MessageCenter";
 	
 	private static final int MAX_DATA_SIZE = 69;
+	private static final byte START_BYTE = (byte)0x0D;
 	
 	//holds all incoming messages
 	private LinkedBlockingDeque<Message> messageQueue = new LinkedBlockingDeque<Message>();
@@ -33,29 +34,30 @@ public class MessageCenter implements Runnable {
 	}
 	
 	private void readMessage() throws InterruptedException, IOException {
-		//read the first 15 bytes
+		//Read the start byte by itself so we can see if this
+		//+ is really the beginning of a message
 		//TODO check for a correct start byte 0x0D
 		byte startByte = incomingBytes.take();
-		byte optionsByte = incomingBytes.take();
-		byte dataLengthByte = incomingBytes.take();
-		byte[] fragmentNumBytes = new byte[2];
-		fragmentNumBytes[0] = incomingBytes.take();
-		fragmentNumBytes[1] = incomingBytes.take();
-		byte[] destinationBytes = new byte[10];
-		byte[] payloadData;
-		int fragmentNum = fragmentNumBytes[0];
-		fragmentNum = fragmentNum << 8;
-		fragmentNum += fragmentNumBytes[1];
-		
-		
-		for (int i = 0; i < 10; i++) {
-			destinationBytes[i] = incomingBytes.take();
-		}
-		
-		int dataLength = (int)dataLengthByte;
-//		Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
-		
-		if (startByte == 0x0D) {
+		if (startByte == START_BYTE) {
+			byte optionsByte = incomingBytes.take();
+			byte dataLengthByte = incomingBytes.take();
+			byte[] fragmentNumBytes = new byte[2];
+			fragmentNumBytes[0] = incomingBytes.take();
+			fragmentNumBytes[1] = incomingBytes.take();
+			byte[] destinationBytes = new byte[10];
+			byte[] payloadData;
+			int fragmentNum = fragmentNumBytes[0];
+			fragmentNum = fragmentNum << 8;
+			fragmentNum += fragmentNumBytes[1];
+			
+			
+			for (int i = 0; i < 10; i++) {
+				destinationBytes[i] = incomingBytes.take();
+			}
+			
+			int dataLength = (int)dataLengthByte;
+//			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
+			
 			//wait until the payload data is avaiable
 			while (incomingBytes.size() < dataLength) {
 				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
@@ -77,8 +79,9 @@ public class MessageCenter implements Runnable {
 			
 			
 		} else {
+			//Since this byte did not match the start byte we will discard it.
+			//+ This process will continue until a proper start byte is found.
 			Log.w(TAG, "readMessage() read a malformed message, discarding this byte");
-//			readBytesUntil(Message.START_BYTE);
 		}
 	}
 
