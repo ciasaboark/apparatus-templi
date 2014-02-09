@@ -13,10 +13,10 @@ package org.apparatus_templi;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 
-public class LedFlash extends ControllerModule {
-	private String moduleName = "LED_FLASH";
+public class LedFlash extends ControllerModule { 
+	private String moduleName = "LED_FLASH"; 
 	
-	public LedFlash() {
+	public LedFlash() { 
 		this.name = "LED_FLASH";
 	}
 	

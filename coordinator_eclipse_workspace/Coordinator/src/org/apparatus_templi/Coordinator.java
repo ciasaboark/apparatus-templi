@@ -1,8 +1,12 @@
 package org.apparatus_templi;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,18 +23,40 @@ import org.apache.commons.cli.ParseException;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-
-	private static HashMap<String, String> remoteModules = new HashMap<String, String>();
+//	private static ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+//	private static byte[] overflowBuffer;
+	private static LinkedBlockingDeque<Byte> byteBuffer = new LinkedBlockingDeque<Byte>();
+//	private static ArrayDeque<Byte> byteBuffer = new ArrayDeque<Byte>();
+	private static HashMap<String, Integer> remoteModules = new HashMap<String, Integer>();
+//	private static HashSet<String> remoteModules = new HashSet<String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
+	/*
+	 * Bit-mask flags for the transmission start byte
+	 */
+	private static final byte TEXT_TRANSMISSION = (byte)0b0000_0000;
+	private static final byte BIN_TRANSMISSION  = (byte)0b1000_0000;
+	//the safety bit is reserved and always 1.  This is to make sure that the
+	//+ header byte is never equal to 0x0A (the termination byte)
+	private static final byte SAFETY_BIT   		= (byte)0b0010_0000;
+	@Deprecated
+	private static final byte PROTOCOL_V0 	 	= (byte)0b0000_0000;
+	private static final byte PROTOCOL_V1  		= (byte)0b0000_0001;
+	private static final byte PROTOCOL_V2  		= (byte)0b0000_0010;
+	
+	private static final byte protocolVersion = PROTOCOL_V1;
+	
+	//Separates the destination from the command
+	private static String headerSeperator = ":";
+	
+	//a single line-feed char marks the end of the transmission.  If the command
+	//+ contains any matching bytes they must be doubled to avoid early term.
+	private static byte termByte = (byte)0x0A;
+	
 	private static SerialConnection serialConnection;
-	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;
-	
-//<<<<<<< Updated upstream
-	
 	
 	
 	//TODO change this to a singleton
@@ -156,7 +182,7 @@ public class Coordinator {
 	 */
 	static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
-		return 0;
+		return DatabaseInterface.storeTextData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -172,7 +198,7 @@ public class Coordinator {
 	 */
 	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
-		return 0;
+		return DatabaseInterface.storeBinData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -184,7 +210,7 @@ public class Coordinator {
 	 */
 	static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
-		return null;
+		return DatabaseInterface.readTextData(driverName, dataTag);
 	}
 	
 	/**
@@ -196,7 +222,7 @@ public class Coordinator {
 	 */
 	static synchronized Byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
-		return null;
+		return DatabaseInterface.readBinData(driverName, dataTag);
 	}
 	
 	
