@@ -1,12 +1,8 @@
 package org.apparatus_templi;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-<<<<<<< Updated upstream
-import java.util.concurrent.BlockingQueue;
-=======
 import java.util.HashSet;
->>>>>>> Stashed changes
-import java.util.concurrent.LinkedBlockingDeque;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -24,7 +20,7 @@ import org.apache.commons.cli.ParseException;
 public class Coordinator {
 	private static final String TAG = "Coordinator";
 
-	private static HashSet<String> remoteModules = new HashSet<String>();
+	private static HashMap<String, String> remoteModules = new HashMap<String, String>();
 	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
@@ -33,7 +29,7 @@ public class Coordinator {
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;
 	
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 	
 	
 	
@@ -42,308 +38,14 @@ public class Coordinator {
 		super();
 	}
 	
-	/**
-	 * Send a command using protocol version 0
-	 * @param moduleName
-	 * @param command
-	 */
-	@Deprecated
-	private static synchronized boolean sendCommand_V0(String moduleName, String command) {
-		Log.d(TAG, "sendCommand_v0()");
-		boolean messageSent = false;
-		boolean sendMessage = true;
-//		Log.d(TAG, "sending message as protocol 0");
-		byte[] bytes = {0b0};
-		
-		String message = moduleName + ":" + command + "\n";
-		try {
-			bytes = message.getBytes("US-ASCII");
-//			Log.d(TAG, "message in hex: '" + DatatypeConverter.printHexBinary(bytes) + "'");
-//			Log.d(TAG, "message in ascii (trimmed): '" + new String(bytes).trim() + "'");
-		} catch (UnsupportedEncodingException e) {
-			Log.e(TAG, "sendCommandV0() error converting message to ASCII, discarding");
-			sendMessage = false;
-		}
-		
-		if (sendMessage) {
-			messageSent = serialConnection.writeData(bytes);
-		}
-		
-		return messageSent;
-	}
 	
-	/**
-	 * Send a command using protocol version 1
-	 * @param moduleName
-	 * @param command
-	 */
-	private static synchronized boolean sendCommand_V1(String moduleName, String command) {
-		Log.d(TAG, "sendCommand_v1()");
-		boolean messageSent = false;
-//		Log.d(TAG, "sending message as protocol 1");
-		//TODO make sure size of command bytes is not larger than a single zigbee packet,
-		//+ break into chunks if needed
-		
-		//TODO check command for line-feed chars, replace with double newlines (or refuse
-		//+ to route the command).
-		
-		if (serialConnection.isConnected()) {
-		
-			//the arduino expects chars as 1 byte instead of two, convert command
-			//+ to ascii byte array, then tack on the header, name, and footer
-			byte startByte = (byte)(TEXT_TRANSMISSION | SAFETY_BIT | protocolVersion);
-			byte[] destinationBytes = {0b0};
-			byte[] headerSeperatorByte = {0b0};
-			byte[] commandBytes = {0b0};
-			
-			boolean sendMessage = true;
-			
-			//convert the destination address to ascii byte array
-			try {
-				destinationBytes = moduleName.getBytes("US-ASCII");
-			} catch (UnsupportedEncodingException e) {
-				Log.e(TAG, "error converting remote module name '" + moduleName + "' to US-ASCII encoding.");
-				sendMessage = false;
-			}
-			
-			//convert the destination separator to ascii byte array
-			try {
-				headerSeperatorByte = headerSeperator.getBytes("US-ASCII");
-			} catch (UnsupportedEncodingException e) {
-				Log.e(TAG, "error converting header seperator to ascii byte array.");
-				sendMessage = false;
-			}
-			
-			//convert the command to ascii byte array
-			try {
-				commandBytes = command.getBytes("US-ASCII");
-			} catch (UnsupportedEncodingException e) {
-				Log.e(TAG, "error converting command '" + command +"' to US-ASCII encoding.");
-				sendMessage = false;
-			}
-			
-			
-			if (sendMessage) {
-				//reserve enough room for the start/term bytes, the header, and the command
-				ByteBuffer bBuffer = ByteBuffer.allocate(1 + destinationBytes.length + headerSeperatorByte.length + commandBytes.length + 1);
-				bBuffer.put(startByte);
-				bBuffer.put(destinationBytes);
-				bBuffer.put(headerSeperatorByte);
-				bBuffer.put(commandBytes);
-				bBuffer.put(termByte);
-				
-	//			Log.d(TAG, "sending bytes 0x" + DatatypeConverter.printHexBinary(bBuffer.array()));
-	//			Log.d(TAG, "sending ascii string '" + new String(bBuffer.array()) + "'");
-				messageSent = serialConnection.writeData(bBuffer.array());
-			} else {
-				Log.w(TAG, "error converting message to ascii byte[]. Message not sent");
-			}
-		} else {
-			Log.d(TAG, "sendCommand_v1() connection is not up, message dropped");
-		}
-		
-		return messageSent;
-	}
-	
-	@Deprecated
-	private static synchronized boolean sendBinary_V0(String moduleName, byte[] data) {
-		Log.d(TAG, "sendBinary_v0()");
-		Log.e(TAG, "error, binary transmission not supported under protocol v0");
-		return false;
-	}
-	
-	private static synchronized boolean sendBinary_V1(String moduleName, byte[] data) {
-		Log.d(TAG, "sendBinary_v1()");
-		Log.e(TAG, "error, binary transmission for protocol version 1 not yet completed");
-		return false;
-	}
-	
-	private static synchronized void beginMessageRead() throws InterruptedException {
-		Log.d(TAG, "beginMessageRead()");
-		if (byteBuffer.size() > 0) {
-//			Log.d(TAG, "beginMessageRead()");
-			//read the start byte
-			byte startByte = getIncomingByte();
-			int transType = startByte & (1 << 7);
-			int transProtocol = (startByte & 0x0F);
-			
-			switch (transProtocol) {
-				case 1:
-					switch (transType) {
-						case 0:
-//							Log.d(TAG, "incoming text message with protocol 1");
-							readTextMessage_V1(startByte);
-							break;
-						case 1:
-//							Log.d(TAG, "incoming binary message with protocol 1");
-							readBinMessage_V1(startByte);
-							break;
-					}
-					break;
-				case 2:
-					Log.e(TAG, "incoming message with protocol version 2, not supported");
-					break;
-				default:
-					Log.e(TAG, "incoming message with unknown protocol version: '" + transProtocol + "' not supported");
-					break;
-			}
-		}
-	}
-	
-	private static void readTextMessage_V1(byte startByte) throws InterruptedException {
-		Log.d(TAG, "readTextMessage_v1()");
-//		Log.d(TAG, "readTextMessage() starting");
-		String message = "";
-		boolean messageDone = false;
-		while (!messageDone) {
-			//block until input is ready
-			int timeWaiting = 0;
-			while (byteBuffer.size() < 1 && timeWaiting < 1000){
-				Log.d(TAG, "readTextMessage_v1 waiting on input");
-				Thread.sleep(10);
-				timeWaiting += 10;
-			}
-			if (timeWaiting == 1000) {
-				Log.e(TAG, "error reading input message, timeout reached");
-				return;
-			} else {
-	//			Log.d(TAG, "readTextMessage() reading byte");
-				byte inByte = getIncomingByte();
-				if (inByte != (byte)0x0A) {
-	//				Log.d(TAG, "readTextMessage() byte '" + (char)inByte + "' was not a newline");
-					message += new String(new byte[] {inByte});
-				} else {
-	//				Log.d(TAG, "readTextMessage() byte was newline");
-					messageDone = true;
-				}
-			}
-		}
-		
-		processTextMessage(startByte, message);	
-	}
 
-	/**
-	 * Reads a full message from the input. The complexity of the code is due to
-	 * 	protocol v1 method of terminating a message. A properly formatted message
-	 *	is terminated by a single newline (0x0A). If the binary data contains
-	 *	any native newlines they would have been converted to double newlines
-	 *	(0x0A0A) before the transmission began. If a newline is found during
-	 *	decoding, we have to check the next byte to see if this was the terminating
-	 *	byte, or the first of a doubled sequence. A message terminated with a single
-	 *	newline might not be immediately followed by another byte, so we have to
-	 *	limit the time spent polling.
-	 * @param startByte
-	 * @throws InterruptedException 
-	 */
-	private static void readBinMessage_V1(byte startByte) throws InterruptedException {
-		Log.d(TAG, "readBinMessage_v1()");
-		boolean messageDone = false;
-		ByteArrayOutputStream message = new ByteArrayOutputStream();
-		while (!messageDone) {
-			//block until input is available
-			while (byteBuffer.size() < 1){}
-			byte inByte = getIncomingByte();
-			if (inByte == 0x0A) { //the newline
-				//check for a following newline
-				//Since we don't know that there will be more input incoming we need
-				//+ to limit this check to ~100ms. If a byte can't be read within
-				//+ that time frame then we can assume that this was a terminating
-				//+ newline
-				byte tmpByte;
-				for (int i = 0; i < 10; i++) {
-					if (byteBuffer.size() > 0) {
-						tmpByte = getIncomingByte();
-						if (tmpByte == 0x0A) { //two newlines in a row, replace with a single
-							message.write(inByte);
-						} else {
-							//the transmission is done, place the tmpByte back onto the front
-							//+ of the queue for later processing
-							putIncomingByteFirst(tmpByte);
-							messageDone = true;
-							processBinMessage(startByte, message.toByteArray());
-							break;
-						}
-					} else {
-						Thread.sleep(10);
-					}
-				}
-			} else {
-				message.write(inByte);
-			}
-		}
-	}
-
-	private static synchronized void processTextMessage(byte startByte, String message) {
-		Log.d(TAG, "processTextMessage()");
-		//break the message into a destination and command
-		String destination = "";
-		String command = "";
-		boolean routeMessage = false;
-		
-		if (message.indexOf(":") == -1) {
-			//this message does not appear to be formatted correctly, but it might be the ready
-			//+ signal from the attached arduino
-			if (message.endsWith("READY")) {
-				//this was the startup message from the attached arduino
-				connectionReady = true;
-			} else {
-				Log.w(TAG, "processTextMessage() given an improperly formatted message to decode: " + message);
-			}
-		} else {
-			//pull out the destination
-			destination = message.substring(0, message.indexOf(":"));
-			command = message.substring(message.indexOf(":") + 1, message.length());
-			Log.d(TAG, "processTextMessage() destination:'" + destination + "' command:'" + command + "'");
-			routeMessage = true;
-		}
-		
-		if (routeMessage) {
-			routeIncomingMessage(startByte, destination, command);
-		}
-	}
-	
-	private static synchronized void processBinMessage(byte startByte, byte[] message) {
-		Log.d(TAG, "processBinMessage()");
-		String destination = "";
-		String messageAsString = new String(message);
-		int headerSeperator = messageAsString.indexOf(":");
-		byte[] data = new byte[0];	//re-initialized to the correct size later
-		boolean routeMessage = false;
-		
-		if (headerSeperator == -1) {
-			//this does not appear to be a properly formatted message.  The local arduino
-			//+ should never send its startup "READY" marked as a binary transmission,
-			//+ but we will check for that possibility anyway
-			if (messageAsString.endsWith("READY")) {
-				//this was the startup message from the arduino
-				connectionReady = true;
-			} else {
-				Log.w(TAG, "processBinMessage() given an improperly formatted message to decode");
-			}
-		} else {
-			destination = messageAsString.substring(0, headerSeperator);
-			data = new byte[message.length - headerSeperator];
-			//copy the data from the message into the data payload
-			for (int i = 0; i < message.length; i++, headerSeperator++) {
-				data[i] = message[headerSeperator];
-			}
-			routeMessage = true;
-		}
-		
-		if (routeMessage) {
-			routeIncomingMessage(startByte, destination, data);
-		}
-	}
-	
-	private static synchronized void routeIncomingMessage(byte startByte, String destination, String command) {
-=======
 	private static synchronized void routeIncomingMessage(Message m) {
->>>>>>> Stashed changes
-		Log.d(TAG, "routeIncomingMessage()");
+//		Log.d(TAG, "routeIncomingMessage()");
 		String destination = new String(m.getDestination());
-		if (!isModulePresent(destination)) {
+		if (!remoteModules.containsKey(destination)) {
 			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
-			remoteModules.add(destination);
+			remoteModules.put(destination, "");
 		}
 		
 		if (loadedDrivers.containsKey(destination)) {
@@ -371,7 +73,7 @@ public class Coordinator {
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
 	private static synchronized void queryRemoteModules() {
-		Log.d(TAG, "queryRemoteModules()");
+//		Log.d(TAG, "queryRemoteModules()");
 		sendCommand("ALL", "READY?");
 	}
 	
@@ -383,7 +85,7 @@ public class Coordinator {
 	 * @param command the command to send to the remote module
 	 */
 	static synchronized boolean sendCommand(String moduleName, String command) {
-		Log.d(TAG, "sendCommand()");
+//		Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
 		
 		if (connectionReady) {
@@ -406,7 +108,7 @@ public class Coordinator {
 	 * 	was no response.
 	 */
 	static synchronized byte[] sendCommandAndWait(String name, String command, int waitPeriod) {
-		Log.d(TAG, "sendCommandAndWait()");
+//		Log.d(TAG, "sendCommandAndWait()");
 		//TODO: since this is a blocking method this could easily be abused by the drivers to bring down
 		//+ the system.  It might need to be removed, or to limit the number of times any driver can call
 		//+ this method in a given time period.
@@ -556,7 +258,17 @@ public class Coordinator {
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
 		Log.d(TAG, "isModulePresent()");
-		return remoteModules.contains(moduleName);
+		Log.d(TAG, remoteModules.toString());
+		boolean found = false;
+//		return remoteModules.containsKey(moduleName);
+		for (String key: remoteModules.keySet()) {
+			Log.d(TAG, "comparing '" + key + "' to '" + moduleName + "' = " + key.compareToIgnoreCase(moduleName));
+			if (key.compareToIgnoreCase(moduleName) >= 0) {
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 	
 	/**
@@ -573,7 +285,7 @@ public class Coordinator {
 		return driverList;
 	}
 
-	public static void main(String argv[]) throws InterruptedException {
+	public static void main(String argv[]) throws InterruptedException, IOException {
 		//turn off debug messages
 //		Log.setLogLevel(Log.LEVEL_WARN);
 		
@@ -581,12 +293,14 @@ public class Coordinator {
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
+		@SuppressWarnings("static-access")
 		Option portOption = OptionBuilder.withArgName("port")
 				.hasArg()
 				.withDescription("Bind the server to the given port number")
 				.create("port");
 		options.addOption(portOption);
 		
+		@SuppressWarnings("static-access")
 		Option serialOption = OptionBuilder.withArgName("serial")
 				.hasArg()
 				.withDescription("Connect to the arduino on serial interface")
@@ -640,12 +354,13 @@ public class Coordinator {
 		}
 		
 		//start the message center
-		messageCenter.getInstance();
+		messageCenter =  MessageCenter.getInstance();
 		messageCenter.setSerialConnection(serialConnection);
 		
 		//block until the local Arduino is ready
 		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
 		byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
+//		serialConnection.flushSerialLine();
 		String sString = new String(sBytes);
 		if (sString.endsWith("READY")) {
 			connectionReady = true;
@@ -661,6 +376,9 @@ public class Coordinator {
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
 		System.out.print(TAG + ":" + "Querying modules.");
+		messageCenter.beginReadingMessages();
+		//begin processing incoming messages
+		new Thread(messageCenter).start();
 		queryRemoteModules();
 		for (int i = 0; i < 6; i++) {
 			if (messageCenter.isMessageAvailable()) {

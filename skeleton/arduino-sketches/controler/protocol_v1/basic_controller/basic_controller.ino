@@ -16,18 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+* SAMPLE MESSAGES
+* all:READY
+* 0D 00 06 00 00 41 4c 4c 00 00 00 00 00 00 00 52 45 41 44 59 3f
+*
+* LOCAL:5
+* 0D 00 02 00 00 4c 4f 43 41 4c 00 00 00 00 00 35 30
+*
+* LOCAL:RESET
+* 0D 00 05 00 00 4c 4f 43 41 4c 00 00 00 00 00 52 45 53 45 54
+*
+* LED_FLASH:5
+* 0D 00 01 00 00 4c 45 44 5f 46 4c 41 53 48 00 35
+
+0D 00 05 00 00 4c 45 44 5f 46 4c 41 53 48 00 
+**/
  
 #include <XBee.h>
 #include <SoftwareSerial.h>
-
-const byte TEXT_TRANSMISSION = (byte)0b00000000;
-const byte BIN_TRANSMISSION  = (byte)0b10000000;
-const byte SAFETY_BIT        = (byte)0b00100000;
-const byte PROTOCOL_V0       = (byte)0b00000000;
-const byte PROTOCOL_V1       = (byte)0b00000001;
-const byte PROTOCOL_V2       = (byte)0b00000010;
-
-const byte protocolVersion = PROTOCOL_V1;
 
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "LOCAL";
@@ -52,55 +60,56 @@ void setup() {
 	Serial.print("!!!!!READYREADY\n");
 }
 
-// continuously reads packets, looking for ZB Receive or Modem Status
+//The main loop should continuously check for messages incoming from
+//+ the serial line and packets received from the Xbee
 void loop() {
-	//we wait for at least two bytes to be in the buffer
-	if (Serial.available() > 1) {
-		//debug("serial data avail");
-		byte startByte = NULL;
-		if (overflowBuffer != NULL) {
-			//debug("data in overflow buffer");
-			startByte = overflowBuffer[0];
-			overflowBuffer = NULL;
-		} else {
-			startByte = Serial.read();
+	//we need at least one full message header to begin processing
+	if (Serial.available() >= 15) {
+		//TODO check that the start byte is correct and that the fragment size
+		//+ is not too large
+		//debugreading message header");
+		byte startByte = Serial.read();
+		byte optionsByte = Serial.read();
+		byte dataLengthByte = Serial.read();
+		byte fragmentNoBytes[2];
+		fragmentNoBytes[0] = Serial.read();
+		fragmentNoBytes[1] = Serial.read();
+		byte destinationBytes[10];
+		for (int i = 0; i < 10; i++) {
+			destinationBytes[i] = Serial.read();
 		}
 
-		boolean binTransmission = startByte & (1 << 7);
-		if (binTransmission) {
-			//debug("bin transmission");
-		} else {
-			//debug("text transmission");
+		int dataLength = (int)dataLengthByte;
+
+		String destination = byteArrayToString(destinationBytes, 10);
+		byte dataBytes[dataLength];
+		for (int i = 0; i < dataLength; i++) {
+			dataBytes[i] = Serial.read();
 		}
 
-		// Serial.print("transmission protocol: '");
-		unsigned char transProt = (startByte & 0x0F);	//mask the upper 4 bits
-		// Serial.write((int)transProt);
-		// Serial.println("'");
+		//debugmessage in, to '" + destination + "'");
+		// Serial.print("data length ");
+		// Serial.println(dataLength);
+		// Serial.flush();
 
+		//If the message was addressed to us then we can begin processing
+		if (MODULE_NAME.compareTo(destination) == 0) {
+			//debugmessage address to us");
+			processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
+		} else {
 
-		if (binTransmission) {  //binary transmission
-			//debug("bin trans");
-			if (transProt == 1) {
-				//debug("begin reading bin message");
-				readBinMessage_v1(startByte);
-			} else if (transProt == 2) {
-				//unimplemented until protocol v2 is complete
-				//debug("protocol 2 not supported yet");
+			//If this was a broadcast message then we will broadcast the message before
+			//+ starting our own processing
+			if (BROADCAST_TAG.compareTo(destination) == 0) {
+				//debugmessage address to broadcast");
+				broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
+				processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
 			} else {
-				//debug("uknown protocol verison");
+				//just transmit the message
+				//debugforwarding message");
+				broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
 			}
-		} else {  //text transmission
-			//debug("txt trans");
-			if (transProt == 1) {
-				//debug("begin reading text message");
-				readTextMessage_v1(startByte);
-			} else if (transProt == 2) {
-				//unimplemented until protocol v2 is complete
-				//debug("protocol 2 not supported yet");
-			} else {
-				//debug("uknown protocol verison");
-			}
+
 		}
 	}
 
@@ -108,7 +117,7 @@ void loop() {
 	xbee.readPacket(30);
 	
 	if (xbee.getResponse().isAvailable()) {
-		//debug("incoming xbee packet");
+		////debugincoming xbee packet");
 		// got something
 		if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
 			// got a zb rx packet
@@ -149,272 +158,115 @@ void loop() {
 	}
 }
 
-/*
-* readTextMessage_v1
-* Read a full plain text message from the USB serial connection
-* then send it
-*/
-void readTextMessage_v1(byte startByte) {
-	//debug("readTextMessage_v1");
-	String destination = "";
-	String command = "";
-	char inChar = Serial.read();
-	String curChar = String(inChar);
-	//debug("read char " + curChar);
-	//read in the destination header
-	while (curChar != ":") {
-		//debug("curChar '" + curChar + "' not ':'");
-		destination += curChar;
-		//debug("destination now : " + destination);
-		//block until more input is ready
-		while (Serial.available() < 1) {}
-		char inChar = Serial.read();
-		curChar = String(inChar);
-	}
-	//debug("finished reading dest");
-  
-	//block until more data is available, then read the command
-	while (Serial.available() < 1) {}
-	inChar = Serial.read();
-	// curChar = String(inChar);
-	while (inChar != (char)0x0A) {
-		//debug("inChar now: " + String(inChar));
-		command += String(inChar);
-		//debug("command now: " + command);
-		while (Serial.available() < 1) {}
-		inChar = Serial.read();
-	}
-
-	//debug("done reading command");
-  
-	processTextMessage(startByte, destination, command);
-}
-
-
-/*
-* readBinMessage_v1
-* Reads a full message in from the USB serial line. Since messages in
-* protocol v1 do not have fixed sizes we have to be careful about when
-* to stop reading in data. Normally a byte of 0x0A (a newline char) is
-* the terminating byte, but since that byte may have been a natural part
-* of the data block we check for doubled newlines (0x0A0A) to indicate
-* that the message is not compete. A single newline without a following
-* twin marks the end of the transmission.
-*/
-void readBinMessage_v1(byte startByte) {
-	//debug("readBinMessage_v1");
-	String destination = "";
-
-	//block until input is ready, then read the destination field
-	while (Serial.available() < 1){};
-	String curChar = String(Serial.read());
-
-	while (curChar != ":") {
-		destination += curChar;
-		//block until input is ready
-		while (Serial.available() < 1) {}
-		curChar = String(Serial.read());
-	}
-
-	//Read the data block into an array.  Since we don't
-	//+ know the size of the incomming data we have to allocate
-	//+ enough space to hold the largest possible data frame
-	byte data[1000] = {NULL};
-	int bufPos = 0;
-	byte curByte = Serial.read();
-	//TODO check for double newlines embedded
-	boolean transmissionDone = false;
-	while (!transmissionDone) {
-		if (curByte == 0x0A) {
-			//newlines within the data block may be a terminator or a
-			//+ natural part of the transmission.  We need to check if
-			//+ this newline is followed by another, but in a non-blocking
-			//+ manner.  We will allow up to 100ms for more data to arrive
-			//+ before assuming that this was a terminating newline
-			for (int i = 0; i < 10; i++) {
-				if (Serial.available() != 0) {
-					byte newlineCheck = Serial.read();
-					if (newlineCheck == 0x0A) {
-						data[bufPos++] = curByte;
-						data[bufPos++] = newlineCheck;
-						//please don't judge me
-						goto cont;
-					} else {
-						//place this byte into the overflow buffer
-						overflowBuffer[0] = newlineCheck;
-						transmissionDone = true;
-						//this will be cleaner in protocol v2, I promise
-						goto end;
-					}
-				} else {
-					delay(10);
-				}
-			}
-			transmissionDone = true;
-			goto end;
-		}
-
-		data[bufPos] = curByte;
-		bufPos++;
-		cont:
-		//block until more data is avaiable
-		while (Serial.available() < 1) {}
-		curByte = Serial.read();
-		end:;
-	}
-
-	//Tack on the terminating newline
-	data[++bufPos] = (byte)0x0A;
-
-	processBinMessage(startByte, destination, data, sizeof(data));
-}
-
-/*
-* processBinMessage
-* Processes a message incomming from the USB serial connection.  If this
-* message was addressed to the local arduino then it will be passed off
-* to the executeBinary function, otherwise it will be sent to the local
-* Xbee for broadcast.
-*/
-void processBinMessage(byte startByte, String destination, byte data[], int dataLength) {
-	//debug("processBinMessage");
-	if (destination == BROADCAST_TAG) {
-		//Respond to all broadcast requests with "READY", then forward
-		//+ the message to the other modules
-		sendMessage("READY");
-		broadcastBinMessage(startByte, destination, data, dataLength);
-	} else if (destination == MODULE_NAME) {
-		executeBinary(data, dataLength);
-	} else {
-		//message to all other modules are forwarded to the Xbee
-		broadcastBinMessage(startByte, destination, data, dataLength);
-	}
-}
-
-/*
-* processTextMessage
-* Processes a message incomming from the USB serial connection.  If this
-* message was addressed to the local arduino then it will be passed off
-* to the executeCommand function, otherwise it will be sent to the local
-* Xbee for broadcast.
-*/
-void processTextMessage(byte startByte, String destination, String command) {
-	//debug("processTextMessage");
-	if  (destination == BROADCAST_TAG) {
-		//Respond to all broadcast requests with "READY", then forward
-		//+ the message to the other modules
-		sendMessage("READY");
-		broadcastTextMessage(startByte, destination, command);
-	} else if (destination == MODULE_NAME) {
-		executeCommand(command);
-	} else {
-		//messages to all other modules are forwarded to the Xbee
-		broadcastTextMessage(startByte, destination, command);
-	}
-}
-
-/*
-* broadcastTextMessage
-* Formats the given command into a complete message addressed to the
-* given destination, then broadcasts this message over the Xbee
-* network.  The message length is not checked, so care should be
-* taken that the complete message will fit within a single transmission.
-*/
-void broadcastTextMessage(byte startByte, String destination, String command) {
-	//debug("broadcastTextMessage");
-
-	//the payload will hold the entire application layer protocol
-	uint8_t payload [1 + destination.length() + 1 + command.length() + 1];
-	int pos = 1;
-
-	//write the start byte
+void broadcastMessage(byte startByte, byte optionsByte, byte dataLengthByte, byte fragmentNoBytes[], byte destinationBytes[], byte dataBytes[]) {
+	//debugbroadcastMessage()");
+	uint8_t payload [15 + (unsigned int)dataLengthByte];
 	payload[0] = startByte;
-
-	//write the module name as the address field
-	for (int i = 0; i < destination.length(); i++, pos++) {
-		payload[pos] = destination[i];
+	payload[1] = optionsByte;
+	payload[2] = dataLengthByte;
+	payload[3] = fragmentNoBytes[0];
+	payload[4] = fragmentNoBytes[1];
+	for (int i = 0, j = 5; i < 10; i++, j++) {
+		payload[j] = destinationBytes[i];
 	}
-  
-	//write the header terminator
-	payload[pos++] = 0x3A;  //":"
-  
-	//write the command field
-	for (int i = 0; i < command.length(); i++, pos++) {
-		payload[pos] = command[i];
+	for (int i = 0, j = 15; i < (int)dataLengthByte; i++, j++) {
+		payload[j] = dataBytes[i];
 	}
-  
-	//write the terminator
-	payload[pos] = 0x0A;
-
-	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x0000FFFF);  //broadcast address
-	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
-	xbee.send(zbTx); 
-}
-
-/*
-* Formats the given binary data into a complete message addressed to the
-* given destination, then bradcasts this message over the Xbee
-* network. The message length is not checked, so care should be taken
-* that the complete message will fit within a single transmission.
-*/
-void broadcastBinMessage(byte startByte, String destination, byte data[], int dataLength) {
-	//debug("broadcastBinMessage");
-	//the payload will hold the entire application layer protocol
-	uint8_t payload [1 + destination.length() + 1 + dataLength + 1];
-	int pos = 1;
-
-	//write the start byte
-	payload[0] = startByte;
-
-	//write the module name as the address field
-	for (int i = 0; i < destination.length(); i++, pos++) {
-		payload[pos] = destination[i];
-	}
-  
-	//write the header terminator
-	payload[pos++] = 0x3A;  //":"
-  
-	//write the command field
-	for (int i = 0; i < dataLength; i++, pos++) {
-		payload[pos] = data[i];
-	}
-
-	//write the terminator
-	payload[pos] = 0x0A;
 
 	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x0000FFFF);  //broadcast address
 	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 	xbee.send(zbTx);
 }
 
+
 /*
 * sendMessage
 * Sends a message back to the controller via the USB serial connection
 */
 void sendMessage(String command) {
-	//debug("sendMessage");
-	char startByte = TEXT_TRANSMISSION | SAFETY_BIT | protocolVersion;
-	String message = "";
-	message += String(startByte);
-	message += MODULE_NAME;
-	message += ":";
-	message += command;
-	message += "\n";
-	Serial.print(message);
+	//debugsendMessage()");
+	//TODO check size of command for fragmentation
+	byte startByte = (byte)0x0D;
+	byte optionsByte = (byte)0b00000000;
+	byte dataLengthByte = (byte)command.length();
+	byte fragmentNoBytes[] = {(byte)0x00, (byte)0x00};
+	byte destinationBytes[10] = {0};
+	MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length() + 1);
+	byte dataBytes [command.length()];
+	command.getBytes(dataBytes, sizeof(dataBytes) + 1);
+
+	Serial.write(startByte);
+	Serial.write(optionsByte);
+	Serial.write(dataLengthByte);
+	Serial.write(fragmentNoBytes, 2);
+	Serial.write(destinationBytes, 10);
+	Serial.write(dataBytes, command.length());
+}
+
+void sendBinary(byte data[], int dataLength) {
+	//debugsendBinary()");
+	//TODO check size of data for fragmentation
+	byte startByte = (byte)0x0D;
+	byte optionsByte = (byte)0b10000000;
+	byte dataLengthByte = (byte)dataLength;
+	byte fragmentNoBytes[] = {(byte)0x00, (byte)0x00};
+	byte destinationBytes[10];
+	MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length());
+
+	Serial.write(startByte);
+	Serial.write(optionsByte);
+	Serial.write(dataLengthByte);
+	Serial.write(fragmentNoBytes, 2);
+	Serial.write(destinationBytes, 10);
+	Serial.write(data, dataLength);
+}
+
+//is there really no built-in way to do this?
+String byteArrayToString(byte data[], int dataLength) {
+	String str = "";
+	for (int i = 0; i < dataLength; i++) {
+		byte b = data[i];
+		if (b != 0x00) {
+			str += (char)data[i];
+		}
+	}
+	return str;
 }
 
 // void debug(String message) {
 // 	Serial.println(message);
+// 	Serial.flush();
 // }
+
+
+void processMessage(byte optionsByte, byte fragmentNoBytes[], String destination, byte dataBytes[], int dataLength) {
+	//debugprocessMessage()");
+	if (destination.compareTo(BROADCAST_TAG) == 0) {
+		//the only broadcast command we know of is "READY?" to which we
+		//+ should respond with "READY"
+		sendMessage("foo");
+	} else if (destination.compareTo(MODULE_NAME) == 0) {
+		//this was a message to us.  Execute the command based on
+		//+ whether the data is text or binary
+		if ((optionsByte & 0b10000000) == 0) {
+			//text command
+			executeCommand(byteArrayToString(dataBytes, dataLength));
+		} else {
+			executeBinary(dataBytes, dataLength);
+		}
+	}
+}
 
 /*
 * executeCommand
 * Module specific code to handle incomming commands from the controller
 */
 void executeCommand(String command) {
-	//debug("executeCommand");
+	//debugexecuteCommand()");
+	////debugexecuteCommand");
 	//module specific code here
-	if (command == "RESET") {
+	if (command.compareTo("RESET") == 0) {
+		//debugresetting");
 		for (int i = 5; i < 8; i++) {
 			digitalWrite(i, LOW);
 		}
@@ -423,20 +275,21 @@ void executeCommand(String command) {
 		unsigned int pin_num = pin.toInt();
 		String st = String(command[1]);
 		unsigned int state = st.toInt();
+		//debugpin " + pin + " state " + state);
 		if (pin_num != 0) {
 			if (pin_num < 5 || pin_num > 7) {
 				// sendMessage("FAIL" + pin);
 			} else {
 				if (state == 1) {
 					digitalWrite(pin_num, HIGH);
-					// sendMessage("OK" + pin);
+					sendMessage("OK" + pin);
 				} else {
 					digitalWrite(pin_num, LOW);
-					// sendMessage("OK" + pin);
+					sendMessage("OK" + pin);
 				}
 			}
 		} else {
-			// sendMessage("FAIL" + pin);
+			sendMessage("FAIL" + pin);
 		}
 	}
 }
@@ -447,7 +300,8 @@ void executeCommand(String command) {
 * Module specific code to handle incomming binary from the controller
 */
 void executeBinary(byte data[], int dataLength) {
-	//debug("executeBinary");
+	//debugexecuteBinary()");
+	////debugexecuteBinary");
 	//module specific code here
 	/*
 	* WARNING: The data in the byte array does not have double newlines converted into singles.

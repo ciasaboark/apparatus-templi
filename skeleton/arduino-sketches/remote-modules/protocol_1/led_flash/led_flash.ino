@@ -20,15 +20,6 @@
 #include <XBee.h>
 #include <SoftwareSerial.h>
 
-const byte TEXT_TRANSMISSION = (byte)0b00000000;
-const byte BIN_TRANSMISSION  = (byte)0b10000000;
-const byte SAFETY_BIT        = (byte)0b00100000;
-const byte PROTOCOL_V0       = (byte)0b00000000;
-const byte PROTOCOL_V1       = (byte)0b00000001;
-const byte PROTOCOL_V2       = (byte)0b00000010;
-
-const byte procotolVersion = PROTOCOL_V1;
-
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "LED_FLASH";
 
@@ -97,54 +88,151 @@ void loop() {
     }
 }
 
-void processMessage(uint8_t inData[], int inDataLength) {
-  Serial.flush();
-  byte startByte = inData[0];
-  
-  //read in the destination address
-  String destination; // = String((char*)inData[1, sizeof(inData)]);
-  int headerEnd = 0;
-  for (int i = 1; i < inDataLength; i++) {
-    if ((char)inData[i] != (char)0x3A) {
-      destination += (char)inData[i];
-      headerEnd++;
+void processMessage(uint8_t message[], int messageLength) {
+  if (messageLength >= 15) {
+    byte destinationBytes[10];
+    for (int i = 0, j = 5; i < 10; i++, j++) {
+      destinationBytes[i] = message[j];
+    }
+    String destination = byteArrayToString(destinationBytes, 10);
+    if (MODULE_NAME.compareTo(destination) == 0) {
+      //this was a message to us
+      byte startByte = message[0];
+      byte optionsByte = message[1];
+      byte dataLengthByte = message[2];
+      byte fragmentNoBytes[2];
+      fragmentNoBytes[0] = message[3];
+      fragmentNoBytes[1] = message[4];
+      byte dataBytes[messageLength];
+      for (int i = 0, j = 15; i < messageLength; i++, j++) {
+        dataBytes[i] = message[j];
+      }
+
+      if ((optionsByte & 0b10000000) == 0) {
+        //this was a text command
+        executeCommand(byteArrayToString(dataBytes, (int)dataLengthByte));
+      } else {
+        //this was a binary command
+        executeBinary(dataBytes, (int)dataLengthByte);
+      }
+    } else if (BROADCAST_TAG.compareTo(destination) == 0) {
+      //a broadcast message.  respond with "READY"
+      sendMessage("READY");
     } else {
-      headerEnd++;
-      break;
-    }
-  }
-  
-  //if we were unable to find a ':' in the message then it is not
-  //+ valid and we should not proceed
-  if (headerEnd != 0) {
-    //assumes text transmision for now
-    //TODO update to read start byte and read data as needed
-    String command;
-    for (int i = headerEnd + 1; i < inDataLength - 1; i++) {
-      command += (char)inData[i];
-    }
-    
-    processCommand(destination, command);
+      //this was a message for a different module
+    }    
   } else {
-    Serial.println("Invalid message received");
-  }  
+    //message is too short to be properly formed
+    //TODO send error log
+  }
 }
 
-void processCommand(String destination, String command) {
- if  (destination == BROADCAST_TAG) {
-   //respond to broadcast requests with "READY"
-   sendMessage("READY");
- } else if (destination == MODULE_NAME) {
-   //module specific parsing here
+//is there really no built-in way to do this?
+String byteArrayToString(byte data[], int dataLength) {
+  String str = "";
+  for (int i = 0; i < dataLength; i++) {
+    byte b = data[i];
+    if (b != 0x00) {
+      str += (char)data[i];
+    }
+  }
+  return str;
+}
+
+// void processCommand(String destination, String command) {
+//  if  (destination == BROADCAST_TAG) {
+//    //respond to broadcast requests with "READY"
+//    sendMessage("READY");
+//  } else if (destination == MODULE_NAME) {
+//    //module specific parsing here
+//    unsigned long int pin_num = command.toInt();
+//    if (pin_num == 0) {
+//      //the command could not be parsed
+//      //debugMessage("Error converting " + command + " to an integer value");
+//      // sendMessage("FAIL");
+//    } else if (pin_num < 4 || pin_num > 9) {
+//      //the given value was out of range
+//      //debugMessage("Value of " + (String)pin_num + " is out of range");
+//      // sendMessage("FAIL");
+//    } else {
+//      //debugMessage("Flashing LED num " + (String)pin_num);
+//      //flash the LED
+//      digitalWrite(pin_num, HIGH);
+//      delay(300);
+//      digitalWrite(pin_num, LOW);
+//      //respond to the controler to indicate that the LED was flashed
+//      // sendMessage("OK");
+//    }
+//  }
+// }
+
+void sendMessage(String command) {
+  // debug("sendMessage()");
+  uint8_t payload [15 + command.length()];
+  payload[1] = (byte)0x00;
+  payload[2] = (byte)command.length();
+  payload[3] = (byte)0x00;
+  payload[4] = (byte)0x00;
+
+  byte destinationBytes[10] = {0};
+  MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length() + 1);
+  for (int i = 0, j = 5; i < 10; i++, j++) {
+    payload[j] = destinationBytes[i];
+  }
+
+  byte commandBytes[command.length()];
+  command.getBytes(commandBytes, command.length() + 1);
+  for (int i = 0, j = 15; i < command.length(); i++, j++) {
+    payload[j] = commandBytes[i];
+  }
+
+  payload[0] = (byte)0x0D;
+  XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
+  ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+  xbee.send(zbTx);
+}
+
+void sendBinary(byte data[], int dataLength) {
+  // debug("sendBinary()");
+  //TODO check if message needs to be fragmented
+  uint8_t payload [15 + dataLength];
+  payload[0] = (byte)0x0D;
+  payload[1] = (byte)0b10000000;
+  payload[2] = (byte)dataLength;
+  payload[3] = (byte)0x00;
+  payload[4] = (byte)0x00;
+
+  byte destinationBytes[10] = {0};
+  MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length() + 1);
+  for (int i = 0, j = 5; i < 10; i++, j++) {
+    payload[j] = destinationBytes[i];
+  }
+
+  for (int i = 0, j = 15; i < dataLength; i++, j++) {
+    payload[j] = data[i];
+  }
+
+  XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
+  ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+  xbee.send(zbTx);
+}
+
+
+/*
+* executeCommand
+* Module specific code to handle incomming commands from the controller
+*/
+void executeCommand(String command) {
+  //module specific parsing here
    unsigned long int pin_num = command.toInt();
    if (pin_num == 0) {
      //the command could not be parsed
      //debugMessage("Error converting " + command + " to an integer value");
-     // sendMessage("FAIL");
+     sendMessage("FAIL");
    } else if (pin_num < 4 || pin_num > 9) {
      //the given value was out of range
      //debugMessage("Value of " + (String)pin_num + " is out of range");
-     // sendMessage("FAIL");
+     sendMessage("FAIL");
    } else {
      //debugMessage("Flashing LED num " + (String)pin_num);
      //flash the LED
@@ -152,42 +240,21 @@ void processCommand(String destination, String command) {
      delay(300);
      digitalWrite(pin_num, LOW);
      //respond to the controler to indicate that the LED was flashed
-     // sendMessage("OK");
+     sendMessage("OK");
    }
- }
 }
 
-void sendMessage(String command) {
-  byte startByte = procotolVersion | TEXT_TRANSMISSION | SAFETY_BIT;
-  
-  //the payload will hold the entire application layer protocol
-  uint8_t payload [1 + MODULE_NAME.length() + 1 + command.length() + 1];
-  int pos = 1;
-  
-  //write the start byte
-  payload[0] = startByte;
 
-  //write the module name as the address field
-  for (int i = 0; i < MODULE_NAME.length(); i++, pos++) {
-    payload[pos] = MODULE_NAME[i];
-  }
-  
-  //write the header terminator
-  payload[pos++] = 0x3A;  //":"
-  
-  //write the command field
-  for (int i = 0; i < command.length(); i++, pos++) {
-    payload[pos] = command[i];
-  }
-  
-  //write the terminator
-  payload[pos] = 0x0A;
-  
-  XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //address to the coordinator
-  ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
-  xbee.send(zbTx); 
-}
-
-void sendBinary(byte data[]) {
-  //TODO 
+/*
+* executeBinary
+* Module specific code to handle incomming binary from the controller
+*/
+void executeBinary(byte data[], int dataLength) {
+  // debug("executeBinary()");
+  //debug("executeBinary");
+  //module specific code here
+  /*
+  * WARNING: The data in the byte array does not have double newlines converted into singles.
+  * you will need to to this during your processing.
+  */
 }

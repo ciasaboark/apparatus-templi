@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apparatus_templi.Coordinator"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--serial  /dev/tty.usbmodemfd1221"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--serial  /dev/tty.usbmodemfa131"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Coordinator"/>
 </launchConfiguration>

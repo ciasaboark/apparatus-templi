@@ -94,7 +94,7 @@ public class StatefullLed extends ControllerModule {
 			int ledNum = 0 + (int)(Math.random() * ((2 - 0) + 1));
 			toggleLED(ledNum);
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

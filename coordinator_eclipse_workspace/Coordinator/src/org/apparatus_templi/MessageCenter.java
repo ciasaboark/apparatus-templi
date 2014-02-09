@@ -8,7 +8,7 @@ import java.util.SortedMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MessageCenter {
+public class MessageCenter implements Runnable {
 	private static final String TAG = "MessageCenter";
 	
 	private static final int MAX_DATA_SIZE = 69;
@@ -17,10 +17,10 @@ public class MessageCenter {
 	private LinkedBlockingDeque<Message> messageQueue = new LinkedBlockingDeque<Message>();
 	
 	//holds all incoming bytes
-	private LinkedBlockingQueue<Byte> incomingBytes;
+	private LinkedBlockingQueue<Byte> incomingBytes = new LinkedBlockingQueue<Byte>();
 	
 	//group incoming message fragments by the destination byte[]
-	private HashMap<byte[], FragmentedMessage> messageFragments;
+	private HashMap<byte[], FragmentedMessage> messageFragments = new HashMap<byte[], FragmentedMessage>();;
 	
 	private boolean readMessages = false;
 	
@@ -53,12 +53,14 @@ public class MessageCenter {
 		}
 		
 		int dataLength = (int)dataLengthByte;
-		Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
+//		Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
 		
 		if (startByte == 0x0D) {
 			//wait until the payload data is avaiable
 			while (incomingBytes.size() < dataLength) {
-				Log.d(TAG, "waiting on data bytes");
+				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
+				Thread.yield();
+				Thread.sleep(30);
 			}
 			//read the payload data
 			payloadData = new byte[dataLength];
@@ -75,8 +77,8 @@ public class MessageCenter {
 			
 			
 		} else {
-			Log.w(TAG, "readMessage() read a malformed message, discarding buffer until the next message");
-			readBytesUntil(Message.START_BYTE);
+			Log.w(TAG, "readMessage() read a malformed message, discarding this byte");
+//			readBytesUntil(Message.START_BYTE);
 		}
 	}
 
@@ -124,15 +126,9 @@ public class MessageCenter {
 		return messageQueue.size();
 	}
 
-	public synchronized void incomingSerial(byte b) throws InterruptedException, IOException {
+	public void incomingSerial(byte b) throws InterruptedException, IOException {
+//		Log.d(TAG, "incomingSerial(0x" + Integer.toString(b, 16) + ") char:" + new String(new byte[] {b}));
 		incomingBytes.put(b);
-		if (readMessages) {
-			if (incomingBytes.size() >= 15) {
-				//enough bytes have been read to form a complete message,
-				//+ begin processing
-				readMessage();
-			}
-		}
 	}
 	
 	public synchronized boolean sendCommand(String moduleName, String command) {
@@ -145,8 +141,8 @@ public class MessageCenter {
 		byte[] commandBytes = {};
 		
 		try {
-			destinationBytes = moduleName.getBytes("US-ASCII");
-			commandBytes = command.getBytes("US-ASCII");
+			destinationBytes = moduleName.getBytes("UTF-8");
+			commandBytes = command.getBytes("UTF-8");
 			dataLength = commandBytes.length;
 			
 			if (dataLength > MessageCenter.MAX_DATA_SIZE) {
@@ -160,6 +156,8 @@ public class MessageCenter {
 
 		//build the outgoing message byte[]
 		if (sendMessage) {
+			messageSent = true;
+//			Log.d(TAG, "sendCommand() sending '" + command + "' to '" + moduleName);
 			byte[] message = new byte[15 + dataLength];
 			message[0] = Message.START_BYTE;
 			message[1] = Message.TYPE_TEXT;
@@ -172,7 +170,7 @@ public class MessageCenter {
 			}
 			
 			//copy the data bytes
-			for (int i = 5, j = 0; j < dataLength; i++, j++) {
+			for (int i = 15, j = 0; j < dataLength; i++, j++) {
 				message[i] = commandBytes[j];
 			}
 			
@@ -180,7 +178,7 @@ public class MessageCenter {
 		}
 		
 		
-		return false;
+		return messageSent;
 	}
 
 	public boolean sendBinary(String moduleName, byte[] data) {
@@ -192,19 +190,22 @@ public class MessageCenter {
 		readMessages = true;
 	}
 	
-	public synchronized byte[] readBytesUntil(byte termByte) throws InterruptedException {
+	public byte[] readBytesUntil(byte termByte) throws InterruptedException {
 		byte[] bytes = {};
 		if (readMessages) {
-			Log.e(TAG, "asked to read raw bytes while automatic processing is ongoing, returning empty byte[]");
-		} else {
-			ByteArrayOutputStream inBytes = new ByteArrayOutputStream();
-			byte b = incomingBytes.take();
-			while (b != termByte) {
-				inBytes.write(b);
-				incomingBytes.take();
-			}
-			bytes = inBytes.toByteArray();
+			Log.w(TAG, "asked to read raw bytes while automatic processing is ongoing, returning empty byte[]");
 		}
+		
+		ByteArrayOutputStream inBytes = new ByteArrayOutputStream();
+		byte b = incomingBytes.take();
+		int discardedBytes = 1;
+		while (b != termByte) {
+			inBytes.write(b);
+			b = incomingBytes.take();
+			discardedBytes++;
+		}
+		bytes = inBytes.toByteArray();
+//		Log.d(TAG, "discarded " + discardedBytes + " bytes");
 		return bytes;
 	}
 	
@@ -214,6 +215,28 @@ public class MessageCenter {
 
 	public void setSerialConnection(SerialConnection serialConnection) {
 		this.serialConnection = serialConnection;
+		
+	}
+
+	@Override
+	public void run()  {
+		while (true){
+			if (readMessages) {
+				try {	
+					if (incomingBytes.size() >= 15) {
+						//enough bytes have been read to form a complete message,
+						//+ begin processing
+						readMessage();
+					} else {
+//						Log.d(TAG, "waiting on more serial input");
+						Thread.sleep(200);
+						Thread.yield();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 	}
 }

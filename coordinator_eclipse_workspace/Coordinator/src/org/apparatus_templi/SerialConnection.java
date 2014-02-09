@@ -165,4 +165,8 @@ public class SerialConnection implements SerialPortEventListener {
 		 }
 		 return dataWritten;
 	 }
+	 
+	 void flushSerialLine() throws IOException {
+		input.skip(input.available());
+	}
 }
