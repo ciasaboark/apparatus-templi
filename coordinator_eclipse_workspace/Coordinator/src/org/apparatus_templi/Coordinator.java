@@ -385,7 +385,7 @@ public class Coordinator {
 //        Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
-//        Driver driver2 = new StatefullLed();
+        Driver driver2 = new StatefullLed();
         
         //testing large commands
 		Driver driver3 = new LargeCommands();
@@ -402,15 +402,15 @@ public class Coordinator {
 //        	}
 //        }
         
-//        if (driver2.getModuleName() != null) {
-//        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
-//		        loadedDrivers.put(driver2.getModuleName(), driver2);
-//		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
-//        	} else {
-//        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
-//        				driver2.getModuleName() + " already exists");
-//        	}
-//        }
+        if (driver2.getModuleName() != null) {
+        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
+		        loadedDrivers.put(driver2.getModuleName(), driver2);
+		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
+        	} else {
+        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
+        				driver2.getModuleName() + " already exists");
+        	}
+        }
 		
 		if (driver3.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
@@ -440,7 +440,7 @@ public class Coordinator {
          * 
          */
         Log.c(TAG, "Starting web server on port " + portNum);
-        new SimpleHttpServer(portNum).start();
+        new SimpleHttpServer().start();
         
 		//enter main loop
         while (true) {

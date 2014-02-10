@@ -174,7 +174,9 @@ public class MessageCenter implements Runnable {
 			//build the outgoing message byte[]
 			if (sendMessage) {
 				messageSent = true;
-				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" + moduleName + "'");
+				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" + moduleName
+						+ "', fragment num: " + fragmentNumber + " of type "
+						+ ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
 				byte[] message = new byte[15 + data.length];
 				message[0] = Message.START_BYTE;
 				message[1] = optionsByte;
