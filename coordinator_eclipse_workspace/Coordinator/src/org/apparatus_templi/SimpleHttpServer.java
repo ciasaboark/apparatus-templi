@@ -3,15 +3,21 @@ package org.apparatus_templi;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
-
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import java.net.Socket;
 
 public class SimpleHttpServer extends HttpServer implements Runnable {
-
-	public SimpleHttpServer(int portNum) {
-		//TODO
+	
+	private Socket sock;
+	private InetSocketAddress addr;
+	
+	/*
+	 * Removed portNum parameter form constructor because you have to call
+	 * bind before starting the server
+	 */
+	public SimpleHttpServer() {
 	}
 	
 	@Override
@@ -21,8 +27,18 @@ public class SimpleHttpServer extends HttpServer implements Runnable {
 	}
 
 	@Override
-	public void bind(InetSocketAddress arg0, int arg1) throws IOException {
-		// TODO Auto-generated method stub
+	public void bind(InetSocketAddress address, int port) throws IOException {
+		try {
+			addr = address;
+			if(addr != null) {
+				sock = new Socket(addr.getAddress(), port);
+			} else {
+				Log.e("error", "InetSocketAddress was not initialized");
+			}
+		}
+		catch(IOException e) {
+			Log.e("error","The socket failed to initialize");
+		}
 
 	}
 
@@ -40,8 +56,7 @@ public class SimpleHttpServer extends HttpServer implements Runnable {
 
 	@Override
 	public InetSocketAddress getAddress() {
-		// TODO Auto-generated method stub
-		return null;
+		return addr;
 	}
 
 	@Override

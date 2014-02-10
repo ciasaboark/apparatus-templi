@@ -430,6 +430,15 @@ public class Coordinator {
         }
         
         //start the web interface
+        /*
+         * This may not work because there is not reason to pass the port number to the constructor because 
+         * you have to call the bind method and send it an InetSockAddress with a port number
+         * may need to be something like 
+         * new SimpletHttpServer(new InetSockAddress(InetAddress.getHostByName("127.0.0.1"). portNum), portNum).bind().start()
+         * Creating the server like this causes you to no longer have a reference to the it, so how do you plan on calling any other methods on
+         * behalf of the SimpleHttpServer?
+         * 
+         */
         Log.c(TAG, "Starting web server on port " + portNum);
         new SimpleHttpServer(portNum).start();
         
