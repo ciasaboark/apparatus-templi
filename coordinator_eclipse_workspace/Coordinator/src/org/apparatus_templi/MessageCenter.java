@@ -3,6 +3,9 @@ package org.apparatus_templi;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -134,58 +137,104 @@ public class MessageCenter implements Runnable {
 		incomingBytes.put(b);
 	}
 	
-	public synchronized boolean sendCommand(String moduleName, String command) {
+	private synchronized boolean sendCommandFragment(String moduleName, String command, int fragmentNumber) {
 		//TODO add support for more options
 		boolean sendMessage = true;
 		boolean messageSent = false;
-		int dataLength = 0;
-		byte[] fragmentNum = {0x00, 0x00};
-		byte[] destinationBytes = new byte[10];
-		byte[] commandBytes = {};
-		
-		try {
-			destinationBytes = moduleName.getBytes("UTF-8");
-			commandBytes = command.getBytes("UTF-8");
-			dataLength = commandBytes.length;
+		if (command.length() <= MAX_DATA_SIZE && fragmentNumber >= 0) {
+			int dataLength = 0;
+			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
+			byte[] fragmentNum = {fragmentNumberBytes[1], fragmentNumberBytes[0]};
+			byte[] destinationBytes = new byte[10];
+			byte[] commandBytes = {};
 			
-			if (dataLength > MessageCenter.MAX_DATA_SIZE) {
-				Log.w(TAG, "sendCommand() command is too large, automatic fragmentation not yet supported");
+			try {
+				destinationBytes = moduleName.getBytes("UTF-8");
+				commandBytes = command.getBytes("UTF-8");
+				dataLength = commandBytes.length;
+				
+				if (dataLength > MessageCenter.MAX_DATA_SIZE) {
+					Log.w(TAG, "sendCommand() command is too large, automatic fragmentation not yet supported");
+					sendMessage = false;
+				}
+			} catch (UnsupportedEncodingException e) {
+				Log.w(TAG, "unable to translate command '" + command + "' into ASCII byte[]");
 				sendMessage = false;
 			}
-		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "unable to translate command '" + command + "' into ASCII byte[]");
-			sendMessage = false;
-		}
 
-		//build the outgoing message byte[]
-		if (sendMessage) {
-			messageSent = true;
-//			Log.d(TAG, "sendCommand() sending '" + command + "' to '" + moduleName);
-			byte[] message = new byte[15 + dataLength];
-			message[0] = Message.START_BYTE;
-			message[1] = Message.TYPE_TEXT;
-			message[2] = (byte)dataLength;
-			message[3] = fragmentNum[0];
-			message[4] = fragmentNum[1];
-			//copy the destination bytes
-			for (int i = 5, j = 0; j < destinationBytes.length; i++, j++) {
-				message[i] = destinationBytes[j];
+			//build the outgoing message byte[]
+			if (sendMessage) {
+				messageSent = true;
+//					Log.d(TAG, "sendCommand() sending '" + command + "' to '" + moduleName);
+				byte[] message = new byte[15 + dataLength];
+				message[0] = Message.START_BYTE;
+				message[1] = Message.TYPE_TEXT;
+				message[2] = (byte)dataLength;
+				message[3] = fragmentNum[0];
+				message[4] = fragmentNum[1];
+				//copy the destination bytes
+				for (int i = 5, j = 0; j < destinationBytes.length; i++, j++) {
+					message[i] = destinationBytes[j];
+				}
+				
+				//copy the data bytes
+				for (int i = 15, j = 0; j < dataLength; i++, j++) {
+					message[i] = commandBytes[j];
+				}
+				
+				serialConnection.writeData(message);
 			}
-			
-			//copy the data bytes
-			for (int i = 15, j = 0; j < dataLength; i++, j++) {
-				message[i] = commandBytes[j];
-			}
-			
-			serialConnection.writeData(message);
 		}
-		
-		
+				
+				
 		return messageSent;
 	}
+	
+	public synchronized boolean sendCommand(String moduleName, String command) {
+		//if the entire command can fit within a single packet then send it
+		boolean results = false;
+		
+		if (command.length() <= MAX_DATA_SIZE) {
+			results = sendCommandFragment(moduleName, command, 0);
+		} else {
+			int fragmentNumber = (command.length() / MAX_DATA_SIZE);
+			int curPos = 0;
+			while (fragmentNumber >= 0 || curPos < command.length()) {
+				String commandFragment;
+				if (curPos + MAX_DATA_SIZE > command.length()) {
+					commandFragment = command.substring(curPos, command.length());
+				} else {
+					commandFragment = command.substring(curPos, MAX_DATA_SIZE);
+				}
+				results = sendCommandFragment(moduleName, commandFragment, fragmentNumber);
+				curPos += MAX_DATA_SIZE;
+				fragmentNumber--;
+				
+			}
+		}
+		
+		return results;
+	}
 
+	private boolean sendBinaryFragment(String moduleName, byte[] data, int fragmentNumber) {
+		return false;
+	}
+	
 	public boolean sendBinary(String moduleName, byte[] data) {
 		// TODO Auto-generated method stub
+		//break the command into multiple fragments of MAX_DATA_SIZE or less
+//		byte[] commandBytes = command.getBytes("UTF-8");
+//		int curPos = 0;
+//		int fragmentNum = (commandBytes.length / MAX_DATA_SIZE) + 1;
+//		while (fragmentNum >= 0) {
+//			int payloadSize = ((commandBytes.length - curPos) > MAX_DATA_SIZE) ? MAX_DATA_SIZE : commandBytes.length - curPos;
+//			byte[] payload = new byte[payloadSize];
+//			for (int i = 0; i < payloadSize; i++, curPos++) {
+//				payload[i] = commandBytes[curPos];
+//			}
+//			sendCommandFragment(moduleName, )
+//			
+//		}
 		return false;
 	}
 	

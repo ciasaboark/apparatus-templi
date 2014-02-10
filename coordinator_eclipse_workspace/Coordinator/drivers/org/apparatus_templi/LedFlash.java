@@ -14,7 +14,6 @@ package org.apparatus_templi;
  */
 
 public class LedFlash extends ControllerModule {
-	private String moduleName = "LED_FLASH";
 	
 	public LedFlash() {
 		this.name = "LED_FLASH";
@@ -36,7 +35,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public String getControllerListXML() {
-		Log.d(moduleName, "getControllerListXML() returning hard coded value for now");
+		Log.d(name, "getControllerListXML() returning hard coded value for now");
 		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 							"<controlerList>" +
 								"<controler>" +
@@ -60,7 +59,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public String getControllerStatusXML(String controllerName) {
-		Log.d(moduleName, "getControllerStatusXML() returning hard coded value for now");
+		Log.d(name, "getControllerStatusXML() returning hard coded value for now");
 		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 							"<controller>" +
 								"<name>" + controllerName + "</name>" +
@@ -86,16 +85,16 @@ public class LedFlash extends ControllerModule {
 	public void tellController(String controllerName, String command) {
 		switch (controllerName) {
 			case "LED 1":
-				Coordinator.sendCommand(moduleName, "4");
+				Coordinator.sendCommand(name, "4");
 				break;
 			case "LED 2":
-				Coordinator.sendCommand(moduleName, "5");
+				Coordinator.sendCommand(name, "5");
 				break;
 			case "LED 3":
-				Coordinator.sendCommand(moduleName, "6");
+				Coordinator.sendCommand(name, "6");
 				break;
 			default:
-				Log.e(moduleName, "tellController() Given invalid LED name");
+				Log.e(name, "tellController() Given invalid LED name");
 				break;
 		}
 	}
@@ -114,7 +113,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public void run() {
-		Log.d(moduleName, "starting");
+		Log.d(name, "starting");
 		//check for any queued messages
 		while (queuedCommands.size() > 0) {
 			receiveCommand(queuedCommands.poll());
@@ -124,7 +123,7 @@ public class LedFlash extends ControllerModule {
 			receiveBinary(queuedBinary.poll());
 		}
 		
-		if (Coordinator.isModulePresent(moduleName)) {
+//		if (Coordinator.isModulePresent(name)) {
 			while (running) {
 				/*
 				 * This is our main loop.  All of the processing will happen here
@@ -132,11 +131,11 @@ public class LedFlash extends ControllerModule {
 				 * remote module, sleeping a few seconds between each message.
 				 */
 				for (int i = 5; i < 10; i++) {
-					Log.d(moduleName, "flashing LED on pin " + i);
-					if (Coordinator.sendCommand(moduleName, String.valueOf(i))) {
-						Log.d(moduleName, "message sent");
+					Log.d(name, "flashing LED on pin " + i);
+					if (Coordinator.sendCommand(name, String.valueOf(i))) {
+						Log.d(name, "message sent");
 					} else {
-						Log.d(moduleName, "message could not be sent");
+						Log.d(name, "message could not be sent");
 					}
 					try {
 						Thread.sleep(2000);
@@ -146,11 +145,11 @@ public class LedFlash extends ControllerModule {
 					}
 				}
 			}
-		} else {
-			Log.e(moduleName, "remote module not present, shutting down");
-		}
+//		} else {
+//			Log.e(name, "remote module not present, shutting down");
+//		}
 		
-		Log.d(moduleName, "terminating");
+		Log.d(name, "terminating");
 	}
 
 	/*
@@ -158,12 +157,12 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	void receiveCommand(String command) {
-		Log.d(moduleName, "received command, ignoring");
+		Log.d(name, "received command, ignoring");
 	}
 
 	@Override
 	void receiveBinary(byte[] data) {
-		Log.d(moduleName, "received binary, ignoring");
+		Log.d(name, "received binary, ignoring");
 		
 	}
 
@@ -172,7 +171,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public String getWidgetXML() {
-		Log.w(moduleName, "getWidgetXML() unimplimented");
+		Log.w(name, "getWidgetXML() unimplimented");
 		return null;
 	}
 
@@ -181,7 +180,7 @@ public class LedFlash extends ControllerModule {
 	 */
 	@Override
 	public String getFullPageXML() {
-		Log.w(moduleName, "getFullPageXML() unimplimented");
+		Log.w(name, "getFullPageXML() unimplimented");
 		return null;
 	}
 

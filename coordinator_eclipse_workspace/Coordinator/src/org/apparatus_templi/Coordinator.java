@@ -27,18 +27,7 @@ public class Coordinator {
 	private static String serialPortName = null;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
-	private static boolean connectionReady = false;
-	
-//<<<<<<< Updated upstream
-	
-	
-	
-	//TODO change this to a singleton
-	public Coordinator() {
-		super();
-	}
-	
-	
+	private static boolean connectionReady = false;	
 
 	private static synchronized void routeIncomingMessage(Message m) {
 //		Log.d(TAG, "routeIncomingMessage()");
@@ -393,30 +382,43 @@ public class Coordinator {
         
 		Log.c(TAG, "Initializing drivers...");
         //initialize the drivers
-        Driver driver1 = new LedFlash();
+//        Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
-        Driver driver2 = new StatefullLed();
+//        Driver driver2 = new StatefullLed();
+        
+        //testing large commands
+		Driver driver3 = new LargeCommands();
      
         //only drivers with valid names are added
         //TODO make this generic
-        if (driver1.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(driver1.getModuleName())) {
-		        loadedDrivers.put(driver1.getModuleName(), driver1);
-		        Log.d(TAG, "driver " + driver1.getModuleName() + " of type " + driver1.getModuleType() + " initialized");
-        	} else {
-        		Log.w(TAG, "error loading driver " + driver1.getClass().getName() + "a driver with the name " +
-        				driver1.getModuleName() + " already exists");
-        	}
-        }
+//        if (driver1.getModuleName() != null) {
+//        	if (!loadedDrivers.containsKey(driver1.getModuleName())) {
+//		        loadedDrivers.put(driver1.getModuleName(), driver1);
+//		        Log.d(TAG, "driver " + driver1.getModuleName() + " of type " + driver1.getModuleType() + " initialized");
+//        	} else {
+//        		Log.w(TAG, "error loading driver " + driver1.getClass().getName() + "a driver with the name " +
+//        				driver1.getModuleName() + " already exists");
+//        	}
+//        }
         
-        if (driver2.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
-		        loadedDrivers.put(driver2.getModuleName(), driver2);
-		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
+//        if (driver2.getModuleName() != null) {
+//        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
+//		        loadedDrivers.put(driver2.getModuleName(), driver2);
+//		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
+//        	} else {
+//        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
+//        				driver2.getModuleName() + " already exists");
+//        	}
+//        }
+		
+		if (driver3.getModuleName() != null) {
+        	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
+		        loadedDrivers.put(driver3.getModuleName(), driver3);
+		        Log.d(TAG, "driver " + driver3.getModuleName() + " of type " + driver3.getModuleType() + " initialized");
         	} else {
-        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
-        				driver2.getModuleName() + " already exists");
+        		Log.e(TAG, "error loading driver " + driver3.getClass().getName() + " a driver with the name " +
+        				driver3.getModuleName() + " already exists");
         	}
         }
         

@@ -20,5 +20,8 @@
     <frame name="LED_FLASH:7">
       <payload>7E001B10010013A200408BAF1CFFFE0000FF4C45445F464C4153483A370A8A</payload>
     </frame>
+    <frame name="led flash 6">
+      <payload>7E001E1001000000000000FFFFFFFE00000D000100004C45445F464C41534800360D</payload>
+    </frame>
   </frames_list>
 </data>

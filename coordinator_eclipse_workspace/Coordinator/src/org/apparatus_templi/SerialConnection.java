@@ -23,7 +23,7 @@ public class SerialConnection implements SerialPortEventListener {
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
-//	private static final int DATA_RATE = 115200;
+//	private static final int DATA_RATE = 38400;
 	
 	private boolean connected = false;
 	

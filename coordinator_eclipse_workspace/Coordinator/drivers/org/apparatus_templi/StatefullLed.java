@@ -111,8 +111,8 @@ public class StatefullLed extends ControllerModule {
 		if (ledNum > 2 || ledNum < 0) {
 			Log.e(moduleName, "toggleLED() given invalid led number");
 		} else {
-			Log.d(moduleName, "toggling LED " + ledNum + " on pin " + leds[ledNum] + " to state: " +
-					(ledsState[ledNum]? "OFF" : "ON"));
+//			Log.d(moduleName, "toggling LED " + ledNum + " on pin " + leds[ledNum] + " to state: " +
+//					(ledsState[ledNum]? "OFF" : "ON"));
 			Coordinator.sendCommand(moduleName, String.valueOf(leds[ledNum]) + (ledsState[ledNum]? "0" : "1"));
 			ledsState[ledNum] = !ledsState[ledNum];
 		}
