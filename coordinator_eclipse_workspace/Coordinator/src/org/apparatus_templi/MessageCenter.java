@@ -14,9 +14,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageCenter implements Runnable {
 	private static final String TAG = "MessageCenter";
 	
-	private static final int MAX_DATA_SIZE = 69;
-	private static final byte START_BYTE = (byte)0x0D;
-	
 	//holds all incoming messages
 	private LinkedBlockingDeque<Message> messageQueue = new LinkedBlockingDeque<Message>();
 	
@@ -41,7 +38,7 @@ public class MessageCenter implements Runnable {
 		//+ is really the beginning of a message
 		//TODO check for a correct start byte 0x0D
 		byte startByte = incomingBytes.take();
-		if (startByte == START_BYTE) {
+		if (startByte == Message.START_BYTE) {
 			byte optionsByte = incomingBytes.take();
 			byte dataLengthByte = incomingBytes.take();
 			byte[] fragmentNumBytes = new byte[2];
@@ -141,35 +138,47 @@ public class MessageCenter implements Runnable {
 		//TODO add support for more options
 		boolean sendMessage = true;
 		boolean messageSent = false;
-		if (command.length() <= MAX_DATA_SIZE && fragmentNumber >= 0) {
-			int dataLength = 0;
+		byte[] commandBytes = new byte[command.length()];
+		try {
+			commandBytes = command.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			Log.w(TAG, "unable to translate command '" + command + "' into ASCII byte[]");
+			sendMessage = false;
+		}
+
+		if (commandBytes.length <= Message.MAX_DATA_SIZE && sendMessage) {
+			byte optionsByte = Message.OPTION_TYPE_TEXT;
+			messageSent = sendMessageFragment(moduleName, commandBytes, fragmentNumber, optionsByte);
+		}
+		
+		return messageSent;
+	}
+	
+	private boolean sendMessageFragment(String moduleName, byte[] data, int fragmentNumber, byte optionsByte) {
+		//TODO add support for more options
+		boolean sendMessage = true;
+		boolean messageSent = false;
+		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0) {
 			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
 			byte[] fragmentNum = {fragmentNumberBytes[1], fragmentNumberBytes[0]};
 			byte[] destinationBytes = new byte[10];
-			byte[] commandBytes = {};
+			
 			
 			try {
 				destinationBytes = moduleName.getBytes("UTF-8");
-				commandBytes = command.getBytes("UTF-8");
-				dataLength = commandBytes.length;
-				
-				if (dataLength > MessageCenter.MAX_DATA_SIZE) {
-					Log.w(TAG, "sendCommand() command is too large, automatic fragmentation not yet supported");
-					sendMessage = false;
-				}
 			} catch (UnsupportedEncodingException e) {
-				Log.w(TAG, "unable to translate command '" + command + "' into ASCII byte[]");
+				Log.d(TAG, "unable to translate destination '" + moduleName + "' into UTF-8 byte[]");
 				sendMessage = false;
 			}
-
+	
 			//build the outgoing message byte[]
 			if (sendMessage) {
 				messageSent = true;
-//					Log.d(TAG, "sendCommand() sending '" + command + "' to '" + moduleName);
-				byte[] message = new byte[15 + dataLength];
+				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" + moduleName + "'");
+				byte[] message = new byte[15 + data.length];
 				message[0] = Message.START_BYTE;
-				message[1] = Message.TYPE_TEXT;
-				message[2] = (byte)dataLength;
+				message[1] = optionsByte;
+				message[2] = (byte)data.length;
 				message[3] = fragmentNum[0];
 				message[4] = fragmentNum[1];
 				//copy the destination bytes
@@ -178,8 +187,8 @@ public class MessageCenter implements Runnable {
 				}
 				
 				//copy the data bytes
-				for (int i = 15, j = 0; j < dataLength; i++, j++) {
-					message[i] = commandBytes[j];
+				for (int i = 15, j = 0; j < data.length; i++, j++) {
+					message[i] = data[j];
 				}
 				
 				serialConnection.writeData(message);
@@ -189,53 +198,65 @@ public class MessageCenter implements Runnable {
 				
 		return messageSent;
 	}
+
 	
 	public synchronized boolean sendCommand(String moduleName, String command) {
 		//if the entire command can fit within a single packet then send it
-		boolean results = false;
+		boolean messageSent = false;
 		
-		if (command.length() <= MAX_DATA_SIZE) {
-			results = sendCommandFragment(moduleName, command, 0);
+		if (command.length() <= Message.MAX_DATA_SIZE) {
+			messageSent = sendCommandFragment(moduleName, command, 0);
 		} else {
-			int fragmentNumber = (command.length() / MAX_DATA_SIZE);
+			int fragmentNumber = (command.length() / Message.MAX_DATA_SIZE);
 			int curPos = 0;
 			while (fragmentNumber >= 0 || curPos < command.length()) {
 				String commandFragment;
-				if (curPos + MAX_DATA_SIZE > command.length()) {
+				if (curPos + Message.MAX_DATA_SIZE > command.length()) {
 					commandFragment = command.substring(curPos, command.length());
 				} else {
-					commandFragment = command.substring(curPos, MAX_DATA_SIZE);
+					commandFragment = command.substring(curPos, Message.MAX_DATA_SIZE);
 				}
-				results = sendCommandFragment(moduleName, commandFragment, fragmentNumber);
-				curPos += MAX_DATA_SIZE;
+				messageSent = sendCommandFragment(moduleName, commandFragment, fragmentNumber);
+				curPos += Message.MAX_DATA_SIZE;
 				fragmentNumber--;
 				
 			}
 		}
 		
-		return results;
+		return messageSent;
 	}
-
+	
 	private boolean sendBinaryFragment(String moduleName, byte[] data, int fragmentNumber) {
-		return false;
+		boolean messageSent = false;
+
+		if (data.length <= Message.MAX_DATA_SIZE) {
+			byte optionsByte = Message.OPTION_TYPE_BIN;
+			messageSent = sendMessageFragment(moduleName, data, fragmentNumber, optionsByte);
+		}
+		
+		return messageSent;
 	}
 	
 	public boolean sendBinary(String moduleName, byte[] data) {
-		// TODO Auto-generated method stub
-		//break the command into multiple fragments of MAX_DATA_SIZE or less
-//		byte[] commandBytes = command.getBytes("UTF-8");
-//		int curPos = 0;
-//		int fragmentNum = (commandBytes.length / MAX_DATA_SIZE) + 1;
-//		while (fragmentNum >= 0) {
-//			int payloadSize = ((commandBytes.length - curPos) > MAX_DATA_SIZE) ? MAX_DATA_SIZE : commandBytes.length - curPos;
-//			byte[] payload = new byte[payloadSize];
-//			for (int i = 0; i < payloadSize; i++, curPos++) {
-//				payload[i] = commandBytes[curPos];
-//			}
-//			sendCommandFragment(moduleName, )
-//			
-//		}
-		return false;
+		boolean messageSent = false;
+		//If the data block will fit within a single fragment, then send it
+		if (data.length <= Message.MAX_DATA_SIZE) {
+			messageSent = sendBinaryFragment(moduleName, data, 0);
+		} else {
+			//break the data into multiple fragments of MAX_DATA_SIZE or less
+			int curPos = 0;
+			int fragmentNum = (data.length / Message.MAX_DATA_SIZE);
+			while (fragmentNum >= 0) {
+				int payloadSize = ((data.length - curPos) > Message.MAX_DATA_SIZE) ? Message.MAX_DATA_SIZE : data.length - curPos;
+				byte[] payload = new byte[payloadSize];
+				for (int i = 0; i < payloadSize; i++, curPos++) {
+					payload[i] = data[curPos];
+				}
+				messageSent = sendBinaryFragment(moduleName, payload, fragmentNum);
+				fragmentNum--;
+			}
+		}
+		return messageSent;
 	}
 	
 	public void beginReadingMessages() {
@@ -294,10 +315,11 @@ public class MessageCenter implements Runnable {
 }
 
 class Message {
+	static final int MAX_DATA_SIZE = 69;
 	static final byte START_BYTE = (byte)0x0D;
 	
-	static final byte TYPE_TEXT = (byte)0b0000_0000;
-	static final byte TYPE_BIN  = (byte)0b1000_0000;
+	static final byte OPTION_TYPE_TEXT = (byte)0b0000_0000;
+	static final byte OPTION_TYPE_BIN  = (byte)0b1000_0000;
 	
 	static final int TEXT_TRANSMISSION = 0;
 	static final int BINARY_TRANSMISSION = 1;
@@ -350,7 +372,7 @@ class Message {
 	}
 
 	public int getTransmissionType() {
-		return (options & TYPE_BIN) >> 7;
+		return (options & OPTION_TYPE_BIN) >> 7;
 	}
 }
 	
