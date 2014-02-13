@@ -1,14 +1,17 @@
 package org.apparatus_templi;
 
+import java.util.ArrayList;
+
 abstract class SensorModule extends Driver {
 	/*
 	 * Abstract methods to be implemented in subclass
 	 */
-	public abstract String getSensorList();
+	static final String TYPE = "Sensor";
+	public abstract ArrayList<String> getSensorList();
 	public abstract String getSensorData(String sensorName);
 	
 	String getModuleType() {
-		return "Sensor";
+		return SensorModule.TYPE;
 	}
 
 }

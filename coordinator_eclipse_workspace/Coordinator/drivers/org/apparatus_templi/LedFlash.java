@@ -1,5 +1,7 @@
 package org.apparatus_templi;
 
+import java.util.ArrayList;
+
 /**
  * LedFlash
  * Controls a remote array of LED pixels.
@@ -34,20 +36,21 @@ public class LedFlash extends ControllerModule {
 	 * coded XML response.
 	 */
 	@Override
-	public String getControllerListXML() {
+	public ArrayList<String>  getControllerList() {
 		Log.d(name, "getControllerListXML() returning hard coded value for now");
-		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-							"<controlerList>" +
-								"<controler>" +
-									"<name>LED 1</name>" +
-								"</controler>" +
-								"<controler>" +
-									"<name>LED 2</name>" +
-								"</controler>" +
-								"<controler>" +
-									"<name>LED 1</name>" +
-								"</controler>" +
-							"</controlerList>");
+//		return new String(	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//							"<controlerList>" +
+//								"<controler>" +
+//									"<name>LED 1</name>" +
+//								"</controler>" +
+//								"<controler>" +
+//									"<name>LED 2</name>" +
+//								"</controler>" +
+//								"<controler>" +
+//									"<name>LED 1</name>" +
+//								"</controler>" +
+//							"</controlerList>");
+		return null;
 						
 	}
 	

@@ -1,5 +1,7 @@
 package org.apparatus_templi;
 
+import java.util.ArrayList;
+
 public class LargeCommands extends SensorModule {
 
 	private static final String command1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,<.>/?;:\'\"[{]}\\|-_=+`~";
@@ -28,7 +30,7 @@ public class LargeCommands extends SensorModule {
 	}
 
 	@Override
-	public String getSensorList() {
+	public ArrayList<String>  getSensorList() {
 		// TODO Auto-generated method stub
 		return null;
 	}

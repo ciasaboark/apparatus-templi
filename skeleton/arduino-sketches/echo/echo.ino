@@ -1,11 +1,5 @@
-#include <StandardCplusplus.h>
-#include <system_configuration.h>
-#include <unwind-cxx.h>
-#include <utility.h>
 #include <XBee.h>
 #include <SoftwareSerial.h>
-#include <vector>
-#include <string>
 
 /**
  * Copyright (c) 2009 Andrew Rapp. All rights reserved.
@@ -31,21 +25,8 @@
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "ECHO";
 const int MAX_DATA_SIZE = 69;
-//Each message fragment can hold up to MAX_DATA_SIZE bytes in its payload
-//+ the max reassembled message size is set by the max number of fragments.
-//+ Note that this value is much larger than the amount of memory the
-//+ Arduinos have, so it really only applies to outgoing messages
-const int MAX_MESSAGE_SIZE = MAX_DATA_SIZE * 65536;
-
-//The max (reassembled) message size this particular arduino supports.
-const int MAX_MESSAGE_SIZE_SUPPORTED = MAX_DATA_SIZE * 40;
 
 // const byte START_BYTE = 0b00001101;
-
-//TODO store object reverencing fragment number and data block instead of a simple byte array
-std::vector<byte> fragmentedData;
-// byte fragmentedData[MAX_MESSAGE_SIZE_SUPPORTED];
-// int fragmentIndex = Max
 
 SoftwareSerial softSerial = SoftwareSerial(10, 11);
 XBee xbee = XBee();
@@ -55,7 +36,7 @@ ModemStatusResponse msr = ModemStatusResponse();
 
 void setup() {  
 	// start serial
-	Serial.begin(9600);
+	Serial.begin(115200);
 	softSerial.begin(9600);
 	
 	xbee.begin(softSerial);  //xbee is connected to pins 10 & 11
@@ -64,7 +45,7 @@ void setup() {
 	for (int i = 4; i < 10; i++) {
 		pinMode(i, OUTPUT);
 	}
-	debug("Setup done");
+	Serial.println("Setup done");
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
@@ -133,167 +114,74 @@ void processMessage(uint8_t message[], int messageLength) {
 	if (messageLength >= 15) {
 		// debug("reading start byte");
 		uint8_t startByte = message[0];
-		// memcpy(startByte, message+0, 1);
-		// debug("reading options byte");
-		uint8_t optionsByte = message[1];
-		// memcpy(optionsByte, message+1, 1);
-		// debug("reading data length");
-		uint8_t dataLength = (uint8_t)message[2];
-		// memcpy(NULL, message+2, 1);
-		// debug("reading fragment number");
-		// uint16_t fragmentNumber = ((message[3] << 8) + message[4]);
-		uint8_t fragmentNumber = (message[4]);
-		// debug("reading destination");
-		char* destination = "          ";
-		memcpy(destination, message+5, 10);
-		destination[10] = NULL;
-		String destinationString = String(destination);
-		// Serial.print("destination string: ");
-		// Serial.println(destinationString);
+		if (startByte == (uint8_t) 0x0D) {
+			uint8_t optionsByte = message[1];
+			uint8_t dataLength = (uint8_t)message[2];
+			uint8_t fragmentNumber = (message[3] << 8 | message[4]);
+			char* destination = "          ";
+			memcpy(destination, message+5, 10);
+			String destinationString = String(destination);
+			Serial.print("destination string: ");
+			Serial.println(destinationString);
 
-		// debug("reading data block");
-		uint8_t data[dataLength];
-		memcpy(data, message+15, dataLength);
+			// debug("reading data block");
+			uint8_t data[dataLength];
+			memcpy(data, message+15, dataLength);
 
-		
-		//(destination, 10);
-		// debug("incoming message addressed to " + destinationString);
-		Serial.print("fragment number: ");
-		Serial.println(fragmentNumber);
-		Serial.print(" data size: ");
-		Serial.println(dataLength);
+			
+			//(destination, 10);
+			// debug("incoming message addressed to " + destinationString);
+			Serial.print("fragment number: ");
+			Serial.println(fragmentNumber);
+			Serial.print(" data size: ");
+			Serial.println(dataLength);
 
-		if (fragmentNumber == 0) {
-			// processFragment(optionsByte, dataLength, fragmentNumber, destination, data);
+			processFragment(optionsByte, dataLength, fragmentNumber, destinationString, data);
+		} else {
+			debug("invalid start byte, discarding message");
 		}
-
-
-
 	} else {
 		//flashLED(6, 3);
 		//message is too short to be properly formed
 		//TODO send error log
+		debug("received message too short to be valid, discarding");
 	}
 }
 
-void processFragment(uint8_t* optionsByte, uint8_t dataLength, uint16_t fragmentNumber, String destination, uint8_t* data) {
-
+void processFragment(uint8_t optionsByte, uint8_t dataLength, uint16_t fragmentNumber, String destination, uint8_t data[]) {
+	//Since the arduinos have very limited memory there is little use for receiving
+	//+ fragmented messages.  Every fragment above 0 is discarded.  Make sure to keep
+	//+ the commands and binary you send below the MAX_DATA_SIZE
+	if (fragmentNumber == 0) {
+		if ((optionsByte & 0b10000000) == 0) {
+			debug("message was text");
+			//this was a text command
+			String command = byteArrayToString(data, dataLength);
+			executeCommand(command);
+		} else {
+			debug("message was bin");
+			//this was a binary command
+			executeBinary(data, dataLength);
+		}
+	}
 }
-// void processFragment(byte optionsByte, byte dataLengthByte, int fragmentNo, byte data[]) {
-// 	//flashLED(6, 1);
-// 	debug("processFragment() processing fragment number ");
-// 	Serial.println(fragmentNo);
-// 	//We assume that this fragment number is one less than
-// 	//+ the previously received one.
-// 	int dataLength = (int)dataLengthByte;
-// 	//place the bytes into the vector
-// 	debug("placing data into vector\nVector size originally ");
-// 	Serial.println(fragmentedData.size());
-// 	for (int i = 0; i < dataLength ; i++) {
-// 		fragmentedData.insert(0, data[i]);
-// 	}
-// 	debug("new vector size");
-// 	Serial.println(fragmentedData.size());
-// 	// delay(1000);
-
-// 	if (fragmentNo == 0) {
-// 		debug("fragment was number 0");
-// 		//flashLED(6, 2);
-// 		//it looks like the C++ library we are using does not support vector::data()
-// 		//+ to get a direct pointer to the array backing the vector.  Rebuild a byte[]
-// 		//+ from the data in the vector
-
-// 		//TODO find a better way to do this
-// 		int vectorSize = fragmentedData.size();
-// 		debug("vector size: ");
-// 		Serial.println(vectorSize);		
-
-// 		if ((optionsByte & 0b10000000) == 0) {
-// 			byte fullData[vectorSize + 1];
-// 			for (int i = 0; i < vectorSize; i++) {
-// 				fullData[i] = fragmentedData[i];
-// 			}
-// 			fullData[vectorSize] = NULL;
-// 			debug("message was text");
-// 			//this was a text command
-// 			String command = byteArrayToString(fullData, sizeof(fullData));
-// 			executeCommand(command);
-// 		} else {
-// 			byte fullData[vectorSize];
-// 			for (int i = 0; i < vectorSize; i++) {
-// 				fullData[i] = fragmentedData[i];
-// 			}
-// 			debug("message was bin");
-// 			//this was a binary command
-// 			executeBinary(fullData, sizeof(fullData));
-// 		}
-// 		//clear the fragmented data
-// 		fragmentedData.clear();
-// 	}
-// }
-
-// void processMessage(uint8_t message[], int messageLength) {
-//   if (messageLength >= 15) {
-//     byte destinationBytes[10];
-//     for (int i = 0, j = 5; i < 10; i++, j++) {
-//       destinationBytes[i] = message[j];
-//     }
-//     String destination = byteArrayToString(destinationBytes, 10);
-//     if (MODULE_NAME.compareTo(destination) == 0) {
-//       //this was a message to us
-//       byte startByte = message[0];
-//       byte optionsByte = message[1];
-//       byte dataLengthByte = message[2];
-//       byte fragmentNoBytes[2];
-//       fragmentNoBytes[0] = message[3];
-//       fragmentNoBytes[1] = message[4];
-//       byte dataBytes[messageLength];
-//       for (int i = 0, j = 15; i < messageLength; i++, j++) {
-//         dataBytes[i] = message[j];
-//       }
-
-//       if ((optionsByte & 0b10000000) == 0) {
-//         //this was a text command
-//         executeCommand(byteArrayToString(dataBytes, (int)dataLengthByte));
-//       } else {
-//         //this was a binary command
-//         executeBinary(dataBytes, (int)dataLengthByte);
-//       }
-//     } else if (BROADCAST_TAG.compareTo(destination) == 0) {
-//       //a broadcast message.  respond with "READY"
-//       sendMessage("READY");
-//     } else {
-//       //this was a message for a different module
-//     }    
-//   } else {
-//     //message is too short to be properly formed
-//     //TODO send error log
-//   }
-// }
-
 
 String byteArrayToString(byte data[], int dataLength) {
 	debug("byteArrayToString()");
-	// String str = "";
-	// for (int i = 0; i < dataLength; i++) {
-	// 	String c = String((char)data[i]);
-	// 	Serial.print(c + " ");
-	// 	if (c != NULL) {  //omit null characters
-	// 		str += (char)data[i];
-	// 		Serial.print("!");
-	// 	} else {
-	// 		Serial.print("x");
-	// 	}
-	// }
-
-	String str = String((char*) data);
-	str.trim();
-	debug("decoded string '" + str + "'");
-	return str;
+	String response = "";
+	for (int i = 0; i < dataLength; i++) {
+		char curChar = (char)data[i];
+		if (curChar != NULL) {
+			response += String(curChar);
+		}
+	}
+	debug(response);
+	return response;
 }
 
 void sendCommand(String command) {
-	debug("sendCommand()");
+	debug("sendCommand()\n   ");
+	debug(command);
 	//flashLED(7, 1);
 	if (command.length() <= MAX_DATA_SIZE) {
 		sendCommandFragment(command, 0);
@@ -315,13 +203,14 @@ void sendCommand(String command) {
 }
 
 void debug(String message) {
-	Serial.println(message);
-	Serial.flush();
+	// Serial.println(message);
+	// Serial.flush();
 }
+
 
 void sendCommandFragment(String commandFragment, int fragmentNo) {
 	//flashLED(6, 3);
-	// debug("sendMessage()");
+	debug("sendCommandFragment()");
 	uint8_t payload [15 + commandFragment.length()];
 	payload[1] = (byte)0x00;
 	payload[2] = (byte)commandFragment.length();
@@ -352,7 +241,7 @@ void sendCommandFragment(String commandFragment, int fragmentNo) {
 }
 
 void sendBinary(byte data[], int dataLength) {
-	// debug("sendBinary()");
+	debug("sendBinary()");
 	//TODO check if message needs to be fragmented
 	uint8_t payload [15 + dataLength];
 	payload[0] = (byte)0x0D;
@@ -393,7 +282,7 @@ void executeCommand(String command) {
 * Module specific code to handle incomming binary from the controller
 */
 void executeBinary(byte data[], int dataLength) {
-	// debug("executeBinary()");
+	debug("executeBinary()");
 	//debug("executeBinary");
 	//module specific code here
 	/*

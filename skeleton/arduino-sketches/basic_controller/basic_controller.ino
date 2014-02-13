@@ -69,47 +69,48 @@ void loop() {
 		//+ is not too large
 		//debugreading message header");
 		byte startByte = Serial.read();
-		byte optionsByte = Serial.read();
-		byte dataLengthByte = Serial.read();
-		byte fragmentNoBytes[2];
-		fragmentNoBytes[0] = Serial.read();
-		fragmentNoBytes[1] = Serial.read();
-		byte destinationBytes[10];
-		for (int i = 0; i < 10; i++) {
-			destinationBytes[i] = Serial.read();
-		}
-
-		int dataLength = (int)dataLengthByte;
-
-		String destination = byteArrayToString(destinationBytes, 10);
-		byte dataBytes[dataLength];
-		for (int i = 0; i < dataLength; i++) {
-			dataBytes[i] = Serial.read();
-		}
-
-		//debugmessage in, to '" + destination + "'");
-		// Serial.print("data length ");
-		// Serial.println(dataLength);
-		// Serial.flush();
-
-		//If the message was addressed to us then we can begin processing
-		if (MODULE_NAME.compareTo(destination) == 0) {
-			//debugmessage address to us");
-			processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
-		} else {
-
-			//If this was a broadcast message then we will broadcast the message before
-			//+ starting our own processing
-			if (BROADCAST_TAG.compareTo(destination) == 0) {
-				//debugmessage address to broadcast");
-				broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
-				processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
-			} else {
-				//just transmit the message
-				//debugforwarding message");
-				broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
+		if (startByte == (byte)0x0D) {
+			byte optionsByte = Serial.read();
+			byte dataLengthByte = Serial.read();
+			byte fragmentNoBytes[2];
+			fragmentNoBytes[0] = Serial.read();
+			fragmentNoBytes[1] = Serial.read();
+			byte destinationBytes[10];
+			for (int i = 0; i < 10; i++) {
+				destinationBytes[i] = Serial.read();
 			}
 
+			int dataLength = (int)dataLengthByte;
+
+			String destination = byteArrayToString(destinationBytes, 10);
+			byte dataBytes[dataLength];
+			for (int i = 0; i < dataLength; i++) {
+				dataBytes[i] = Serial.read();
+			}
+
+			//debugmessage in, to '" + destination + "'");
+			// Serial.print("data length ");
+			// Serial.println(dataLength);
+			// Serial.flush();
+
+			//If the message was addressed to us then we can begin processing
+			if (MODULE_NAME.compareTo(destination) == 0) {
+				//debugmessage address to us");
+				processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
+			} else {
+
+				//If this was a broadcast message then we will broadcast the message before
+				//+ starting our own processing
+				if (BROADCAST_TAG.compareTo(destination) == 0) {
+					//debugmessage address to broadcast");
+					broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
+					processMessage(optionsByte, fragmentNoBytes, destination, dataBytes, dataLength);
+				} else {
+					//just transmit the message
+					//debugforwarding message");
+					broadcastMessage(startByte, optionsByte, dataLengthByte, fragmentNoBytes, destinationBytes, dataBytes);
+				}
+			}
 		}
 	}
 

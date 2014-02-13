@@ -1,5 +1,7 @@
 package org.apparatus_templi;
 
+import java.util.ArrayList;
+
 public class Echo extends ControllerModule {
 	public Echo() {
 		this.name = "ECHO";
@@ -8,15 +10,21 @@ public class Echo extends ControllerModule {
 	
 	@Override
 	public void run() {
-//		String command = "Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO ";
-//		String command = "Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO Testing ECHO ";
 		String command = "Testing ECHO";
 		
 		while (running) {
 			Log.d(this.name, "sending " + command.length() + " bytes to echo");
 			try {
-				Coordinator.sendCommand(this.name, command);
-				Thread.sleep(10000);
+				int numTries = 1;
+				String response = Coordinator.sendCommandAndWait(this.name, command, 3);
+				while (!command.equals(response)) {
+					Log.d(this.name, "received malformed response. Send '" + command + "' received '" + response + "'. Retrying...");
+					response = Coordinator.sendCommandAndWait(this.name, command, 3);
+					numTries++;
+				}
+				
+				Log.d(this.name, "Received correct response after " + numTries + " tries\n");
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -26,7 +34,7 @@ public class Echo extends ControllerModule {
 	}
 
 	@Override
-	String getControllerListXML() {
+	ArrayList<String> getControllerList() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -63,9 +63,9 @@ public class MessageCenter implements Runnable {
 			}
 			
 			int dataLength = (int)dataLengthByte;
-			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
+//			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
 			
-			//wait until the payload data is avaiable
+			//wait until the payload data is available
 			while (incomingBytes.size() < dataLength) {
 //				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
 				Thread.yield();
@@ -85,14 +85,14 @@ public class MessageCenter implements Runnable {
 					Log.d(TAG, "fragmented message to " + destination + " is complete");
 					Message m = fragmentedMessages.get(destination).getCompleteMessage();
 					fragmentedMessages.remove(destination);
-					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+//					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
 					messageQueue.put(m);
 				} else {
 					Log.d(TAG, "waiting on more fragments for message to: " + destination);
 				}
 			} else {
 				Message m = new Message(optionsByte, dataLength, destination, payloadData);
-				Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+//				Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
 				messageQueue.put(m);
 			}
 			
@@ -217,9 +217,9 @@ public class MessageCenter implements Runnable {
 			//build the outgoing message byte[]
 			if (sendMessage) {
 				messageSent = true;
-				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" + moduleName
-						+ "', fragment num: " + fragmentNumber + " of type "
-						+ ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
+//				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" + moduleName
+//						+ "', fragment num: " + fragmentNumber + " of type "
+//						+ ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
 				byte[] message = new byte[15 + data.length];
 				message[0] = Message.START_BYTE;
 				message[1] = optionsByte;
@@ -241,7 +241,7 @@ public class MessageCenter implements Runnable {
 		}
 		
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -306,7 +306,7 @@ public class MessageCenter implements Runnable {
 }
 
 class Message {
-	static final int MAX_DATA_SIZE = 40;
+	static final int MAX_DATA_SIZE = 25;
 	static final byte START_BYTE = (byte)0x0D;
 	
 	static final byte OPTION_TYPE_TEXT = (byte)0b0000_0000;
@@ -412,7 +412,7 @@ class FragmentedMessage {
 		int fragmentNum = fragment.getFragmentNo();
 		if (fragments.containsKey(fragmentNum)) {
 			//oops somehow we got two fragments
-			Log.e(TAG,  "incoming message fragment '" + fragmentNum + "' will overwrite an existing fragment");
+//			Log.e(TAG,  "incoming message fragment '" + fragmentNum + "' will overwrite an existing fragment");
 		}
 		fragments.put(fragmentNum, fragment);
 	}

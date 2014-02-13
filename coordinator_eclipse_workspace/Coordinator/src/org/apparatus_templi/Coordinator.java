@@ -105,23 +105,26 @@ public class Coordinator {
 		//+ driver "a" could call this method with a moduleName "b". The first response
 		//+ to "b" within the waitPeriod will be routed back to "a".
 		String responseData = null;
-		sendCommand(moduleName, command);
-		long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
-		while (System.currentTimeMillis() < endTime) {
-			if (messageCenter.isMessageAvailable()) {
-				Message m = messageCenter.getMessage();
-				if (m.getDestination().equals(moduleName)) {
-					try {
-						responseData = new String(m.getData(), "UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						Log.d(TAG, "sendCommandAndWait() error converting returned data to String");
+		if (waitPeriod <= 6) {
+			sendCommand(moduleName, command);
+			long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
+			while (System.currentTimeMillis() < endTime) {
+				if (messageCenter.isMessageAvailable()) {
+					Message m = messageCenter.getMessage();
+					if (m.getDestination().equals(moduleName)) {
+						try {
+							responseData = new String(m.getData(), "UTF-8");
+							break;
+						} catch (UnsupportedEncodingException e) {
+							Log.d(TAG, "sendCommandAndWait() error converting returned data to String");
+							break;
+						}
+					} else {
+						routeIncomingMessage(m);
 					}
-				} else {
-					routeIncomingMessage(m);
 				}
 			}
 		}
-		
 		return responseData;
 	}
 	
@@ -269,6 +272,29 @@ public class Coordinator {
 		return remoteModules.containsKey(moduleName);
 	}
 	
+	static synchronized ArrayList<String> getSensorList(String driverName) {
+		ArrayList<String> results = new ArrayList<String>();
+		if (loadedDrivers.containsKey(driverName)) {
+			Driver d = loadedDrivers.get(driverName);
+			if (d.getModuleType().equals(SensorModule.TYPE)) {
+					results = ((SensorModule)d).getSensorList();
+			}
+		}
+		return results;
+	}
+	
+	static synchronized ArrayList<String> getControllerList(String driverName) {
+		ArrayList<String> results = new ArrayList<String>();
+		if (loadedDrivers.containsKey(driverName)) {
+			Driver d = loadedDrivers.get(driverName);
+			if (d.getModuleType().equals(ControllerModule.TYPE)) {
+					results = ((ControllerModule)d).getControllerList();
+			}
+		}
+		return results;
+	}
+	
+	
 	/**
 	 * Returns a list of all loaded drivers.
 	 * @return an ArrayList<String> of driver names.
@@ -373,12 +399,12 @@ public class Coordinator {
 		
 		//query for remote modules.  Since the modules may be slow in responding
 		//+ we will wait for a few seconds to make sure we get a complete list
-		System.out.print(TAG + ":" + "Querying modules.");
+		System.out.print(TAG + ":" + "Querying modules (6s wait).");
 		messageCenter.beginReadingMessages();
 		//begin processing incoming messages
 		new Thread(messageCenter).start();
 		queryRemoteModules();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 6; i++) {
 			if (messageCenter.isMessageAvailable()) {
 				routeIncomingMessage(messageCenter.getMessage());
 			}
@@ -420,16 +446,16 @@ public class Coordinator {
 //        	}
 //        }
 //        
-        if (driver2.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
-		        loadedDrivers.put(driver2.getModuleName(), driver2);
-		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
-        	} else {
-        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
-        				driver2.getModuleName() + " already exists");
-        	}
-        }
-		
+//        if (driver2.getModuleName() != null) {
+//        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
+//		        loadedDrivers.put(driver2.getModuleName(), driver2);
+//		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
+//        	} else {
+//        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
+//        				driver2.getModuleName() + " already exists");
+//        	}
+//        }
+//		
 //		if (driver3.getModuleName() != null) {
 //        	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
 //		        loadedDrivers.put(driver3.getModuleName(), driver3);
@@ -458,17 +484,8 @@ public class Coordinator {
         }
         
         //start the web interface
-        /*
-         * This may not work because there is not reason to pass the port number to the constructor because 
-         * you have to call the bind method and send it an InetSockAddress with a port number
-         * may need to be something like 
-         * new SimpletHttpServer(new InetSockAddress(InetAddress.getHostByName("127.0.0.1"). portNum), portNum).bind().start()
-         * Creating the server like this causes you to no longer have a reference to the it, so how do you plan on calling any other methods on
-         * behalf of the SimpleHttpServer?
-         * 
-         */
         Log.c(TAG, "Starting web server on port " + portNum);
-        new SimpleHttpServer().start();
+        new Thread(new SimpleHttpServer(portNum)).start();
         
 		//enter main loop
         while (true) {

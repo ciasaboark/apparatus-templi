@@ -1,5 +1,7 @@
 package org.apparatus_templi;
 
+import java.util.ArrayList;
+
 /**
  * StatefullLed
  * A driver for a remote module with a number of LEDs.  Each LED
@@ -118,7 +120,7 @@ public class StatefullLed extends ControllerModule {
 	}
 
 	@Override
-	public String getControllerListXML() {
+	public ArrayList<String>  getControllerList() {
 		Log.w(this.name, "getControllerListXML() unimplimented for now");
 		return null;
 	}
