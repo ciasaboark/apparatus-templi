@@ -163,6 +163,12 @@ public class SerialConnection implements SerialPortEventListener {
 			 Log.e(TAG, "error writing byte[] data to output, trying to re-connect:");
 			 initialize(null);
 		 }
+		 try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		 return dataWritten;
 	 }
 	 
