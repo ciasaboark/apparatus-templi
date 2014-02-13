@@ -1,98 +1,24 @@
 package org.apparatus_templi;
 
-import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.concurrent.Executor;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import java.net.Socket;
+import java.io.IOException;
 
-public class SimpleHttpServer extends HttpServer implements Runnable {
+import com.sun.net.httpserver.*;
+
+public class SimpleHttpServer implements Runnable {
+	private static HttpServer server;
 	
-	private Socket sock;
-	private InetSocketAddress addr;
-	
-	/*
-	 * Removed portNum parameter form constructor because you have to call
-	 * bind before starting the server
-	 */
-	public SimpleHttpServer() {
+	public SimpleHttpServer(int portNumber) {
+		try {
+			server = HttpServer.create(new InetSocketAddress(InetAddress.getLocalHost(), portNumber), 0);
+		} catch (IOException e) {
+			Log.e("error", "Failed to initialize the server");
+		}
 	}
-	
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
+		server.start();
 	}
-
-	@Override
-	public void bind(InetSocketAddress address, int port) throws IOException {
-		try {
-			addr = address;
-			if(addr != null) {
-				sock = new Socket(addr.getAddress(), port);
-			} else {
-				Log.e("error", "InetSocketAddress was not initialized");
-			}
-		}
-		catch(IOException e) {
-			Log.e("error","The socket failed to initialize");
-		}
-
-	}
-
-	@Override
-	public HttpContext createContext(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HttpContext createContext(String arg0, HttpHandler arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public InetSocketAddress getAddress() {
-		return addr;
-	}
-
-	@Override
-	public Executor getExecutor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void removeContext(String arg0) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeContext(HttpContext arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setExecutor(Executor arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void start() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void stop(int arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
