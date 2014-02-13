@@ -138,7 +138,7 @@ public class LedFlash extends ControllerModule {
 						Log.d(name, "message could not be sent");
 					}
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -31,34 +31,30 @@ public class Coordinator {
 
 	private static synchronized void routeIncomingMessage(Message m) {
 //		Log.d(TAG, "routeIncomingMessage()");
-		try {
-			String destination = new String(m.getDestination(), "UTF-8").trim();
-			if (!isModulePresent(destination)) {
-				Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
-				remoteModules.put(destination, "");
-			}
-			
-			if (loadedDrivers.containsKey(destination)) {
-				Driver driver = loadedDrivers.get(destination);
-				if (driver.getState() == Thread.State.TERMINATED) {
-					Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
-					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
-						driver.queueBinary(m.getData());
-					} else {
-						driver.queueCommand(new String(m.getData()));
-					}
+		String destination = m.getDestination();
+		if (!isModulePresent(destination)) {
+//			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
+			remoteModules.put(destination, "");
+		}
+		
+		if (loadedDrivers.containsKey(destination)) {
+			Driver driver = loadedDrivers.get(destination);
+			if (driver.getState() == Thread.State.TERMINATED) {
+				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
+				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+					driver.queueBinary(m.getData());
 				} else {
-					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
-						driver.receiveBinary(m.getData());
-					} else {
-						driver.receiveCommand(new String(m.getData()));
-					}
+					driver.queueCommand(new String(m.getData()));
 				}
 			} else {
-				Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
+				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+					driver.receiveBinary(m.getData());
+				} else {
+					driver.receiveCommand(new String(m.getData()));
+				}
 			}
-		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "unable to convert message's destination field into a string, discarding");
+		} else {
+//			Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
 		}
 	}
 
@@ -93,21 +89,40 @@ public class Coordinator {
 	
 	/**
 	 * Sends a message to a remote module and waits waitPeriod seconds for a response.
-	 * @param name the unique name of the remote module
+	 * @param name the unique name of the remote module. This name should match the calling
+	 * 	driver, since this name is used to match the destination field of the incoming
+	 * 	message.
 	 * @param command the command to send to the remote module 
 	 * @param waitPeriod how many seconds to wait for a response.  Maximum period to wait
 	 * 	is 6 seconds.
-	 * @return the byte[] of data that the remote module responded with, or null if there
-	 * 	was no response.
+	 * @return the String of data that the remote module responded with, or null if there
+	 * 	was no response. Note that the first incoming response is returned. If another
+	 * 	message addressed to this 
 	 */
-	static synchronized byte[] sendCommandAndWait(String name, String command, int waitPeriod) {
+	static synchronized String sendCommandAndWait(String moduleName, String command, int waitPeriod) {
 //		Log.d(TAG, "sendCommandAndWait()");
-		//TODO: since this is a blocking method this could easily be abused by the drivers to bring down
-		//+ the system.  It might need to be removed, or to limit the number of times any driver can call
-		//+ this method in a given time period.
-		byte[] data = null;
+		//TODO this method provides no security mechanisms. It is possible that the calling
+		//+ driver "a" could call this method with a moduleName "b". The first response
+		//+ to "b" within the waitPeriod will be routed back to "a".
+		String responseData = null;
+		sendCommand(moduleName, command);
+		long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
+		while (System.currentTimeMillis() < endTime) {
+			if (messageCenter.isMessageAvailable()) {
+				Message m = messageCenter.getMessage();
+				if (m.getDestination().equals(moduleName)) {
+					try {
+						responseData = new String(m.getData(), "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						Log.d(TAG, "sendCommandAndWait() error converting returned data to String");
+					}
+				} else {
+					routeIncomingMessage(m);
+				}
+			}
+		}
 		
-		return data;
+		return responseData;
 	}
 	
 	/**
@@ -363,7 +378,7 @@ public class Coordinator {
 		//begin processing incoming messages
 		new Thread(messageCenter).start();
 		queryRemoteModules();
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 10; i++) {
 			if (messageCenter.isMessageAvailable()) {
 				routeIncomingMessage(messageCenter.getMessage());
 			}
@@ -388,7 +403,10 @@ public class Coordinator {
         Driver driver2 = new StatefullLed();
         
         //testing large commands
-		Driver driver3 = new LargeCommands();
+//		Driver driver3 = new LargeCommands();
+		
+		//testing echo driver
+		Driver driver4 = new Echo();
      
         //only drivers with valid names are added
         //TODO make this generic
@@ -401,7 +419,7 @@ public class Coordinator {
 //        				driver1.getModuleName() + " already exists");
 //        	}
 //        }
-        
+//        
         if (driver2.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
 		        loadedDrivers.put(driver2.getModuleName(), driver2);
@@ -412,13 +430,23 @@ public class Coordinator {
         	}
         }
 		
-		if (driver3.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
-		        loadedDrivers.put(driver3.getModuleName(), driver3);
-		        Log.d(TAG, "driver " + driver3.getModuleName() + " of type " + driver3.getModuleType() + " initialized");
+//		if (driver3.getModuleName() != null) {
+//        	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
+//		        loadedDrivers.put(driver3.getModuleName(), driver3);
+//		        Log.d(TAG, "driver " + driver3.getModuleName() + " of type " + driver3.getModuleType() + " initialized");
+//        	} else {
+//        		Log.e(TAG, "error loading driver " + driver3.getClass().getName() + " a driver with the name " +
+//        				driver3.getModuleName() + " already exists");
+//        	}
+//        }
+		
+		if (driver4.getModuleName() != null) {
+        	if (!loadedDrivers.containsKey(driver4.getModuleName())) {
+		        loadedDrivers.put(driver4.getModuleName(), driver4);
+		        Log.d(TAG, "driver " + driver4.getModuleName() + " of type " + driver4.getModuleType() + " initialized");
         	} else {
-        		Log.e(TAG, "error loading driver " + driver3.getClass().getName() + " a driver with the name " +
-        				driver3.getModuleName() + " already exists");
+        		Log.e(TAG, "error loading driver " + driver4.getClass().getName() + " a driver with the name " +
+        				driver4.getModuleName() + " already exists");
         	}
         }
         

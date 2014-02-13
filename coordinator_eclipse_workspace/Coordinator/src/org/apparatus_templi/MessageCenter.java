@@ -4,10 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,7 +20,7 @@ public class MessageCenter implements Runnable {
 	private LinkedBlockingQueue<Byte> incomingBytes = new LinkedBlockingQueue<Byte>();
 	
 	//group incoming message fragments by the destination byte[]
-	private HashMap<byte[], FragmentedMessage> messageFragments = new HashMap<byte[], FragmentedMessage>();;
+	private HashMap<String, FragmentedMessage> fragmentedMessages = new HashMap<String, FragmentedMessage>();;
 	
 	private boolean readMessages = false;
 	
@@ -51,16 +50,24 @@ public class MessageCenter implements Runnable {
 			fragmentNum += fragmentNumBytes[1];
 			
 			
+			
+			
 			for (int i = 0; i < 10; i++) {
 				destinationBytes[i] = incomingBytes.take();
 			}
+			String destination = "";
+			try {
+				destination = new String(destinationBytes, "UTF-8").trim();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 			
 			int dataLength = (int)dataLengthByte;
-//			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
+			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
 			
 			//wait until the payload data is avaiable
 			while (incomingBytes.size() < dataLength) {
-				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
+//				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
 				Thread.yield();
 				Thread.sleep(30);
 			}
@@ -70,10 +77,22 @@ public class MessageCenter implements Runnable {
 				payloadData[i] = incomingBytes.take();
 			}
 			
-			if (messageFragments.containsKey(destinationBytes) || fragmentNum != 0) {
-				storeMessageFragment(optionsByte, dataLengthByte, fragmentNum, destinationBytes, payloadData);
+			if (fragmentedMessages.containsKey(destination) || fragmentNum != 0) {
+				storeMessageFragment(optionsByte, dataLengthByte, fragmentNum, destination, payloadData);
+			} else if (fragmentedMessages.containsKey(destination) && fragmentNum == 0) {
+				storeMessageFragment(optionsByte, dataLengthByte, fragmentNum, destination, payloadData);
+				if (fragmentedMessages.get(destination).isMessageComplete()) {
+					Log.d(TAG, "fragmented message to " + destination + " is complete");
+					Message m = fragmentedMessages.get(destination).getCompleteMessage();
+					fragmentedMessages.remove(destination);
+					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+					messageQueue.put(m);
+				} else {
+					Log.d(TAG, "waiting on more fragments for message to: " + destination);
+				}
 			} else {
-				Message m = new Message(optionsByte, dataLength, destinationBytes, payloadData);
+				Message m = new Message(optionsByte, dataLength, destination, payloadData);
+				Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
 				messageQueue.put(m);
 			}
 			
@@ -86,12 +105,12 @@ public class MessageCenter implements Runnable {
 	}
 
 	private void storeMessageFragment(byte optionsByte, int dataLength, int fragmentNum,
-											 byte[] destinationBytes, byte[] payloadData) throws IOException {
-		MessageFragment mf = new MessageFragment(optionsByte, dataLength, fragmentNum, destinationBytes, payloadData);
-		FragmentedMessage fragments = messageFragments.get(destinationBytes);
+											 String destination, byte[] payloadData) throws IOException {
+		MessageFragment mf = new MessageFragment(optionsByte, dataLength, fragmentNum, destination, payloadData);
+		FragmentedMessage fragments = fragmentedMessages.get(destination);
 		if (fragments != null) {
 			fragments.storeFragment(mf);
-			messageFragments.put(destinationBytes, fragments);
+			fragmentedMessages.put(destination, fragments);
 		} else {
 			fragments = new FragmentedMessage();
 			fragments.storeFragment(mf);
@@ -102,55 +121,79 @@ public class MessageCenter implements Runnable {
 				Message m = fragments.getCompleteMessage();
 				messageQueue.add(m);
 			} else {
-				messageFragments.put(destinationBytes, fragments);
+				fragmentedMessages.put(destination, fragments);
 			}
 		}
 		
 	}
 	
-	public static MessageCenter getInstance() {
+	static MessageCenter getInstance() {
 		if (instance == null) {
 			instance = new MessageCenter();
 		}
 		return instance;
 	}
 	
-	public synchronized Message getMessage() {
+	synchronized Message getMessage() {
 		Message m = null;
 		m = messageQueue.poll();
 		return m;
 	}
 	
-	public synchronized boolean isMessageAvailable() {
+	synchronized boolean isMessageAvailable() {
 		return !messageQueue.isEmpty();
 	}
 	
-	public synchronized int queuedMessages() {
+	synchronized int queuedMessages() {
 		return messageQueue.size();
 	}
 
-	public void incomingSerial(byte b) throws InterruptedException, IOException {
+	void incomingSerial(byte b) throws InterruptedException, IOException {
 //		Log.d(TAG, "incomingSerial(0x" + Integer.toString(b, 16) + ") char:" + new String(new byte[] {b}));
 		incomingBytes.put(b);
 	}
 	
-	private synchronized boolean sendCommandFragment(String moduleName, String command, int fragmentNumber) {
-		//TODO add support for more options
+	synchronized boolean sendCommand(String moduleName, String command) {
 		boolean sendMessage = true;
 		boolean messageSent = false;
-		byte[] commandBytes = new byte[command.length()];
+		byte[] commandBytes = {};
+		
 		try {
 			commandBytes = command.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			Log.w(TAG, "unable to translate command '" + command + "' into ASCII byte[]");
 			sendMessage = false;
 		}
-
-		if (commandBytes.length <= Message.MAX_DATA_SIZE && sendMessage) {
-			byte optionsByte = Message.OPTION_TYPE_TEXT;
-			messageSent = sendMessageFragment(moduleName, commandBytes, fragmentNumber, optionsByte);
+		
+		if (sendMessage) {
+			messageSent = sendMessage(moduleName, commandBytes, Message.OPTION_TYPE_TEXT);
 		}
 		
+		return messageSent;
+	}
+	
+	synchronized boolean sendBinary(String moduleName, byte[] data) {
+		return sendMessage(moduleName, data, Message.OPTION_TYPE_BIN);
+	}
+	
+	private boolean sendMessage(String moduleName, byte[] data, byte options) {
+		boolean messageSent = false;
+		//If the data block will fit within a single fragment, then send it
+		if (data.length <= Message.MAX_DATA_SIZE) {
+			messageSent = sendMessageFragment(moduleName, data, 0, options);
+		} else {
+			//break the data into multiple fragments of MAX_DATA_SIZE or less
+			int curPos = 0;
+			int fragmentNum = (data.length / Message.MAX_DATA_SIZE);
+			while (fragmentNum >= 0) {
+				int payloadSize = ((data.length - curPos) > Message.MAX_DATA_SIZE) ? Message.MAX_DATA_SIZE : data.length - curPos;
+				byte[] payload = new byte[payloadSize];
+				for (int i = 0; i < payloadSize; i++, curPos++) {
+					payload[i] = data[curPos];
+				}
+				messageSent = sendMessageFragment(moduleName, payload, fragmentNum, options);
+				fragmentNum--;
+			}
+		}
 		return messageSent;
 	}
 	
@@ -160,7 +203,7 @@ public class MessageCenter implements Runnable {
 		boolean messageSent = false;
 		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0) {
 			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
-			byte[] fragmentNum = {fragmentNumberBytes[1], fragmentNumberBytes[0]};
+			byte[] fragmentNum = {fragmentNumberBytes[2], fragmentNumberBytes[3]};
 			byte[] destinationBytes = new byte[10];
 			
 			
@@ -196,76 +239,22 @@ public class MessageCenter implements Runnable {
 				serialConnection.writeData(message);
 			}
 		}
-				
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
 		return messageSent;
 	}
 
-	
-	public synchronized boolean sendCommand(String moduleName, String command) {
-		//if the entire command can fit within a single packet then send it
-		boolean messageSent = false;
-		
-		if (command.length() <= Message.MAX_DATA_SIZE) {
-			messageSent = sendCommandFragment(moduleName, command, 0);
-		} else {
-			int fragmentNumber = (command.length() / Message.MAX_DATA_SIZE);
-			int curPos = 0;
-			while (fragmentNumber >= 0 || curPos < command.length()) {
-				String commandFragment;
-				if (curPos + Message.MAX_DATA_SIZE > command.length()) {
-					commandFragment = command.substring(curPos, command.length());
-				} else {
-					commandFragment = command.substring(curPos, Message.MAX_DATA_SIZE);
-				}
-				messageSent = sendCommandFragment(moduleName, commandFragment, fragmentNumber);
-				curPos += Message.MAX_DATA_SIZE;
-				fragmentNumber--;
-				
-			}
-		}
-		
-		return messageSent;
-	}
-	
-	private boolean sendBinaryFragment(String moduleName, byte[] data, int fragmentNumber) {
-		boolean messageSent = false;
-
-		if (data.length <= Message.MAX_DATA_SIZE) {
-			byte optionsByte = Message.OPTION_TYPE_BIN;
-			messageSent = sendMessageFragment(moduleName, data, fragmentNumber, optionsByte);
-		}
-		
-		return messageSent;
-	}
-	
-	public boolean sendBinary(String moduleName, byte[] data) {
-		boolean messageSent = false;
-		//If the data block will fit within a single fragment, then send it
-		if (data.length <= Message.MAX_DATA_SIZE) {
-			messageSent = sendBinaryFragment(moduleName, data, 0);
-		} else {
-			//break the data into multiple fragments of MAX_DATA_SIZE or less
-			int curPos = 0;
-			int fragmentNum = (data.length / Message.MAX_DATA_SIZE);
-			while (fragmentNum >= 0) {
-				int payloadSize = ((data.length - curPos) > Message.MAX_DATA_SIZE) ? Message.MAX_DATA_SIZE : data.length - curPos;
-				byte[] payload = new byte[payloadSize];
-				for (int i = 0; i < payloadSize; i++, curPos++) {
-					payload[i] = data[curPos];
-				}
-				messageSent = sendBinaryFragment(moduleName, payload, fragmentNum);
-				fragmentNum--;
-			}
-		}
-		return messageSent;
-	}
-	
-	public void beginReadingMessages() {
+	void beginReadingMessages() {
 		readMessages = true;
 	}
 	
-	public byte[] readBytesUntil(byte termByte) throws InterruptedException {
+	byte[] readBytesUntil(byte termByte) throws InterruptedException {
 		byte[] bytes = {};
 		if (readMessages) {
 			Log.w(TAG, "asked to read raw bytes while automatic processing is ongoing, returning empty byte[]");
@@ -284,11 +273,11 @@ public class MessageCenter implements Runnable {
 		return bytes;
 	}
 	
-	public boolean isSerialConnected() {
+	boolean isSerialConnected() {
 		return serialConnectionReady;
 	}
 
-	public void setSerialConnection(SerialConnection serialConnection) {
+	void setSerialConnection(SerialConnection serialConnection) {
 		this.serialConnection = serialConnection;
 		
 	}
@@ -317,7 +306,7 @@ public class MessageCenter implements Runnable {
 }
 
 class Message {
-	static final int MAX_DATA_SIZE = 69;
+	static final int MAX_DATA_SIZE = 40;
 	static final byte START_BYTE = (byte)0x0D;
 	
 	static final byte OPTION_TYPE_TEXT = (byte)0b0000_0000;
@@ -329,10 +318,10 @@ class Message {
 	
 	private byte options;
 	private int dataLength;
-	private byte[] destination;
+	private String destination;
 	private byte[] data;
 	
-	public Message(byte options, int dataLength, byte[] destination, byte[] data) {
+	public Message(byte options, int dataLength, String destination, byte[] data) {
 		this.options = options;
 		this.dataLength = dataLength;
 		this.destination = destination;
@@ -341,7 +330,7 @@ class Message {
 
 	public Message() {}
 	
-	public byte[] getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 
@@ -365,7 +354,7 @@ class Message {
 		this.dataLength = dataLength;
 	}
 
-	public void setDestination(byte[] destination) {
+	public void setDestination(String destination) {
 		this.destination = destination;
 	}
 
@@ -383,10 +372,10 @@ class MessageFragment {
 	private byte options;
 	private int  dataLength;
 	private int fragmentNo;
-	private byte[] destination;
+	private String destination;
 	private byte[] data;
 	
-	public MessageFragment (byte options, int dataLength, int fragmentNum, byte[] destination, byte[] data) {
+	public MessageFragment (byte options, int dataLength, int fragmentNum, String destination, byte[] data) {
 		this.options = options;
 		this.dataLength = dataLength;
 		this.fragmentNo = fragmentNum;
@@ -406,7 +395,7 @@ class MessageFragment {
 		return fragmentNo;
 	}
 
-	public byte[] getDestination() {
+	public String getDestination() {
 		return destination;
 	}
 
@@ -417,7 +406,7 @@ class MessageFragment {
 
 class FragmentedMessage {
 	static final String TAG = "FragmentedMessage";
-	private SortedMap<Integer, MessageFragment> fragments;
+	private SortedMap<Integer, MessageFragment> fragments = new TreeMap<Integer, MessageFragment>();
 	
 	public void storeFragment(MessageFragment fragment) {
 		int fragmentNum = fragment.getFragmentNo();
