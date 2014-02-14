@@ -100,7 +100,7 @@ public class MessageCenter implements Runnable {
 		} else {
 			//Since this byte did not match the start byte we will discard it.
 			//+ This process will continue until a proper start byte is found.
-			Log.w(TAG, "readMessage() read a malformed message, discarding this byte");
+			Log.w(TAG, "readMessage() read a malformed message, discarding this byte: '" + new String(new byte[] {startByte}) + "'");
 		}
 	}
 
@@ -241,7 +241,7 @@ public class MessageCenter implements Runnable {
 		}
 		
 		try {
-			Thread.sleep(500);
+			Thread.sleep(20);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -306,7 +306,7 @@ public class MessageCenter implements Runnable {
 }
 
 class Message {
-	static final int MAX_DATA_SIZE = 25;
+	static final int MAX_DATA_SIZE = 69;
 	static final byte START_BYTE = (byte)0x0D;
 	
 	static final byte OPTION_TYPE_TEXT = (byte)0b0000_0000;

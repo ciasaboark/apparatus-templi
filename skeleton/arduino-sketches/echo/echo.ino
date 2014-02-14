@@ -71,11 +71,6 @@ void loop() {
 						// we got it (obviously) but sender didn't get an ACK
 				}
 				debug("incoming zigbee packet");
-				// uint8_t data[rx.getDataLength()];
-				// memcpy(data, )
-				// for (int i = 0; i < rx.getDataLength(); i++) {
-				// 	data[i] = rx.getData(i);
-				// }
 				// debug("processing message");
 				processMessage(rx.getData(), rx.getDataLength());
 					
@@ -203,8 +198,8 @@ void sendCommand(String command) {
 }
 
 void debug(String message) {
-	// Serial.println(message);
-	// Serial.flush();
+	Serial.println(message);
+	Serial.flush();
 }
 
 
@@ -237,7 +232,7 @@ void sendCommandFragment(String commandFragment, int fragmentNo) {
 	xbee.send(zbTx);
 
 	//TESTING - maybe this will keep the coordinator from being overwhelmed
-	delay(500);
+	// delay(500);
 }
 
 void sendBinary(byte data[], int dataLength) {

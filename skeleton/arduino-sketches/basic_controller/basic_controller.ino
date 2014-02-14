@@ -83,8 +83,12 @@ void loop() {
 			int dataLength = (int)dataLengthByte;
 
 			String destination = byteArrayToString(destinationBytes, 10);
+
 			byte dataBytes[dataLength];
 			for (int i = 0; i < dataLength; i++) {
+				while (!Serial.available()) {
+					delay(30);	//block until a byte is ready
+				}
 				dataBytes[i] = Serial.read();
 			}
 

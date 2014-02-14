@@ -10,7 +10,8 @@ public class Echo extends ControllerModule {
 	
 	@Override
 	public void run() {
-		String command = "Testing ECHO";
+//		String command = "Testing ECHO";
+		String command = "123456789012345678901234567890123456789012345678901234567890123456789";
 		
 		while (running) {
 			Log.d(this.name, "sending " + command.length() + " bytes to echo");
@@ -24,7 +25,7 @@ public class Echo extends ControllerModule {
 				}
 				
 				Log.d(this.name, "Received correct response after " + numTries + " tries\n");
-				Thread.sleep(1000);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
