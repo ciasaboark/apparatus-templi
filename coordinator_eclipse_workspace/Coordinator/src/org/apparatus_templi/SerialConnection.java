@@ -17,20 +17,19 @@ public class SerialConnection implements SerialPortEventListener {
 	SerialPort serialPort;
 	private static LinkedHashSet<String> portNames;
 	private InputStream input;
-	/** The output stream to the port */
 	private OutputStream output;
-	/** Milliseconds to block while waiting for port open */
+	
+
 	private static final int TIME_OUT = 2000;
-	/** Default bits per second for COM port. */
+
 	private static final int DATA_RATE = 9600;
-//	private static final int DATA_RATE = 38400;
 	
 	private boolean connected = false;
 	
 	public SerialConnection() {
 		this(null);
 	}
-//preferred
+	
 	public SerialConnection(String preferredConnection) {
 		portNames = new LinkedHashSet<String>();
 		if (preferredConnection != null) {
@@ -79,7 +78,7 @@ public class SerialConnection implements SerialPortEventListener {
 		}
 
 		try {
-			// open serial port, and use class name for the appName.
+			//open the serial port
 			serialPort = (SerialPort) portId.open(TAG, TIME_OUT);
 
 			// set port parameters
@@ -137,9 +136,9 @@ public class SerialConnection implements SerialPortEventListener {
 	synchronized boolean isDataAvailable() {
 		boolean available = false;
 		try {
-				if (input.available() > 0) {
-					available = true;
-				}
+			if (input.available() > 0) {
+				available = true;
+			}
 		} catch (IOException e) {
 			Log.e(TAG, "isDataAvaiable() error reading input stream");
 		}
@@ -155,7 +154,7 @@ public class SerialConnection implements SerialPortEventListener {
 	 synchronized boolean writeData(byte[] data) {
 		 boolean dataWritten = false;
 		 try {
-//	    	Log.d(TAG,  "writing byte[] data to output: " + new String(data));
+	    	//Log.d(TAG,  "writing byte[] data to output: " + new String(data));
 			 output.write(data);
 			 output.flush();
 			 dataWritten = true;
@@ -172,7 +171,7 @@ public class SerialConnection implements SerialPortEventListener {
 		 return dataWritten;
 	 }
 	 
-	 void flushSerialLine() throws IOException {
-		input.skip(input.available());
-	}
+//	 void flushSerialLine() throws IOException {
+//		input.skip(input.available());
+//	}
 }

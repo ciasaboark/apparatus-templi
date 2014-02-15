@@ -8,6 +8,8 @@ import java.util.ArrayList;
  * A driver extending this class would likely be paired with
  * a remote module that expects to take commands, but will
  * not otherwise act on its own.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 public abstract class ControllerModule extends Driver {	
 	/**

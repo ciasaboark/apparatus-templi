@@ -24,8 +24,9 @@ import org.apache.commons.cli.ParseException;
 public class Coordinator {
 	private static final String TAG = "Coordinator";
 
-	private static HashMap<String, String> remoteModules = new HashMap<String, String>();
-	private static HashMap<String, Driver> loadedDrivers = new HashMap<String, Driver>();
+	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
+	private static HashMap<String, Driver> loadedDrivers   = new HashMap<String, Driver>();
+	private static HashMap<String, Long>   scheduledWakups = new HashMap<String, Long>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
@@ -33,11 +34,24 @@ public class Coordinator {
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;	
 
+	/**
+	 * Sends the given message to the correct driver specified by 
+	 * {@link Message#getDestination()}. If the module that sent this
+	 * message was not previously known, then a record of its presence
+	 * is saved. If a driver matching that destination is loaded and its
+	 * state is not {@link Thread.State.TERMINATED} then the message
+	 * contents will be routed to the drivers
+	 * {@link Driver#receiveCommand(String)} or {@link Driver#receiveBinary(byte[])}
+	 * methods.  If the driver is currently TERMINATED then the
+	 * message contents will be placed in the drivers appropriate
+	 * queue, and the driver will be woken. 
+	 * @param m the {@link Message} to route
+	 */
 	private static synchronized void routeIncomingMessage(Message m) {
-//		Log.d(TAG, "routeIncomingMessage()");
+		//Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
 		if (!isModulePresent(destination)) {
-//			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
+			//Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
 			remoteModules.put(destination, "");
 		}
 		
@@ -56,9 +70,10 @@ public class Coordinator {
 				} else {
 					driver.receiveCommand(new String(m.getData()));
 				}
+				wakeDriver(driver);
 			}
 		} else {
-//			Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
+			//Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
 		}
 	}
 
@@ -66,15 +81,47 @@ public class Coordinator {
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
 	private static synchronized void queryRemoteModules() {
-//		Log.d(TAG, "queryRemoteModules()");
 		messageCenter.sendCommand("ALL", "READY?");
+	}
+	
+	/**
+	 * Loads the given driver, provided that the driver is not null,
+	 * has a valid name, is not of type {@link Driver.TYPE}, and
+	 * a driver with a matching name has not already been loaded. 
+	 * @param d the driver to load.
+	 * @return true if the given driver was loaded, false otherwise.
+	 */
+	private static boolean loadDriver(Driver d) {
+		boolean isDriverLoaded = false;
+		if (d.getModuleName() != null) {
+        	if (!loadedDrivers.containsKey(d.getModuleName()) && d.getDriverType() != Driver.TYPE) {
+		        loadedDrivers.put(d.getModuleName(), d);
+		        Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getDriverType() + " initialized");
+		        isDriverLoaded = true;
+        	} else {
+        		Log.e(TAG, "error loading driver " + d.getClass().getName() + " a driver with the name " +
+        				d.getModuleName() + " already exists");
+        	}
+		}
+        
+		return isDriverLoaded;
+	}
+	
+	/**
+	 * Wakes the given driver if it's thread state is TERMINATED.
+	 * @param d the {@link Driver} to wake.
+	 */
+	private static void wakeDriver(Driver d) {
+		if (d.getState() == Thread.State.TERMINATED) {
+			new Thread(d).start();
+		}
 	}
 	
 	/**
 	 * Sends the given command to a specific remote module. The message will be formatted
 	 * 	to fit the protocol version that this module supports (if known), otherwise the
 	 * 	message will be formatted as the most recent protocol version.
-	 * @param moduleName the unique name of the remote module
+	 * @param caller a reference to the calling {@link Driver}
 	 * @param command the command to send to the remote module
 	 */
 	static synchronized boolean sendCommand(Driver caller, String command) {
@@ -93,9 +140,7 @@ public class Coordinator {
 	
 	/**
 	 * Sends a message to a remote module and waits waitPeriod seconds for a response.
-	 * @param name the unique name of the remote module. This name should match the calling
-	 * 	driver, since this name is used to match the destination field of the incoming
-	 * 	message.
+	 * @param caller a reference to the calling {@link Driver}
 	 * @param command the command to send to the remote module 
 	 * @param waitPeriod how many seconds to wait for a response.  Maximum period to wait
 	 * 	is 6 seconds.
@@ -137,7 +182,7 @@ public class Coordinator {
 	 * 	Does not yet break byte[] into chunks for transmission.  Make sure
 	 * 	that the size of the transmission is not larger than a single packet's
 	 * 	max payload size (around 80 bytes).
-	 * @param moduleName the unique name of the remote module
+	 * @param caller a reference to the calling {@link Driver}
 	 * @param data the binary data to send
 	 */
 	static synchronized boolean sendBinary(Driver caller, byte[] data) {
@@ -210,6 +255,22 @@ public class Coordinator {
 		return null;
 	}
 	
+	/**
+	 * Schedules a {@link org.apparatus_templi.Driver} to wake
+	 * at the given time. If a driver's state
+	 * {@link org.apparatus_templi.Driver#getState()} is
+	 * {@link java.lang.Thread.State.TERMINATED} at the time of the wake up the
+	 * Driver will be restarted.  If the Driver's state is not
+	 * TERMINATED then no action will be taken.
+	 * @param caller
+	 * @param wakeTime
+	 */
+	static synchronized void scheduleWakup(Driver caller, long wakeTime) {
+		if (caller != null) {
+			scheduledWakups.put(caller.name, wakeTime);
+		}
+	}
+	
 	
 	/**
 	 * Pass a message to the driver specified by name.
@@ -218,7 +279,7 @@ public class Coordinator {
 	 * 	or null. If null, this command originated from the Coordinator
 	 * @param command the command to pass
 	 */
-	synchronized boolean passCommand(String source, String destination, String command) {
+	static synchronized boolean passCommand(String source, String destination, String command) {
 		Log.d(TAG, "passCommand()");
 		//TODO verify source name
 		//TODO check for reserved name in toDriver
@@ -239,7 +300,7 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does
 	 * 	not exist
 	 */
-	synchronized String requestWidgetXML(String driverName) {
+	static synchronized String requestWidgetXML(String driverName) {
 		Log.d(TAG, "requestWidgetXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
@@ -255,7 +316,7 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does
 	 * 	not exist
 	 */
-	synchronized String requestFullPageXML(String driverName) {
+	static synchronized String requestFullPageXML(String driverName) {
 		Log.d(TAG, "requestFullPageXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
@@ -272,12 +333,20 @@ public class Coordinator {
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
 	static synchronized boolean isModulePresent(String moduleName) {
-//		Log.d(TAG, "isModulePresent()");
 		return remoteModules.containsKey(moduleName);
 	}
 	
+	
+	/**
+	 * Returns a list of sensors that the given driver monitors.
+	 * @param driverName the unique name of the driver to query
+	 * @return an ArrayList of Strings representing all sensors monitored
+	 * by the driver.  If the given driver is not of type 
+	 * {@link SensorModule#TYPE} or if the driver is not loaded then
+	 * returns null. 
+	 */
 	static synchronized ArrayList<String> getSensorList(String driverName) {
-		ArrayList<String> results = new ArrayList<String>();
+		ArrayList<String> results = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
 			if (d.getDriverType().equals(SensorModule.TYPE)) {
@@ -287,6 +356,15 @@ public class Coordinator {
 		return results;
 	}
 	
+	/**
+	 * Returns a list of controllers that the given driver interacts
+	 * with.
+	 * @param driverName the unique name of the driver to query
+	 * @return an ArrayList of Strings representing all controllers
+	 * this driver interacts with.  If the given driver is not of type 
+	 * {@link ControllerModule#TYPE} or if the driver is not loaded then
+	 * returns null. 
+	 */
 	static synchronized ArrayList<String> getControllerList(String driverName) {
 		ArrayList<String> results = new ArrayList<String>();
 		if (loadedDrivers.containsKey(driverName)) {
@@ -301,7 +379,8 @@ public class Coordinator {
 	
 	/**
 	 * Returns a list of all loaded drivers.
-	 * @return an ArrayList of Strings of driver names.
+	 * @return an ArrayList of Strings of driver names.  If no
+	 * drivers are loaded then returns an empty list.
 	 */
 	static synchronized ArrayList<String> getLoadedDrivers() {
 		Log.d(TAG, "getLoadedDrivers()");
@@ -438,47 +517,10 @@ public class Coordinator {
 		//testing echo driver
 		Driver driver4 = new Echo();
      
-        //only drivers with valid names are added
-        //TODO make this generic
-//        if (driver1.getModuleName() != null) {
-//        	if (!loadedDrivers.containsKey(driver1.getModuleName())) {
-//		        loadedDrivers.put(driver1.getModuleName(), driver1);
-//		        Log.d(TAG, "driver " + driver1.getModuleName() + " of type " + driver1.getModuleType() + " initialized");
-//        	} else {
-//        		Log.w(TAG, "error loading driver " + driver1.getClass().getName() + "a driver with the name " +
-//        				driver1.getModuleName() + " already exists");
-//        	}
-//        }
-//        
-//        if (driver2.getModuleName() != null) {
-//        	if (!loadedDrivers.containsKey(driver2.getModuleName())) {
-//		        loadedDrivers.put(driver2.getModuleName(), driver2);
-//		        Log.d(TAG, "driver " + driver2.getModuleName() + " of type " + driver2.getModuleType() + " initialized");
-//        	} else {
-//        		Log.e(TAG, "error loading driver " + driver2.getClass().getName() + " a driver with the name " +
-//        				driver2.getModuleName() + " already exists");
-//        	}
-//        }
-//		
-//		if (driver3.getModuleName() != null) {
-//        	if (!loadedDrivers.containsKey(driver3.getModuleName())) {
-//		        loadedDrivers.put(driver3.getModuleName(), driver3);
-//		        Log.d(TAG, "driver " + driver3.getModuleName() + " of type " + driver3.getModuleType() + " initialized");
-//        	} else {
-//        		Log.e(TAG, "error loading driver " + driver3.getClass().getName() + " a driver with the name " +
-//        				driver3.getModuleName() + " already exists");
-//        	}
-//        }
-		
-		if (driver4.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(driver4.getModuleName())) {
-		        loadedDrivers.put(driver4.getModuleName(), driver4);
-		        Log.d(TAG, "driver " + driver4.getModuleName() + " of type " + driver4.getDriverType() + " initialized");
-        	} else {
-        		Log.e(TAG, "error loading driver " + driver4.getClass().getName() + " a driver with the name " +
-        				driver4.getModuleName() + " already exists");
-        	}
-        }
+//        loadDriver(driver1);
+//        loadDriver(driver2);
+//        loadDriver(driver3);
+        loadDriver(driver4);
         
         
         //start the drivers
@@ -501,6 +543,18 @@ public class Coordinator {
         	//+ to a more appropriate method
         	if (messageCenter.isMessageAvailable()) {
         		routeIncomingMessage(messageCenter.getMessage());
+        	}
+        	
+        	//Check for scheduled driver wake ups.
+        	for (String driverName: scheduledWakups.keySet()) {
+        		if (scheduledWakups.get(driverName) <= System.currentTimeMillis()) {
+        			if (loadedDrivers.containsKey(driverName)) {
+        				Driver d = loadedDrivers.get(driverName);
+        				if (d.getState() == Thread.State.TERMINATED) {
+        					new Thread(d).start();
+        				}
+        			}
+        		}
         	}
         	
         	

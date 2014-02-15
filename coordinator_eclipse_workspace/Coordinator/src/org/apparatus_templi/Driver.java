@@ -8,6 +8,8 @@ import java.util.Deque;
  * not be sub-classed directly.  Each driver should subclass
  * either SensorModule or ControllerModule.  Drivers directly
  * sub-classing Driver might not be loaded. for execution.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 public abstract class Driver implements Runnable {
 	/**
