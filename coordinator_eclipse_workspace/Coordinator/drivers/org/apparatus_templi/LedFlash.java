@@ -3,8 +3,7 @@ package org.apparatus_templi;
 import java.util.ArrayList;
 
 /**
- * LedFlash
- * Controls a remote array of LED pixels.
+ * A driver that controls a remote array of LED pixels.
  * 
  * Remote side expects commands in the form of:
  * 	"(int)"
@@ -12,6 +11,7 @@ import java.util.ArrayList;
  * Valid values are 4 - 9
  * 
  * Driver does not listen for any responses
+ * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 
@@ -88,13 +88,13 @@ public class LedFlash extends ControllerModule {
 	public void tellController(String controllerName, String command) {
 		switch (controllerName) {
 			case "LED 1":
-				Coordinator.sendCommand(name, "4");
+				Coordinator.sendCommand(this, "4");
 				break;
 			case "LED 2":
-				Coordinator.sendCommand(name, "5");
+				Coordinator.sendCommand(this, "5");
 				break;
 			case "LED 3":
-				Coordinator.sendCommand(name, "6");
+				Coordinator.sendCommand(this, "6");
 				break;
 			default:
 				Log.e(name, "tellController() Given invalid LED name");
@@ -127,7 +127,7 @@ public class LedFlash extends ControllerModule {
 		}
 		
 //		if (Coordinator.isModulePresent(name)) {
-			while (running) {
+			while (isRunning) {
 				/*
 				 * This is our main loop.  All of the processing will happen here
 				 * Our simple driver will repeatedly send three messages to the
@@ -135,7 +135,7 @@ public class LedFlash extends ControllerModule {
 				 */
 				for (int i = 5; i < 10; i++) {
 					Log.d(name, "flashing LED on pin " + i);
-					if (Coordinator.sendCommand(name, String.valueOf(i))) {
+					if (Coordinator.sendCommand(this, String.valueOf(i))) {
 						Log.d(name, "message sent");
 					} else {
 						Log.d(name, "message could not be sent");

@@ -13,14 +13,14 @@ public class Echo extends ControllerModule {
 //		String command = "Testing ECHO";
 		String command = "123456789012345678901234567890123456789012345678901234567890123456789";
 		
-		while (running) {
+		while (isRunning) {
 			Log.d(this.name, "sending " + command.length() + " bytes to echo");
 			try {
 				int numTries = 1;
-				String response = Coordinator.sendCommandAndWait(this.name, command, 3);
+				String response = Coordinator.sendCommandAndWait(this, command, 3);
 				while (!command.equals(response)) {
 					Log.d(this.name, "received malformed response. Send '" + command + "' received '" + response + "'. Retrying...");
-					response = Coordinator.sendCommandAndWait(this.name, command, 3);
+					response = Coordinator.sendCommandAndWait(this, command, 3);
 					numTries++;
 				}
 				

@@ -2,6 +2,11 @@ package org.apparatus_templi;
 
 import java.util.ArrayList;
 
+/**
+ * A debugging driver used to test message fragmentation.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ */
 public class LargeCommands extends SensorModule {
 
 	private static final String command1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,<.>/?;:\'\"[{]}\\|-_=+`~";
@@ -16,9 +21,9 @@ public class LargeCommands extends SensorModule {
 	public void run() {
 		Log.d(name, "starting");
 		Log.d(name, "command size: " + command1.length());
-		while (this.running) {
-			Coordinator.sendCommand(this.name,  command1);
-			Coordinator.sendBinary(this.name, command2);
+		while (this.isRunning) {
+			Coordinator.sendCommand(this,  command1);
+			Coordinator.sendBinary(this, command2);
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException e) {

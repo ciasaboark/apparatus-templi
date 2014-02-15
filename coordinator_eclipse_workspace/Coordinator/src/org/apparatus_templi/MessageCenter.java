@@ -262,6 +262,7 @@ public class MessageCenter implements Runnable {
 		
 		ByteArrayOutputStream inBytes = new ByteArrayOutputStream();
 		byte b = incomingBytes.take();
+		@SuppressWarnings("unused")
 		int discardedBytes = 1;
 		while (b != termByte) {
 			inBytes.write(b);

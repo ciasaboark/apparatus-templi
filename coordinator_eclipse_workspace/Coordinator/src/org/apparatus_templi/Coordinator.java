@@ -13,9 +13,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * Coordinator
+ * Coordinates message passing and driver loading.  Handles setting
+ * up the environment, querying remote modules, loading drivers,
+ * and starting the front end support.  Coordinator provides
+ * wrapper methods to facilitate communication between the
+ * front end, drivers, and the remote modules. 
+ * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
- *
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
@@ -63,7 +67,7 @@ public class Coordinator {
 	 */
 	private static synchronized void queryRemoteModules() {
 //		Log.d(TAG, "queryRemoteModules()");
-		sendCommand("ALL", "READY?");
+		messageCenter.sendCommand("ALL", "READY?");
 	}
 	
 	/**
@@ -73,12 +77,12 @@ public class Coordinator {
 	 * @param moduleName the unique name of the remote module
 	 * @param command the command to send to the remote module
 	 */
-	static synchronized boolean sendCommand(String moduleName, String command) {
+	static synchronized boolean sendCommand(Driver caller, String command) {
 //		Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
 		
-		if (connectionReady) {
-			messageSent = messageCenter.sendCommand(moduleName, command);
+		if (connectionReady && caller.name != null) {
+			messageSent = messageCenter.sendCommand(caller.name, command);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 		}
@@ -99,19 +103,19 @@ public class Coordinator {
 	 * 	was no response. Note that the first incoming response is returned. If another
 	 * 	message addressed to this 
 	 */
-	static synchronized String sendCommandAndWait(String moduleName, String command, int waitPeriod) {
+	static synchronized String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
 //		Log.d(TAG, "sendCommandAndWait()");
 		//TODO this method provides no security mechanisms. It is possible that the calling
 		//+ driver "a" could call this method with a moduleName "b". The first response
 		//+ to "b" within the waitPeriod will be routed back to "a".
 		String responseData = null;
-		if (waitPeriod <= 6) {
-			sendCommand(moduleName, command);
+		if (waitPeriod <= 6 && caller.name != null) {
+			sendCommand(caller, command);
 			long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
 			while (System.currentTimeMillis() < endTime) {
 				if (messageCenter.isMessageAvailable()) {
 					Message m = messageCenter.getMessage();
-					if (m.getDestination().equals(moduleName)) {
+					if (m.getDestination().equals(caller.name)) {
 						try {
 							responseData = new String(m.getData(), "UTF-8");
 							break;
@@ -136,12 +140,12 @@ public class Coordinator {
 	 * @param moduleName the unique name of the remote module
 	 * @param data the binary data to send
 	 */
-	static synchronized boolean sendBinary(String moduleName, byte[] data) {
+	static synchronized boolean sendBinary(Driver caller, byte[] data) {
 		Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 		
-		if (connectionReady) {
-			messageCenter.sendBinary(moduleName, data);
+		if (connectionReady && caller.name != null) {
+			messageCenter.sendBinary(caller.name, data);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 			messageSent = false;
@@ -209,20 +213,20 @@ public class Coordinator {
 	
 	/**
 	 * Pass a message to the driver specified by name.
-	 * @param toDriver the unique name of the driver
-	 * @param fromDriver the source of this message, either the name of the calling driver
+	 * @param destination the unique name of the driver
+	 * @param source the source of this message, either the name of the calling driver
 	 * 	or null. If null, this command originated from the Coordinator
 	 * @param command the command to pass
 	 */
-	synchronized boolean passCommand(String fromDriver, String toDriver, String command) {
+	synchronized boolean passCommand(String source, String destination, String command) {
 		Log.d(TAG, "passCommand()");
 		//TODO verify source name
 		//TODO check for reserved name in toDriver
 		boolean messagePassed = false;
-		if (loadedDrivers.containsKey(toDriver)) {
-			Driver destDriver = loadedDrivers.get(toDriver);
+		if (loadedDrivers.containsKey(destination)) {
+			Driver destDriver = loadedDrivers.get(destination);
 			if (destDriver.getState() != Thread.State.TERMINATED) {
-				loadedDrivers.get(toDriver).receiveCommand(command);
+				loadedDrivers.get(destination).receiveCommand(command);
 				messagePassed = true;
 			}
 		}
@@ -276,7 +280,7 @@ public class Coordinator {
 		ArrayList<String> results = new ArrayList<String>();
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
-			if (d.getModuleType().equals(SensorModule.TYPE)) {
+			if (d.getDriverType().equals(SensorModule.TYPE)) {
 					results = ((SensorModule)d).getSensorList();
 			}
 		}
@@ -287,7 +291,7 @@ public class Coordinator {
 		ArrayList<String> results = new ArrayList<String>();
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
-			if (d.getModuleType().equals(ControllerModule.TYPE)) {
+			if (d.getDriverType().equals(ControllerModule.TYPE)) {
 					results = ((ControllerModule)d).getControllerList();
 			}
 		}
@@ -297,7 +301,7 @@ public class Coordinator {
 	
 	/**
 	 * Returns a list of all loaded drivers.
-	 * @return an ArrayList<String> of driver names.
+	 * @return an ArrayList of Strings of driver names.
 	 */
 	static synchronized ArrayList<String> getLoadedDrivers() {
 		Log.d(TAG, "getLoadedDrivers()");
@@ -426,7 +430,7 @@ public class Coordinator {
 //        Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
-        Driver driver2 = new StatefullLed();
+//        Driver driver2 = new StatefullLed();
         
         //testing large commands
 //		Driver driver3 = new LargeCommands();
@@ -469,7 +473,7 @@ public class Coordinator {
 		if (driver4.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(driver4.getModuleName())) {
 		        loadedDrivers.put(driver4.getModuleName(), driver4);
-		        Log.d(TAG, "driver " + driver4.getModuleName() + " of type " + driver4.getModuleType() + " initialized");
+		        Log.d(TAG, "driver " + driver4.getModuleName() + " of type " + driver4.getDriverType() + " initialized");
         	} else {
         		Log.e(TAG, "error loading driver " + driver4.getClass().getName() + " a driver with the name " +
         				driver4.getModuleName() + " already exists");
