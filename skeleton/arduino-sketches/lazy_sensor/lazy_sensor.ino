@@ -23,7 +23,7 @@
 
 
 const String BROADCAST_TAG = "ALL";
-const String MODULE_NAME = "ECHO";
+const String MODULE_NAME = "LAZY";
 const int MAX_DATA_SIZE = 69;
 const int XBEE_5V = 12;	//pin number that powers the attached Xbee
 uint8_t serialNumber [8];
@@ -56,7 +56,7 @@ void setup() {
 
 
 	uint8_t shCmd[] = {'S','H'};
-	uint8_t slCmd[] = {'S', 'L'};
+	uint8_t slCmd[] = {'S','L'};
 	AtCommandRequest atRequest = AtCommandRequest(shCmd);
 	AtCommandResponse atResponse = AtCommandResponse();
 	
@@ -109,57 +109,12 @@ void setup() {
 
 // continuously reads packets, looking for ZB Receive or Modem Status
 void loop() {
-	// flashLED(5, 1);
-		xbee.readPacket(300);
-		
-		if (xbee.getResponse().isAvailable()) {
-			debug("--------\nzigbee packet available");
-			
-			// got something
-			
-			if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
-				debug("zigbee rx response packet");
-				// got a zb rx packet
-				
-				// now fill our zb rx class
-				xbee.getResponse().getZBRxResponse(rx);
-						
-				if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
-						// the sender got an ACK
-				} else {
-						// we got it (obviously) but sender didn't get an ACK
-				}
-				debug("incoming zigbee packet");
-				// debug("processing message");
-				processMessage(rx.getData(), rx.getDataLength());
-					
-			} else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
-				xbee.getResponse().getModemStatusResponse(msr);
-				// the local XBee sends this response on certain events, like association/dissociation
-				
-				if (msr.getStatus() == ASSOCIATED) {
-					// yay this is great.  flash led
-				} else if (msr.getStatus() == DISASSOCIATED) {
-					// this is awful.. flash led to show our discontent
-				} else {
-					// another status
-				}
-			} else {
-				// not something we were expecting   
-			}
-		} else if (xbee.getResponse().isError()) {
-			//Serial.print("Error reading packet.  Error code: ");  
-			//Serial.println(xbee.getResponse().getErrorCode());
-		}
-}
-
-void flashLED(int pinNum, int flashes) {
-	for (int i = 0; i < flashes; i++) {
-		digitalWrite(pinNum, HIGH);
-		delay(100);
-		digitalWrite(pinNum, LOW);
-		delay(100);
-	}
+	//we don't care about any incoming messages.  Instead we
+	//+ sleep for a few seconds before waking to send a fake
+	//+ sensor reading
+	debug("sending reading");
+	sendCommand("100");
+	delay(15000);
 }
 
 void processMessage(uint8_t message[], int messageLength) {
@@ -192,7 +147,7 @@ void processMessage(uint8_t message[], int messageLength) {
 
 			if (MODULE_NAME.compareTo(destinationString) == 0) {
 				debug("message to us");
-				processFragment(optionsByte, dataLength, fragmentNumber, destinationString, data);
+				//processFragment(optionsByte, dataLength, fragmentNumber, destinationString, data);
 			} else if (BROADCAST_TAG.compareTo(destinationString) == 0) {
 				//a broadcast request, respond with our serial number
 				debug("broadcast message");
@@ -215,25 +170,6 @@ void processMessage(uint8_t message[], int messageLength) {
 	}
 }
 
-
-
-void processFragment(uint8_t optionsByte, uint8_t dataLength, uint16_t fragmentNumber, String destination, uint8_t data[]) {
-	//Since the arduinos have very limited memory there is little use for receiving
-	//+ fragmented messages.  Every fragment above 0 is discarded.  Make sure to keep
-	//+ the commands and binary you send below the MAX_DATA_SIZE
-	if (fragmentNumber == 0) {
-		if ((optionsByte & 0b10000000) == 0) {
-			debug("message was text");
-			//this was a text command
-			String command = byteArrayToString(data, dataLength);
-			executeCommand(command);
-		} else {
-			debug("message was bin");
-			//this was a binary command
-			executeBinary(data, dataLength);
-		}
-	}
-}
 
 String byteArrayToString(uint8_t data[], int dataLength) {
 	debug("byteArrayToString()");
@@ -334,28 +270,3 @@ void sendBinary(byte data[], int dataLength) {
 	xbee.send(zbTx);
 }
 
-
-/*
-* executeCommand
-* Module specific code to handle incomming commands from the controller
-*/
-void executeCommand(String command) {
-	//flashLED(6, 1);
-	//just repeat the given command
-	sendCommand(command);
-}
-
-
-/*
-* executeBinary
-* Module specific code to handle incomming binary from the controller
-*/
-void executeBinary(uint8_t data[], int dataLength) {
-	debug("executeBinary()");
-	//debug("executeBinary");
-	//module specific code here
-	/*
-	* WARNING: The data in the byte array does not have double newlines converted into singles.
-	* you will need to to this during your processing.
-	*/
-}

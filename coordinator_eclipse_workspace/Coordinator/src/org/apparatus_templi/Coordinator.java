@@ -1,8 +1,10 @@
 package org.apparatus_templi;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -25,8 +27,9 @@ public class Coordinator {
 	private static final String TAG = "Coordinator";
 
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
-	private static HashMap<String, Driver> loadedDrivers   = new HashMap<String, Driver>();
-	private static HashMap<String, Long>   scheduledWakups = new HashMap<String, Long>();
+	private static ConcurrentHashMap<String, Driver> loadedDrivers    = new ConcurrentHashMap<String, Driver>();
+	private static ConcurrentHashMap<Driver, Thread> driverThreads    = new ConcurrentHashMap<Driver, Thread>();
+	private static ConcurrentHashMap<Driver, Long>   scheduledWakeups = new ConcurrentHashMap<Driver, Long>();
 	private static int portNum;
 	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
@@ -57,20 +60,20 @@ public class Coordinator {
 		
 		if (loadedDrivers.containsKey(destination)) {
 			Driver driver = loadedDrivers.get(destination);
-			if (driver.getState() == Thread.State.TERMINATED) {
+			if (driverThreads.get(driver).getState() == Thread.State.TERMINATED) {
 				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
 				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
 					driver.queueBinary(m.getData());
 				} else {
 					driver.queueCommand(new String(m.getData()));
 				}
+				wakeDriver(driver);
 			} else {
 				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
 					driver.receiveBinary(m.getData());
 				} else {
 					driver.receiveCommand(new String(m.getData()));
 				}
-				wakeDriver(driver);
 			}
 		} else {
 			//Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
@@ -112,7 +115,7 @@ public class Coordinator {
 	 * @param d the {@link Driver} to wake.
 	 */
 	private static void wakeDriver(Driver d) {
-		if (d.getState() == Thread.State.TERMINATED) {
+		if (driverThreads.get(d).getState() == Thread.State.TERMINATED) {
 			new Thread(d).start();
 		}
 	}
@@ -256,18 +259,21 @@ public class Coordinator {
 	}
 	
 	/**
-	 * Schedules a {@link org.apparatus_templi.Driver} to wake
-	 * at the given time. If a driver's state
+	 * Schedules a {@link org.apparatus_templi.Driver} to re-create
+	 * this driver at the given time. If a driver's state
 	 * {@link org.apparatus_templi.Driver#getState()} is
 	 * {@link java.lang.Thread.State.TERMINATED} at the time of the wake up the
-	 * Driver will be restarted.  If the Driver's state is not
-	 * TERMINATED then no action will be taken.
+	 * Driver will be re-created. If the Driver's state is not
+	 * TERMINATED then no action will be taken. WARNING: make sure
+	 * that your driver stores any needed information before
+	 * exiting its run() method.
 	 * @param caller
 	 * @param wakeTime
 	 */
-	static synchronized void scheduleWakup(Driver caller, long wakeTime) {
+	static synchronized void scheduleWakeup(Driver caller, long wakeTime) {
 		if (caller != null) {
-			scheduledWakups.put(caller.name, wakeTime);
+			scheduledWakeups.put(caller, wakeTime);
+			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' at time: " + wakeTime);
 		}
 	}
 	
@@ -286,7 +292,7 @@ public class Coordinator {
 		boolean messagePassed = false;
 		if (loadedDrivers.containsKey(destination)) {
 			Driver destDriver = loadedDrivers.get(destination);
-			if (destDriver.getState() != Thread.State.TERMINATED) {
+			if (driverThreads.get(destDriver).getState() != Thread.State.TERMINATED) {
 				loadedDrivers.get(destination).receiveCommand(command);
 				messagePassed = true;
 			}
@@ -516,17 +522,27 @@ public class Coordinator {
 		
 		//testing echo driver
 		Driver driver4 = new Echo();
+		
+		//testing lazy driver
+//		Driver driver5 = new LazyDriver();
      
-//        loadDriver(driver1);
-//        loadDriver(driver2);
-//        loadDriver(driver3);
-        loadDriver(driver4);
+		//testing sleep driver
+		Driver driver6 = new SleepyDriver();
+		
+//		loadDriver(driver1);
+//		loadDriver(driver2);
+//		loadDriver(driver3);
+		loadDriver(driver4);
+//		loadDriver(driver5);
+//		loadDriver(driver6);
         
         
         //start the drivers
         for (String driverName: loadedDrivers.keySet()) {
         	Log.c(TAG, "Starting driver " + driverName);
-        	(new Thread(loadedDrivers.get(driverName))).start();
+        	Thread t = new Thread(loadedDrivers.get(driverName));
+        	driverThreads.put(loadedDrivers.get(driverName), t);
+        	t.start();
         }
         
         //start the web interface
@@ -546,12 +562,32 @@ public class Coordinator {
         	}
         	
         	//Check for scheduled driver wake ups.
-        	for (String driverName: scheduledWakups.keySet()) {
-        		if (scheduledWakups.get(driverName) <= System.currentTimeMillis()) {
-        			if (loadedDrivers.containsKey(driverName)) {
-        				Driver d = loadedDrivers.get(driverName);
-        				if (d.getState() == Thread.State.TERMINATED) {
-        					new Thread(d).start();
+        	for (Driver d: scheduledWakeups.keySet()) {
+        		Long wakeTime = scheduledWakeups.get(d);
+        		Long curTime = System.currentTimeMillis();
+        		if (wakeTime <= curTime) {
+        			if (loadedDrivers.containsKey(d.getName())) {
+        				Thread t = driverThreads.get(d);
+        				if (t.getState() == Thread.State.TERMINATED) {
+        					Log.d(TAG, "waking driver '" + d.getName() + "' of type :" + d.getClass());
+        					scheduledWakeups.remove(d);
+        					driverThreads.remove(d);
+        					loadedDrivers.remove(d.getName());
+        					//use reflection to generate a new driver of the appropriate class
+        					try {
+								Constructor<?> thisConst = d.getClass().getConstructor();
+								Object o = thisConst.newInstance();
+								Driver newDriver = (Driver)o;
+								loadedDrivers.put(newDriver.getName(), newDriver);
+								Thread newThread = new Thread(newDriver);
+								driverThreads.put(newDriver, newThread);
+								newThread.start();
+							} catch (Exception e) {
+								//something went wrong re-creating the Driver
+								Log.e(TAG, "error re-creating driver " + d.getName() + " for wake up, driver is no longer valid.");
+							} 
+        					d = null; t = null;	//hopefully there are no other references
+        					
         				}
         			}
         		}
