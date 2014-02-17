@@ -16,6 +16,7 @@ public class LazyDriver extends SensorModule {
 		//check for queued messages
 		while (!this.queuedCommands.isEmpty()) {
 			String cmd = this.queuedCommands.pop();
+			Log.d(this.name, "working on command: " + cmd);
 			this.receiveCommand(cmd);
 			Log.d(this.name, "received incoming data: '" + cmd + "'");
 		}

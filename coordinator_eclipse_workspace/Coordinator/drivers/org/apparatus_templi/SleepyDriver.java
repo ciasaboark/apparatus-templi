@@ -23,7 +23,7 @@ public class SleepyDriver extends SensorModule {
 		}
 		
 		Log.d(this.name, "scheduling a restart in 5 minutes");
-		Coordinator.scheduleWakeup(this, System.currentTimeMillis() + 1000 * 60 * 5);
+		Coordinator.scheduleRestart(this, System.currentTimeMillis() + 1000 * 60 * 5);
 
 	}
 

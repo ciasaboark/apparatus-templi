@@ -2,6 +2,7 @@ package org.apparatus_templi;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,13 +26,13 @@ import org.apache.commons.cli.ParseException;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
+	private static final int DEFAULT_PORT = 2024;
 
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
-	private static ConcurrentHashMap<String, Driver> loadedDrivers    = new ConcurrentHashMap<String, Driver>();
-	private static ConcurrentHashMap<Driver, Thread> driverThreads    = new ConcurrentHashMap<Driver, Thread>();
-	private static ConcurrentHashMap<Driver, Long>   scheduledWakeups = new ConcurrentHashMap<Driver, Long>();
+	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
+	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
+	private static ConcurrentHashMap<Driver, Long>   scheduledRestarts = new ConcurrentHashMap<Driver, Long>();
 	private static int portNum;
-	private static final int DEFAULT_PORT = 2024;
 	private static String serialPortName = null;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
@@ -61,13 +62,21 @@ public class Coordinator {
 		if (loadedDrivers.containsKey(destination)) {
 			Driver driver = loadedDrivers.get(destination);
 			if (driverThreads.get(driver).getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "waking terminated driver '" + destination + "' for incoming message");
-				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
-					driver.queueBinary(m.getData());
-				} else {
-					driver.queueCommand(new String(m.getData()));
+				//If the driver is not currently running, then we will re-initialize it,
+				//+ queue the message, then start execution.
+				Log.d(TAG, "restarting terminated driver '" + destination + "' for incoming message");
+				try {
+					Driver newDriver = restartDriver(driver.getName(), false);
+					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
+						newDriver.queueBinary(m.getData());
+					} else {
+						newDriver.queueCommand(new String(m.getData()));
+					}
+					driverThreads.get(newDriver).start();
+				} catch (Exception e) {
+					Log.e(TAG, "error restarting driver '" + driver.getName() + "', incoming message will " +
+							"be discarded");
 				}
-				wakeDriver(driver);
 			} else {
 				if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
 					driver.receiveBinary(m.getData());
@@ -111,15 +120,62 @@ public class Coordinator {
 	}
 	
 	/**
-	 * Wakes the given driver if it's thread state is TERMINATED.
-	 * @param d the {@link Driver} to wake.
+	 * A wrapper method for restartDriver that automatically restarts
+	 * the driver's thread after re-initialization.
+	 * @param driverName the name of the {@link Driver} to restart.
+	 * @return a reference to the newly restarted Driver.
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
 	 */
-	private static void wakeDriver(Driver d) {
-		if (driverThreads.get(d).getState() == Thread.State.TERMINATED) {
-			new Thread(d).start();
-		}
+	private static Driver restartDriver(String driverName) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return restartDriver(driverName, true);
 	}
 	
+	/**
+	 * Re-initializes the given driver if it's thread state is TERMINATED.
+	 * The thread will be started 
+	 * @param driverName the name of the {@link Driver} to re-initialize.
+	 * @param autoStart if true the driver's thread will be started,
+	 * otherwise the thread will have to be started manually.
+	 * @return a reference to the newly restarted Driver.
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	private static Driver restartDriver(String driverName, boolean autoStart) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Driver newDriver = null;
+		if (loadedDrivers.containsKey(driverName)) {
+			Driver d = loadedDrivers.get(driverName);
+			Thread t = driverThreads.get(d);
+			if (t.getState() == Thread.State.TERMINATED) {
+				Log.d(TAG, "waking driver '" + d.getName() + "' of type :" + d.getClass());
+				scheduledRestarts.remove(d);
+				driverThreads.remove(d);
+				loadedDrivers.remove(d.getName());
+				//use reflection to generate a new driver of the appropriate class
+				Constructor<?> thisConst = d.getClass().getConstructor();
+				Object o = thisConst.newInstance();
+				newDriver = (Driver)o;
+				loadedDrivers.put(newDriver.getName(), newDriver);
+				Thread newThread = new Thread(newDriver);
+				driverThreads.put(newDriver, newThread);
+				if (autoStart) {
+					newThread.start();
+				}
+				
+				d = null; t = null;	//hopefully there are no other references
+			}
+		}
+		return newDriver;
+	}
+
 	/**
 	 * Sends the given command to a specific remote module. The message will be formatted
 	 * 	to fit the protocol version that this module supports (if known), otherwise the
@@ -152,10 +208,7 @@ public class Coordinator {
 	 * 	message addressed to this 
 	 */
 	static synchronized String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
-//		Log.d(TAG, "sendCommandAndWait()");
-		//TODO this method provides no security mechanisms. It is possible that the calling
-		//+ driver "a" could call this method with a moduleName "b". The first response
-		//+ to "b" within the waitPeriod will be routed back to "a".
+		//Log.d(TAG, "sendCommandAndWait()");
 		String responseData = null;
 		if (waitPeriod <= 6 && caller.name != null) {
 			sendCommand(caller, command);
@@ -189,7 +242,7 @@ public class Coordinator {
 	 * @param data the binary data to send
 	 */
 	static synchronized boolean sendBinary(Driver caller, byte[] data) {
-		Log.d(TAG, "sendBinary()");
+		//Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 		
 		if (connectionReady && caller.name != null) {
@@ -270,10 +323,10 @@ public class Coordinator {
 	 * @param caller
 	 * @param wakeTime
 	 */
-	static synchronized void scheduleWakeup(Driver caller, long wakeTime) {
+	static synchronized void scheduleRestart(Driver caller, long wakeTime) {
 		if (caller != null) {
-			scheduledWakeups.put(caller, wakeTime);
-			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' at time: " + wakeTime);
+			scheduledRestarts.put(caller, wakeTime);
+			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' in " + (wakeTime - System.currentTimeMillis()) / 1000 + " seconds.");
 		}
 	}
 	
@@ -512,29 +565,29 @@ public class Coordinator {
         
 		Log.c(TAG, "Initializing drivers...");
         //initialize the drivers
-//        Driver driver1 = new LedFlash();
+        Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
-//        Driver driver2 = new StatefullLed();
+        Driver driver2 = new StatefullLed();
         
         //testing large commands
-//		Driver driver3 = new LargeCommands();
+		Driver driver3 = new LargeCommands();
 		
 		//testing echo driver
 		Driver driver4 = new Echo();
 		
 		//testing lazy driver
-//		Driver driver5 = new LazyDriver();
+		Driver driver5 = new LazyDriver();
      
 		//testing sleep driver
 		Driver driver6 = new SleepyDriver();
 		
-//		loadDriver(driver1);
-//		loadDriver(driver2);
-//		loadDriver(driver3);
+		loadDriver(driver1);
+		loadDriver(driver2);
+		loadDriver(driver3);
 		loadDriver(driver4);
-//		loadDriver(driver5);
-//		loadDriver(driver6);
+		loadDriver(driver5);
+		loadDriver(driver6);
         
         
         //start the drivers
@@ -544,6 +597,24 @@ public class Coordinator {
         	driverThreads.put(loadedDrivers.get(driverName), t);
         	t.start();
         }
+        
+        //Add a shutdown hook so that the drivers can be notified when
+        //+ the system is going down.
+        Runtime.getRuntime().addShutdownHook( new Thread() {
+        	public void run() {
+        		//cancel any pending driver restarts
+        		scheduledRestarts.clear();
+				for (String driverName: loadedDrivers.keySet()) {
+					Log.d(TAG, "terminating driver '" + driverName + "'");
+					loadedDrivers.get(driverName).terminate();
+				}
+				//give the drivers ~4s to finalize their termination
+				try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e) {
+				}
+			}
+		});
         
         //start the web interface
         Log.c(TAG, "Starting web server on port " + portNum);
@@ -562,33 +633,14 @@ public class Coordinator {
         	}
         	
         	//Check for scheduled driver wake ups.
-        	for (Driver d: scheduledWakeups.keySet()) {
-        		Long wakeTime = scheduledWakeups.get(d);
+        	for (Driver d: scheduledRestarts.keySet()) {
+        		Long wakeTime = scheduledRestarts.get(d);
         		Long curTime = System.currentTimeMillis();
         		if (wakeTime <= curTime) {
-        			if (loadedDrivers.containsKey(d.getName())) {
-        				Thread t = driverThreads.get(d);
-        				if (t.getState() == Thread.State.TERMINATED) {
-        					Log.d(TAG, "waking driver '" + d.getName() + "' of type :" + d.getClass());
-        					scheduledWakeups.remove(d);
-        					driverThreads.remove(d);
-        					loadedDrivers.remove(d.getName());
-        					//use reflection to generate a new driver of the appropriate class
-        					try {
-								Constructor<?> thisConst = d.getClass().getConstructor();
-								Object o = thisConst.newInstance();
-								Driver newDriver = (Driver)o;
-								loadedDrivers.put(newDriver.getName(), newDriver);
-								Thread newThread = new Thread(newDriver);
-								driverThreads.put(newDriver, newThread);
-								newThread.start();
-							} catch (Exception e) {
-								//something went wrong re-creating the Driver
-								Log.e(TAG, "error re-creating driver " + d.getName() + " for wake up, driver is no longer valid.");
-							} 
-        					d = null; t = null;	//hopefully there are no other references
-        					
-        				}
+        			try {
+        				restartDriver(d.getName());
+        			} catch (Exception e) {
+        				Log.e(TAG, "error restarting driver '" + d.getName() + "'");
         			}
         		}
         	}

@@ -23,12 +23,12 @@ public class Echo extends ControllerModule {
 				numTries++;
 			}
 			if (command.equals(response)) {
-				Log.d(this.name, "Received correct response after " + numTries + " tries\n");
+				Log.d(this.name, "Received correct response after " + numTries + " tries");
 			} else {
 				Log.d(this.name, "Gave up after " + numTries + " tries.");
 			}
 				
-			Coordinator.scheduleWakeup(this, System.currentTimeMillis() + (1000 * 10));	//wake every 10 seconds
+			Coordinator.scheduleRestart(this, System.currentTimeMillis() + (1000 * 10));	//wake every 10 seconds
 			this.terminate();
 		}
 

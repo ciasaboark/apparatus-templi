@@ -136,12 +136,12 @@ public class LedFlash extends ControllerModule {
 				for (int i = 5; i < 10; i++) {
 					Log.d(name, "flashing LED on pin " + i);
 					if (Coordinator.sendCommand(this, String.valueOf(i))) {
-						Log.d(name, "message sent");
+//						Log.d(name, "message sent");
 					} else {
-						Log.d(name, "message could not be sent");
+//						Log.d(name, "message could not be sent");
 					}
 					try {
-						Thread.sleep(500);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
