@@ -38,7 +38,7 @@ public class LazyDriver extends SensorModule {
 
 	@Override
 	void receiveCommand(String command) {
-		// TODO Auto-generated method stub
+		Coordinator.storeTextData(this.name, ((Long)System.currentTimeMillis()).toString(), command);
 
 	}
 

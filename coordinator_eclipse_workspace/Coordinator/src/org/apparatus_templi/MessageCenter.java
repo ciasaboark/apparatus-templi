@@ -77,18 +77,18 @@ public class MessageCenter implements Runnable {
 				payloadData[i] = incomingBytes.take();
 			}
 			
-			if (fragmentedMessages.containsKey(destination) || fragmentNum != 0) {
+			if ((fragmentedMessages.containsKey(destination) || fragmentNum != 0) && fragmentNum <= Message.MAX_FRAG_NUM) {
 				storeMessageFragment(optionsByte, dataLengthByte, fragmentNum, destination, payloadData);
-			} else if (fragmentedMessages.containsKey(destination) && fragmentNum == 0) {
-				storeMessageFragment(optionsByte, dataLengthByte, fragmentNum, destination, payloadData);
-				if (fragmentedMessages.get(destination).isMessageComplete()) {
-					Log.d(TAG, "fragmented message to " + destination + " is complete");
-					Message m = fragmentedMessages.get(destination).getCompleteMessage();
-					fragmentedMessages.remove(destination);
-//					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
-					messageQueue.put(m);
-				} else {
-					Log.d(TAG, "waiting on more fragments for message to: " + destination);
+				if (fragmentNum == 0) {
+					if (fragmentedMessages.get(destination).isMessageComplete()) {
+						Log.d(TAG, "fragmented message to " + destination + " is complete");
+						Message m = fragmentedMessages.get(destination).getCompleteMessage();
+						fragmentedMessages.remove(destination);
+	//					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+						messageQueue.put(m);
+					} else {
+						Log.d(TAG, "waiting on more fragments for message to: " + destination);
+					}
 				}
 			} else {
 				Message m = new Message(optionsByte, dataLength, destination, payloadData);
@@ -236,7 +236,7 @@ public class MessageCenter implements Runnable {
 					message[i] = data[j];
 				}
 				
-				serialConnection.writeData(message);
+				messageSent = serialConnection.writeData(message);
 			}
 		}
 		
@@ -308,6 +308,7 @@ public class MessageCenter implements Runnable {
 
 class Message {
 	static final int MAX_DATA_SIZE = 69;
+	static final int MAX_FRAG_NUM = 65535;
 	static final byte START_BYTE = (byte)0x0D;
 	
 	static final byte OPTION_TYPE_TEXT = (byte)0b0000_0000;

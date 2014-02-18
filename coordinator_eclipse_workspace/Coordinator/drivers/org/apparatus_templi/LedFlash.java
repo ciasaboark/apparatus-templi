@@ -126,7 +126,7 @@ public class LedFlash extends ControllerModule {
 			receiveBinary(queuedBinary.poll());
 		}
 		
-//		if (Coordinator.isModulePresent(name)) {
+		if (Coordinator.isModulePresent(name)) {
 			while (isRunning) {
 				/*
 				 * This is our main loop.  All of the processing will happen here
@@ -148,9 +148,9 @@ public class LedFlash extends ControllerModule {
 					}
 				}
 			}
-//		} else {
-//			Log.e(name, "remote module not present, shutting down");
-//		}
+		} else {
+			Log.e(name, "remote module not present, shutting down");
+		}
 		
 		Log.d(name, "terminating");
 	}

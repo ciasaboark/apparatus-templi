@@ -113,8 +113,15 @@ void loop() {
 	//+ sleep for a few seconds before waking to send a fake
 	//+ sensor reading
 	debug("sending reading");
-	sendCommand("100");
-	delay(30000);
+	// String long_command = "Once upon a midnight dreary, while I pondered weak and weary,\
+	// Over many a quaint and curious volume of forgotten lore,\
+	// While I nodded, nearly napping, suddenly there came a tapping,\
+	// As of some one gently rapping, rapping at my chamber door.\
+	// `'Tis some visitor,' I muttered, `tapping at my chamber door -\
+	// Only this, and nothing more.'";
+	String long_command = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
+	sendCommand(long_command);
+	delay(120000);
 }
 
 void processMessage(uint8_t message[], int messageLength) {
@@ -269,4 +276,5 @@ void sendBinary(byte data[], int dataLength) {
 	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 	xbee.send(zbTx);
 }
+
 

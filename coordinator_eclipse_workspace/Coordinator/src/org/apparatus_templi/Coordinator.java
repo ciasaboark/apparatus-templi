@@ -155,7 +155,7 @@ public class Coordinator {
 			Driver d = loadedDrivers.get(driverName);
 			Thread t = driverThreads.get(d);
 			if (t.getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "waking driver '" + d.getName() + "' of type :" + d.getClass());
+				Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getDriverType() + "'");
 				scheduledRestarts.remove(d);
 				driverThreads.remove(d);
 				loadedDrivers.remove(d.getName());
@@ -582,12 +582,12 @@ public class Coordinator {
 		//testing sleep driver
 		Driver driver6 = new SleepyDriver();
 		
-		loadDriver(driver1);
+//		loadDriver(driver1);
 		loadDriver(driver2);
-		loadDriver(driver3);
-		loadDriver(driver4);
+//		loadDriver(driver3);
+//		loadDriver(driver4);
 		loadDriver(driver5);
-		loadDriver(driver6);
+//		loadDriver(driver6);
         
         
         //start the drivers
@@ -602,11 +602,13 @@ public class Coordinator {
         //+ the system is going down.
         Runtime.getRuntime().addShutdownHook( new Thread() {
         	public void run() {
+        		Log.d(TAG, "system is going down. Notifying all drivers.");
         		//cancel any pending driver restarts
         		scheduledRestarts.clear();
 				for (String driverName: loadedDrivers.keySet()) {
 					Log.d(TAG, "terminating driver '" + driverName + "'");
 					loadedDrivers.get(driverName).terminate();
+					Log.d(TAG, "notified driver '" + driverName + "'");
 				}
 				//give the drivers ~4s to finalize their termination
 				try {
