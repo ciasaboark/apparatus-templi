@@ -19,8 +19,7 @@ public class DriverHandler implements HttpHandler {
     	/*
     	 * LedFlash is just a place holder for now. It will need to be replaced by the driver name
     	 * from the GET Request
-    	 */
-    	
+    	 */    	
     	String xml = Coordinator.requestWidgetXML("LedFlash");
     	byte[] response = ("<?xml version=\"1.0\"?>\n" + xml).getBytes();
     	return response;
