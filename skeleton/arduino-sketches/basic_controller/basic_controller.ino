@@ -53,10 +53,6 @@ void setup() {
 	Serial.begin(9600);
 	softSerial.begin(9600);
 	xbee.begin(softSerial);  //xbee is connected to pins 10 & 11
-	//send the ready signal back to the controller
-	pinMode(5, OUTPUT);
-	pinMode(6, OUTPUT);
-	pinMode(7, OUTPUT);
 	Serial.print("!!!!!READYREADY\n");
 }
 
@@ -91,11 +87,6 @@ void loop() {
 				}
 				dataBytes[i] = Serial.read();
 			}
-
-			//debugmessage in, to '" + destination + "'");
-			// Serial.print("data length ");
-			// Serial.println(dataLength);
-			// Serial.flush();
 
 			//If the message was addressed to us then we can begin processing
 			if (MODULE_NAME.compareTo(destination) == 0) {
@@ -238,11 +229,6 @@ String byteArrayToString(byte data[], int dataLength) {
 	return str;
 }
 
-// void debug(String message) {
-// 	Serial.println(message);
-// 	Serial.flush();
-// }
-
 
 void processMessage(byte optionsByte, byte fragmentNoBytes[], String destination, byte dataBytes[], int dataLength) {
 	//debugprocessMessage()");
@@ -267,36 +253,6 @@ void processMessage(byte optionsByte, byte fragmentNoBytes[], String destination
 * Module specific code to handle incomming commands from the controller
 */
 void executeCommand(String command) {
-	//debugexecuteCommand()");
-	////debugexecuteCommand");
-	//module specific code here
-	if (command.compareTo("RESET") == 0) {
-		//debugresetting");
-		for (int i = 5; i < 8; i++) {
-			digitalWrite(i, LOW);
-		}
-	} else {
-		String pin = String(command[0]);
-		unsigned int pin_num = pin.toInt();
-		String st = String(command[1]);
-		unsigned int state = st.toInt();
-		//debugpin " + pin + " state " + state);
-		if (pin_num != 0) {
-			if (pin_num < 5 || pin_num > 7) {
-				// sendMessage("FAIL" + pin);
-			} else {
-				if (state == 1) {
-					digitalWrite(pin_num, HIGH);
-					sendMessage("OK" + pin);
-				} else {
-					digitalWrite(pin_num, LOW);
-					sendMessage("OK" + pin);
-				}
-			}
-		} else {
-			sendMessage("FAIL" + pin);
-		}
-	}
 }
 
 
@@ -305,11 +261,4 @@ void executeCommand(String command) {
 * Module specific code to handle incomming binary from the controller
 */
 void executeBinary(byte data[], int dataLength) {
-	//debugexecuteBinary()");
-	////debugexecuteBinary");
-	//module specific code here
-	/*
-	* WARNING: The data in the byte array does not have double newlines converted into singles.
-	* you will need to to this during your processing.
-	*/
 }

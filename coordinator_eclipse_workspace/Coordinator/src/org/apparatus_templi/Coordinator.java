@@ -31,7 +31,8 @@ public class Coordinator {
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
-	private static ConcurrentHashMap<Driver, Long>   scheduledRestarts = new ConcurrentHashMap<Driver, Long>();
+	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
+	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
 	private static int portNum;
 	private static String serialPortName = null;
 	private static SerialConnection serialConnection;
@@ -83,6 +84,13 @@ public class Coordinator {
 				} else {
 					driver.receiveCommand(new String(m.getData()));
 				}
+				
+				//If this driver was scheduled to sleep until a new message arrives
+				//+ then we need to notify it to wake
+				if (scheduledWakeUps.get(driver) != null && scheduledWakeUps.get(driver) == 0) {
+					scheduledWakeUps.remove(driver);
+					driver.notify();
+				}
 			}
 		} else {
 			//Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
@@ -131,7 +139,7 @@ public class Coordinator {
 	 * @throws SecurityException 
 	 * @throws NoSuchMethodException 
 	 */
-	private static Driver restartDriver(String driverName) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private static synchronized Driver restartDriver(String driverName) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return restartDriver(driverName, true);
 	}
 	
@@ -149,21 +157,22 @@ public class Coordinator {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	private static Driver restartDriver(String driverName, boolean autoStart) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private static synchronized Driver restartDriver(String driverName, boolean autoStart) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Driver newDriver = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
 			Thread t = driverThreads.get(d);
 			if (t.getState() == Thread.State.TERMINATED) {
 				Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getDriverType() + "'");
-				scheduledRestarts.remove(d);
+				scheduledWakeUps.remove(d);
 				driverThreads.remove(d);
-				loadedDrivers.remove(d.getName());
-				//use reflection to generate a new driver of the appropriate class
-				Constructor<?> thisConst = d.getClass().getConstructor();
-				Object o = thisConst.newInstance();
-				newDriver = (Driver)o;
-				loadedDrivers.put(newDriver.getName(), newDriver);
+//				loadedDrivers.remove(d.getName());
+//				//use reflection to generate a new driver of the appropriate class
+//				Constructor<?> thisConst = d.getClass().getConstructor();
+//				Object o = thisConst.newInstance();
+//				newDriver = (Driver)o;
+//				loadedDrivers.put(newDriver.getName(), newDriver);
+				newDriver = d;
 				Thread newThread = new Thread(newDriver);
 				driverThreads.put(newDriver, newThread);
 				if (autoStart) {
@@ -171,6 +180,14 @@ public class Coordinator {
 				}
 				
 				d = null; t = null;	//hopefully there are no other references
+			} else {
+				newDriver = d;
+				try {
+					scheduledWakeUps.remove(d);
+					d.wake();
+				} catch (Exception e) {
+					Log.d(TAG, "could not nofity object");
+				}
 			}
 		}
 		return newDriver;
@@ -312,20 +329,41 @@ public class Coordinator {
 	}
 	
 	/**
+	 * Schedules a {@link Driver} to sleep for a indefinite period.
+	 * The calling driver will be woken only when the system is going
+	 * down or when an incoming message addressed to it is found.
+	 * @param caller A reference to the driver to sleep
+	 */
+	static synchronized void scheduleWake(Driver caller) {
+		if (caller != null) {
+			scheduledWakeUps.put(caller, 0l);
+//			try {
+//				caller.wait();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
+		}
+	}
+	
+	/**
 	 * Schedules a {@link org.apparatus_templi.Driver} to re-create
 	 * this driver at the given time. If a driver's state
-	 * {@link org.apparatus_templi.Driver#getState()} is
+	 * {@link java.lang.Tread} is
 	 * {@link java.lang.Thread.State.TERMINATED} at the time of the wake up the
 	 * Driver will be re-created. If the Driver's state is not
-	 * TERMINATED then no action will be taken. WARNING: make sure
+	 * TERMINATED then the driver will be woken by calling its
+	 * {@link Object#notify()} method. WARNING: make sure
 	 * that your driver stores any needed information before
 	 * exiting its run() method.
 	 * @param caller
 	 * @param wakeTime
+	 * @throws InterruptedException 
 	 */
-	static synchronized void scheduleRestart(Driver caller, long wakeTime) {
+	static synchronized void scheduleWake(Driver caller, long wakeTime) {
 		if (caller != null) {
-			scheduledRestarts.put(caller, wakeTime);
+			scheduledWakeUps.put(caller, wakeTime);
 			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' in " + (wakeTime - System.currentTimeMillis()) / 1000 + " seconds.");
 		}
 	}
@@ -450,6 +488,32 @@ public class Coordinator {
 		
 		return driverList;
 	}
+	
+	static void receiveEvent(Driver d, Event e) {
+		if (d instanceof EventGenerator) {
+			Log.d(TAG, "incoming event '" + e.eventType + "' from driver '" + d.getName() + "'");
+		} else {
+			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
+		}
+		//TODO check a hash table to see who to notify
+	}
+	
+	
+	static void registerEventWatch(Driver d, Event e) {
+		if (d instanceof EventWatcher) {
+			Log.d(TAG, " driver '" + d.getName() + "' requested to be notified of events of type '" + e.eventType + "'.");
+			ArrayList<Driver> curList = eventWatchers.get(e);
+			if (curList == null) {
+				curList = new ArrayList<Driver>();
+			}
+		} else {
+			Log.d(TAG, "driver '" + d.getName() + "' can not listen for events of type '" + e.eventType + "', must implement EventWatcher.");
+		}
+	}
+	
+	static void deRegesterEventWatch(Driver d, Event e) {
+		//TODO remove this driver from the event watcher list
+	}
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		//turn off debug messages
@@ -565,6 +629,9 @@ public class Coordinator {
         
 		Log.c(TAG, "Initializing drivers...");
         //initialize the drivers
+		Driver local = new Local();
+
+		
         Driver driver1 = new LedFlash();
         
         //test adding a driver with the same name
@@ -582,12 +649,16 @@ public class Coordinator {
 		//testing sleep driver
 		Driver driver6 = new SleepyDriver();
 		
+		Driver motionDriver = new MotionGenerator();
+		
 //		loadDriver(driver1);
-		loadDriver(driver2);
+//		loadDriver(driver2);
 //		loadDriver(driver3);
 //		loadDriver(driver4);
 		loadDriver(driver5);
-//		loadDriver(driver6);
+		loadDriver(driver6);
+//		loadDriver(motionDriver);
+		loadDriver(local);
         
         
         //start the drivers
@@ -604,7 +675,7 @@ public class Coordinator {
         	public void run() {
         		Log.d(TAG, "system is going down. Notifying all drivers.");
         		//cancel any pending driver restarts
-        		scheduledRestarts.clear();
+        		scheduledWakeUps.clear();
 				for (String driverName: loadedDrivers.keySet()) {
 					Log.d(TAG, "terminating driver '" + driverName + "'");
 					loadedDrivers.get(driverName).terminate();
@@ -635,14 +706,15 @@ public class Coordinator {
         	}
         	
         	//Check for scheduled driver wake ups.
-        	for (Driver d: scheduledRestarts.keySet()) {
-        		Long wakeTime = scheduledRestarts.get(d);
+        	for (Driver d: scheduledWakeUps.keySet()) {
+        		Long wakeTime = scheduledWakeUps.get(d);
         		Long curTime = System.currentTimeMillis();
-        		if (wakeTime <= curTime) {
+        		if (wakeTime <= curTime && wakeTime != 0) {
         			try {
         				restartDriver(d.getName());
         			} catch (Exception e) {
         				Log.e(TAG, "error restarting driver '" + d.getName() + "'");
+        				scheduledWakeUps.remove(d);
         			}
         		}
         	}

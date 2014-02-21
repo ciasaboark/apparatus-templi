@@ -13,12 +13,17 @@ public class LazyDriver extends SensorModule {
 		//we don't care about incoming binary data, just discard any queued
 		this.queuedBinary.clear();
 		
-		//check for queued messages
-		while (!this.queuedCommands.isEmpty()) {
-			String cmd = this.queuedCommands.pop();
-			Log.d(this.name, "working on command: " + cmd);
-			this.receiveCommand(cmd);
-			Log.d(this.name, "received incoming data: '" + cmd + "'");
+		while (isRunning) {
+			//check for queued messages
+			while (!this.queuedCommands.isEmpty()) {
+				String cmd = this.queuedCommands.pop();
+				Log.d(this.name, "working on command: " + cmd);
+				this.receiveCommand(cmd);
+				Log.d(this.name, "received incoming data: '" + cmd + "'");
+			}
+			
+			//Sleep until an incoming message wakes us up.
+			this.sleep();
 		}
 		
 		Log.d(this.name, "terminating");

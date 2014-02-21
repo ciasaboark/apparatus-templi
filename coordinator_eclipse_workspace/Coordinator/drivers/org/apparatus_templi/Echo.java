@@ -7,10 +7,9 @@ public class Echo extends ControllerModule {
 		this.name = "ECHO";
 	}
 	
-	
+	private static final String KEY_CORRECT_RESPONSE = "correct response";
 	@Override
 	public void run() {
-//		String command = "Testing ECHO";
 		String command = "123456789012345678901234567890123456789012345678901234567890123456789";
 		
 		while (isRunning) {
@@ -24,12 +23,12 @@ public class Echo extends ControllerModule {
 			}
 			if (command.equals(response)) {
 				Log.d(this.name, "Received correct response after " + numTries + " tries");
+				Coordinator.storeTextData(this.name, KEY_CORRECT_RESPONSE, String.valueOf(System.currentTimeMillis()));
 			} else {
 				Log.d(this.name, "Gave up after " + numTries + " tries.");
 			}
 				
-			Coordinator.scheduleRestart(this, System.currentTimeMillis() + (1000 * 10));	//wake every 10 seconds
-			this.terminate();
+			this.sleep(1000 * 10);	//wake every 10 seconds
 		}
 
 	}

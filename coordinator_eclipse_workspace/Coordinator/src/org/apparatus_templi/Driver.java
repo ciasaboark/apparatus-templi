@@ -111,19 +111,6 @@ public abstract class Driver implements Runnable {
 		return this.name;
 	}
 	
-//	/**
-//	 * Returns the current status of this drivers underlying Thread.
-//	 * Each driver is free to continuously execute, sleep periodically,
-//	 * or only execute once before terminating.  The Coordinator
-//	 * will check the status of each driver to determine whether
-//	 * to place incoming messages into its queue, or to directly
-//	 * call {@link #receiveCommand(String)} or {@link #receiveBinary(byte[])}.
-//	 * @return the current {@link java.lang.Thread.State} of this driver.
-//	 */
-//	final Thread.State getState() {
-//		return Thread.currentThread().getState();
-//	}
-	
 	final void queueCommand(String command) {
 		queuedCommands.add(command);
 	}
@@ -154,6 +141,30 @@ public abstract class Driver implements Runnable {
 	
 	public String getName() {
 		return name;
+	}
+	
+	protected final synchronized void sleep()  {
+		Coordinator.scheduleWake(this);
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			Log.d(TYPE, "sleeping driver woken by interrupt");
+			this.notify();
+		}
+	}
+	
+	protected final synchronized void sleep(long sleepTime)  {
+		Coordinator.scheduleWake(this, System.currentTimeMillis() + sleepTime);
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			Log.d(TYPE, "sleeping driver woken by interrupt");
+			this.notify();
+		}
+	}
+	
+	public final synchronized void wake() {
+		this.notify();
 	}
 	
 }

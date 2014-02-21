@@ -10,6 +10,13 @@ import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Handles message fragmentation and de-fragmentation.  Sends completed fragments
+ * to the serial connection and reads incoming bytes from the serial line,
+ * reassembling completed message fragments, and combining fragments into completed
+ * messages before placing them in a queue for higher-level processing. 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ */
 public class MessageCenter implements Runnable {
 	private static final String TAG = "MessageCenter";
 	
@@ -304,6 +311,89 @@ public class MessageCenter implements Runnable {
 		}
 		
 	}
+
+	class MessageFragment {
+		private byte options;
+		private int  dataLength;
+		private int fragmentNo;
+		private String destination;
+		private byte[] data;
+		
+		public MessageFragment (byte options, int dataLength, int fragmentNum, String destination, byte[] data) {
+			this.options = options;
+			this.dataLength = dataLength;
+			this.fragmentNo = fragmentNum;
+			this.destination = destination;
+			this.data = data;
+		}
+		
+		public byte getOptions() {
+			return options;
+		}
+		
+		public int getDataLength() {
+			return dataLength;
+		}
+	
+		public int getFragmentNo() {
+			return fragmentNo;
+		}
+	
+		public String getDestination() {
+			return destination;
+		}
+	
+		public byte[] getData() {
+			return data;
+		}
+	}
+
+	class FragmentedMessage {
+		static final String TAG = "FragmentedMessage";
+		private SortedMap<Integer, MessageFragment> fragments = new TreeMap<Integer, MessageFragment>();
+		
+		public void storeFragment(MessageFragment fragment) {
+			int fragmentNum = fragment.getFragmentNo();
+			if (fragments.containsKey(fragmentNum)) {
+				//oops somehow we got two fragments
+	//			Log.e(TAG,  "incoming message fragment '" + fragmentNum + "' will overwrite an existing fragment");
+			}
+			fragments.put(fragmentNum, fragment);
+		}
+		
+		Message getCompleteMessage() throws IOException {
+			Message m = new Message();
+			if (!isMessageComplete()) {
+				Log.w(TAG, "attempting generating a complete message without all fragments");
+			}
+			ByteArrayOutputStream dataBytes = new ByteArrayOutputStream();
+			MessageFragment firstFragment = fragments.get(fragments.firstKey());
+			//TODO check all fragments have the same option byte?
+			m.setOptions(firstFragment.getOptions());
+			m.setDestination(firstFragment.getDestination());
+			m.setDataLength(firstFragment.getDataLength());
+			for (Integer fragNum: fragments.keySet()) {
+				dataBytes.write(fragments.get(fragNum).getData());
+			}
+			m.setData(dataBytes.toByteArray());
+			
+			return m;
+		}
+	
+		public boolean isMessageComplete() {
+			boolean isComplete = true;
+			int i = 0;
+			for (Integer fragNum: fragments.keySet()) {
+				if (i != fragNum) {
+					isComplete = false;
+					break;
+				}
+				i++;
+			}
+			return isComplete;
+		}
+	
+	}
 }
 
 class Message {
@@ -367,90 +457,6 @@ class Message {
 	public int getTransmissionType() {
 		return (options & OPTION_TYPE_BIN) >> 7;
 	}
-}
-	
-	
-class MessageFragment {
-	private byte options;
-	private int  dataLength;
-	private int fragmentNo;
-	private String destination;
-	private byte[] data;
-	
-	public MessageFragment (byte options, int dataLength, int fragmentNum, String destination, byte[] data) {
-		this.options = options;
-		this.dataLength = dataLength;
-		this.fragmentNo = fragmentNum;
-		this.destination = destination;
-		this.data = data;
-	}
-	
-	public byte getOptions() {
-		return options;
-	}
-	
-	public int getDataLength() {
-		return dataLength;
-	}
-
-	public int getFragmentNo() {
-		return fragmentNo;
-	}
-
-	public String getDestination() {
-		return destination;
-	}
-
-	public byte[] getData() {
-		return data;
-	}
-}
-
-class FragmentedMessage {
-	static final String TAG = "FragmentedMessage";
-	private SortedMap<Integer, MessageFragment> fragments = new TreeMap<Integer, MessageFragment>();
-	
-	public void storeFragment(MessageFragment fragment) {
-		int fragmentNum = fragment.getFragmentNo();
-		if (fragments.containsKey(fragmentNum)) {
-			//oops somehow we got two fragments
-//			Log.e(TAG,  "incoming message fragment '" + fragmentNum + "' will overwrite an existing fragment");
-		}
-		fragments.put(fragmentNum, fragment);
-	}
-	
-	Message getCompleteMessage() throws IOException {
-		Message m = new Message();
-		if (!isMessageComplete()) {
-			Log.w(TAG, "attempting generating a complete message without all fragments");
-		}
-		ByteArrayOutputStream dataBytes = new ByteArrayOutputStream();
-		MessageFragment firstFragment = fragments.get(fragments.firstKey());
-		//TODO check all fragments have the same option byte?
-		m.setOptions(firstFragment.getOptions());
-		m.setDestination(firstFragment.getDestination());
-		m.setDataLength(firstFragment.getDataLength());
-		for (Integer fragNum: fragments.keySet()) {
-			dataBytes.write(fragments.get(fragNum).getData());
-		}
-		m.setData(dataBytes.toByteArray());
-		
-		return m;
-	}
-
-	public boolean isMessageComplete() {
-		boolean isComplete = true;
-		int i = 0;
-		for (Integer fragNum: fragments.keySet()) {
-			if (i != fragNum) {
-				isComplete = false;
-				break;
-			}
-			i++;
-		}
-		return isComplete;
-	}
-
 }
 
 

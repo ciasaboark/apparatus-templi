@@ -121,7 +121,7 @@ void loop() {
 	// Only this, and nothing more.'";
 	String long_command = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
 	sendCommand(long_command);
-	delay(120000);
+	delay(100);
 }
 
 void processMessage(uint8_t message[], int messageLength) {

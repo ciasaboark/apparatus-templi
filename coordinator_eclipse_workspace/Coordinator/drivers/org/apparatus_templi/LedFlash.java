@@ -175,7 +175,7 @@ public class LedFlash extends ControllerModule {
 	@Override
 	public String getWidgetXML() {
 		Log.w(name, "getWidgetXML() unimplimented");
-		return null;
+		return "<widget><element name='led1'><state>on</state></element></widget>";
 	}
 
 	/*
