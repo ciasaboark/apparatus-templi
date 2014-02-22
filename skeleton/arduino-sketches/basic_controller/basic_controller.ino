@@ -41,6 +41,7 @@ const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "LOCAL";
 
 SoftwareSerial softSerial = SoftwareSerial(10, 11);
+//download Xbee library from https://code.google.com/p/xbee-arduino/
 XBee xbee = XBee();
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
