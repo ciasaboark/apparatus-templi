@@ -1,7 +1,6 @@
 package org.apparatus_templi;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -590,7 +589,6 @@ public class Coordinator {
 		//block until the local Arduino is ready
 		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
 		byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
-//		serialConnection.flushSerialLine();
 		String sString = new String(sBytes);
 		if (sString.endsWith("READY")) {
 			connectionReady = true;
@@ -651,9 +649,9 @@ public class Coordinator {
 		
 		Driver motionDriver = new MotionGenerator();
 		
-//		loadDriver(driver1);
-//		loadDriver(driver2);
-//		loadDriver(driver3);
+		loadDriver(driver1);
+		loadDriver(driver2);
+		loadDriver(driver3);
 //		loadDriver(driver4);
 		loadDriver(driver5);
 		loadDriver(driver6);
@@ -691,7 +689,8 @@ public class Coordinator {
         
         //start the web interface
         Log.c(TAG, "Starting web server on port " + portNum);
-        new Thread(new SimpleHttpServer(portNum)).start();
+        SimpleHttpServer server = new SimpleHttpServer(portNum);
+        new Thread(server).start();
         
 		//enter main loop
         while (true) {
