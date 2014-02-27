@@ -54,6 +54,11 @@ void setup() {
 	Serial.begin(9600);
 	softSerial.begin(9600);
 	xbee.begin(softSerial);  //xbee is connected to pins 10 & 11
+
+	/*
+	* Place module specific setup code here
+	*/
+
 	Serial.print("!!!!!READYREADY\n");
 }
 

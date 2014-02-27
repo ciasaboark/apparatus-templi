@@ -140,10 +140,10 @@ void loop() {
 				//All data received on the xbee should be forwarded to the
 				//+ USB serial connection.
 				//TODO validate that a correctly formed message was received
-				digitalWrite(5, HIGH);
-				delay(1000);
+				// digitalWrite(5, HIGH);
+				// delay(1000);
 				Serial.write(rx.getData(i));
-				digitalWrite(5, LOW);
+				// digitalWrite(5, LOW);
 			}
 		  
 		} else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {

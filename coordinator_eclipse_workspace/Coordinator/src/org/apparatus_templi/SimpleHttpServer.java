@@ -23,7 +23,7 @@ public class SimpleHttpServer implements Runnable {
 		try {
 			server = HttpServer.create(new InetSocketAddress(portNumber), 0);
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
-			server.createContext("/get_full_xml?driver", new FullXmlHandler());
+			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
 			server.setExecutor(null);
 		} catch (IOException e) {
@@ -71,8 +71,8 @@ public class SimpleHttpServer implements Runnable {
 	    
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress());
-//			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
-//			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
+			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
