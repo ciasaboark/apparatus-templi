@@ -1,6 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
 
 public class Echo extends ControllerModule {
 	public Echo() {
@@ -34,43 +37,43 @@ public class Echo extends ControllerModule {
 	}
 
 	@Override
-	ArrayList<String> getControllerList() {
+	public ArrayList<String> getControllerList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	String getControllerStatusXML(String controllerName) {
+	public String getControllerStatusXML(String controllerName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	void tellController(String controllerName, String command) {
+	public void tellController(String controllerName, String command) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	void receiveCommand(String command) {
+	public void receiveCommand(String command) {
 		Log.w(this.name, "received command '" + command + "'");
 
 	}
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	String getWidgetXML() {
+	public String getWidgetXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	String getFullPageXML() {
+	public String getFullPageXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,7 +1,10 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
 
 /**
  * An abstract class for a basic driver.  This driver should
@@ -16,7 +19,7 @@ public abstract class Driver implements Runnable {
 	 * Used to determine which type of Driver each driver
 	 * should be cast to. 
 	 */
-	static final String TYPE = "Driver";
+	public static final String TYPE = "Driver";
 	
 	/**
 	 * The unique name of this driver.  This name should match
@@ -63,7 +66,7 @@ public abstract class Driver implements Runnable {
 	 * {@link org.apparatus_templi.Coordinator#sendCommand(Driver, String)}
 	 * @param command the command to send to the remote module.
 	 */
-	abstract void receiveCommand(String command);
+	public abstract void receiveCommand(String command);
 	
 	/**
 	 * Sends binary data to this drivers remote module.  This is the
@@ -73,7 +76,7 @@ public abstract class Driver implements Runnable {
 	 * {@link org.apparatus_templi.Coordinator#sendBinary(Driver, byte[])}
 	 * @param data the command to send to the remote module.
 	 */
-	abstract void receiveBinary(byte[] data);
+	public abstract void receiveBinary(byte[] data);
 	
 	/**
 	 * Returns a String of XML data representing a widget view
@@ -82,7 +85,7 @@ public abstract class Driver implements Runnable {
 	 * data from a limited set of sensors or controllers.
 	 * @return a String of XML widget data.
 	 */
-	abstract String getWidgetXML();
+	public abstract String getWidgetXML();
 	
 	/**
 	 * Returns a String of XML data representing a full view
@@ -91,7 +94,7 @@ public abstract class Driver implements Runnable {
 	 * controller commands available. 
 	 * @return a String of XML data.
 	 */
-	abstract String getFullPageXML();
+	public abstract String getFullPageXML();
 	
 	/**
 	 * Notify the driver that it should begin terminating.  More
@@ -99,7 +102,7 @@ public abstract class Driver implements Runnable {
 	 * Drivers should query this flag periodically to know when
 	 * to begin their termination procedure (if any).
 	 */
-	final void terminate() {
+	public final void terminate() {
 		this.isRunning = false;
 	}
 	
@@ -107,15 +110,15 @@ public abstract class Driver implements Runnable {
 	 * Returns the unique String name of this driver.
 	 * @return the name of this driver.
 	 */
-	final String getModuleName() {
+	public final String getModuleName() {
 		return this.name;
 	}
 	
-	final void queueCommand(String command) {
+	public final void queueCommand(String command) {
 		queuedCommands.add(command);
 	}
 	
-	final void queueBinary(byte[] data) {
+	public final void queueBinary(byte[] data) {
 		queuedBinary.add(data);
 	}
 	

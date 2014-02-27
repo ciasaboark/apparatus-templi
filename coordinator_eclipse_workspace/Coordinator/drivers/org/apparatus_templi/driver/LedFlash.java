@@ -1,6 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
 
 /**
  * A driver that controls a remote array of LED pixels.
@@ -159,12 +162,12 @@ public class LedFlash extends ControllerModule {
 	 * We don't care about any response messages.
 	 */
 	@Override
-	void receiveCommand(String command) {
+	public void receiveCommand(String command) {
 		Log.d(name, "received command, ignoring");
 	}
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		Log.d(name, "received binary, ignoring");
 		
 	}

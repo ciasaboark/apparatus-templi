@@ -1,10 +1,13 @@
-package org.apparatus_templi;
+package org.apparatus_templi.event;
+
+import org.apparatus_templi.Event;
+import org.apparatus_templi.driver.Driver;
 
 /**
  * Generated when the light level has changed from
  * the previously recorded value.  The originating
  * driver is responsible for determining how much
- * of a change is required before issuing a new
+ * of a change is required before generating a new
  * event.
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  *

@@ -1,6 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
 
 /**
  * A driver for a remote module with a number of LEDs.  Each LED
@@ -29,7 +32,7 @@ public class StatefullLed extends ControllerModule {
 	private boolean[] ledsState = {false, false, false};
 	
 	public StatefullLed() {
-		this.name = "LOCAL";
+		this.name = "State_LED";
 	}
 	
 	@Override
@@ -47,7 +50,7 @@ public class StatefullLed extends ControllerModule {
 
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		Log.d(this.name, "received binary, ignoring");
 		
 	}

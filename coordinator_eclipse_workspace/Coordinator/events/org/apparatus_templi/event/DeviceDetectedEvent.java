@@ -1,4 +1,7 @@
-package org.apparatus_templi;
+package org.apparatus_templi.event;
+
+import org.apparatus_templi.Event;
+import org.apparatus_templi.driver.Driver;
 
 /**
  * Generated when a device has been detected.  The

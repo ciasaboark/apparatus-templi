@@ -1,4 +1,7 @@
-package org.apparatus_templi;
+package org.apparatus_templi.event;
+
+import org.apparatus_templi.Event;
+import org.apparatus_templi.driver.Driver;
 
 /**
  * An Event representing the reception of an infrared signal.

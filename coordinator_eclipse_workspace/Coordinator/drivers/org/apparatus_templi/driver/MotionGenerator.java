@@ -1,6 +1,12 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Event;
+import org.apparatus_templi.EventGenerator;
+import org.apparatus_templi.Log;
+import org.apparatus_templi.event.MotionEvent;
 
 
 /**
@@ -37,25 +43,25 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 	}
 
 	@Override
-	void receiveCommand(String command) {
+	public void receiveCommand(String command) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	String getWidgetXML() {
+	public String getWidgetXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	String getFullPageXML() {
+	public String getFullPageXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}

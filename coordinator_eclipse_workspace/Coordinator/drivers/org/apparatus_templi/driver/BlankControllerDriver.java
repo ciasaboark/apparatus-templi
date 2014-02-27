@@ -1,6 +1,8 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Log;
 
 /**
  * A blank driver to be used as a template for a controller module.
@@ -60,13 +62,13 @@ public class BlankControllerDriver extends ControllerModule {
 	 * operating on them.
 	 */
 	@Override
-	void receiveCommand(String command) {
+	public void receiveCommand(String command) {
 		//If the command was valid
 		//Coordinator.sendCommand(this, command);
 	}
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		//If the data was valid
 		//Coordinator.sendBinary(this, data);
 	}

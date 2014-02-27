@@ -1,6 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
 
 public class LazyDriver extends SensorModule {
 	public LazyDriver() {
@@ -42,25 +45,25 @@ public class LazyDriver extends SensorModule {
 	}
 
 	@Override
-	void receiveCommand(String command) {
+	public void receiveCommand(String command) {
 		Coordinator.storeTextData(this.name, ((Long)System.currentTimeMillis()).toString(), command);
 
 	}
 
 	@Override
-	void receiveBinary(byte[] data) {
+	public void receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	String getWidgetXML() {
+	public String getWidgetXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	String getFullPageXML() {
+	public String getFullPageXML() {
 		// TODO Auto-generated method stub
 		return null;
 	}

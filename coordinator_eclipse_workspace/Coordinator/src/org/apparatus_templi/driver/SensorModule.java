@@ -1,6 +1,7 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
 
 /**
  * An abstract class for a driver that interacts with a
@@ -13,12 +14,12 @@ import java.util.ArrayList;
  * does not need to remain active, and will be restarted
  * after the incoming message is placed in its queue.
  */
-abstract class SensorModule extends Driver {
+public abstract class SensorModule extends Driver {
 	/**
 	 * Used to determine which type of Driver each driver
 	 * should be cast to. 
 	 */
-	static final String TYPE = "Sensor";
+	public static final String TYPE = "Sensor";
 	
 	/**
 	 * Return a list of all sensors on the remote module.

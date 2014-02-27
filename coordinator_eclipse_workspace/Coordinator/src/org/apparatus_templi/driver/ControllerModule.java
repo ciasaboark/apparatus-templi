@@ -1,6 +1,7 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
+
 
 /**
  * An abstract class for a driver that controls a remote
@@ -16,7 +17,7 @@ public abstract class ControllerModule extends Driver {
 	 * Used to determine which type of Driver each driver
 	 * should be cast to. 
 	 */
-	static final String TYPE = "Controller";
+	public static final String TYPE = "Controller";
 	
 	/**
 	 * Return a list of all controllers on the remote module.
@@ -27,7 +28,7 @@ public abstract class ControllerModule extends Driver {
 	 * @return an ArrayList of Strings of all known controllers on the remote
 	 * 	module.
 	 */
-	abstract ArrayList<String> getControllerList();
+	public abstract ArrayList<String> getControllerList();
 	
 	/**
 	 * Returns an XML description of the current status of the requested
@@ -36,7 +37,7 @@ public abstract class ControllerModule extends Driver {
 	 * @return a String of XML data describing the current status of the
 	 * 	controller. If the specified controller does not exist, then returns null.
 	 */
-	abstract String getControllerStatusXML(String controllerName);
+	public abstract String getControllerStatusXML(String controllerName);
 	
 	/**
 	 * Sends a command to a specific controller on the remote module.
@@ -47,7 +48,7 @@ public abstract class ControllerModule extends Driver {
 	 * 	remote module.
 	 * @param command the String command to send to the controller.
 	 */
-	abstract void tellController(String controllerName, String command);
+	public abstract void tellController(String controllerName, String command);
 	
 	/**
 	 * Returns the String type of Driver.  This type can be checked

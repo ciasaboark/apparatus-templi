@@ -13,6 +13,17 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apparatus_templi.driver.ControllerModule;
+import org.apparatus_templi.driver.Driver;
+import org.apparatus_templi.driver.Echo;
+import org.apparatus_templi.driver.LargeCommands;
+import org.apparatus_templi.driver.LazyDriver;
+import org.apparatus_templi.driver.LedFlash;
+import org.apparatus_templi.driver.Local;
+import org.apparatus_templi.driver.MotionGenerator;
+import org.apparatus_templi.driver.SensorModule;
+import org.apparatus_templi.driver.SleepyDriver;
+import org.apparatus_templi.driver.StatefullLed;
 
 /**
  * Coordinates message passing and driver loading.  Handles setting
@@ -55,7 +66,7 @@ public class Coordinator {
 		//Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
 		if (!isModulePresent(destination)) {
-			//Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
+			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
 			remoteModules.put(destination, "");
 		}
 		
@@ -199,12 +210,12 @@ public class Coordinator {
 	 * @param caller a reference to the calling {@link Driver}
 	 * @param command the command to send to the remote module
 	 */
-	static synchronized boolean sendCommand(Driver caller, String command) {
+	public static synchronized boolean sendCommand(Driver caller, String command) {
 //		Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
 		
-		if (connectionReady && caller.name != null) {
-			messageSent = messageCenter.sendCommand(caller.name, command);
+		if (connectionReady && caller.getName() != null) {
+			messageSent = messageCenter.sendCommand(caller.getName(), command);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 		}
@@ -223,16 +234,16 @@ public class Coordinator {
 	 * 	was no response. Note that the first incoming response is returned. If another
 	 * 	message addressed to this 
 	 */
-	static synchronized String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
+	public static synchronized String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
 		//Log.d(TAG, "sendCommandAndWait()");
 		String responseData = null;
-		if (waitPeriod <= 6 && caller.name != null) {
+		if (waitPeriod <= 6 && caller.getName() != null) {
 			sendCommand(caller, command);
 			long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
 			while (System.currentTimeMillis() < endTime) {
 				if (messageCenter.isMessageAvailable()) {
 					Message m = messageCenter.getMessage();
-					if (m.getDestination().equals(caller.name)) {
+					if (m.getDestination().equals(caller.getName())) {
 						try {
 							responseData = new String(m.getData(), "UTF-8");
 							break;
@@ -257,12 +268,12 @@ public class Coordinator {
 	 * @param caller a reference to the calling {@link Driver}
 	 * @param data the binary data to send
 	 */
-	static synchronized boolean sendBinary(Driver caller, byte[] data) {
+	public static synchronized boolean sendBinary(Driver caller, byte[] data) {
 		//Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 		
-		if (connectionReady && caller.name != null) {
-			messageCenter.sendBinary(caller.name, data);
+		if (connectionReady && caller.getName() != null) {
+			messageCenter.sendBinary(caller.getName(), data);
 		} else {
 			Log.w(TAG, "local arduino connection not yet ready, discarding message");
 			messageSent = false;
@@ -282,7 +293,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	static synchronized int storeTextData(String driverName, String dataTag, String data) {
+	public static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
 		return 0;
 	}
@@ -298,7 +309,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
 		return 0;
 	}
@@ -310,7 +321,7 @@ public class Coordinator {
 	 * @return the stored String data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	static synchronized String readTextData(String driverName, String dataTag) {
+	public static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
 		return null;
 	}
@@ -322,7 +333,7 @@ public class Coordinator {
 	 * @return the stored binary data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	static synchronized Byte[] readBinData(String driverName, String dataTag) {
+	public static synchronized Byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
 		return null;
 	}
@@ -333,7 +344,7 @@ public class Coordinator {
 	 * down or when an incoming message addressed to it is found.
 	 * @param caller A reference to the driver to sleep
 	 */
-	static synchronized void scheduleWake(Driver caller) {
+	public static synchronized void scheduleWake(Driver caller) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, 0l);
 //			try {
@@ -347,7 +358,7 @@ public class Coordinator {
 	}
 	
 	/**
-	 * Schedules a {@link org.apparatus_templi.Driver} to re-create
+	 * Schedules a {@link org.apparatus_templi.driver.Driver} to re-create
 	 * this driver at the given time. If a driver's state
 	 * {@link java.lang.Tread} is
 	 * {@link java.lang.Thread.State.TERMINATED} at the time of the wake up the
@@ -360,7 +371,7 @@ public class Coordinator {
 	 * @param wakeTime
 	 * @throws InterruptedException 
 	 */
-	static synchronized void scheduleWake(Driver caller, long wakeTime) {
+	public static synchronized void scheduleWake(Driver caller, long wakeTime) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
 			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' in " + (wakeTime - System.currentTimeMillis()) / 1000 + " seconds.");
@@ -375,7 +386,7 @@ public class Coordinator {
 	 * 	or null. If null, this command originated from the Coordinator
 	 * @param command the command to pass
 	 */
-	static synchronized boolean passCommand(String source, String destination, String command) {
+	public static synchronized boolean passCommand(String source, String destination, String command) {
 		Log.d(TAG, "passCommand()");
 		//TODO verify source name
 		//TODO check for reserved name in toDriver
@@ -396,7 +407,7 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does
 	 * 	not exist
 	 */
-	static synchronized String requestWidgetXML(String driverName) {
+	public static synchronized String requestWidgetXML(String driverName) {
 		Log.d(TAG, "requestWidgetXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
@@ -412,7 +423,7 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does
 	 * 	not exist
 	 */
-	static synchronized String requestFullPageXML(String driverName) {
+	public static synchronized String requestFullPageXML(String driverName) {
 		Log.d(TAG, "requestFullPageXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
@@ -428,7 +439,7 @@ public class Coordinator {
 	 * @param moduleName the name of the remote module to check for
 	 * @return true if the remote module is known to be up, false otherwise
 	 */
-	static synchronized boolean isModulePresent(String moduleName) {
+	public static synchronized boolean isModulePresent(String moduleName) {
 		return remoteModules.containsKey(moduleName);
 	}
 	
@@ -441,7 +452,7 @@ public class Coordinator {
 	 * {@link SensorModule#TYPE} or if the driver is not loaded then
 	 * returns null. 
 	 */
-	static synchronized ArrayList<String> getSensorList(String driverName) {
+	public static synchronized ArrayList<String> getSensorList(String driverName) {
 		ArrayList<String> results = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
@@ -461,7 +472,7 @@ public class Coordinator {
 	 * {@link ControllerModule#TYPE} or if the driver is not loaded then
 	 * returns null. 
 	 */
-	static synchronized ArrayList<String> getControllerList(String driverName) {
+	public static synchronized ArrayList<String> getControllerList(String driverName) {
 		ArrayList<String> results = new ArrayList<String>();
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
@@ -478,7 +489,7 @@ public class Coordinator {
 	 * @return an ArrayList of Strings of driver names.  If no
 	 * drivers are loaded then returns an empty list.
 	 */
-	static synchronized ArrayList<String> getLoadedDrivers() {
+	public static synchronized ArrayList<String> getLoadedDrivers() {
 		Log.d(TAG, "getLoadedDrivers()");
 		ArrayList<String> driverList = new ArrayList<String>();
 		for (String driverName: loadedDrivers.keySet()) {
@@ -488,7 +499,7 @@ public class Coordinator {
 		return driverList;
 	}
 	
-	static void receiveEvent(Driver d, Event e) {
+	public static void receiveEvent(Driver d, Event e) {
 		if (d instanceof EventGenerator) {
 			Log.d(TAG, "incoming event '" + e.eventType + "' from driver '" + d.getName() + "'");
 		} else {
@@ -498,7 +509,7 @@ public class Coordinator {
 	}
 	
 	
-	static void registerEventWatch(Driver d, Event e) {
+	public static void registerEventWatch(Driver d, Event e) {
 		if (d instanceof EventWatcher) {
 			Log.d(TAG, " driver '" + d.getName() + "' requested to be notified of events of type '" + e.eventType + "'.");
 			ArrayList<Driver> curList = eventWatchers.get(e);
@@ -510,7 +521,7 @@ public class Coordinator {
 		}
 	}
 	
-	static void deRegesterEventWatch(Driver d, Event e) {
+	public static void deRegesterEventWatch(Driver d, Event e) {
 		//TODO remove this driver from the event watcher list
 	}
 
@@ -630,33 +641,33 @@ public class Coordinator {
 		Driver local = new Local();
 
 		
-        Driver driver1 = new LedFlash();
+        Driver ledflash = new LedFlash();
         
         //test adding a driver with the same name
-        Driver driver2 = new StatefullLed();
+        Driver stateLED = new StatefullLed();
         
         //testing large commands
-		Driver driver3 = new LargeCommands();
+		Driver largeComm = new LargeCommands();
 		
 		//testing echo driver
-		Driver driver4 = new Echo();
+		Driver echo = new Echo();
 		
 		//testing lazy driver
-		Driver driver5 = new LazyDriver();
+		Driver lazy = new LazyDriver();
      
 		//testing sleep driver
-		Driver driver6 = new SleepyDriver();
+		Driver sleepy = new SleepyDriver();
 		
 		Driver motionDriver = new MotionGenerator();
 		
-		loadDriver(driver1);
-		loadDriver(driver2);
-		loadDriver(driver3);
-//		loadDriver(driver4);
-		loadDriver(driver5);
-		loadDriver(driver6);
+		loadDriver(ledflash);
+//		loadDriver(stateLED);
+//		loadDriver(largeComm);
+//		loadDriver(echo);
+//		loadDriver(lazy);
+//		loadDriver(sleepy);
 //		loadDriver(motionDriver);
-		loadDriver(local);
+//		loadDriver(local);
         
         
         //start the drivers
