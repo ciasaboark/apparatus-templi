@@ -40,6 +40,10 @@ public class SerialConnection implements SerialPortEventListener {
 			portNames.add("/dev/ttyUSB0");				//Linux
 			portNames.add("/dev/ttyUSB1");				//Linux
 			portNames.add("/dev/ttyUSB2");				//Linux
+			portNames.add("dev/ttyACM0");				//Linux
+			portNames.add("dev/ttyACM1");				//Linux
+			portNames.add("dev/ttyACM2");				//Linux
+			portNames.add("COM4");						//Windows
 			portNames.add("COM3");						//Windows
 			portNames.add("COM2");						//Windows
 			portNames.add("COM1");						//Windows
@@ -74,7 +78,11 @@ public class SerialConnection implements SerialPortEventListener {
 		}
 		
 		if (portId == null) {
-			System.out.println("Could not find COM port.");
+			if (preferredConnection != null) {
+				Coordinator.exitWithReason("Could not connect to port '" + preferredConnection + "'");
+			} else {
+				Coordinator.exitWithReason("Could not find COM port.");
+			}
 		}
 
 		try {

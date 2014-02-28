@@ -4,9 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,8 +24,23 @@ public class SimpleHttpServer implements Runnable {
 	 * are already in use.
 	 */
 	public SimpleHttpServer(int portNumber) {
+		this (portNumber, false);
+	}
+	
+	public SimpleHttpServer(int portNumber, boolean autoIncrement) {
 		try {
-			server = HttpServer.create(new InetSocketAddress(portNumber), 0);
+			//create a InetSocket on the port
+			InetSocketAddress socket;
+			if (autoIncrement) {
+				while (!portAvailable(portNumber)) {
+					portNumber++;
+				}
+			} else if (!portAvailable(portNumber)) {
+				Coordinator.exitWithReason("could not start web server on port " + portNumber);
+			}
+			
+			socket = new InetSocketAddress(InetAddress.getLoopbackAddress(), portNumber);
+			server = HttpServer.create(socket, 0);
 			server.createContext("/index.html", new IndexHandler());
 			
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
@@ -33,10 +48,24 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
 			server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
+			Log.d(TAG, "waiting on port " + portNumber);
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to initialize the server");
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean portAvailable(int port) {
+		
+		boolean results = false;
+	    try {
+	    	Socket ignored = new Socket("localhost", port);
+	    	Log.d(TAG, "port number " + port + " not available");
+	    } catch (IOException ignored) {
+	        results = true;
+	        Log.d(TAG, "port number " + port + " available");
+	    }
+	    return results;
 	}
 
 	@Override

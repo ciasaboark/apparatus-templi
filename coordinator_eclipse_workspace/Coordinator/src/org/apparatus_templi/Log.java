@@ -64,7 +64,7 @@ public class Log {
 	
 	/**
 	 * Writes an error message to both the log and {@link System#err}.
-	 * @param tag a String to identify the source this message.
+	 * @param tag a String to identify the source of this message.
 	 * @param message the error message to be logged.
 	 */
 	public static void e(String tag, String message) {
@@ -73,5 +73,15 @@ public class Log {
 //			LOGGER.setLevel(Level.ALL);
 //			LOGGER.severe(System.currentTimeMillis() + ": " + tag + ":" +  message);
 		}
+	}
+	
+	/**
+	 * Writes a terminal error message to both the log and to {@link System#err}.
+	 * @param tag a String to identify the source of this message.
+	 * @param message the terminal failure message to be logged.
+	 */
+	static void t(String tag, String message) {
+		System.out.println(System.currentTimeMillis() + ": Terminal Failure: " + tag + ":" + message);
+		System.err.println(System.currentTimeMillis() + ": Terminal Failure: " + tag + ":" + message);
 	}
 }

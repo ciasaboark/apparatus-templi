@@ -1,9 +1,11 @@
 package org.apparatus_templi;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.cli.CommandLine;
@@ -25,6 +27,8 @@ import org.apparatus_templi.driver.SensorModule;
 import org.apparatus_templi.driver.SleepyDriver;
 import org.apparatus_templi.driver.StatefullLed;
 
+import com.sun.org.apache.xerces.internal.util.URI;
+
 /**
  * Coordinates message passing and driver loading.  Handles setting
  * up the environment, querying remote modules, loading drivers,
@@ -36,7 +40,8 @@ import org.apparatus_templi.driver.StatefullLed;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-	private static final int DEFAULT_PORT = 2024;
+	private static final int DEFAULT_PORT = 1;
+	private static final String DEFAULT_CONFIG = "./coordinator.conf";
 
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
@@ -44,6 +49,7 @@ public class Coordinator {
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
 	private static int portNum;
+	private static String configFile;
 	private static String serialPortName = null;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
@@ -201,6 +207,11 @@ public class Coordinator {
 			}
 		}
 		return newDriver;
+	}
+	
+	static void exitWithReason(String reason) {
+		Log.t(TAG, reason);
+		System.exit(1);
 	}
 
 	/**
@@ -547,6 +558,13 @@ public class Coordinator {
 				.create("serial");
 		options.addOption(serialOption);
 		
+		@SuppressWarnings("static-access")
+		Option configOption = OptionBuilder.withArgName("config")
+				.hasArg()
+				.withDescription("Path to the configuration file")
+				.create("config");
+		options.addOption(configOption);
+		
 		
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
 		try {
@@ -561,6 +579,43 @@ public class Coordinator {
 				System.exit(0);
 			}
 			
+			//Load the configuration file URI
+			if (cmd.hasOption("config")) {
+				configFile = cmd.getOptionValue("config");
+			} else {
+				configFile = DEFAULT_CONFIG;
+			}
+			
+			//Read the values from the configuration file.  If any command line
+			//+ parameters were passed, they should overwrite values read, so we
+			//+ will continue processing them later.
+			try {
+				Properties props = new Properties();
+				FileInputStream fin = new FileInputStream(configFile);
+				props.load(fin);
+				fin.close();
+				
+				//read the port number and serial name from the configuration file
+				if (props.containsKey("port")) {
+					try {
+						portNum = Integer.parseInt(props.getProperty("port"));
+						Log.d(TAG, "read config file property 'port' as '" + props.getProperty("port") + "'");
+					} catch (NumberFormatException e) {
+						Log.w(TAG,  "error reading port number from configuration file, setting to default");
+						portNum = DEFAULT_PORT;
+					}
+				}
+				if (props.containsKey("serial")) {
+					serialPortName = props.getProperty("serial");
+					Log.d(TAG, "read config file property 'serial' as '" + props.getProperty("serial") + "'");
+				}
+			} catch (IOException | NullPointerException e) {
+				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
+				
+			}
+			
+			//If the user specified a port number then we will only
+			//try binding to that port, else we try the default port number
 			if (cmd.hasOption("port")) {
 				try {
 					portNum = Integer.valueOf(cmd.getOptionValue("port"));
@@ -576,21 +631,21 @@ public class Coordinator {
 			//if we were given a preferred port we will pass it to SerialConnection
 			//+ when initialized
 			if (cmd.hasOption("serial")) {
-					serialPortName = cmd.getOptionValue("serial");
+				serialPortName = cmd.getOptionValue("serial");
 			}
+			
+			
+			
 		}  catch (ParseException e) {
 			System.out.println("Error processing options: " + e.getMessage());
 			new HelpFormatter().printHelp("Diff", options);
-			Log.e(TAG, "Error parsing command line options, exiting");
-			System.exit(1);
+			Coordinator.exitWithReason("Error parsing command line options");
 		}
 		
 		//open the serial connection
 		serialConnection = new SerialConnection(serialPortName);
 		if (!serialConnection.isConnected()) {
-			Log.e(TAG, "could not connect to serial port, exiting");
-			System.err.println("could not connect to serial port, exiting");
-			System.exit(1);
+			Coordinator.exitWithReason("could not connect to serial port '" + serialPortName + "'");
 		}
 		
 		//start the message center
@@ -606,8 +661,7 @@ public class Coordinator {
 		}
 
 		if (!connectionReady) {
-			Log.e(TAG, "could not find a local Arduino connection, exiting");
-			System.exit(1);
+			Coordinator.exitWithReason("could not find a local Arduino connection, exiting");
 		} else {
 			Log.c(TAG, "Local link ready.");
 		}
@@ -700,7 +754,7 @@ public class Coordinator {
         
         //start the web interface
         Log.c(TAG, "Starting web server on port " + portNum);
-        SimpleHttpServer server = new SimpleHttpServer(portNum);
+        SimpleHttpServer server = new SimpleHttpServer(portNum, (portNum == DEFAULT_PORT? false : true));
         new Thread(server).start();
         
 		//enter main loop
