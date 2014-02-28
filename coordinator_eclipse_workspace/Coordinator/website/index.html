@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="css/index.css">
+    <script>
+    $portnum = "blah";
+    </script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+     $( document ).ready(function() {
+         console.log("reuquesting");
+        $.ajax({
+                  type: "GET",
+                  url: "http://localhost:2024/get_running_drivers",
+                  dataType: "xml",
+                  async: false,
+                  contentType: "text/xml; charset=\"utf-8\"",
+                  success: function(xml) {
+                      console.log("got xml");
+                      $(xml).find('Module').each(function(){
+                            var $module = $(this);
+                            var name = $module.attr('name');
+//                          alert(name);
+                          console.log("module name: " + name);
+                            document.getElementById("xml").innerHTML += name;
+//                            alert(name);
+                        })
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("error");
+                        if (xhr.status != 404) {alert(error);} else {alert("404 xml not found");}
+                    }
+            });
+         console.log("exit");
+     });
+    </script>
+<title>Home Automation</title>
+</head>
+
+<body>
+	<div class="header">
+    	<div id="logo"><h1>Home Automation</h1></div>
+    </div>
+    <pre id="xml">blah</pre>
+    <div class="Drivers">
+    	<p id="runningDrivers">Get the currently running drivers</p>
+		<form onsubmit="loadXMLDoc()">
+        	<input type="submit" value="Submit"/>
+    	</form>
+    </div>
+</body>
+</html>

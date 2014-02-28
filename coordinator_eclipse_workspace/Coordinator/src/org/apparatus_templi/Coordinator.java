@@ -663,9 +663,9 @@ public class Coordinator {
 		loadDriver(ledflash);
 //		loadDriver(stateLED);
 //		loadDriver(largeComm);
-		loadDriver(echo);
-//		loadDriver(lazy);
-//		loadDriver(sleepy);
+//		loadDriver(echo);
+		loadDriver(lazy);
+		loadDriver(sleepy);
 //		loadDriver(motionDriver);
 		loadDriver(local);
         

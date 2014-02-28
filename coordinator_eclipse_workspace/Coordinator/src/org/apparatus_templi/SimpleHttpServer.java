@@ -1,8 +1,12 @@
 package org.apparatus_templi;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,9 +26,12 @@ public class SimpleHttpServer implements Runnable {
 	public SimpleHttpServer(int portNumber) {
 		try {
 			server = HttpServer.create(new InetSocketAddress(portNumber), 0);
+			server.createContext("/index.html", new IndexHandler());
+			
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
+			server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to initialize the server");
@@ -53,6 +60,47 @@ public class SimpleHttpServer implements Runnable {
 	}
 	
 	/**
+	 * Handler to return the index.html
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 *
+	 */
+	private class IndexHandler implements HttpHandler {
+	    
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received index.html request from " + exchange.getRemoteAddress());
+//			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+//			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
+			byte[] response = getResponse();
+	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+	        exchange.getResponseBody().write(response);
+	        exchange.close();
+	    };
+	    
+	    private byte[] getResponse() throws IOException {
+	    	InputStream is = new FileInputStream("website/index.html");
+	    	byte[] fileBytes = {};
+	    	int streamLength = is.available();
+	    	if (streamLength <= Integer.MAX_VALUE) {
+	    		fileBytes = new byte[(int)streamLength];
+	    		int offset = 0;
+	    		int numRead = 0;
+	    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
+	    			offset += numRead;
+	    		}
+	    		
+	    		is.close();
+	    		
+	    		if (offset < fileBytes.length) {
+	    			throw new IOException("Could not read index.html");
+	    		}
+	    		
+	    	}
+	    	
+	    	return fileBytes;
+	    }
+	}
+	
+	/**
 	 * Handle requests for a list of running drivers.
 	 * Generates XML in the form of:
 	 * 		<?xml version='1.0'?>
@@ -71,15 +119,15 @@ public class SimpleHttpServer implements Runnable {
 	    
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress());
-			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
-			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
+//			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+//			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
 	        exchange.close();
 	    };
 	    
-	    public byte[] getResponse() {
+	    private byte[] getResponse() {
 	    	String xml = xmlVersion + header;
 	    	ArrayList<String> runningDrivers = Coordinator.getLoadedDrivers();
 	    	for (String s: runningDrivers) {
