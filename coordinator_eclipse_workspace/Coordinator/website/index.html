@@ -3,13 +3,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="css/index.css">
-    <script>
+<script>
     $portnum = "blah";
-    </script>
+</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
      $( document ).ready(function() {
-         console.log("reuquesting");
+        getRunningDrivers();  
+     }
+    function getRunningDrivers() {
         $.ajax({
                   type: "GET",
                   url: "http://localhost:2024/get_running_drivers",
@@ -17,37 +19,40 @@
                   async: false,
                   contentType: "text/xml; charset=\"utf-8\"",
                   success: function(xml) {
-                      console.log("got xml");
-                      $(xml).find('Module').each(function(){
+                      $(xml).find('Module').each(function() {
                             var $module = $(this);
                             var name = $module.attr('name');
-//                          alert(name);
-                          console.log("module name: " + name);
                             document.getElementById("xml").innerHTML += name;
-//                            alert(name);
                         })
                     },
                     error: function(xhr, status, error) {
-                        console.log("error");
-                        if (xhr.status != 404) {alert(error);} else {alert("404 xml not found");}
+                        if (xhr.status != 404) {
+                            alert(error);
+                        } 
+                        else {
+                            alert("404 xml not found");
+                        }
                     }
             });
-         console.log("exit");
      });
+    }
     </script>
+    
 <title>Home Automation</title>
 </head>
 
 <body>
 	<div class="header">
-    	<div id="logo"><h1>Home Automation</h1></div>
-    </div>
-    <pre id="xml">blah</pre>
-    <div class="Drivers">
-    	<p id="runningDrivers">Get the currently running drivers</p>
-		<form onsubmit="loadXMLDoc()">
-        	<input type="submit" value="Submit"/>
-    	</form>
+    	<div id="header_content">
+            <div id="logo"><h1>Home Automation</h1></div>
+            <div id="header_bar">
+                <button class="minimal-indent">Link 1</button>
+                <button class="minimal-indent">Link 2</button>
+                <button class="minimal-indent">Link 3</button>
+                <button class="minimal-indent">Link 4</button>
+                <button class="minimal-indent">Link 5</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
