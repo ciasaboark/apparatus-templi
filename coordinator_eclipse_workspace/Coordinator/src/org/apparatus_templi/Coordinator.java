@@ -40,7 +40,7 @@ import com.sun.org.apache.xerces.internal.util.URI;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-	private static final int DEFAULT_PORT = 1;
+	private static final int DEFAULT_PORT = 8000;
 	private static final String DEFAULT_CONFIG = "./coordinator.conf";
 
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
@@ -48,9 +48,11 @@ public class Coordinator {
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
-	private static int portNum;
+	private static Integer portNum = null;
 	private static String configFile;
+	private static boolean dummySerial = false;
 	private static String serialPortName = null;
+	private static String webResourceFolder;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;	
@@ -559,11 +561,24 @@ public class Coordinator {
 		options.addOption(serialOption);
 		
 		@SuppressWarnings("static-access")
-		Option configOption = OptionBuilder.withArgName("config")
+		Option configOption = OptionBuilder.withArgName("config file")
 				.hasArg()
 				.withDescription("Path to the configuration file")
 				.create("config");
 		options.addOption(configOption);
+		
+		@SuppressWarnings("static-access")
+		Option resourcesOption = OptionBuilder.withArgName("folder path")
+				.hasArg()
+				.withDescription("Web frontend will use resources in the specified folder")
+				.create("resources");
+		options.addOption(resourcesOption);
+		
+		@SuppressWarnings("static-access")
+		Option dummyOption = OptionBuilder.withArgName("dummyserial")
+				.withDescription("Do not initialize a real serial connection.")
+				.create("dummyserial");
+		options.addOption(dummyOption);
 		
 		
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
@@ -609,6 +624,9 @@ public class Coordinator {
 					serialPortName = props.getProperty("serial");
 					Log.d(TAG, "read config file property 'serial' as '" + props.getProperty("serial") + "'");
 				}
+				if (props.containsKey("resources")) {
+					webResourceFolder = props.getProperty("resources");
+				}
 			} catch (IOException | NullPointerException e) {
 				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 				
@@ -623,9 +641,22 @@ public class Coordinator {
 					Log.e("Coordinator", "Bad port number given, setting to default value");
 					portNum = DEFAULT_PORT;
 				}
-			} else {
-				Log.d(TAG, "default port " + DEFAULT_PORT + " selected");
+			}
+			
+			//Its possible that a port number was not specified as a command line option
+			//+ or through the config file.  If so use the default port
+			if (portNum == null) {
+				Log.d(TAG, "using default port " + DEFAULT_PORT);
 				portNum = DEFAULT_PORT;
+			}
+			
+			if (cmd.hasOption("resources")) {
+				webResourceFolder = cmd.getOptionValue("resources");
+			}
+			
+			if (cmd.hasOption("dummyserial")) {
+				Log.d(TAG, "using dummy serial connection");
+				dummySerial = true;
 			}
 			
 			//if we were given a preferred port we will pass it to SerialConnection
@@ -643,7 +674,12 @@ public class Coordinator {
 		}
 		
 		//open the serial connection
-		serialConnection = new SerialConnection(serialPortName);
+		if (dummySerial) {
+			serialConnection = new DummySerialConnection();
+		} else {
+			serialConnection = new SerialConnection(serialPortName);
+		}
+		
 		if (!serialConnection.isConnected()) {
 			Coordinator.exitWithReason("could not connect to serial port '" + serialPortName + "'");
 		}
@@ -654,16 +690,21 @@ public class Coordinator {
 		
 		//block until the local Arduino is ready
 		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
-		byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
-		String sString = new String(sBytes);
-		if (sString.endsWith("READY")) {
-			connectionReady = true;
-		}
-
-		if (!connectionReady) {
-			Coordinator.exitWithReason("could not find a local Arduino connection, exiting");
+		if (!dummySerial) {
+			byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
+			String sString = new String(sBytes);
+			if (sString.endsWith("READY")) {
+				connectionReady = true;
+			}
+	
+			if (!connectionReady) {
+				Coordinator.exitWithReason("could not find a local Arduino connection, exiting");
+			} else {
+				Log.c(TAG, "Local link ready.");
+			}
 		} else {
-			Log.c(TAG, "Local link ready.");
+			connectionReady = true;
+			Log.d(TAG, "Local dummy link ready");
 		}
 		
 		//query for remote modules.  Since the modules may be slow in responding
@@ -672,14 +713,19 @@ public class Coordinator {
 		messageCenter.beginReadingMessages();
 		//begin processing incoming messages
 		new Thread(messageCenter).start();
-		queryRemoteModules();
-		for (int i = 0; i < 6; i++) {
-			if (messageCenter.isMessageAvailable()) {
-				routeIncomingMessage(messageCenter.getMessage());
+		
+		//if we are using the dummy serial connection then there is no point in waiting
+		//+ 6 seconds for a response from the modules
+		if (!dummySerial) {
+			queryRemoteModules();
+			for (int i = 0; i < 6; i++) {
+				if (messageCenter.isMessageAvailable()) {
+					routeIncomingMessage(messageCenter.getMessage());
+				}
+				
+				System.out.print(".");
+				Thread.sleep(1000);
 			}
-			
-			System.out.print(".");
-			Thread.sleep(1000);
 		}
 		System.out.println();
 		
@@ -755,6 +801,9 @@ public class Coordinator {
         //start the web interface
         Log.c(TAG, "Starting web server on port " + portNum);
         SimpleHttpServer server = new SimpleHttpServer(portNum, (portNum == DEFAULT_PORT? false : true));
+        if (webResourceFolder != null) {
+        	server.setResourceFolder(webResourceFolder);
+        }
         new Thread(server).start();
         
 		//enter main loop

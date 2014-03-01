@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +18,7 @@ import com.sun.net.httpserver.HttpServer;
 public class SimpleHttpServer implements Runnable {
 	private static HttpServer server = null;
 	private static final String TAG = "SimpleHttpServer";
+	private static String resourceFolder = "./website/";
 	
 	/*
 	 * As of right now the server will fail if it is has more than one instance trying to run on the
@@ -40,9 +42,12 @@ public class SimpleHttpServer implements Runnable {
 			}
 			
 			socket = new InetSocketAddress(InetAddress.getLoopbackAddress(), portNumber);
-			server = HttpServer.create(socket, 0);
+			try {
+				server = HttpServer.create(socket, 0);
+			} catch (SocketException e) {
+				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
+			}
 			server.createContext("/index.html", new IndexHandler());
-			
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
@@ -53,6 +58,15 @@ public class SimpleHttpServer implements Runnable {
 			Log.e(TAG, "Failed to initialize the server");
 			e.printStackTrace();
 		}
+	}
+	
+	public void setResourceFolder(String path) {
+		//TODO check for a valid path
+		if (!path.endsWith("/")) {
+			path = path + "/";
+		}
+		Log.d(TAG, "using resources in '" + path + "'");
+		resourceFolder = path;
 	}
 	
 	private boolean portAvailable(int port) {
@@ -106,7 +120,7 @@ public class SimpleHttpServer implements Runnable {
 	    };
 	    
 	    private byte[] getResponse() throws IOException {
-	    	InputStream is = new FileInputStream("website/index.html");
+	    	InputStream is = new FileInputStream(resourceFolder + "index.html");
 	    	byte[] fileBytes = {};
 	    	int streamLength = is.available();
 	    	if (streamLength <= Integer.MAX_VALUE) {
