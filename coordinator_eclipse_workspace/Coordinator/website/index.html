@@ -4,9 +4,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
 <link rel="stylesheet" type="text/css" href="css/index.css">
-<link href='http://fonts.googleapis.com/css?family=Bad+Script' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-
+<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+    
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 
@@ -62,15 +63,17 @@ function getRunningDrivers() {
 
 <body>
 	<div class="header">
+        <div id="header_bar">
+            <a href=""><img src="images/arduino_icon.png" alt="Login">Devices</a>
+            <a href="">Full Page XML</a>
+            <a href="">Widget XML</a>
+            <a href="">Send Command</a>
+        </div>
     	<div id="header_content">
-            <div id="logo"><h1>Home Automation</h1></div>
-            <div id="header_bar">
-                <button class="minimal-indent">Link 1</button>
-                <button class="minimal-indent">Link 2</button>
-                <button class="minimal-indent">Link 3</button>
-                <button class="minimal-indent">Link 4</button>
-                <button class="minimal-indent">Link 5</button>
-            </div>
+            <div id="logo">
+                <span>Home</span>
+                <span>Automation</span>
+        </div>
         </div>
     </div>
      <div id="RunningDrivers">
