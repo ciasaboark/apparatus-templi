@@ -2,39 +2,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+<link rel="stylesheet" type="text/css" href="css/index.css">
+<link href='http://fonts.googleapis.com/css?family=Bad+Script' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 
-    <script>
-    $portnum = 8000;
-    </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
 <script>
-     $( document ).ready(function() {
-         console.log("reuquesting");
-        $.ajax({
-                  type: "GET",
-                  url: "http://localhost:" + $portnum + "/get_running_drivers",
-                  dataType: "xml",
-                  async: true,
-                  contentType: "text/xml; charset=\"utf-8\"",
-                  success: function(xml) {
-                      $(xml).find('Module').each(function() {
-                            var $module = $(this);
-                            var name = $module.attr('name');
-                            document.getElementById("xml").innerHTML += name;
-                        })
-                    },
-                    error: function(xhr, status, error) {
-                        if (xhr.status != 404) {
-                            alert(error);
-                        } 
-                        else {
-                            alert("404 xml not found");
-                        }
-                    }
-            });
-     });
-    }
-    </script>
+    $portnum = 8000;
+</script>
+<script> 
+window.onload = function() {
+    draggables();
+    getRunningDrivers();
+}
+
+/*
+ * Ajax request to update the running driver list
+ */
+function getRunningDrivers() {
+    console.log("reuquesting");
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:" + $portnum + "/get_running_drivers",
+        dataType: "xml",
+        async: true,
+        contentType: "text/xml; charset=\"utf-8\"",
+        success: function(xml) {
+            $(xml).find('Module').each(function() {
+                var $module = $(this);
+                var name = $module.attr('name');
+                document.getElementById("xml").innerHTML += name;
+            })
+        },
+        error: function(xhr, status, error) {
+            if (xhr.status != 404) {
+                alert(error);
+            } 
+            else {
+                alert("404 xml not found");
+            }
+        }
+    });
+}   
+
+/*
+ * This function will enable all of the components to be draggable
+ */
+   function draggables() {
+       $("#RunningDrivers").draggable({ containment: 'document' }); 
+       $("#main_content").draggable({ containment: 'document' });
+   }
+</script>
     
 <title>Home Automation</title>
 </head>
@@ -52,7 +73,7 @@
             </div>
         </div>
     </div>
-     <div class="RunningDrivers">
+     <div id="RunningDrivers">
         <div id="driver_list">
             <p>We could have the XML data returned form the server automatically populate this list</p>
             <ul>
@@ -63,6 +84,9 @@
                 <li>Driver Name 5</li>
             </ul>
         </div>
+    </div>
+    <div id="main_content">
+        <p>We should have something to put in this part</p>
     </div>
 </body>
 </html>
