@@ -677,7 +677,7 @@ public class Coordinator {
 		if (dummySerial) {
 			serialConnection = new DummySerialConnection();
 		} else {
-			serialConnection = new SerialConnection(serialPortName);
+			serialConnection = new UsbSerialConnection(serialPortName);
 		}
 		
 		if (!serialConnection.isConnected()) {
