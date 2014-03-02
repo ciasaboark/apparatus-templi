@@ -51,7 +51,7 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
-			server.createContext("/", new IndexHandler());
+			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
 		} catch (IOException e) {

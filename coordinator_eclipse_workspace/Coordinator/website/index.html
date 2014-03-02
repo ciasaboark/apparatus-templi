@@ -35,7 +35,7 @@ function getRunningDrivers() {
             $(xml).find('Module').each(function() {
                 var $module = $(this);
                 var name = $module.attr('name');
-                document.getElementById("xml").innerHTML += name;
+                document.getElementById("driver_names").innerHTML += "<li>name</li>";
             })
         },
         error: function(xhr, status, error) {
@@ -58,28 +58,29 @@ function getRunningDrivers() {
    }
 </script>
     
-<title>Home Automation</title>
+<title>Apparatus Templi</title>
 </head>
 
 <body>
 	<div class="header">
         <div id="header_bar">
-            <a href=""><img src="images/arduino_icon.png" alt="Login">Devices</a>
+            <img src="images/arduino_icon.png" alt="Device List"><a href="" onclick="getRunningDrivers()">Devices</a>
             <a href="">Full Page XML</a>
             <a href="">Widget XML</a>
             <a href="">Send Command</a>
         </div>
     	<div id="header_content">
             <div id="logo">
-                <span>Home</span>
-                <span>Automation</span>
-        </div>
+                <img src="images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
+            </div>
         </div>
     </div>
-     <div id="RunningDrivers">
+    <div id="main_content">
+        <p>Apparatus Templi is an Open Source Home Automation project built with Open Source hardware, Arduino.</p>
+    </div>
+    <div id="RunningDrivers">
         <div id="driver_list">
-            <p>We could have the XML data returned form the server automatically populate this list</p>
-            <ul>
+            <ul id="driver_names">
                 <li>Driver Name 1</li>
                 <li>Driver Name 2</li>
                 <li>Driver Name 3</li>
@@ -87,9 +88,6 @@ function getRunningDrivers() {
                 <li>Driver Name 5</li>
             </ul>
         </div>
-    </div>
-    <div id="main_content">
-        <p>We should have something to put in this part</p>
     </div>
 </body>
 </html>

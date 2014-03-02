@@ -14,20 +14,6 @@ body {
 #header_content #logo{
     position: relative;
     top: 30px;
-    font-family: 'Noto Serif', serif;
-    font-size: 60px;
-    text-shadow: 0 1px 0 #ccc,
-               0 2px 0 #c9c9c9,
-               0 3px 0 #bbb,
-               0 4px 0 #b9b9b9,
-               0 5px 0 #aaa,
-               0 6px 1px rgba(0,0,0,.1),
-               0 0 5px rgba(0,0,0,.1),
-               0 1px 3px rgba(0,0,0,.3),
-               0 3px 5px rgba(0,0,0,.2),
-               0 5px 10px rgba(0,0,0,.25),
-               0 10px 10px rgba(0,0,0,.2),
-               0 20px 20px rgba(0,0,0,.15);
 }
 
 .search-container {
@@ -43,7 +29,7 @@ body {
 
 a:hover {
     width: 25em;
-    border-radiu;s: 5px 2em 2em 5px;
+    border-radius: 5px 2em 2em 5px;
 }
 
 .button {
@@ -133,11 +119,7 @@ a:focus {
     text-align: center;
     position: relative;
     left: 24%;
-    top: 30%;
-    border: 2px solid;
-    border-radius: 25px;
-    background-color: #dfdfdf;
+    top: 70px;;
     padding: 10px 10px;
     width: 50%;
-    height: 50%;
 }
