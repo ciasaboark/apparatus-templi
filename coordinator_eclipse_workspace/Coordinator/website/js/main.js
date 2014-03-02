@@ -15,11 +15,14 @@ function getRunningDrivers() {
         async: true,
         contentType: "text/xml; charset=\"utf-8\"",
         success: function(xml) {
+            var $driverList = "";
             $(xml).find('Module').each(function() {
                 var $module = $(this);
-                var name = $module.attr('name');
-                document.getElementById("driver_names").innerHTML += "<li>name</li>";
+                var $name = $module.attr('name');
+                console.log("found driver " + $name);
+                $driverList += "<li>" + $name + "</li>";
             })
+            document.getElementById("driver_names").innerHTML = $driverList;
         },
         error: function(xhr, status, error) {
             if (xhr.status != 404) {

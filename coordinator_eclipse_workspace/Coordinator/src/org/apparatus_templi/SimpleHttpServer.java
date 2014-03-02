@@ -53,6 +53,7 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
 			server.createContext("/resource", new ResourceHandler());
+			server.createContext("/js/default.js", new JsHandler());
 			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -180,6 +181,26 @@ public class SimpleHttpServer implements Runnable {
 	    	}
 	    	xml += footer;
 	    	return xml.getBytes();
+	    }
+	}
+	
+	
+	private class JsHandler implements HttpHandler {
+	    private String xmlVersion = "<?xml version='1.0'?>";
+	    private String header = "<ModuleList>";
+	    private String footer = "</ModuleList>";
+	    
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress());
+			byte[] response = getResponse();
+	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+	        exchange.getResponseBody().write(response);
+	        exchange.close();
+	    };
+	    
+	    private byte[] getResponse() {
+	    	String jsCode = "$portnum = 8000;";
+	    	return jsCode.getBytes();
 	    }
 	}
 	

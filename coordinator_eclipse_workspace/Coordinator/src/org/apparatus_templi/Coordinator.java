@@ -53,6 +53,7 @@ public class Coordinator {
 	private static boolean dummySerial = false;
 	private static String serialPortName = null;
 	private static String webResourceFolder;
+	private static String driverList = "";
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;	
@@ -534,7 +535,7 @@ public class Coordinator {
 		}
 	}
 	
-	public static void deRegesterEventWatch(Driver d, Event e) {
+	public static void removeEventWatch(Driver d, Event e) {
 		//TODO remove this driver from the event watcher list
 	}
 
@@ -626,6 +627,9 @@ public class Coordinator {
 				}
 				if (props.containsKey("resources")) {
 					webResourceFolder = props.getProperty("resources");
+				}
+				if (props.containsKey("drivers")) {
+					driverList = props.getProperty("drivers");
 				}
 			} catch (IOException | NullPointerException e) {
 				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
@@ -736,40 +740,23 @@ public class Coordinator {
 		}
         
         
-		Log.c(TAG, "Initializing drivers...");
-        //initialize the drivers
-		Driver local = new Local();
-
+		//Load all drivers specified in the config file
+		if (!driverList.equals("")) {
+			Log.c(TAG, "Initializing drivers...");
+			String[] drivers = driverList.split(",");
+			for (String driverClassName: drivers) {
+				try {
+					Class<?> c = Class.forName("org.apparatus_templi.driver." + driverClassName);
+					Driver d = (Driver)c.newInstance();
+					loadDriver(d);
+				} catch (Exception e) {
+					Log.d(TAG, "unable to load driver '" + driverClassName + "'");
+				}
+			}
+		} else {
+			Log.w(TAG, "No drivers were specified in the configuration file: '" + configFile + "', nothing will be loaded");
+		}
 		
-        Driver ledflash = new LedFlash();
-        
-        //test adding a driver with the same name
-        Driver stateLED = new StatefullLed();
-        
-        //testing large commands
-		Driver largeComm = new LargeCommands();
-		
-		//testing echo driver
-		Driver echo = new Echo();
-		
-		//testing lazy driver
-		Driver lazy = new LazyDriver();
-     
-		//testing sleep driver
-		Driver sleepy = new SleepyDriver();
-		
-		Driver motionDriver = new MotionGenerator();
-		
-		loadDriver(ledflash);
-//		loadDriver(stateLED);
-//		loadDriver(largeComm);
-//		loadDriver(echo);
-		loadDriver(lazy);
-		loadDriver(sleepy);
-//		loadDriver(motionDriver);
-		loadDriver(local);
-        
-        
         //start the drivers
         for (String driverName: loadedDrivers.keySet()) {
         	Log.c(TAG, "Starting driver " + driverName);
