@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -51,6 +52,7 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/get_full_xml", new FullXmlHandler());
 			server.createContext("/get_driver_widget", new WidgetXmlHandler());
+			server.createContext("/resource", new ResourceHandler());
 			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -178,6 +180,58 @@ public class SimpleHttpServer implements Runnable {
 	    	}
 	    	xml += footer;
 	    	return xml.getBytes();
+	    }
+	}
+	
+	/**
+	 * 
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 *
+	 */
+	private class ResourceHandler implements HttpHandler {
+	    
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received resource request from " + exchange.getRemoteAddress());
+			String query = exchange.getRequestURI().getQuery();
+			if (query != null) {
+				HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+				if (queryTags.containsKey("file")) {
+					Log.d(TAG, "value of 'file': '" + queryTags.get("file") + "'");
+					String resourceName = queryTags.get("file");
+					resourceName = resourceName.replaceAll("\\.\\./", "");
+					try {
+						byte[] response = getResponse(resourceName);
+				        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				        exchange.getResponseBody().write(response);
+					} catch (IOException e) {
+						Log.e(TAG, "error opening resource '" + resourceFolder + resourceName + "' for reading");
+					}
+				}
+			}
+			exchange.close();
+	    };
+	    
+	    private byte[] getResponse(String resourceName) throws IOException {
+	    	InputStream is = new FileInputStream(resourceFolder + resourceName);
+	    	byte[] fileBytes = {};
+	    	int streamLength = is.available();
+	    	if (streamLength <= Integer.MAX_VALUE) {
+	    		fileBytes = new byte[(int)streamLength];
+	    		int offset = 0;
+	    		int numRead = 0;
+	    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
+	    			offset += numRead;
+	    		}
+	    		
+	    		is.close();
+	    		
+	    		if (offset < fileBytes.length) {
+	    			throw new IOException("Could not read " + resourceName);
+	    		}
+	    		
+	    	}
+	    	
+	    	return fileBytes;
 	    }
 	}
 	

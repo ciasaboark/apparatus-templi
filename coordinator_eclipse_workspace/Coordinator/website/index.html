@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-<link rel="stylesheet" type="text/css" href="css/index.css">
+<link rel="stylesheet" type="text/css" href="resource?file=css/index.css">
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
@@ -14,49 +14,7 @@
 <script>
     $portnum = 8000;
 </script>
-<script> 
-window.onload = function() {
-    draggables();
-    getRunningDrivers();
-}
-
-/*
- * Ajax request to update the running driver list
- */
-function getRunningDrivers() {
-    console.log("reuquesting");
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:" + $portnum + "/get_running_drivers",
-        dataType: "xml",
-        async: true,
-        contentType: "text/xml; charset=\"utf-8\"",
-        success: function(xml) {
-            $(xml).find('Module').each(function() {
-                var $module = $(this);
-                var name = $module.attr('name');
-                document.getElementById("driver_names").innerHTML += "<li>name</li>";
-            })
-        },
-        error: function(xhr, status, error) {
-            if (xhr.status != 404) {
-                alert(error);
-            } 
-            else {
-                alert("404 xml not found");
-            }
-        }
-    });
-}   
-
-/*
- * This function will enable all of the components to be draggable
- */
-   function draggables() {
-       $("#RunningDrivers").draggable({ containment: 'document' }); 
-       $("#main_content").draggable({ containment: 'document' });
-   }
-</script>
+<script src="resource?file=js/main.js"></script>
     
 <title>Apparatus Templi</title>
 </head>
@@ -64,14 +22,14 @@ function getRunningDrivers() {
 <body>
 	<div class="header">
         <div id="header_bar">
-            <img src="images/arduino_icon.png" alt="Device List"><a href="" onclick="getRunningDrivers()">Devices</a>
+            <img src="resource?file=images/arduino_icon.png" alt="Device List"><a href="" onclick="getRunningDrivers()">Devices</a>
             <a href="">Full Page XML</a>
             <a href="">Widget XML</a>
             <a href="">Send Command</a>
         </div>
     	<div id="header_content">
             <div id="logo">
-                <img src="images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
+                <img src="resource?file=images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
             </div>
         </div>
     </div>
