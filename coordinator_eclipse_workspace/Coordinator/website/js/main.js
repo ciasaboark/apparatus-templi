@@ -1,8 +1,8 @@
-window.onload = function() {
-    draggables();
+$( document ).ready(function() {
+    alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
-}
-
+    setInterval(getRunningDrivers, 30000);
+});
 /*
  * Ajax request to update the running driver list
  */
@@ -31,11 +31,7 @@ function getRunningDrivers() {
         }
     });
 }   
-
-/*
- * This function will enable all of the components to be draggable
- */
-   function draggables() {
-       $("#RunningDrivers").draggable({ containment: 'document' }); 
-       $("#main_content").draggable({ containment: 'document' });
-   }
+    
+function command() {
+    $("#send_command").slideToggle("slow");
+}
