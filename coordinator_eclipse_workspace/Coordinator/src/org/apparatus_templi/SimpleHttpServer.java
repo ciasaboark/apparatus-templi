@@ -42,7 +42,7 @@ public class SimpleHttpServer implements Runnable {
 				Coordinator.exitWithReason("could not start web server on port " + portNumber);
 			}
 			
-			socket = new InetSocketAddress(InetAddress.getLoopbackAddress(), portNumber);
+			socket = new InetSocketAddress(InetAddress.getLocalHost(), portNumber);
 			try {
 				server = HttpServer.create(socket, 0);
 			} catch (SocketException e) {
