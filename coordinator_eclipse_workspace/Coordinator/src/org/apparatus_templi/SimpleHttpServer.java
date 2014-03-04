@@ -8,9 +8,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -20,6 +20,31 @@ public class SimpleHttpServer implements Runnable {
 	private static HttpServer server = null;
 	private static final String TAG = "SimpleHttpServer";
 	private static String resourceFolder = "./website/";
+	
+	/**
+	 * Generates a 404 error page for the given resourceName
+	 * @param resourceName
+	 * @return
+	 */
+	private static String get404ErrorPage(String resourceName) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html><head><title>Could not find request</title></head>" +
+					"<body>" + 
+					"<h1>404</h1>");
+		sb.append("<p>Error locating resource: " + resourceName + "</p>");
+		sb.append("</body></html>");
+		return sb.toString();
+	}
+	
+	private static String get400BadRequestPage(URI uri) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html><head><title>Could not find request</title></head>" +
+					"<body>" + 
+					"<h1>400</h1>");
+		sb.append("Malformed request: " + uri + "</p>");
+		sb.append("</body></html>");
+		return sb.toString();
+	}
 	
 	/*
 	 * As of right now the server will fail if it is has more than one instance trying to run on the
@@ -126,32 +151,41 @@ public class SimpleHttpServer implements Runnable {
 //			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
 //			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
-	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
-	        exchange.getResponseBody().write(response);
+			if (response != null) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				response = get404ErrorPage("index.html").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
 	        exchange.close();
 	    };
 	    
 	    private byte[] getResponse() throws IOException {
-	    	InputStream is = new FileInputStream(resourceFolder + "index.html");
-	    	byte[] fileBytes = {};
-	    	int streamLength = is.available();
-	    	if (streamLength <= Integer.MAX_VALUE) {
-	    		fileBytes = new byte[(int)streamLength];
-	    		int offset = 0;
-	    		int numRead = 0;
-	    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
-	    			offset += numRead;
-	    		}
-	    		
-	    		is.close();
-	    		
-	    		if (offset < fileBytes.length) {
-	    			throw new IOException("Could not read index.html");
-	    		}
-	    		
+	    	byte[] returnBytes = null;
+	    	try {
+	    		InputStream is = new FileInputStream(resourceFolder + "index.html");
+	    		int streamLength = is.available();
+		    	if (streamLength <= Integer.MAX_VALUE) {
+		    		byte[] fileBytes = new byte[(int)streamLength];
+		    		int offset = 0;
+		    		int numRead = 0;
+		    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
+		    			offset += numRead;
+		    		}
+		    		
+		    		is.close();
+		    		returnBytes = fileBytes;
+		    		if (offset < fileBytes.length) {
+		    			throw new IOException("Could not read index.html");
+		    		}
+		    	}
+	    	} catch (Exception e) {
+	    		Log.w(TAG, "Error opening '" + resourceFolder + "index.html" + "'");
 	    	}
-	    	
-	    	return fileBytes;
+		    		
+	    	return returnBytes;
 	    }
 	}
 	
@@ -233,12 +267,23 @@ public class SimpleHttpServer implements Runnable {
 					String resourceName = queryTags.get("file");
 					resourceName = resourceName.replaceAll("\\.\\./", "");
 					try {
+						//the file was found and read correctly
 						byte[] response = getResponse(resourceName);
 				        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 				        exchange.getResponseBody().write(response);
 					} catch (IOException e) {
+						//the file either does not exist or could not be read
 						Log.e(TAG, "error opening resource '" + resourceFolder + resourceName + "' for reading");
+						byte[] response = get404ErrorPage(resourceName).getBytes();
+						exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+						exchange.getResponseBody().write(response);
 					}
+				} else {
+					//If the query string did not contain a key/value pair for file then the request
+					//+ is malformed
+					byte[] response = get400BadRequestPage(exchange.getRequestURI()).getBytes();
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, response.length);
+					exchange.getResponseBody().write(response);
 				}
 			}
 			exchange.close();

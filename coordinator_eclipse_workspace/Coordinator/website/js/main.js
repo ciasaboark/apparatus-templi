@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
+    //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
     setInterval(getRunningDrivers, 30000);
 });
