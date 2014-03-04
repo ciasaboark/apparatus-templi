@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -54,6 +55,8 @@ public class Coordinator {
 	private static String serialPortName = null;
 	private static String webResourceFolder;
 	private static String driverList = "";
+	private static boolean serverBindLocalhost = false;
+	private static boolean serverBindLoopback = false;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;	
@@ -631,6 +634,16 @@ public class Coordinator {
 				if (props.containsKey("drivers")) {
 					driverList = props.getProperty("drivers");
 				}
+				if (props.containsKey("server_bind_loopback")) {
+					if (props.get("server_bind_loopback").toString().toLowerCase().equals("true")) {
+						serverBindLoopback = true; 
+					}
+				}
+				if (props.containsKey("server_bind_local")) {
+					if (props.get("server_bind_local").toString().toLowerCase().equals("true")) {
+						serverBindLocalhost = true; 
+					}
+				}
 			} catch (IOException | NullPointerException e) {
 				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 				
@@ -785,13 +798,22 @@ public class Coordinator {
 			}
 		});
         
-        //start the web interface
-        Log.c(TAG, "Starting web server on port " + portNum);
-        SimpleHttpServer server = new SimpleHttpServer(portNum, (portNum == DEFAULT_PORT? false : true));
+        //start the web interfaces
+        if (serverBindLocalhost) {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
+        			InetAddress.getLocalHost());
+        } else {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
+        }
+    	
+        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == DEFAULT_PORT? false : true,
+        		serverBindLocalhost ? true : false);
         if (webResourceFolder != null) {
         	server.setResourceFolder(webResourceFolder);
         }
         new Thread(server).start();
+        
+        
         
 		//enter main loop
         while (true) {

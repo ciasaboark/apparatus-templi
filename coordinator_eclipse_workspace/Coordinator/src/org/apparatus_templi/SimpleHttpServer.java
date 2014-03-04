@@ -31,6 +31,10 @@ public class SimpleHttpServer implements Runnable {
 	}
 	
 	public SimpleHttpServer(int portNumber, boolean autoIncrement) {
+		this(portNumber, autoIncrement, false);
+	}
+	
+	public SimpleHttpServer(int portNumber, boolean autoIncrement, boolean bindLocalhost) {
 		try {
 			//create a InetSocket on the port
 			InetSocketAddress socket;
@@ -42,7 +46,11 @@ public class SimpleHttpServer implements Runnable {
 				Coordinator.exitWithReason("could not start web server on port " + portNumber);
 			}
 			
-			socket = new InetSocketAddress(InetAddress.getLocalHost(), portNumber);
+			InetAddress address = null;
+			if (!bindLocalhost) {
+				address = InetAddress.getLoopbackAddress();
+			}
+			socket = new InetSocketAddress(address, portNumber);
 			try {
 				server = HttpServer.create(socket, 0);
 			} catch (SocketException e) {
@@ -113,7 +121,8 @@ public class SimpleHttpServer implements Runnable {
 	private class IndexHandler implements HttpHandler {
 	    
 		public void handle(HttpExchange exchange) throws IOException {
-			Log.d(TAG, "received index.html request from " + exchange.getRemoteAddress());
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 //			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
 //			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
@@ -164,7 +173,8 @@ public class SimpleHttpServer implements Runnable {
 	    private String footer = "</ModuleList>";
 	    
 		public void handle(HttpExchange exchange) throws IOException {
-			Log.d(TAG, "received request from " + exchange.getRemoteAddress());
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 //			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
 //			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
@@ -191,7 +201,8 @@ public class SimpleHttpServer implements Runnable {
 	    private String footer = "</ModuleList>";
 	    
 		public void handle(HttpExchange exchange) throws IOException {
-			Log.d(TAG, "received request from " + exchange.getRemoteAddress());
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 			byte[] response = getResponse();
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
@@ -212,7 +223,8 @@ public class SimpleHttpServer implements Runnable {
 	private class ResourceHandler implements HttpHandler {
 	    
 		public void handle(HttpExchange exchange) throws IOException {
-			Log.d(TAG, "received resource request from " + exchange.getRemoteAddress());
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 			String query = exchange.getRequestURI().getQuery();
 			if (query != null) {
 				HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
@@ -264,6 +276,8 @@ public class SimpleHttpServer implements Runnable {
 	private class FullXmlHandler implements HttpHandler {
 		public void handle(HttpExchange exchange) throws IOException {
 			//TODO	
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 		}
 		
 		public byte[] getResponse() {
@@ -279,7 +293,9 @@ public class SimpleHttpServer implements Runnable {
 	 */
 	private class WidgetXmlHandler implements HttpHandler {
 		public void handle(HttpExchange exchange) throws IOException {
-			//TODO	
+			//TODO
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 		}
 		
 		public byte[] getResponse() {
