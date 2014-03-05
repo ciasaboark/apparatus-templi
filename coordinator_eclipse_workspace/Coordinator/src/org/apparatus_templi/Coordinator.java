@@ -652,7 +652,7 @@ public class Coordinator {
 			}
 		} else {
 			connectionReady = true;
-			Log.d(TAG, "Local dummy link ready");
+			Log.c(TAG, "Local dummy link ready");
 		}
 		
 		//query for remote modules.  Since the modules may be slow in responding

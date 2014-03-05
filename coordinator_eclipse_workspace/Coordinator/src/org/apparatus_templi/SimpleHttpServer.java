@@ -12,6 +12,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -77,14 +79,14 @@ public class SimpleHttpServer implements Runnable {
 			}
 			socket = new InetSocketAddress(address, portNumber);
 			try {
-				server = HttpServer.create(socket, 0);
+				server = HttpServer.create(socket, 1);
 			} catch (SocketException e) {
 				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
 			}
 			server.createContext("/index.html", new IndexHandler());
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
-			server.createContext("/get_full_xml", new FullXmlHandler());
-			server.createContext("/get_driver_widget", new WidgetXmlHandler());
+			server.createContext("/full_xml", new FullXmlHandler());
+			server.createContext("/driver_widget", new WidgetXmlHandler());
 			server.createContext("/resource", new ResourceHandler());
 			server.createContext("/js/default.js", new JsHandler());
 			//server.createContext("/", new IndexHandler());
@@ -241,6 +243,8 @@ public class SimpleHttpServer implements Runnable {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 			byte[] response = getResponse();
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "application/javascript");
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
 	        exchange.close();
@@ -272,6 +276,12 @@ public class SimpleHttpServer implements Runnable {
 					try {
 						//the file was found and read correctly
 						byte[] response = getResponse(resourceName);
+						//get the MIME type of the file
+//						MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
+//						String mime = mimeMap.getContentType(System.getProperty("user.dir") + "/" + resourceName);
+//						
+//						com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+//						headers.add("Content-Type", mime);
 				        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 				        exchange.getResponseBody().write(response);
 					} catch (IOException e) {
@@ -344,11 +354,35 @@ public class SimpleHttpServer implements Runnable {
 			//TODO
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			HashMap<String, String> queryMap = processQueryString(exchange.getRequestURI().getQuery());
+			byte[] response;
+			if (queryMap.containsKey("driver")) {
+				String driverName = queryMap.get("driver");
+				response = getResponse(driverName);
+				com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+				headers.add("Content-Type", "application/xml");
+				if (response != null) {
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+					exchange.getResponseBody().write(response);
+				} else {
+					response = get404ErrorPage("index.html").getBytes();
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+					exchange.getResponseBody().write(response);
+				}
+			} else {
+				response = get404ErrorPage("index.html").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
 		}
 		
-		public byte[] getResponse() {
-			//TODO
-			return null;
+		public byte[] getResponse(String driverName) {
+			byte[] response = null;
+			String widgetXml = Coordinator.requestWidgetXML(driverName);
+			if (widgetXml != null) {
+				response = widgetXml.getBytes();
+			}
+			return response;
 		}
 	}
 }

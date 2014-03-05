@@ -52,7 +52,7 @@ public class Preferences {
 			
 			//read the port number and serial name from the configuration file
 			try {
-				Log.d(TAG, "read config file property 'port' as '" + props.getProperty("server_port") + "'");
+				Log.d(TAG, "read config file property '" + values.portNum + "' as '" + props.getProperty("server_port", String.valueOf(SERVER_PORT)) + "'");
 				String portNum = props.getProperty("server_port", String.valueOf(SERVER_PORT));
 				preferences.put(Preferences.values.portNum, String.valueOf(portNum));
 				//We will be saving the port number as a string, but we can go
@@ -65,13 +65,16 @@ public class Preferences {
 			}
 			
 			preferences.put(Preferences.values.serialPort, props.getProperty("serial", SERIAL_PORT));
-			Log.d(TAG, "read config file property 'serial' as '" + props.getProperty(values.serialPort) + "'");
+			Log.d(TAG, "read preferences '" + values.serialPort + "' as '" + getPreference(values.serialPort) + "'");
 			
 			preferences.put(Preferences.values.webResourceFolder, props.getProperty("web_resources", WEB_RESOURCES));
+			Log.d(TAG, "read preferences '" + values.webResourceFolder + "' as '" + getPreference(values.webResourceFolder) + "'");
 			
 			preferences.put(Preferences.values.driverList, props.getProperty("drivers", DRIVER_LIST));
+			Log.d(TAG, "read preferences '" + values.driverList + "' as '" + getPreference(values.driverList) + "'");
 			
 			preferences.put(Preferences.values.serverBindLocalhost, props.getProperty("server_bind_local", SERVER_BIND_LOCAL));
+			Log.d(TAG, "read preferences '" + values.webResourceFolder + "' as '" + getPreference(values.serverBindLocalhost) + "'");
 		} catch (IOException | NullPointerException e) {
 			Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 			
