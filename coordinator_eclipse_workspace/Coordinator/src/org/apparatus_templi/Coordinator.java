@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -15,19 +16,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apparatus_templi.driver.ControllerModule;
-import org.apparatus_templi.driver.Driver;
-import org.apparatus_templi.driver.Echo;
-import org.apparatus_templi.driver.LargeCommands;
-import org.apparatus_templi.driver.LazyDriver;
-import org.apparatus_templi.driver.LedFlash;
-import org.apparatus_templi.driver.Local;
-import org.apparatus_templi.driver.MotionGenerator;
-import org.apparatus_templi.driver.SensorModule;
-import org.apparatus_templi.driver.SleepyDriver;
-import org.apparatus_templi.driver.StatefullLed;
-
-import com.sun.org.apache.xerces.internal.util.URI;
+import org.apparatus_templi.driver.*;
 
 /**
  * Coordinates message passing and driver loading.  Handles setting
@@ -50,10 +39,10 @@ public class Coordinator {
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
 	private static Integer portNum = null;
 	private static String configFile;
-	private static boolean dummySerial = false;
 	private static String serialPortName = null;
 	private static String webResourceFolder;
 	private static String driverList = "";
+	private static boolean serverBindLocalhost = false;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static boolean connectionReady = false;	
@@ -360,13 +349,7 @@ public class Coordinator {
 	 */
 	public static synchronized void scheduleWake(Driver caller) {
 		if (caller != null) {
-			scheduledWakeUps.put(caller, 0l);
-//			try {
-//				caller.wait();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			scheduledWakeUps.put(caller, (long)0);
 			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
 		}
 	}
@@ -548,10 +531,10 @@ public class Coordinator {
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
 		@SuppressWarnings("static-access")
-		Option portOption = OptionBuilder.withArgName("port")
+		Option portOption = OptionBuilder.withArgName("server_port")
 				.hasArg()
 				.withDescription("Bind the server to the given port number")
-				.create("port");
+				.create("server_port");
 		options.addOption(portOption);
 		
 		@SuppressWarnings("static-access")
@@ -562,17 +545,17 @@ public class Coordinator {
 		options.addOption(serialOption);
 		
 		@SuppressWarnings("static-access")
-		Option configOption = OptionBuilder.withArgName("config file")
+		Option configOption = OptionBuilder.withArgName("config_file")
 				.hasArg()
 				.withDescription("Path to the configuration file")
-				.create("config");
+				.create("config_file");
 		options.addOption(configOption);
 		
 		@SuppressWarnings("static-access")
 		Option resourcesOption = OptionBuilder.withArgName("folder path")
 				.hasArg()
 				.withDescription("Web frontend will use resources in the specified folder")
-				.create("resources");
+				.create("server_resources");
 		options.addOption(resourcesOption);
 		
 		@SuppressWarnings("static-access")
@@ -596,8 +579,8 @@ public class Coordinator {
 			}
 			
 			//Load the configuration file URI
-			if (cmd.hasOption("config")) {
-				configFile = cmd.getOptionValue("config");
+			if (cmd.hasOption("config_file")) {
+				configFile = cmd.getOptionValue("config_file");
 			} else {
 				configFile = DEFAULT_CONFIG;
 			}
@@ -612,10 +595,10 @@ public class Coordinator {
 				fin.close();
 				
 				//read the port number and serial name from the configuration file
-				if (props.containsKey("port")) {
+				if (props.containsKey("server_port")) {
 					try {
-						portNum = Integer.parseInt(props.getProperty("port"));
-						Log.d(TAG, "read config file property 'port' as '" + props.getProperty("port") + "'");
+						Log.d(TAG, "read config file property 'port' as '" + props.getProperty("server_port") + "'");
+						portNum = Integer.parseInt(props.getProperty("server_port"));
 					} catch (NumberFormatException e) {
 						Log.w(TAG,  "error reading port number from configuration file, setting to default");
 						portNum = DEFAULT_PORT;
@@ -625,11 +608,16 @@ public class Coordinator {
 					serialPortName = props.getProperty("serial");
 					Log.d(TAG, "read config file property 'serial' as '" + props.getProperty("serial") + "'");
 				}
-				if (props.containsKey("resources")) {
-					webResourceFolder = props.getProperty("resources");
+				if (props.containsKey("web_resources")) {
+					webResourceFolder = props.getProperty("web_resources");
 				}
 				if (props.containsKey("drivers")) {
 					driverList = props.getProperty("drivers");
+				}
+				if (props.containsKey("server_bind_local")) {
+					if (props.get("server_bind_local").toString().toLowerCase().equals("true")) {
+						serverBindLocalhost = true; 
+					}
 				}
 			} catch (IOException | NullPointerException e) {
 				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
@@ -638,9 +626,9 @@ public class Coordinator {
 			
 			//If the user specified a port number then we will only
 			//try binding to that port, else we try the default port number
-			if (cmd.hasOption("port")) {
+			if (cmd.hasOption("server_port")) {
 				try {
-					portNum = Integer.valueOf(cmd.getOptionValue("port"));
+					portNum = Integer.valueOf(cmd.getOptionValue("server_port"));
 				} catch (IllegalArgumentException e) {
 					Log.e("Coordinator", "Bad port number given, setting to default value");
 					portNum = DEFAULT_PORT;
@@ -654,13 +642,8 @@ public class Coordinator {
 				portNum = DEFAULT_PORT;
 			}
 			
-			if (cmd.hasOption("resources")) {
-				webResourceFolder = cmd.getOptionValue("resources");
-			}
-			
-			if (cmd.hasOption("dummyserial")) {
-				Log.d(TAG, "using dummy serial connection");
-				dummySerial = true;
+			if (cmd.hasOption("web_resources")) {
+				webResourceFolder = cmd.getOptionValue("web_resources");
 			}
 			
 			//if we were given a preferred port we will pass it to SerialConnection
@@ -678,7 +661,7 @@ public class Coordinator {
 		}
 		
 		//open the serial connection
-		if (dummySerial) {
+		if (serialPortName.equals("dummy")) {
 			serialConnection = new DummySerialConnection();
 		} else {
 			serialConnection = new UsbSerialConnection(serialPortName);
@@ -694,7 +677,7 @@ public class Coordinator {
 		
 		//block until the local Arduino is ready
 		System.out.print(TAG + ":" +  "Waiting for local link to be ready.");
-		if (!dummySerial) {
+		if (!(serialConnection instanceof DummySerialConnection)) {
 			byte[] sBytes = messageCenter.readBytesUntil((byte)0x0A);
 			String sString = new String(sBytes);
 			if (sString.endsWith("READY")) {
@@ -720,7 +703,7 @@ public class Coordinator {
 		
 		//if we are using the dummy serial connection then there is no point in waiting
 		//+ 6 seconds for a response from the modules
-		if (!dummySerial) {
+		if (!(serialConnection instanceof DummySerialConnection)) {
 			queryRemoteModules();
 			for (int i = 0; i < 6; i++) {
 				if (messageCenter.isMessageAvailable()) {
@@ -785,13 +768,22 @@ public class Coordinator {
 			}
 		});
         
-        //start the web interface
-        Log.c(TAG, "Starting web server on port " + portNum);
-        SimpleHttpServer server = new SimpleHttpServer(portNum, (portNum == DEFAULT_PORT? false : true));
+        //start the web interfaces
+        if (serverBindLocalhost) {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
+        			InetAddress.getLocalHost());
+        } else {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
+        }
+    	
+        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == DEFAULT_PORT? false : true,
+        		serverBindLocalhost ? true : false);
         if (webResourceFolder != null) {
         	server.setResourceFolder(webResourceFolder);
         }
         new Thread(server).start();
+        
+        
         
 		//enter main loop
         while (true) {

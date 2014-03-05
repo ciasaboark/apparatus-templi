@@ -9,7 +9,7 @@ function getRunningDrivers() {
     console.log("reuquesting");
     $.ajax({
         type: "GET",
-        url: "http://localhost:" + $portnum + "/get_running_drivers",
+        url: "/get_running_drivers",
         dataType: "xml",
         async: true,
         contentType: "text/xml; charset=\"utf-8\"",
@@ -25,7 +25,7 @@ function getRunningDrivers() {
         },
         error: function(xhr, status, error) {
             if (xhr.status != 404) {
-                alert(error);
+                alert("unknown error:\n" + error);
             } 
             else {
                 alert("404 xml not found");
