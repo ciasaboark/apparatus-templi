@@ -1,9 +1,12 @@
 DEBUG = -g
 OPTIMIZE = -O
 JC = javac $(DEBUB)
-SRC_PATH = --sorucepath coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi
-CLASS_PATH = -classptah '/home/christopher/git/apparatus-templi/coordinator_eclipse_workspace/Coordinator/bin'
-COMPILE_DIRECTORY = $(CLASS_PATH) 
+
+SRC_PATH = coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi
+COMPILE_DIRECTORY = coordinator_eclipse_workspace/Coorinator/bin 
+
+SOURCE_PATH_COMPILER = -sourcepath $(SRC_PATH)
+CLASS_PATH_COMPILER = -classptah $(COMPILE_DIRECTORY) 
 
 #Class Files#
 ControllerModule:       $(SRC_PATH)/driver/ControllerModule.java
@@ -23,7 +26,7 @@ SimpleHttpServer: 	$(SRC_PATH)/SimpleHttpServer.java
 UsbSerialConnection:	$(SRC_PATH)/UsbSerialConnection.java
 
 all:
-	$(JC) $(DEBUG) ControllerModule Driver SensorModule Coordinator DummySerialConnection EvventGenerator Event EventWatcher Log MessageCenter Preferences SerialConnection ServerDriverTest SimpleHttpServer UsbSerialConnection
+	$(JC) $(DEBUG #need to do compliation here#)
 
 clean:
 	\rm -r '/home/christopher/git/apparatus-templi/coordinator_eclipse_workspace/Coordinator/bin' 
