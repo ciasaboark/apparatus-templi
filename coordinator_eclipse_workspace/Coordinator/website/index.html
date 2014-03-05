@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
@@ -20,6 +21,7 @@
 	<div class="header">
         <div id="header_bar">
             <a href="http://www.arduino.cc"><img src="resource?file=images/arduino_icon.png" alt="Device List"></a>
+            <a href="https://github.com/ciasaboark/apparatus-templi"><i class="fa fa-github-alt fa-2x" style="color: grey"></i></a>
             <span onclick="">Devices</span>
             <span onclick="">Full Page XML</span>
             <span onclick="">Widget XML</span>
@@ -42,13 +44,9 @@
     </div>
     <div id="RunningDrivers">
         <div id="driver_list">
-            <p>Current Loaded Drivers</p>
-            <ul id="driver_names">
-                <li>Driver Name 1</li>
-                <li>Driver Name 2</li>
-                <li>Driver Name 3</li>
-                <li>Driver Name 4</li>
-                <li>Driver Name 5</li>
+            <p>Loaded Divers   <a id="driver_refresh_button" href="#" onclick="getRunningDrivers()"></a></p>
+            <ul id="driver_names" class="fa-ul" style="align: center">
+                <li><i class="fa-li fa fa-spinner fa-spin fa-2x"></i></li>
             </ul>
         </div>
     </div>

@@ -29,22 +29,23 @@ import org.apparatus_templi.driver.*;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-	private static final int DEFAULT_PORT = 8000;
-	private static final String DEFAULT_CONFIG = "./coordinator.conf";
+//	private static final int DEFAULT_PORT = 8000;
+//	private static final String DEFAULT_CONFIG = "./coordinator.conf";
 
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
-	private static Integer portNum = null;
-	private static String configFile;
-	private static String serialPortName = null;
-	private static String webResourceFolder;
-	private static String driverList = "";
-	private static boolean serverBindLocalhost = false;
+//	private static Integer portNum = null;
+//	private static String configFile;
+//	private static String serialPortName = null;
+//	private static String webResourceFolder;
+//	private static String driverList = "";
+//	private static boolean serverBindLocalhost = false;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
+	private static Preferences preferences = Preferences.getInstance();
 	private static boolean connectionReady = false;	
 
 	/**
@@ -579,77 +580,34 @@ public class Coordinator {
 			}
 			
 			//Load the configuration file URI
+			String configFile;
 			if (cmd.hasOption("config_file")) {
 				configFile = cmd.getOptionValue("config_file");
 			} else {
-				configFile = DEFAULT_CONFIG;
+				configFile = Preferences.CONFIG_FILE;
 			}
+			preferences.putPreference(Preferences.values.configFile, configFile);
 			
-			//Read the values from the configuration file.  If any command line
-			//+ parameters were passed, they should overwrite values read, so we
-			//+ will continue processing them later.
-			try {
-				Properties props = new Properties();
-				FileInputStream fin = new FileInputStream(configFile);
-				props.load(fin);
-				fin.close();
-				
-				//read the port number and serial name from the configuration file
-				if (props.containsKey("server_port")) {
-					try {
-						Log.d(TAG, "read config file property 'port' as '" + props.getProperty("server_port") + "'");
-						portNum = Integer.parseInt(props.getProperty("server_port"));
-					} catch (NumberFormatException e) {
-						Log.w(TAG,  "error reading port number from configuration file, setting to default");
-						portNum = DEFAULT_PORT;
-					}
-				}
-				if (props.containsKey("serial")) {
-					serialPortName = props.getProperty("serial");
-					Log.d(TAG, "read config file property 'serial' as '" + props.getProperty("serial") + "'");
-				}
-				if (props.containsKey("web_resources")) {
-					webResourceFolder = props.getProperty("web_resources");
-				}
-				if (props.containsKey("drivers")) {
-					driverList = props.getProperty("drivers");
-				}
-				if (props.containsKey("server_bind_local")) {
-					if (props.get("server_bind_local").toString().toLowerCase().equals("true")) {
-						serverBindLocalhost = true; 
-					}
-				}
-			} catch (IOException | NullPointerException e) {
-				Log.w(TAG, "unable to read configuration file '" + configFile + "'");
-				
-			}
+			//Read in preferences from the config file
+			preferences.readPreferences(configFile);
+			
+			//Read additional preferences from the command line options,
+			//+ overwriting preferences in the config file.
 			
 			//If the user specified a port number then we will only
 			//try binding to that port, else we try the default port number
 			if (cmd.hasOption("server_port")) {
-				try {
-					portNum = Integer.valueOf(cmd.getOptionValue("server_port"));
-				} catch (IllegalArgumentException e) {
-					Log.e("Coordinator", "Bad port number given, setting to default value");
-					portNum = DEFAULT_PORT;
-				}
-			}
-			
-			//Its possible that a port number was not specified as a command line option
-			//+ or through the config file.  If so use the default port
-			if (portNum == null) {
-				Log.d(TAG, "using default port " + DEFAULT_PORT);
-				portNum = DEFAULT_PORT;
+				preferences.putPreference(Preferences.values.portNum, cmd.getOptionValue("server_port"));
 			}
 			
 			if (cmd.hasOption("web_resources")) {
-				webResourceFolder = cmd.getOptionValue("web_resources");
+				preferences.putPreference(Preferences.values.webResourceFolder, cmd.getOptionValue("web_resources"));
 			}
 			
 			//if we were given a preferred port we will pass it to SerialConnection
 			//+ when initialized
 			if (cmd.hasOption("serial")) {
-				serialPortName = cmd.getOptionValue("serial");
+				preferences.putPreference(Preferences.values.serialPort, cmd.getOptionValue("serial"));
 			}
 			
 			
@@ -661,7 +619,10 @@ public class Coordinator {
 		}
 		
 		//open the serial connection
-		if (serialPortName.equals("dummy")) {
+		String serialPortName = preferences.getPreference(Preferences.values.serialPort);
+		if (serialPortName == null) {
+			serialConnection = new UsbSerialConnection();
+		} else if (serialPortName.equals("dummy")) {
 			serialConnection = new DummySerialConnection();
 		} else {
 			serialConnection = new UsbSerialConnection(serialPortName);
@@ -724,6 +685,7 @@ public class Coordinator {
         
         
 		//Load all drivers specified in the config file
+		String driverList = preferences.getPreference(Preferences.values.driverList);
 		if (!driverList.equals("")) {
 			Log.c(TAG, "Initializing drivers...");
 			String[] drivers = driverList.split(",");
@@ -737,7 +699,9 @@ public class Coordinator {
 				}
 			}
 		} else {
-			Log.w(TAG, "No drivers were specified in the configuration file: '" + configFile + "', nothing will be loaded");
+			Log.w(TAG, "No drivers were specified in the configuration file: '" +
+					preferences.getPreference(Preferences.values.configFile) +
+					"', nothing will be loaded");
 		}
 		
         //start the drivers
@@ -768,19 +732,23 @@ public class Coordinator {
 			}
 		});
         
-        //start the web interfaces
-        if (serverBindLocalhost) {
+        //start the web interface
+        int portNum;
+        try {
+        	portNum = Integer.valueOf(preferences.getPreference(Preferences.values.portNum));
+        } catch (NumberFormatException e) {
+        	portNum = Preferences.SERVER_PORT;
+        }
+        if (preferences.getPreference(Preferences.values.serverBindLocalhost).equals("true")) {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
         			InetAddress.getLocalHost());
         } else {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
         }
     	
-        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == DEFAULT_PORT? false : true,
-        		serverBindLocalhost ? true : false);
-        if (webResourceFolder != null) {
-        	server.setResourceFolder(webResourceFolder);
-        }
+        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == Preferences.SERVER_PORT ? false : true,
+        		preferences.getPreference(Preferences.values.serverBindLocalhost).equals("true") ? true : false);
+        server.setResourceFolder(preferences.getPreference(Preferences.values.webResourceFolder));
         new Thread(server).start();
         
         
