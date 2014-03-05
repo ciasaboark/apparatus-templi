@@ -114,6 +114,9 @@ public class SimpleHttpServer implements Runnable {
 	    } catch (IOException ignored) {
 	        results = true;
 	        Log.d(TAG, "port number " + port + " available");
+	    } catch (IllegalArgumentException e) {
+	    	//Thrown when the port number is out of range
+	    	Coordinator.exitWithReason("port number '" + port + "' out of range");
 	    }
 	    return results;
 	}
