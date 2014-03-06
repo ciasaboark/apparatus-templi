@@ -131,12 +131,14 @@ public class SimpleHttpServer implements Runnable {
 	public static HashMap<String, String> processQueryString(String query) {
 		HashMap<String, String> queryTags = new HashMap<String, String>();
 		//break the query string into key/value pairs by '&'
-		for (String keyValue: query.split("&")) {
-			//break the key/value pairs by '='
-			String[] pair = keyValue.split("=");
-			//only put in tags that have a value associated
-			if (pair.length == 2) {
-				queryTags.put(pair[0], pair[1]);
+		if (query != null) {
+			for (String keyValue: query.split("&")) {
+				//break the key/value pairs by '='
+				String[] pair = keyValue.split("=");
+				//only put in tags that have a value associated
+				if (pair.length == 2) {
+					queryTags.put(pair[0], pair[1]);
+				}
 			}
 		}
 		
@@ -359,18 +361,18 @@ public class SimpleHttpServer implements Runnable {
 			if (queryMap.containsKey("driver")) {
 				String driverName = queryMap.get("driver");
 				response = getResponse(driverName);
-				com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
-				headers.add("Content-Type", "application/xml");
 				if (response != null) {
+					com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+					headers.add("Content-Type", "application/xml");
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 					exchange.getResponseBody().write(response);
 				} else {
-					response = get404ErrorPage("index.html").getBytes();
+					response = get404ErrorPage("").getBytes();
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 					exchange.getResponseBody().write(response);
 				}
 			} else {
-				response = get404ErrorPage("index.html").getBytes();
+				response = get404ErrorPage("").getBytes();
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 				exchange.getResponseBody().write(response);
 			}
