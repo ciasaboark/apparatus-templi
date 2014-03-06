@@ -15,5 +15,5 @@ all:
 	$(JC) $(DEBUG) -sourcepath $(SRC_PATH) -classpath $(COMPILE_DIRECTORY) @file_list.txt
 
 clean:
-	\rm -r '/home/christopher/git/apparatus-templi/coordinator_eclipse_workspace/Coordinator/bin' 
+	\rm -r 'coordinator_eclipse_workspace/Coordinator/bin' 
 	\rm file_list.txt
