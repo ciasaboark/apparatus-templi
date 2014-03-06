@@ -31,7 +31,10 @@ public class XmlFormatter {
 	public String generateWidgetXml() {
 		StringBuilder xml = new StringBuilder();
 		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-		xml.append("<widget version=\"" + XmlFormatter.VERSION + "\" name=\"" + this.name + "\" driver=\"" + shortName + "\">");
+		xml.append("<widget version=\"" + XmlFormatter.VERSION + "\" name=\"" +
+				this.name + "\" driver=\"" + shortName + "\" " +
+				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+				"xsi:noNamespaceSchemaLocation=\"resource?file=xml/widget-schema.xsd\" " + " >");
 		for (Element e: elements) {
 			xml.append(e.getXml());
 		}
@@ -124,14 +127,14 @@ public class XmlFormatter {
 		@Override
 		public String getXml() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("<controller name=\"" + this.name + "\" ");
+			sb.append("<sensor name=\"" + this.name + "\" ");
 			if (this.icon != null) {
 				sb.append("icon=\"" + this.icon + "\" ");
 			}
 			sb.append(">");
 			
 			sb.append("<value>" + this.value + "</value>");
-			sb.append("</controller>");
+			sb.append("</sensor>");
 			
 			return sb.toString();
 		}

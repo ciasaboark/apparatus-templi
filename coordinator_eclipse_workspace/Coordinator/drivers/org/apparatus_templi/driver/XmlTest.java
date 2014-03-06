@@ -14,7 +14,7 @@ public class XmlTest extends ControllerModule {
 
 	public XmlTest() {
 		this.name = "XmlTest";
-		widgetXml = new XmlFormatter(this, "Xml Formatter");
+		widgetXml = new XmlFormatter(this, "Xml Format Tester");
 		
 		sensor1 = new XmlFormatter.Sensor("Temperature");
 		sensor1.setValue("unknown");
