@@ -75,6 +75,9 @@ public class Preferences {
 			
 			preferences.put(Preferences.values.serverBindLocalhost, props.getProperty("server_bind_local", SERVER_BIND_LOCAL));
 			Log.d(TAG, "read preferences '" + values.webResourceFolder + "' as '" + getPreference(values.serverBindLocalhost) + "'");
+			
+			preferences.put("ACCESS_TOKEN", props.getProperty("ACCESS_TOKEN"));
+			preferences.put("ACCESS_TOKEN_KEY", props.getProperty("ACCESS_TOKEN_KEY"));
 		} catch (IOException | NullPointerException e) {
 			Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 			

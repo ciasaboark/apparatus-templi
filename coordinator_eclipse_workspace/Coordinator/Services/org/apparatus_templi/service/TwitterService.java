@@ -1,6 +1,7 @@
 package org.apparatus_templi.service;
 
 import org.apparatus_templi.Log;
+import org.apparatus_templi.Preferences;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -9,26 +10,31 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public final class TwitterService extends Service {
 //	private static final String UPDATE_URI = "https://api.twitter.com/1.1/statuses/update.json";
-	private static final String TAG = "TwitterService";
-	private static final String CONSUMER_KEY = "";
-	private static final String CONSUMER_SECRET = "";
-	private static final String ACCESS_TOKEN = "";
-	private static final String ACCESS_TOKEN_KEY = "";
+	private final String TAG = "TwitterService";
+	private final String CONSUMER_KEY = "m0nVUSS32WQAPqGmMGvZ8w";
+	private final String CONSUMER_SECRET = "ceevX5cRzOXxgZxmWlk9eW0p3Zx6AEUjlNy9oklU";
+	private String accessToken = null;
+	private String accessTokenKey = null;
 	private Twitter twitter = null;
 	
 	public TwitterService() {
-		
-		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true)
-		  .setOAuthConsumerKey(CONSUMER_KEY)
-		  .setOAuthConsumerSecret(CONSUMER_SECRET)
-		  .setOAuthAccessToken(ACCESS_TOKEN)
-		  .setOAuthAccessTokenSecret(ACCESS_TOKEN_KEY);
-		TwitterFactory tf = new TwitterFactory(cb.build());
-		twitter = tf.getInstance();
+		accessToken = Preferences.getInstance().getPreference("ACCESS_TOKEN");
+		accessTokenKey = Preferences.getInstance().getPreference("ACCESS_TOKEN_KEY");
+		if (accessToken != null && accessTokenKey != null) {
+			ConfigurationBuilder cb = new ConfigurationBuilder();
+			cb.setDebugEnabled(true)
+			  .setOAuthConsumerKey(CONSUMER_KEY)
+			  .setOAuthConsumerSecret(CONSUMER_SECRET)
+			  .setOAuthAccessToken(accessToken)
+			  .setOAuthAccessTokenSecret(accessTokenKey);
+			TwitterFactory tf = new TwitterFactory(cb.build());
+			twitter = tf.getInstance();
+		} else {
+			Log.e(TAG, "Twitter service requires authentication for a particular user account.");
+		}
 	}
 	
-	public boolean updateTimeline(String status) {
+	public synchronized boolean updateTimeline(String status) {
 		boolean timelineUpdated = false;
 		if (status != null && twitter != null) {
 			try {
@@ -40,6 +46,8 @@ public final class TwitterService extends Service {
 				Log.e(TAG, "could not update timeline");
 				e.printStackTrace();
 			}	
+		} else {
+			Log.w(TAG, "Can not post to timeline, check that the access token was provided");
 		}
 		return timelineUpdated;
 	}

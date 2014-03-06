@@ -1,5 +1,6 @@
 package org.apparatus_templi;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +13,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.activation.MimetypesFileTypeMap;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -283,12 +287,23 @@ public class SimpleHttpServer implements Runnable {
 						//the file was found and read correctly
 						byte[] response = getResponse(resourceName);
 						//get the MIME type of the file
-//						MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
-//						String mime = mimeMap.getContentType(System.getProperty("user.dir") + "/" + resourceName);
-//						
-//						com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
-//						headers.add("Content-Type", mime);
-				        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+						//MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
+						String file = Preferences.getInstance().getPreference(Preferences.values.webResourceFolder) +  resourceName;
+						String mime = null;
+						try (InputStream is = new FileInputStream(file);
+						        BufferedInputStream bis = new BufferedInputStream(is);) {
+						    AutoDetectParser parser = new AutoDetectParser();
+						    Detector detector = parser.getDetector();
+						    Metadata md = new Metadata();
+						    md.add(Metadata.RESOURCE_NAME_KEY, resourceName);
+						    MediaType mediaType = detector.detect(bis, md);
+						    mime = mediaType.toString();
+						}
+						if (mime != null) {					
+							com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+							headers.add("Content-Type", mime);
+						}
+					    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 				        exchange.getResponseBody().write(response);
 					} catch (IOException e) {
 						//the file either does not exist or could not be read
@@ -342,6 +357,7 @@ public class SimpleHttpServer implements Runnable {
 			//TODO	
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			exchange.close();
 		}
 		
 		public byte[] getResponse() {
@@ -380,6 +396,7 @@ public class SimpleHttpServer implements Runnable {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 				exchange.getResponseBody().write(response);
 			}
+			exchange.close();
 		}
 		
 		public byte[] getResponse(String driverName) {
