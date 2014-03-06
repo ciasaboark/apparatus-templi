@@ -14,12 +14,6 @@ import java.util.ArrayList;
  */
 public abstract class ControllerModule extends Driver {	
 	/**
-	 * Used to determine which type of Driver each driver
-	 * should be cast to. 
-	 */
-	public static final String TYPE = "Controller";
-	
-	/**
 	 * Return a list of all controllers on the remote module.
 	 * The driver is expected to keep track of which controllers are
 	 * available on its corresponding remote module.  The front
@@ -49,13 +43,4 @@ public abstract class ControllerModule extends Driver {
 	 * @param command the String command to send to the controller.
 	 */
 	public abstract void tellController(String controllerName, String command);
-	
-	/**
-	 * Returns the String type of Driver.  This type can be checked
-	 * 	against SensorModule.TYPE and ControllerModule.TYPE to determine
-	 * 	the type of driver.
-	 */
-	public String getDriverType() {
-		return ControllerModule.TYPE;
-	}
 }

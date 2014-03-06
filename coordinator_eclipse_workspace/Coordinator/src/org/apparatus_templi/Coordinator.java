@@ -1,12 +1,10 @@
 package org.apparatus_templi;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.cli.CommandLine;
@@ -16,7 +14,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apparatus_templi.driver.*;
+import org.apparatus_templi.driver.ControllerModule;
+import org.apparatus_templi.driver.Driver;
+import org.apparatus_templi.driver.SensorModule;
 
 /**
  * Coordinates message passing and driver loading.  Handles setting
@@ -29,20 +29,11 @@ import org.apparatus_templi.driver.*;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
-//	private static final int DEFAULT_PORT = 8000;
-//	private static final String DEFAULT_CONFIG = "./coordinator.conf";
-
 	private static HashMap<String, String> remoteModules   = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
-//	private static Integer portNum = null;
-//	private static String configFile;
-//	private static String serialPortName = null;
-//	private static String webResourceFolder;
-//	private static String driverList = "";
-//	private static boolean serverBindLocalhost = false;
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static Preferences preferences = Preferences.getInstance();
@@ -123,9 +114,9 @@ public class Coordinator {
 	private static boolean loadDriver(Driver d) {
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
-        	if (!loadedDrivers.containsKey(d.getModuleName()) && d.getDriverType() != Driver.TYPE) {
+        	if (!loadedDrivers.containsKey(d.getModuleName()) && (d instanceof ControllerModule || d instanceof SensorModule)) {
 		        loadedDrivers.put(d.getModuleName(), d);
-		        Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getDriverType() + " initialized");
+		        Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName() + " initialized");
 		        isDriverLoaded = true;
         	} else {
         		Log.e(TAG, "error loading driver " + d.getClass().getName() + " a driver with the name " +
@@ -172,7 +163,7 @@ public class Coordinator {
 			Driver d = loadedDrivers.get(driverName);
 			Thread t = driverThreads.get(d);
 			if (t.getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getDriverType() + "'");
+				Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getClass().getName() + "'");
 				scheduledWakeUps.remove(d);
 				driverThreads.remove(d);
 //				loadedDrivers.remove(d.getName());
@@ -454,7 +445,7 @@ public class Coordinator {
 		ArrayList<String> results = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
-			if (d.getDriverType().equals(SensorModule.TYPE)) {
+			if (d instanceof org.apparatus_templi.driver.SensorModule) {
 					results = ((SensorModule)d).getSensorList();
 			}
 		}
@@ -474,7 +465,7 @@ public class Coordinator {
 		ArrayList<String> results = new ArrayList<String>();
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver d = loadedDrivers.get(driverName);
-			if (d.getDriverType().equals(ControllerModule.TYPE)) {
+			if (d instanceof org.apparatus_templi.driver.ControllerModule) {
 					results = ((ControllerModule)d).getControllerList();
 			}
 		}
@@ -684,7 +675,7 @@ public class Coordinator {
 		}
         
         
-		//Load all drivers specified in the config file
+		//Instantiate all drivers specified in the config file
 		String driverList = preferences.getPreference(Preferences.values.driverList);
 		if (!driverList.equals("")) {
 			Log.c(TAG, "Initializing drivers...");
@@ -704,7 +695,7 @@ public class Coordinator {
 					"', nothing will be loaded");
 		}
 		
-        //start the drivers
+        //Start the driver threads
         for (String driverName: loadedDrivers.keySet()) {
         	Log.c(TAG, "Starting driver " + driverName);
         	Thread t = new Thread(loadedDrivers.get(driverName));

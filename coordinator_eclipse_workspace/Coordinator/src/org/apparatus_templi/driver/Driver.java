@@ -16,12 +16,6 @@ import org.apparatus_templi.Log;
  */
 public abstract class Driver implements Runnable {
 	/**
-	 * Used to determine which type of Driver each driver
-	 * should be cast to. 
-	 */
-	public static final String TYPE = "Driver";
-	
-	/**
 	 * The unique name of this driver.  This name should match
 	 * the name of the remote module it corresponds with, and
 	 * must be 10 characters or less.
@@ -138,10 +132,6 @@ public abstract class Driver implements Runnable {
 		return data;
 	}
 	
-	public String getDriverType() {
-		return Driver.TYPE;
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -151,7 +141,7 @@ public abstract class Driver implements Runnable {
 		try {
 			this.wait();
 		} catch (InterruptedException e) {
-			Log.d(TYPE, "sleeping driver woken by interrupt");
+			Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
 			this.notify();
 		}
 	}
@@ -161,7 +151,7 @@ public abstract class Driver implements Runnable {
 		try {
 			this.wait();
 		} catch (InterruptedException e) {
-			Log.d(TYPE, "sleeping driver woken by interrupt");
+			Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
 			this.notify();
 		}
 	}

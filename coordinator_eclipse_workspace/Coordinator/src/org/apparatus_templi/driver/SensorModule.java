@@ -16,12 +16,6 @@ import java.util.ArrayList;
  */
 public abstract class SensorModule extends Driver {
 	/**
-	 * Used to determine which type of Driver each driver
-	 * should be cast to. 
-	 */
-	public static final String TYPE = "Sensor";
-	
-	/**
 	 * Return a list of all sensors on the remote module.
 	 * The driver is expected to keep track of which sensors are
 	 * available on its corresponding remote module.  The front
@@ -43,13 +37,13 @@ public abstract class SensorModule extends Driver {
 	 */
 	public abstract String getSensorData(String sensorName);
 	
-	/**
-	 * Returns the String type of Driver.  This type can be checked
-	 * 	against SensorModule.TYPE and ControllerModule.TYPE to determine
-	 * 	the type of driver.
-	 */
-	public String getDriverType() {
-		return SensorModule.TYPE;
-	}
+//	/**
+//	 * Returns the String type of Driver.  This type can be checked
+//	 * 	against SensorModule.TYPE and ControllerModule.TYPE to determine
+//	 * 	the type of driver.
+//	 */
+//	public String getDriverType() {
+//		return SensorModule.TYPE;
+//	}
 
 }

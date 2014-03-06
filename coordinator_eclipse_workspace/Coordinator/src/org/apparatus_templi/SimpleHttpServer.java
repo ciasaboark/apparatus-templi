@@ -107,18 +107,26 @@ public class SimpleHttpServer implements Runnable {
 		resourceFolder = path;
 	}
 	
+	
 	private boolean portAvailable(int port) {
 		
 		boolean results = false;
-	    try {
-	    	Socket ignored = new Socket("localhost", port);
+	    Socket ignored = null;
+		try {
+			ignored = new Socket("localhost", port);
 	    	Log.d(TAG, "port number " + port + " not available");
-	    } catch (IOException ignored) {
+	    } catch (IOException e) {
 	        results = true;
 	        Log.d(TAG, "port number " + port + " available");
 	    } catch (IllegalArgumentException e) {
 	    	//Thrown when the port number is out of range
 	    	Coordinator.exitWithReason("port number '" + port + "' out of range");
+	    } finally {
+	    	if (ignored != null) {
+	    		try {
+					ignored.close();
+				} catch (IOException e) {}
+	    	}
 	    }
 	    return results;
 	}
@@ -236,11 +244,7 @@ public class SimpleHttpServer implements Runnable {
 	}
 	
 	
-	private class JsHandler implements HttpHandler {
-	    private String xmlVersion = "<?xml version='1.0'?>";
-	    private String header = "<ModuleList>";
-	    private String footer = "</ModuleList>";
-	    
+	private class JsHandler implements HttpHandler {	    
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");

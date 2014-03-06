@@ -42,7 +42,7 @@ public class XmlTest extends ControllerModule {
 			receiveCommand(queuedCommands.poll());
 		}
 		while (isRunning) {
-			this.sleep(10000);
+			this.sleep(1000 * 60);
 			Integer i;
 			try {
 				i = Integer.parseInt(sensor1.getValue());

@@ -34,12 +34,6 @@ public class StatefullLed extends ControllerModule {
 	public StatefullLed() {
 		this.name = "State_LED";
 	}
-	
-	@Override
-	public String getDriverType() {
-		return "Controller";
-	}
-
 
 	@Override
 	public void receiveCommand(String message) {
