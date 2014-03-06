@@ -1,8 +1,3 @@
-$( document ).ready(function() {
-    getRunningDrivers();
-    setInterval(getRunningDrivers, 30000);
-});
-
 /*
  * Ajax request to update the running driver list
  */
@@ -26,22 +21,31 @@ function getRunningDrivers() {
                 $driverList += "<li>" + $name + "</li>";
             })
             document.getElementById("driver_names").innerHTML = $driverList;
-            document.getElementById("driver_refresh_button").innerHTML = "<i class=\"fa fa-refresh\"></i>";
+            document.getElementById("driver_refresh_button").innerHTML = "<div class=\"btn btn-default btn-sm\">refresh <i class=\"fa fa-refresh\"></i></div>";
+            $("#driver_names").fadeIn("slow", function() {});
 //            document.getElementById("driver_names").style("color: black");
         },
         error: function(xhr, status, error) {
             if (xhr.status != 404) {
-                alert("unknown error:\n" + error);
-                document.getElementById("driver_refresh_button").innerHTML = "<i class=\"fa fa-refresh\"></i>";
+//                alert("unknown error:\n" + error);
+                document.getElementById("driver_refresh_button").innerHTML = "<div class=\"btn btn-default btn-sm\">refresh <i class=\"fa fa-refresh\"></i></div>";
+                document.getElementById("driver_names").innerHTML = "<li ><i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i></li>";
             } 
             else {
-                alert("404 xml not found");
-                document.getElementById("driver_refresh_button").innerHTML = "<i class=\"fa fa-refresh\"></i>";
+//                alert("404 xml not found");
+                document.getElementById("driver_refresh_button").innerHTML = "<div class=\"btn btn-default btn-sm\">refresh <i class=\"fa fa-refresh\"></i></div>";
+                document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
             }
         }
     });
     
-}   
+}
+
+$( "#driver_refresh_button" ).click(function() {
+  $( "#driver_names" ).fadeOut( "slow", function() {
+    // Animation complete.
+  });
+});
     
 function showCommandBox() {
     $("#send_command").slideToggle("slow");

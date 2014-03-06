@@ -9,6 +9,27 @@ body {
 .header {
     position: initial;
 	text-align:center;
+/*    width: ;*/
+    font-size: 13px;
+    font-family: 'Varela Round', sans-serif;
+/*    position: relative;*/
+/*    left: 61%;*/
+    background-color: white;
+    padding: 10px 10px;
+    height:25px;
+    vertical-align: text-top;
+}
+
+#header_title {
+    float:left;
+    font-size: 22pt;
+    position: fixed;
+    top: 2px;
+    left: 2px;
+}
+
+#header_links {
+    float:right;
 }
 
 #header_content #logo{
@@ -17,14 +38,7 @@ body {
 }
 
 #header_bar {   
-    font-size: 13px;
-    font-family: 'Varela Round', sans-serif;
-    position: relative;
-    left: 61%;
-    background-color: white;
-    padding: 10px 10px; 
-    width:500px;
-    height:25px;
+    width:100;
 }
 
 #header_bar span {
@@ -50,9 +64,15 @@ body {
 #RunningDrivers {
     position: relative;
     top: -30px;
-    width: 18%;
+    width: 120pt;
     height: 45%;
     padding: 25px 10px;
+    box-shadow: 0px 1px 4px #eeeeee;
+}
+
+#driver_refresh_button {
+/*    float: right;*/
+    color: grey;
 }
 
 #main_content {

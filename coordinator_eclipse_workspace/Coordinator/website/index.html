@@ -8,6 +8,7 @@
 <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
@@ -19,13 +20,17 @@
 
 <body>
 	<div class="header">
+        
         <div id="header_bar">
-            <a href="http://www.arduino.cc"><img src="resource?file=images/arduino_icon.png" alt="Device List"></a>
-            <a href="https://github.com/ciasaboark/apparatus-templi"><i class="fa fa-github-alt fa-2x" style="color: grey"></i></a>
-            <span onclick="">Devices</span>
-            <span onclick="">Full Page XML</span>
-            <span onclick="">Widget XML</span>
-            <span onclick="showCommandBox()">Send Command</span>
+            <span id="header_title"><img src="resource?file=images/small_logo.png" alt="small logo">Apparatus Templi</span>
+            <div id="header_links">
+                <a href="http://www.arduino.cc"><img src="resource?file=images/arduino_icon.png" alt="Device List"></a>
+                <a href="https://github.com/ciasaboark/apparatus-templi"><i class="fa fa-github-alt fa-2x" style="color: grey"></i></a>
+                <span onclick="">Devices</span>
+                <span onclick="">Full Page XML</span>
+                <span onclick="">Widget XML</span>
+                <span onclick="showCommandBox()">Send Command</span>
+            </div>
         </div>
         
         <div id="send_command">
@@ -33,21 +38,26 @@
             Command:<input class="input" type="text"/>
         </div>
         
+<!--
     	<div id="header_content">
             <div id="logo">
                 <img src="resource?file=images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
             </div>
         </div>
+-->
     </div>
     <div id="main_content">
         <p>Apparatus Templi is an Open Source Home Automation project built with Open Source hardware, Arduino.</p>
+        <a class="btn btn-default btn-sm" href="#">
+  <i class="fa fa-cog"></i> Settings</a>
     </div>
     <div id="RunningDrivers">
         <div id="driver_list">
-            <p>Loaded Divers   <a id="driver_refresh_button" href="#" onclick="getRunningDrivers()"></a></p>
+            <span>Loaded Divers</span>
             <ul id="driver_names" class="fa-ul" style="align: center">
                 <li><i class="fa-li fa fa-spinner fa-spin fa-2x"></i></li>
             </ul>
+            <div id="driver_refresh_button" href="#" onclick="getRunningDrivers()"></div>
         </div>
     </div>
 </body>
