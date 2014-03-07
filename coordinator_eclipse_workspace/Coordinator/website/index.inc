@@ -1,0 +1,1 @@
+<p>Apparatus Templi is an Open Source Home Automation project built with Open Source hardware, Arduino.</p>

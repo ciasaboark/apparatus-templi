@@ -52,6 +52,31 @@ public class SimpleHttpServer implements Runnable {
 		return sb.toString();
 	}
 	
+	private byte[] getFileBytes(String fileName) {
+		byte[] returnBytes = null;
+    	try {
+    		InputStream is = new FileInputStream(fileName);
+    		int streamLength = is.available();
+	    	if (streamLength <= Integer.MAX_VALUE) {
+	    		byte[] fileBytes = new byte[(int)streamLength];
+	    		int offset = 0;
+	    		int numRead = 0;
+	    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
+	    			offset += numRead;
+	    		}
+	    		is.close();
+	    		returnBytes = fileBytes;
+	    		if (offset < fileBytes.length) {
+	    			throw new IOException();
+	    		}
+	    	}
+    	} catch (Exception e) {
+    		Log.w(TAG, "Error opening '" + resourceFolder + fileName + "'");
+    	}
+    	
+    	return returnBytes;
+	}
+	
 	/*
 	 * As of right now the server will fail if it is has more than one instance trying to run on the
 	 * same port. It needs to be changed to a singleton instance or keep tack of port numbers that
@@ -88,11 +113,13 @@ public class SimpleHttpServer implements Runnable {
 				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
 			}
 			server.createContext("/index.html", new IndexHandler());
+//			server.createContext("/", new IndexHandler());
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/full_xml", new FullXmlHandler());
 			server.createContext("/driver_widget", new WidgetXmlHandler());
 			server.createContext("/resource", new ResourceHandler());
 			server.createContext("/js/default.js", new JsHandler());
+			server.createContext("/settings.html", new SettingsHandler());
 			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -162,13 +189,10 @@ public class SimpleHttpServer implements Runnable {
 	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 *
 	 */
-	private class IndexHandler implements HttpHandler {
-	    
+	private class IndexHandler implements HttpHandler {	    
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
-//			HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
-//			Log.d(TAG, "value of 'foo': " + queryTags.get("foo"));
 			byte[] response = getResponse();
 			if (response != null) {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
@@ -181,29 +205,19 @@ public class SimpleHttpServer implements Runnable {
 	        exchange.close();
 	    };
 	    
-	    private byte[] getResponse() throws IOException {
+	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
-	    	try {
-	    		InputStream is = new FileInputStream(resourceFolder + "index.html");
-	    		int streamLength = is.available();
-		    	if (streamLength <= Integer.MAX_VALUE) {
-		    		byte[] fileBytes = new byte[(int)streamLength];
-		    		int offset = 0;
-		    		int numRead = 0;
-		    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
-		    			offset += numRead;
-		    		}
-		    		
-		    		is.close();
-		    		returnBytes = fileBytes;
-		    		if (offset < fileBytes.length) {
-		    			throw new IOException("Could not read index.html");
-		    		}
-		    	}
-	    	} catch (Exception e) {
-	    		Log.w(TAG, "Error opening '" + resourceFolder + "index.html" + "'");
+	    	
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "template.html");
+	    	byte[] indexBytes = getFileBytes(resourceFolder + "index.inc");
+	    	
+	    	if (templateBytes != null && indexBytes != null) {
+		    	String templateHtml = new String(templateBytes);
+		    	String indexHtml = new String(indexBytes);	    	
+		    	templateHtml = templateHtml.replace("MAIN_CONTENT", indexHtml.toString());
+	    		returnBytes = templateHtml.getBytes();
 	    	}
-		    		
+	    	
 	    	return returnBytes;
 	    }
 	}
@@ -247,7 +261,11 @@ public class SimpleHttpServer implements Runnable {
 	    }
 	}
 	
-	
+	/**
+	 * 
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 *
+	 */
 	private class JsHandler implements HttpHandler {	    
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
@@ -263,6 +281,47 @@ public class SimpleHttpServer implements Runnable {
 	    private byte[] getResponse() {
 	    	String jsCode = "$portnum = 8000;";
 	    	return jsCode.getBytes();
+	    }
+	}
+	
+	/**
+	 * 
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 *
+	 */
+	private class SettingsHandler implements HttpHandler {	    
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			byte[] response = getResponse();
+			if (response != null) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				response = get404ErrorPage("index.html").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
+	        exchange.close();
+	    };
+	    
+	    private byte[] getResponse() {
+	    	byte[] returnBytes = null;
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "template.html");
+	    	if (templateBytes != null) {
+		    	String template = new String(templateBytes);
+		    	
+	    		StringBuilder html = new StringBuilder();
+	    		HashMap<String, String> prefs = Preferences.getInstance().getPreferencesMap();
+	    		//TODO update to a form so that the settings can be sent back in a POST request
+		    	for (String key : prefs.keySet()) {
+		    		html.append("<div>" + key + "-->" + prefs.get(key) + "</div>");
+		    	}
+		    	
+		    	template = template.replace("MAIN_CONTENT", html.toString());
+	    		returnBytes = template.getBytes();
+	    	}
+	    	return returnBytes;
 	    }
 	}
 	
@@ -324,26 +383,7 @@ public class SimpleHttpServer implements Runnable {
 	    };
 	    
 	    private byte[] getResponse(String resourceName) throws IOException {
-	    	InputStream is = new FileInputStream(resourceFolder + resourceName);
-	    	byte[] fileBytes = {};
-	    	int streamLength = is.available();
-	    	if (streamLength <= Integer.MAX_VALUE) {
-	    		fileBytes = new byte[(int)streamLength];
-	    		int offset = 0;
-	    		int numRead = 0;
-	    		while (offset < fileBytes.length && (numRead = is.read(fileBytes, offset, fileBytes.length - offset)) >= 0) {
-	    			offset += numRead;
-	    		}
-	    		
-	    		is.close();
-	    		
-	    		if (offset < fileBytes.length) {
-	    			throw new IOException("Could not read " + resourceName);
-	    		}
-	    		
-	    	}
-	    	
-	    	return fileBytes;
+	    	return getFileBytes(resourceFolder + resourceName);
 	    }
 	}
 	
@@ -354,15 +394,39 @@ public class SimpleHttpServer implements Runnable {
 	 */
 	private class FullXmlHandler implements HttpHandler {
 		public void handle(HttpExchange exchange) throws IOException {
-			//TODO	
+			//TODO
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			HashMap<String, String> queryMap = processQueryString(exchange.getRequestURI().getQuery());
+			byte[] response;
+			if (queryMap.containsKey("driver")) {
+				String driverName = queryMap.get("driver");
+				response = getResponse(driverName);
+				if (response != null) {
+					com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+					headers.add("Content-Type", "application/xml");
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+					exchange.getResponseBody().write(response);
+				} else {
+					response = get404ErrorPage("").getBytes();
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+					exchange.getResponseBody().write(response);
+				}
+			} else {
+				response = get404ErrorPage("").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
 			exchange.close();
 		}
 		
-		public byte[] getResponse() {
-			//TODO
-			return null;
+		public byte[] getResponse(String driverName) {
+			byte[] response = null;
+			String fullXml = Coordinator.requestFullPageXML(driverName);
+			if (fullXml != null) {
+				response = fullXml.getBytes();
+			}
+			return response;
 		}
 	}
 	

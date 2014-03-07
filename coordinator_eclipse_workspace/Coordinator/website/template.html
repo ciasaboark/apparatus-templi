@@ -22,15 +22,25 @@
 	<div class="header">
         
         <div id="header_bar">
-            <span id="header_title"><img src="resource?file=images/small_logo.png" alt="small logo">Apparatus Templi</span>
-            <div id="header_links">
-                <a href="http://www.arduino.cc"><img src="resource?file=images/arduino_icon.png" alt="Device List"></a>
-                <a href="https://github.com/ciasaboark/apparatus-templi"><i class="fa fa-github-alt fa-2x" style="color: grey"></i></a>
+            <span id="header_title"><img style="display:inline-block; vertical-align:bottom" src="resource?file=images/small_logo.png" alt="small logo">Apparatus Templi</span>
+            <span id="header_links">
+<!--
                 <span onclick="">Devices</span>
                 <span onclick="">Full Page XML</span>
                 <span onclick="">Widget XML</span>
                 <span onclick="showCommandBox()">Send Command</span>
-            </div>
+-->
+                <span>
+                    <a id="button_home"class="btn btn-default btn-sm" href="index.html">
+                        <i class="fa fa-home"></i>&nbsp;Home
+                    </a>
+                </span>
+                <span>
+                    <a id="button_settings" class="btn btn-default btn-sm" href="settings.html">
+                        <i class="fa fa-cog"></i>&nbsp;Settings
+                    </a>
+                </span>
+            </span>
         </div>
         
         <div id="send_command">
@@ -46,18 +56,28 @@
         </div>
 -->
     </div>
+    <div class="footer">
+        <span>
+            <a href="http://www.arduino.cc">
+                <img src="resource?file=images/arduino_icon.png" alt="Device List">
+            </a>
+            <a href="https://github.com/ciasaboark/apparatus-templi">
+                <i class="fa fa-github-alt fa-2x" style="color: grey"></i>
+            </a>
+        </span>
+    </div>
     <div id="main_content">
-        <p>Apparatus Templi is an Open Source Home Automation project built with Open Source hardware, Arduino.</p>
-        <a class="btn btn-default btn-sm" href="#">
-  <i class="fa fa-cog"></i> Settings</a>
+        MAIN_CONTENT
     </div>
     <div id="RunningDrivers">
         <div id="driver_list">
-            <span>Loaded Divers</span>
-            <ul id="driver_names" class="fa-ul" style="align: center">
+            <div>Loaded Divers</div>
+            <ul id="driver_names">
                 <li><i class="fa-li fa fa-spinner fa-spin fa-2x"></i></li>
             </ul>
-            <div id="driver_refresh_button" href="#" onclick="getRunningDrivers()"></div>
+            <div id="driver_refresh_button" href="#" onclick="getRunningDrivers()">
+                <div class="btn btn-default btn-sm">refresh <i class="fa fa-refresh"></i></div>
+            </div>
         </div>
     </div>
 </body>

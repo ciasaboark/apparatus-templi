@@ -200,7 +200,7 @@ void processMessage(uint8_t message[], int messageLength) {
 				debug("responding with ");
 				debug(serialString);
 				// sendCommand(serialString);
-				sendCommand("foo");
+				sendCommand("Ready");
 			} else {
 				debug("message not for us");
 			}

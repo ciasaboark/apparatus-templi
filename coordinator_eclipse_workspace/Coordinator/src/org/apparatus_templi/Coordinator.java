@@ -363,7 +363,18 @@ public class Coordinator {
 	public static synchronized void scheduleWake(Driver caller, long wakeTime) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
-			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' in " + (wakeTime - System.currentTimeMillis()) / 1000 + " seconds.");
+			String time;
+			long diff = wakeTime - System.currentTimeMillis();
+			if (diff <= 0) {
+				time = "now";
+			} else if (diff < 1000) {
+				time = String.valueOf(diff) + " milliseconds";
+			} else if (diff < 60000) {
+				time = String.valueOf(diff/1000) + " seconds";
+			} else {
+				time = String.valueOf(diff/60000) + " minutes";
+			}
+			Log.d(TAG, "scheduled a wakup for driver '" + caller.getModuleName() + "' in " + time + ".");
 		}
 	}
 	

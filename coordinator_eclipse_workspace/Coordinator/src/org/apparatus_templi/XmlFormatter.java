@@ -42,6 +42,11 @@ public class XmlFormatter {
 		return xml.toString();
 	}
 	
+	public String generateFullXml() {
+		//TODO
+		return null;
+	}
+	
 	
 	private interface Element {
 		public String getName();

@@ -96,6 +96,12 @@ public class Preferences {
 		preferences.put(key, value);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public HashMap<String, String> getPreferencesMap() {
+		//make sure that the caller can not modify the preferences we hold
+		return (HashMap<String, String>)preferences.clone();
+	}
+	
 	public class values {
 		public static final String portNum = "portNum";
 		public static final String configFile = "configFile";

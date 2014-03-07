@@ -1,14 +1,16 @@
 package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.XmlFormatter;
 
 public class Local extends ControllerModule {
 	private int[] leds = {5, 6, 7};
 	private boolean[] ledsState = {false, false, false};
-
+	private XmlFormatter widgetFormatter = new XmlFormatter(this, "Local Controller");
+	private XmlFormatter fullFormatter = new XmlFormatter(this, "Local Controller");
+	
 	public Local() {
 		this.name = "LOCAL";
 	}
@@ -88,14 +90,12 @@ public class Local extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		// TODO Auto-generated method stub
-		return null;
+		return widgetFormatter.generateWidgetXml();
 	}
 
 	@Override
 	public String getFullPageXML() {
-		// TODO Auto-generated method stub
-		return null;
+		return fullFormatter.generateFullXml();
 	}
 
 }
