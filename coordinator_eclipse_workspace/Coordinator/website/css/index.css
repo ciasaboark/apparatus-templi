@@ -11,21 +11,7 @@ body {
     min-width: 600px;
 }
 
-.header {
-    position: initial;
-	text-align:right;
-/*    width: ;*/
-    font-size: 13px;
-    font-family: 'Varela Round', sans-serif;
-/*    position: relative;*/
-/*    left: 61%;*/
-/*    background-color: white;*/
-    padding: 10px 10px;
-    height:55px;
-    background:#FCFCFC;
-/*    border-botom: 1px dashed ;*/
-    border-bottom: 1px dashed #F2F2F2;
-}
+
 
 #header_title {
     float:left;
@@ -78,7 +64,7 @@ body {
 
 
 #RunningDrivers {
-    position: absolute;
+    position: fixed;
     top: 65px;
     left: 10px;
     width: 100pt;
@@ -109,17 +95,30 @@ body {
 
 #main_content {
     text-align: left;
-    position: absolute;
+/*    position: absolute;*/
 /*    border: 1px solid black;*/
-    left: 160px;
+    padding-left: 160px;
+    padding-top: 70px;
+    padding-bottom: 70px;
+    padding-right: 20px;
+/*    background-color: red;*/
+/*
+    left: 0px;
     top: 60px;
+*/
     font-family: 'Calibri';
     font-size: 14pt;
+/*    bottom: -40px;*/
+    z-index:-1;
+    padding-bottom: 40px;
+    width: 100%;
+    min-width: 100%;
 }
 
-#button_home {
-    
+#main_content_padding {
+    min-height:50px;
 }
+
 
 #button_home:hover {
     color: #6F94E8;
@@ -127,6 +126,14 @@ body {
 
 #button_home:active {
     color: #5D7BC2;
+}
+
+#button_about:hover {
+    color: #9CF07A;
+}
+
+#button_about:active {
+    color: #8BC4A3;
 }
 
 #button_settings:hover {
@@ -137,15 +144,98 @@ body {
     color: #D47D7D;
 }
 
-.footer {
-    position:absolute;
-    bottom:0;
+#header {
+/*    position: initial;*/
+    position:fixed;
+    top:0;
+    left:0;
     width:100%;
-    height:40px;   /* Height of the footer */
+	text-align:right;
+/*    width: ;*/
+    font-size: 13px;
+    font-family: 'Varela Round', sans-serif;
+/*    position: relative;*/
+/*    left: 61%;*/
+/*    background-color: white;*/
+    padding: 10px 10px;
+    height:55px;
+    background:#FCFCFC;
+/*    border-botom: 1px dashed ;*/
+    border-bottom: 1px dashed #F2F2F2;
+    min-width:600px;
+}
+
+#footer {
+    bottom:0;
+    position:fixed;
+    z-index:150;
+    _position:absolute;
+    _top:expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+    height:40px;
     background:#FCFCFC;
     border-top: 1px dashed #F2F2F2;
-    vertical-align:baseline;
+    width: 100%;
+    text-align:right;
+    padding-right:20px;
+/*
+    background-image: url('resource?file=images/footer-pinstripe.png');
+    background-repeat: repeat-x;
+*/
 }
+
+#prefs_form {
+    text-align: justify;
+    font-size: 12pt;
+/*    padding:10px;*/
+/*    margin: 10px;*/
+    width:400px;
+}
+
+.prefs_section {
+    background-color: #FAFAFA;
+    border-radius: 10px 10px 10px 10px;
+    padding: 0px 10px 5px 10px;
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
+
+.pref_input {
+/*    margin: 10px;*/
+    
+}
+
+.pref_key {
+/*    padding-right: 10px;*/
+}
+
+.pref_value {
+/*    float:right;*/
+}
+
+.pref_input input {
+    width:180pt;
+    float: right;
+}
+
+#prefs_section_twitter {
+    color: #36B8FF;
+}
+
+#prefs_section_frontend {
+    color:#FCD38B;
+}
+
+#prefs_section_webserver {
+    color:#CCCCCC;
+}
+
+#prefs_section_main {
+    color: #A3BFFF;
+}
+
+
+
 
 /*
 .footer span {

@@ -9,7 +9,7 @@ public class XmlTest extends ControllerModule {
 	private XmlFormatter widgetXml;
 	private XmlFormatter.Sensor sensor1;
 	private XmlFormatter.Controller controller1;
-	private XmlFormatter.Button sensor1Button;
+	private XmlFormatter.Button tempSensButton;
 	private XmlFormatter.Button controller1Button;
 
 	public XmlTest() {
@@ -20,16 +20,16 @@ public class XmlTest extends ControllerModule {
 		sensor1.setValue("unknown");
 		controller1 = new XmlFormatter.Controller("Some Controller");
 		controller1.setStatus("waiting");
-		sensor1Button = new XmlFormatter.Button("Refresh");
-		sensor1Button.setAction("r");
-		sensor1Button.setInputType(XmlFormatter.InputType.NONE);
+		tempSensButton = new XmlFormatter.Button("Refresh");
+		tempSensButton.setAction("r");
+		tempSensButton.setInputType(XmlFormatter.InputType.NONE);
 		
 		controller1Button = new XmlFormatter.Button("Turn");
 		controller1Button.setAction("m$input");
 		controller1Button.setInputType(XmlFormatter.InputType.NUM);
 		
 		widgetXml.addElement(sensor1);
-		widgetXml.addElement(sensor1Button);
+		widgetXml.addElement(tempSensButton);
 		widgetXml.addElement(controller1);
 		widgetXml.addElement(controller1Button);
 		

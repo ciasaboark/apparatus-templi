@@ -339,7 +339,7 @@ public class Coordinator {
 	 * down or when an incoming message addressed to it is found.
 	 * @param caller A reference to the driver to sleep
 	 */
-	public static synchronized void scheduleWake(Driver caller) {
+	public static synchronized void scheduleSleep(Driver caller) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, (long)0);
 			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
@@ -360,7 +360,7 @@ public class Coordinator {
 	 * @param wakeTime
 	 * @throws InterruptedException 
 	 */
-	public static synchronized void scheduleWake(Driver caller, long wakeTime) {
+	public static synchronized void scheduleSleep(Driver caller, long wakeTime) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
 			String time;

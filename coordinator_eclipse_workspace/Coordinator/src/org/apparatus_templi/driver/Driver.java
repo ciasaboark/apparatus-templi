@@ -137,7 +137,7 @@ public abstract class Driver implements Runnable {
 	}
 	
 	protected final synchronized void sleep()  {
-		Coordinator.scheduleWake(this);
+		Coordinator.scheduleSleep(this);
 		try {
 			this.wait();
 		} catch (InterruptedException e) {
@@ -147,7 +147,7 @@ public abstract class Driver implements Runnable {
 	}
 	
 	protected final synchronized void sleep(long sleepTime)  {
-		Coordinator.scheduleWake(this, System.currentTimeMillis() + sleepTime);
+		Coordinator.scheduleSleep(this, System.currentTimeMillis() + sleepTime);
 		try {
 			this.wait();
 		} catch (InterruptedException e) {

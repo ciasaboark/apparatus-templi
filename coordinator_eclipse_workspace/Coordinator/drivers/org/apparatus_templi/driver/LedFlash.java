@@ -136,19 +136,14 @@ public class LedFlash extends ControllerModule {
 				 * Our simple driver will repeatedly send three messages to the
 				 * remote module, sleeping a few seconds between each message.
 				 */
-				for (int i = 5; i < 10; i++) {
+				for (int i = 5; i < 8; i++) {
 					Log.d(name, "flashing LED on pin " + i);
 					if (Coordinator.sendCommand(this, String.valueOf(i))) {
 //						Log.d(name, "message sent");
 					} else {
 //						Log.d(name, "message could not be sent");
 					}
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					this.sleep(5000);
 				}
 			}
 		} else {
@@ -178,7 +173,7 @@ public class LedFlash extends ControllerModule {
 	@Override
 	public String getWidgetXML() {
 		Log.w(name, "getWidgetXML() unimplimented");
-		return "<widget><element name='led1'><state>on</state></element></widget>";
+		return null;
 	}
 
 	/*

@@ -71,7 +71,7 @@ public class SimpleHttpServer implements Runnable {
 	    		}
 	    	}
     	} catch (Exception e) {
-    		Log.w(TAG, "Error opening '" + resourceFolder + fileName + "'");
+    		Log.w(TAG, "Error opening '" + fileName + "'");
     	}
     	
     	return returnBytes;
@@ -113,6 +113,7 @@ public class SimpleHttpServer implements Runnable {
 				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
 			}
 			server.createContext("/index.html", new IndexHandler());
+			server.createContext("/about.html", new AboutHandler());
 //			server.createContext("/", new IndexHandler());
 			server.createContext("/get_running_drivers", new RunningDriversHandler());
 			server.createContext("/full_xml", new FullXmlHandler());
@@ -208,8 +209,46 @@ public class SimpleHttpServer implements Runnable {
 	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
 	    	
-	    	byte[] templateBytes = getFileBytes(resourceFolder + "template.html");
-	    	byte[] indexBytes = getFileBytes(resourceFolder + "index.inc");
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
+	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/index.inc");
+	    	
+	    	if (templateBytes != null && indexBytes != null) {
+		    	String templateHtml = new String(templateBytes);
+		    	String indexHtml = new String(indexBytes);	    	
+		    	templateHtml = templateHtml.replace("MAIN_CONTENT", indexHtml.toString());
+	    		returnBytes = templateHtml.getBytes();
+	    	}
+	    	
+	    	return returnBytes;
+	    }
+	}
+	
+	/**
+	 * Handler to return the index.html
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 *
+	 */
+	private class AboutHandler implements HttpHandler {	    
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			byte[] response = getResponse();
+			if (response != null) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				response = get404ErrorPage("index.html").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
+	        exchange.close();
+	    };
+	    
+	    private byte[] getResponse() {
+	    	byte[] returnBytes = null;
+	    	
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
+	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/about.inc");
 	    	
 	    	if (templateBytes != null && indexBytes != null) {
 		    	String templateHtml = new String(templateBytes);
@@ -307,16 +346,63 @@ public class SimpleHttpServer implements Runnable {
 	    
 	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
-	    	byte[] templateBytes = getFileBytes(resourceFolder + "template.html");
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
 	    	if (templateBytes != null) {
 		    	String template = new String(templateBytes);
 		    	
 	    		StringBuilder html = new StringBuilder();
 	    		HashMap<String, String> prefs = Preferences.getInstance().getPreferencesMap();
+	    		String configFile = prefs.get(Preferences.values.configFile);
+	    		if (configFile.length() > 40) {
+	    			
+	    		}
+	    		prefs.remove(Preferences.values.configFile);
+	    		
 	    		//TODO update to a form so that the settings can be sent back in a POST request
-		    	for (String key : prefs.keySet()) {
-		    		html.append("<div>" + key + "-->" + prefs.get(key) + "</div>");
+	    		html.append("<div id=\"prefs_form\"><form name='prefs' action=\"update_settings\" method=\"POST\" >\n");
+
+	    		//Preferences for the main section
+	    		html.append("<div class='prefs_section'><h2 class='prefs_section_title'>" + "<i id='prefs_section_main' class=\"fa fa-certificate\"></i>&nbsp;Main" + "</h2>");
+	    		for (String key: new String[] {Preferences.values.serialPort, Preferences.values.driverList}) {
+	    			String value = prefs.get(key);
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + value + "\" /></span></div><br />\n");
+	    			prefs.remove(key);
 		    	}
+	    		html.append("</div>");
+	    		
+	    		//Preferences for web server
+	    		html.append("<div class='prefs_section'><h2 class='prefs_section_title'>" + "<i id='prefs_section_webserver' class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
+	    		for (String key: new String[] {Preferences.values.portNum, Preferences.values.serverBindLocalhost}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    			prefs.remove(key);
+		    	}
+	    		html.append("</div>");
+	    		
+	    		//Preferences for web frontend
+	    		html.append("<div class='prefs_section'><h2 class='prefs_section_title'>" + "<i id='prefs_section_frontend' class=\"fi-web\"></i>&nbsp;Web Frontend" + "</h2>");
+	    		for (String key: new String[] {Preferences.values.webResourceFolder}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    			prefs.remove(key);
+		    	}
+	    		html.append("</div>");
+	    		
+	    		//Preferences for the Twitter service
+	    		html.append("<div class='prefs_section'><h2 class='prefs_section_title'>" + "<i id='prefs_section_twitter' class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</h2>");
+	    		for (String key: new String[] {"ACCESS_TOKEN", "ACCESS_TOKEN_KEY"}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    			prefs.remove(key);
+		    	}
+	    		html.append("</div>");
+	    		
+	    		//Any remaining unclassified preferences
+	    		if (!prefs.isEmpty()) {
+	    			html.append("<div class='prefs_section'><h2 class='prefs_section_title'>" + "<i id='prefs_section_unknown' class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</h2>");
+		    		for (String key : prefs.keySet()) {
+			    		html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+			    		prefs.remove(key);
+			    	}
+	    		}
+		    	html.append("</div><input type=\"submit\" value=\"Submit\"></form>");
 		    	
 		    	template = template.replace("MAIN_CONTENT", html.toString());
 	    		returnBytes = template.getBytes();

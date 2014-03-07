@@ -9,6 +9,7 @@
 <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="resources?file=css/foundation-icons.css">
     
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
@@ -19,7 +20,7 @@
 </head>
 
 <body>
-	<div class="header">
+	<div id="header">
         
         <div id="header_bar">
             <span id="header_title"><img style="display:inline-block; vertical-align:bottom" src="resource?file=images/small_logo.png" alt="small logo">Apparatus Templi</span>
@@ -32,12 +33,17 @@
 -->
                 <span>
                     <a id="button_home"class="btn btn-default btn-sm" href="index.html">
-                        <i class="fa fa-home"></i>&nbsp;Home
+                        <i class="fa fa-home"></i>&nbsp;&nbsp;Home
+                    </a>
+                </span>
+                <span>
+                    <a id="button_about" class="btn btn-default btn-sm" href="about.html">
+                        <i class="fa fa-info"></i>&nbsp;&nbsp;About
                     </a>
                 </span>
                 <span>
                     <a id="button_settings" class="btn btn-default btn-sm" href="settings.html">
-                        <i class="fa fa-cog"></i>&nbsp;Settings
+                        <i class="fa fa-cog"></i>&nbsp;&nbsp;Settings
                     </a>
                 </span>
             </span>
@@ -56,18 +62,10 @@
         </div>
 -->
     </div>
-    <div class="footer">
-        <span>
-            <a href="http://www.arduino.cc">
-                <img src="resource?file=images/arduino_icon.png" alt="Device List">
-            </a>
-            <a href="https://github.com/ciasaboark/apparatus-templi">
-                <i class="fa fa-github-alt fa-2x" style="color: grey"></i>
-            </a>
-        </span>
-    </div>
+    
     <div id="main_content">
         MAIN_CONTENT
+        <div id="main_content_padding"></div>
     </div>
     <div id="RunningDrivers">
         <div id="driver_list">
@@ -79,6 +77,16 @@
                 <div class="btn btn-default btn-sm">refresh <i class="fa fa-refresh"></i></div>
             </div>
         </div>
+    </div>
+    <div id="footer">
+        <span>
+            <a href="http://www.arduino.cc">
+                <img src="resource?file=images/arduino_icon.png" alt="Device List">
+            </a>
+            <a href="https://github.com/ciasaboark/apparatus-templi">
+                <i class="fa fa-github-alt fa-2x" style="color: grey"></i>
+            </a>
+        </span>
     </div>
 </body>
 </html>
