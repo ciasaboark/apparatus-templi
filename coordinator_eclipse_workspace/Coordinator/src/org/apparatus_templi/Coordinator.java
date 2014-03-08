@@ -561,13 +561,6 @@ public class Coordinator {
 				.create("server_resources");
 		options.addOption(resourcesOption);
 		
-		@SuppressWarnings("static-access")
-		Option dummyOption = OptionBuilder.withArgName("dummyserial")
-				.withDescription("Do not initialize a real serial connection.")
-				.create("dummyserial");
-		options.addOption(dummyOption);
-		
-		
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
 		try {
 			CommandLine cmd = cliParser.parse(options, argv);
