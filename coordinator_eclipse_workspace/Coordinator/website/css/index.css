@@ -1,42 +1,60 @@
 @charset "utf-8";
 /* CSS Document */
 html {
-/*    min-width:560px;*/
+    min-width:700px;
+    text-decoration: none;
 }
 
 body {
     color: #4D4D4D;
     background-color: white;
-    overflow-x:hidden;
-    min-width: 600px;
+/*    overflow-x:hidden;*/
+    min-width: 700px;
 }
 
+a:link {text-decoration:none;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:none;}
+a:active {text-decoration:none;}
+
+a img:hover {
+    text-decoration: none;
+}
+
+
+#header_title_text {
+    font-size: 22pt;
+    vertical-align: middle;
+}
+
+#header_links {
+    float: right;
+    padding-top: 12px;
+    padding-right: 10px;
+}
+
+#header_logo {
+    vertical-align:text-top;
+    position:relative;
+    top:0;
+    left:0;
+}
 
 
 #header_title {
-    float:left;
-    margin-left: -10px;
-    margin-top: -10px;
-    font-size: 22pt;
-/*
-    position: fixed;
-    top: 0px;
-    left: 0px;
-*/
+    vertical-align:bottom;
+    float: left;
+    padding-top: 7px;
 }
 
-/*
-#header_links {
-    float:right;
-    position:fixed;
-    top:0px;
-    right:0px;
+#header_spacer {
+/*    min-width: 700px;*/
 }
-*/
+
 
 #header_content #logo{
-    position: relative;
-    top: 30px;
+    position: absolute;
+    top: 0px;
 }
 
 #header_bar {   
@@ -73,6 +91,7 @@ body {
     box-shadow: 0px 1px 4px #eeeeee;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
 }
 
 #RunningDrivers span {
@@ -85,10 +104,15 @@ body {
 
 #driver_list {
     margin-left: 0px;
+    text-align: center;
+}
+
+#driver_list ul {
+    text-align: left;
 }
 
 #driver_refresh_button {
-    align-self:center;
+    text-align: center;
     color: grey;
 }
 
@@ -97,7 +121,7 @@ body {
     text-align: left;
 /*    position: absolute;*/
 /*    border: 1px solid black;*/
-    padding-left: 160px;
+    padding-left: 200px;
     padding-top: 70px;
     padding-bottom: 70px;
     padding-right: 20px;
@@ -129,11 +153,11 @@ body {
 }
 
 #button_about:hover {
-    color: #9CF07A;
+    color: #04BFA0;
 }
 
 #button_about:active {
-    color: #8BC4A3;
+    color: #00967D;
 }
 
 #button_settings:hover {
@@ -157,12 +181,12 @@ body {
 /*    position: relative;*/
 /*    left: 61%;*/
 /*    background-color: white;*/
-    padding: 10px 10px;
+/*    padding: 10px 10px;*/
     height:55px;
     background:#FCFCFC;
 /*    border-botom: 1px dashed ;*/
-    border-bottom: 1px dashed #F2F2F2;
-    min-width:600px;
+    border-bottom: 1px dashed #808080;
+    min-width:700px;
 }
 
 #footer {
@@ -174,14 +198,50 @@ body {
         (document.documentElement.clientHeight-this.offsetHeight)));
     height:40px;
     background:#FCFCFC;
-    border-top: 1px dashed #F2F2F2;
+    border-top: 1px dashed #808080;
     width: 100%;
     text-align:right;
-    padding-right:20px;
-/*
-    background-image: url('resource?file=images/footer-pinstripe.png');
-    background-repeat: repeat-x;
-*/
+/*    padding-right:20px;*/
+    padding-top: 5px;
+}
+
+#footer a {
+    color: #474747;
+}
+
+#footer span {
+    padding-right: 20px;
+}
+
+#footer_github i {
+    height: 32px;
+    color: #4A4A4A;
+}
+
+#footer_github i:hover {
+    color: #7D807E;
+}
+
+#footer_github a:hover:before {
+    content: "GitHub";
+}
+
+#footer_github i:active {
+    color: #363636;
+}
+
+#footer_arduino a:hover:before {
+    content: "Arduino";
+    text-decoration: none;
+}
+
+
+#footer img {
+    vertical-align: bottom;
+}
+
+#footer a:hover {
+    text-decoration: none;
 }
 
 #prefs_form {
@@ -189,20 +249,44 @@ body {
     font-size: 12pt;
 /*    padding:10px;*/
 /*    margin: 10px;*/
-    width:400px;
+    width: 100%;
+}
+
+#form_submit {
+/*    float: right;*/
+    margin-top: 20px;
 }
 
 .prefs_section {
     background-color: #FAFAFA;
+    border: 1px solid #E6E6E6;
     border-radius: 10px 10px 10px 10px;
-    padding: 0px 10px 5px 10px;
+/*    padding: 0px 10px 5px 10px;*/
     margin-bottom: 10px;
-    margin-top: 0px;
+    padding-bottom: 0px;
+/*    margin-top: 0px;*/
+    padding-top:0px;
+    width: 500px;
+}
+
+.prefs_section h2 {
+    background-color: #E6E6E6;
+    margin-top:0px;
+    padding-left: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 10px 10px 0px 0px;
 }
 
 .pref_input {
 /*    margin: 10px;*/
-    
+    vertical-align:middle;
+    background-color: #FAFAFA;
+    padding: 10px;
+    display: table;
+    width: 100%;
+    border-radius: 5px 5px 5px 5px;
+
 }
 
 .pref_key {
@@ -210,29 +294,53 @@ body {
 }
 
 .pref_value {
-/*    float:right;*/
+
 }
 
 .pref_input input {
-    width:180pt;
+    width:230pt;
     float: right;
 }
 
-#prefs_section_twitter {
+#prefs_section_twitter i {
     color: #36B8FF;
 }
 
-#prefs_section_frontend {
+#prefs_section_twitter {
+/*    float: right;*/
+}
+
+#prefs_section_frontend i {
     color:#FCD38B;
 }
 
-#prefs_section_webserver {
+#prefs_section_frontend {
+/*    float: left;*/
+}
+
+#prefs_section_webserver i {
     color:#CCCCCC;
 }
 
-#prefs_section_main {
+#prefs_section_webserver {
+/*    float:right;*/
+/*    margin-bottom: 40px;*/
+}
+
+#prefs_section_main i {
     color: #A3BFFF;
 }
+
+#prefs_section_main {
+/*    float: left;*/
+}
+
+/*
+.clear {
+    clear:both;
+}
+*/
+
 
 
 

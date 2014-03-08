@@ -23,19 +23,20 @@
 	<div id="header">
         
         <div id="header_bar">
-            <span id="header_title"><img style="display:inline-block; vertical-align:bottom" src="resource?file=images/small_logo.png" alt="small logo">Apparatus Templi</span>
-            <span id="header_links">
-<!--
-                <span onclick="">Devices</span>
-                <span onclick="">Full Page XML</span>
-                <span onclick="">Widget XML</span>
-                <span onclick="showCommandBox()">Send Command</span>
--->
+            <div id="header_title">
+                <span id="header_logo">
+                    <img src="resource?file=images/small_logo.png" alt="small logo">
+                </span>
+                <span id="header_title_text">Apparatus Templi</span>
+            </div>
+            <!-- <div id="header_spacer"></div> -->
+            <div id="header_links">
                 <span>
                     <a id="button_home"class="btn btn-default btn-sm" href="index.html">
-                        <i class="fa fa-home"></i>&nbsp;&nbsp;Home
+                        <i class="fa fa-code"></i>&nbsp;&nbsp;Widgets
                     </a>
                 </span>
+                
                 <span>
                     <a id="button_about" class="btn btn-default btn-sm" href="about.html">
                         <i class="fa fa-info"></i>&nbsp;&nbsp;About
@@ -46,7 +47,7 @@
                         <i class="fa fa-cog"></i>&nbsp;&nbsp;Settings
                     </a>
                 </span>
-            </span>
+            </div>
         </div>
         
         <div id="send_command">
@@ -80,12 +81,16 @@
     </div>
     <div id="footer">
         <span>
-            <a href="http://www.arduino.cc">
-                <img src="resource?file=images/arduino_icon.png" alt="Device List">
-            </a>
-            <a href="https://github.com/ciasaboark/apparatus-templi">
-                <i class="fa fa-github-alt fa-2x" style="color: grey"></i>
-            </a>
+            <span id="footer_arduino" >
+                <a href="http://www.arduino.cc">
+                    <img src="resource?file=images/arduino_icon.png" height="32px" alt="Device List">
+                </a>
+            </span>
+            <span id="footer_github">
+                <a href="https://github.com/ciasaboark/apparatus-templi">
+                    <i class="fa fa-github-alt fa-2x"></i>
+                </a>
+            </span>
         </span>
     </div>
 </body>
