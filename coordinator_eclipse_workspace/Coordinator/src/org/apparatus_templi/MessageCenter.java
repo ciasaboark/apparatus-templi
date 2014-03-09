@@ -70,11 +70,11 @@ public class MessageCenter implements Runnable {
 			}
 			
 			int dataLength = (int)dataLengthByte;
-//			Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
+			//Log.d(TAG, "incoming message: data len: " + dataLength + " fragNum: " + fragmentNum);
 			
 			//wait until the payload data is available
 			while (incomingBytes.size() < dataLength) {
-//				Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
+				//Log.d(TAG, "waiting on " + dataLength + " data bytes, " + incomingBytes.size() + " available");
 				Thread.yield();
 				Thread.sleep(30);
 			}
@@ -91,7 +91,7 @@ public class MessageCenter implements Runnable {
 						Log.d(TAG, "fragmented message to " + destination + " is complete");
 						Message m = fragmentedMessages.get(destination).getCompleteMessage();
 						fragmentedMessages.remove(destination);
-	//					Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+						//Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
 						messageQueue.put(m);
 					} else {
 						Log.d(TAG, "waiting on more fragments for message to: " + destination);
@@ -99,7 +99,7 @@ public class MessageCenter implements Runnable {
 				}
 			} else {
 				Message m = new Message(optionsByte, dataLength, destination, payloadData);
-//				Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
+				//Log.d(TAG, "adding incoming message addressed to: " + m.getDestination() + " to the queue");
 				messageQueue.put(m);
 			}
 			

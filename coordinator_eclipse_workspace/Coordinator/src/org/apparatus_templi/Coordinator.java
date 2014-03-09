@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,9 +35,10 @@ public class Coordinator {
 	private static ConcurrentHashMap<String, Driver> loadedDrivers     = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
-	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
+	private static ConcurrentHashMap<Event, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<EventWatcher>>();
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
+	private static SimpleHttpServer webServer;
 	private static Prefs prefs = Prefs.getInstance();
 	private static boolean connectionReady = false;	
 
@@ -54,6 +56,8 @@ public class Coordinator {
 	 * @param m the {@link Message} to route
 	 */
 	private static synchronized void routeIncomingMessage(Message m) {
+		assert m != null;	//we should always have a valid message to work with
+		
 		//Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
 		if (!isModulePresent(destination)) {
@@ -68,7 +72,7 @@ public class Coordinator {
 				//+ queue the message, then start execution.
 				Log.d(TAG, "restarting terminated driver '" + destination + "' for incoming message");
 				try {
-					Driver newDriver = restartDriver(driver.getName(), false);
+					Driver newDriver = wakeDriver(driver.getName(), false);
 					if (m.getTransmissionType() == Message.BINARY_TRANSMISSION) {
 						newDriver.queueBinary(m.getData());
 					} else {
@@ -94,7 +98,7 @@ public class Coordinator {
 				}
 			}
 		} else {
-			//Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
+			Log.w(TAG, "incoming message to " + destination + " could not be routed: no such driver loaded");
 		}
 	}
 
@@ -102,6 +106,8 @@ public class Coordinator {
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
 	private static synchronized void queryRemoteModules() {
+		assert messageCenter != null;
+		
 		messageCenter.sendCommand("ALL", "READY?");
 	}
 	
@@ -113,6 +119,8 @@ public class Coordinator {
 	 * @return true if the given driver was loaded, false otherwise.
 	 */
 	private static boolean loadDriver(Driver d) {
+		assert d != null;
+		
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
         	if (!loadedDrivers.containsKey(d.getModuleName()) && (d instanceof ControllerModule || d instanceof SensorModule)) {
@@ -140,8 +148,10 @@ public class Coordinator {
 	 * @throws SecurityException 
 	 * @throws NoSuchMethodException 
 	 */
-	private static synchronized Driver restartDriver(String driverName) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return restartDriver(driverName, true);
+	private static synchronized Driver wakeDriver(String driverName)  {
+		assert driverName != null;
+		
+		return wakeDriver(driverName, true);
 	}
 	
 	/**
@@ -158,45 +168,260 @@ public class Coordinator {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	private static synchronized Driver restartDriver(String driverName, boolean autoStart) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		Driver newDriver = null;
-		if (loadedDrivers.containsKey(driverName)) {
-			Driver d = loadedDrivers.get(driverName);
-			Thread t = driverThreads.get(d);
-			if (t.getState() == Thread.State.TERMINATED) {
-				Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getClass().getName() + "'");
+	private static synchronized Driver wakeDriver(String driverName, boolean autoStart) {
+		assert driverName != null;
+		assert loadedDrivers.containsKey(driverName);
+		
+		Driver d = loadedDrivers.get(driverName);
+		Thread t = driverThreads.get(d);
+		assert d != null && t != null;
+		
+		if (t.getState() == Thread.State.TERMINATED) {
+			Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getClass().getName() + "'");
+			scheduledWakeUps.remove(d);
+			driverThreads.remove(d);
+			Thread newThread = new Thread(d);
+			driverThreads.put(d, newThread);
+			if (autoStart) {
+				newThread.start();
+			}
+		} else {
+			try {
 				scheduledWakeUps.remove(d);
-				driverThreads.remove(d);
-//				loadedDrivers.remove(d.getName());
-//				//use reflection to generate a new driver of the appropriate class
-//				Constructor<?> thisConst = d.getClass().getConstructor();
-//				Object o = thisConst.newInstance();
-//				newDriver = (Driver)o;
-//				loadedDrivers.put(newDriver.getName(), newDriver);
-				newDriver = d;
-				Thread newThread = new Thread(newDriver);
-				driverThreads.put(newDriver, newThread);
-				if (autoStart) {
-					newThread.start();
-				}
-				
-				d = null; t = null;	//hopefully there are no other references
-			} else {
-				newDriver = d;
-				try {
-					scheduledWakeUps.remove(d);
-					d.wake();
-				} catch (Exception e) {
-					Log.d(TAG, "could not nofity object");
-				}
+				d.wake();
+			} catch (Exception e) {
+				Log.d(TAG, "could not nofity object");
 			}
 		}
-		return newDriver;
+		return d;
 	}
 	
+	private static void parseCommandLineOptions(String[] argv) {
+		//Using apache commons cli to parse the command line options
+		Options options = new Options();
+		options.addOption("help", false, "Display this help message.");
+		
+		@SuppressWarnings("static-access")
+		Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum)
+				.hasArg()
+				.withDescription("Bind the server to the given port number")
+				.create(Prefs.Keys.portNum);
+		options.addOption(portOption);
+		
+		@SuppressWarnings("static-access")
+		Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort)
+				.hasArg()
+				.withDescription("Connect to the arduino on serial interface")
+				.create(Prefs.Keys.serialPort);
+		options.addOption(serialOption);
+		
+		@SuppressWarnings("static-access")
+		Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile)
+				.hasArg()
+				.withDescription("Path to the configuration file")
+				.create(Prefs.Keys.configFile);
+		options.addOption(configOption);
+		
+		@SuppressWarnings("static-access")
+		Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder)
+				.hasArg()
+				.withDescription("Web frontend will use resources in the specified folder")
+				.create(Prefs.Keys.webResourceFolder);
+		options.addOption(resourcesOption);
+		
+		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
+		try {
+			CommandLine cmd = cliParser.parse(options, argv);
+			if (cmd.hasOption("help")) {
+				//show help message and exit
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.setOptPrefix("--");
+				formatter.setLongOptPrefix("--");
+
+				formatter.printHelp(TAG, options);
+				System.exit(0);
+			}
+			
+			//Load the configuration file URI
+			String configFile;
+			if (cmd.hasOption(Prefs.Keys.configFile)) {
+				configFile = cmd.getOptionValue(Prefs.Keys.configFile);
+				if (configFile.startsWith("~" + File.separator)) {
+					configFile = System.getProperty("user.home") + configFile.substring(1);
+				}
+			} else {
+				configFile = Prefs.DEF_PREFS.get(Prefs.Keys.configFile);
+			}
+			prefs.putPreference(Prefs.Keys.configFile, configFile);
+			
+			//Read in preferences from the config file
+			prefs.readPreferences(configFile);
+			
+			//Read additional preferences from the command line options,
+			//+ overwriting preferences in the config file.
+			
+			//If the user specified a port number then we will only
+			//try binding to that port, else we try the default port number
+			if (cmd.hasOption(Prefs.Keys.portNum)) {
+				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue(Prefs.Keys.portNum));
+			}
+			
+			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
+				prefs.putPreference(Prefs.Keys.webResourceFolder, cmd.getOptionValue(Prefs.Keys.webResourceFolder));
+			}
+			
+			//if we were given a preferred port we will pass it to SerialConnection
+			//+ when initialized
+			if (cmd.hasOption(Prefs.Keys.serialPort)) {
+				prefs.putPreference(Prefs.Keys.serialPort, cmd.getOptionValue(Prefs.Keys.serialPort));
+			}
+			
+			
+			
+		}  catch (ParseException e) {
+			System.out.println("Error processing options: " + e.getMessage());
+			new HelpFormatter().printHelp("Diff", options);
+			Coordinator.exitWithReason("Error parsing command line options");
+		}
+	}
+	
+	private static void openSerialConnection() {
+		String serialPortName = prefs.getPreference(Prefs.Keys.serialPort);
+		if (serialPortName == null) {
+			serialConnection = new UsbSerialConnection();
+		} else if (serialPortName.equals("dummy")) {
+			serialConnection = new DummySerialConnection();
+		} else {
+			serialConnection = new UsbSerialConnection(serialPortName);
+		}
+		
+		if (!serialConnection.isConnected()) {
+			Coordinator.exitWithReason("could not connect to serial port '" + serialPortName + "'");
+		}
+	}
+	
+	private static void startWebServer() throws UnknownHostException {
+		int portNum;
+        try {
+        	portNum = Integer.valueOf(prefs.getPreference(Prefs.Keys.portNum));
+        } catch (NumberFormatException e) {
+        	portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
+        }
+        if (prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
+        			InetAddress.getLocalHost());
+        } else {
+        	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
+        }
+    	
+        webServer = new SimpleHttpServer(portNum, portNum == Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum)) ? false : true,
+        		prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true : false);
+        webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
+        new Thread(webServer).start();
+	}
+	
+	private static void restartWebServer() throws UnknownHostException {
+		assert webServer != null;
+		
+		webServer.terminate();
+		webServer = null;
+		startWebServer();
+	}
+	
+	private static void startDrivers() {
+		//this should never be called when drivers are currently running
+		assert loadedDrivers.isEmpty();
+		assert driverThreads.isEmpty();
+		
+		//Instantiate all drivers specified in the config file
+		String driverList = prefs.getPreference(Prefs.Keys.driverList);
+		if (!driverList.equals("")) {
+			Log.c(TAG, "Initializing drivers...");
+			String[] drivers = driverList.split(",");
+			for (String driverClassName: drivers) {
+				try {
+					Class<?> c = Class.forName("org.apparatus_templi.driver." + driverClassName);
+					Driver d = (Driver)c.newInstance();
+					loadDriver(d);
+				} catch (Exception e) {
+					Log.d(TAG, "unable to load driver '" + driverClassName + "'");
+				}
+			}
+		} else {
+			Log.w(TAG, "No drivers were specified in the configuration file: '" +
+					prefs.getPreference(Prefs.Keys.configFile) +
+					"', nothing will be loaded");
+		}
+		
+	    //Start the driver threads
+	    for (String driverName: loadedDrivers.keySet()) {
+	    	Log.c(TAG, "Starting driver " + driverName);
+	    	Thread t = new Thread(loadedDrivers.get(driverName));
+	    	driverThreads.put(loadedDrivers.get(driverName), t);
+	    	t.start();
+	    }
+	}
+	
+	private static void restartDrivers() {
+		Log.d(TAG, "restarting all drivers");
+		
+		for (Driver d: loadedDrivers.values()) {
+			Log.d(TAG, "terminating driver " + d.getName());
+			d.terminate();
+			wakeDriver(d.getName());
+		}
+		//Block for a few seconds to allow all drivers to finish their termination
+		//+ procedure.  Since the drivers may call methods in this thread we need
+		//+ to do a non-blocking wait instead of using a call to Thread.sleep()
+		long sleepTime = System.currentTimeMillis() + (1000 * 5);
+		while (sleepTime > System.currentTimeMillis()) {}
+		
+		while (!driverThreads.isEmpty()) {
+			for (Driver d: driverThreads.keySet()) {
+				Thread t = driverThreads.get(d);
+				if (t.getState() == Thread.State.TERMINATED) {
+					Log.d(TAG, "driver " + d.getName() + " terminated");
+					driverThreads.remove(d);
+				} else {
+					Log.d(TAG, "waiting on driver " + d.getName() + " to terminate");
+				}
+			}
+			
+			//its possible that a driver scheduled a sleep period during
+			//+ the termination process
+			for (Driver d: scheduledWakeUps.keySet()) {
+				wakeDriver(d.getName());
+			}
+		}
+		
+		driverThreads.clear();
+		loadedDrivers.clear();
+		startDrivers();
+	}
+
 	static void exitWithReason(String reason) {
 		Log.t(TAG, reason);
 		System.exit(1);
+	}
+	
+	static void restartModule(String module) {
+		switch (module) {
+			case "main":
+				Log.d(TAG, "restarting drivers");
+				restartDrivers();
+				break;
+			case "web":
+				Log.d(TAG, "restarting web server");
+				try {
+					restartWebServer();
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			default:
+				Log.w(TAG, "could not restart " + module + ", unknown module");
+		}
 	}
 
 	/**
@@ -501,136 +726,72 @@ public class Coordinator {
 	}
 	
 	public static void receiveEvent(Driver d, Event e) {
+		if (d == null || e == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		if (d instanceof EventGenerator) {
 			Log.d(TAG, "incoming event '" + e.eventType + "' from driver '" + d.getName() + "'");
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
 		}
-		//TODO check a hash table to see who to notify
+		
+		ArrayList<EventWatcher> list = eventWatchers.get(e);
+		if (list != null) {
+			for (EventWatcher dvr: list){
+				Log.d(TAG, "notifying driver " + d.getName() + " of event " + e.getClass().getSimpleName() + ".");
+				dvr.receiveEvent(e);
+			}
+		}
 	}
 	
 	
-	public static void registerEventWatch(Driver d, Event e) {
+	public static void registerEventWatch(Driver d, Event e) throws IllegalArgumentException {
+		if (d == null || e == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		if (d instanceof EventWatcher) {
 			Log.d(TAG, " driver '" + d.getName() + "' requested to be notified of events of type '" + e.eventType + "'.");
-			ArrayList<Driver> curList = eventWatchers.get(e);
+			ArrayList<EventWatcher> curList = eventWatchers.get(e);
 			if (curList == null) {
-				curList = new ArrayList<Driver>();
+				curList = new ArrayList<EventWatcher>();
 			}
+			curList.add((EventWatcher)d);
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' can not listen for events of type '" + e.eventType + "', must implement EventWatcher.");
+			throw new IllegalArgumentException();
 		}
 	}
 	
 	public static void removeEventWatch(Driver d, Event e) {
-		//TODO remove this driver from the event watcher list
+		if (d == null || e == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (d instanceof EventWatcher) {
+			ArrayList<EventWatcher> list = eventWatchers.get(e);
+			if (list != null) {
+				list.remove(d);
+			} else {
+				Log.d(TAG, "could not remove driver " + d.getName() + " from watch list for event " +
+					e.getClass().getSimpleName() + ", driver was not registered for watch.");
+			}
+		} else {
+			Log.w(TAG, "could not remove driver " + d.getName() + " from watch list for event " +
+					e.getClass().getSimpleName() + ", driver is not an event watcher.");
+		}
 	}
-
+	
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		//turn off debug messages
 //		Log.setLogLevel(Log.LEVEL_WARN);
 		
 		Log.c(TAG, "Starting");
-		//Using apache commons cli to parse the command line options
-		Options options = new Options();
-		options.addOption("help", false, "Display this help message.");
-		
-		@SuppressWarnings("static-access")
-		Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum)
-				.hasArg()
-				.withDescription("Bind the server to the given port number")
-				.create(Prefs.Keys.portNum);
-		options.addOption(portOption);
-		
-		@SuppressWarnings("static-access")
-		Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort)
-				.hasArg()
-				.withDescription("Connect to the arduino on serial interface")
-				.create(Prefs.Keys.serialPort);
-		options.addOption(serialOption);
-		
-		@SuppressWarnings("static-access")
-		Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile)
-				.hasArg()
-				.withDescription("Path to the configuration file")
-				.create(Prefs.Keys.configFile);
-		options.addOption(configOption);
-		
-		@SuppressWarnings("static-access")
-		Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder)
-				.hasArg()
-				.withDescription("Web frontend will use resources in the specified folder")
-				.create(Prefs.Keys.webResourceFolder);
-		options.addOption(resourcesOption);
-		
-		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
-		try {
-			CommandLine cmd = cliParser.parse(options, argv);
-			if (cmd.hasOption("help")) {
-				//show help message and exit
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.setOptPrefix("--");
-				formatter.setLongOptPrefix("--");
-
-				formatter.printHelp(TAG, options);
-				System.exit(0);
-			}
-			
-			//Load the configuration file URI
-			String configFile;
-			if (cmd.hasOption(Prefs.Keys.configFile)) {
-				configFile = cmd.getOptionValue(Prefs.Keys.configFile);
-				if (configFile.startsWith("~" + File.separator)) {
-					configFile = System.getProperty("user.home") + configFile.substring(1);
-				}
-			} else {
-				configFile = Prefs.DEF_PREFS.get(Prefs.Keys.configFile);
-			}
-			prefs.putPreference(Prefs.Keys.configFile, configFile);
-			
-			//Read in preferences from the config file
-			prefs.readPreferences(configFile);
-			
-			//Read additional preferences from the command line options,
-			//+ overwriting preferences in the config file.
-			
-			//If the user specified a port number then we will only
-			//try binding to that port, else we try the default port number
-			if (cmd.hasOption(Prefs.Keys.portNum)) {
-				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue(Prefs.Keys.portNum));
-			}
-			
-			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
-				prefs.putPreference(Prefs.Keys.webResourceFolder, cmd.getOptionValue(Prefs.Keys.webResourceFolder));
-			}
-			
-			//if we were given a preferred port we will pass it to SerialConnection
-			//+ when initialized
-			if (cmd.hasOption(Prefs.Keys.serialPort)) {
-				prefs.putPreference(Prefs.Keys.serialPort, cmd.getOptionValue(Prefs.Keys.serialPort));
-			}
-			
-			
-			
-		}  catch (ParseException e) {
-			System.out.println("Error processing options: " + e.getMessage());
-			new HelpFormatter().printHelp("Diff", options);
-			Coordinator.exitWithReason("Error parsing command line options");
-		}
+		parseCommandLineOptions(argv);
 		
 		//open the serial connection
-		String serialPortName = prefs.getPreference(Prefs.Keys.serialPort);
-		if (serialPortName == null) {
-			serialConnection = new UsbSerialConnection();
-		} else if (serialPortName.equals("dummy")) {
-			serialConnection = new DummySerialConnection();
-		} else {
-			serialConnection = new UsbSerialConnection(serialPortName);
-		}
-		
-		if (!serialConnection.isConnected()) {
-			Coordinator.exitWithReason("could not connect to serial port '" + serialPortName + "'");
-		}
+		openSerialConnection();
 		
 		//start the message center
 		messageCenter =  MessageCenter.getInstance();
@@ -684,33 +845,7 @@ public class Coordinator {
 		}
         
         
-		//Instantiate all drivers specified in the config file
-		String driverList = prefs.getPreference(Prefs.Keys.driverList);
-		if (!driverList.equals("")) {
-			Log.c(TAG, "Initializing drivers...");
-			String[] drivers = driverList.split(",");
-			for (String driverClassName: drivers) {
-				try {
-					Class<?> c = Class.forName("org.apparatus_templi.driver." + driverClassName);
-					Driver d = (Driver)c.newInstance();
-					loadDriver(d);
-				} catch (Exception e) {
-					Log.d(TAG, "unable to load driver '" + driverClassName + "'");
-				}
-			}
-		} else {
-			Log.w(TAG, "No drivers were specified in the configuration file: '" +
-					prefs.getPreference(Prefs.Keys.configFile) +
-					"', nothing will be loaded");
-		}
-		
-        //Start the driver threads
-        for (String driverName: loadedDrivers.keySet()) {
-        	Log.c(TAG, "Starting driver " + driverName);
-        	Thread t = new Thread(loadedDrivers.get(driverName));
-        	driverThreads.put(loadedDrivers.get(driverName), t);
-        	t.start();
-        }
+		startDrivers();
         
         //Add a shutdown hook so that the drivers can be notified when
         //+ the system is going down.
@@ -733,23 +868,7 @@ public class Coordinator {
 		});
         
         //start the web interface
-        int portNum;
-        try {
-        	portNum = Integer.valueOf(prefs.getPreference(Prefs.Keys.portNum));
-        } catch (NumberFormatException e) {
-        	portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
-        }
-        if (prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
-        	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
-        			InetAddress.getLocalHost());
-        } else {
-        	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
-        }
-    	
-        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum)) ? false : true,
-        		prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true : false);
-        server.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
-        new Thread(server).start();
+        startWebServer();
         
         
         
@@ -771,7 +890,7 @@ public class Coordinator {
         		Long curTime = System.currentTimeMillis();
         		if (wakeTime <= curTime && wakeTime != 0) {
         			try {
-        				restartDriver(d.getName());
+        				wakeDriver(d.getName());
         			} catch (Exception e) {
         				Log.e(TAG, "error restarting driver '" + d.getName() + "'");
         				scheduledWakeUps.remove(d);

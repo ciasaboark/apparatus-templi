@@ -25,9 +25,13 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 public class SimpleHttpServer implements Runnable {
+	private static boolean isRunning = true;
 	private static HttpServer server = null;
 	private static final String TAG = "SimpleHttpServer";
 	private static String resourceFolder = "./website/";
+	private static String serverLocation;
+	private static int portNum;
+	
 	
 	/**
 	 * Generates a 404 error page for the given resourceName
@@ -111,6 +115,11 @@ public class SimpleHttpServer implements Runnable {
 			socket = new InetSocketAddress(address, portNumber);
 			try {
 				server = HttpServer.create(socket, 1);
+				this.serverLocation = socket.getHostString();
+				this.portNum = socket.getPort();
+				//TODO getting the address on localhost does not work, only loopback
+				Log.d(TAG, "setting address and port to " + this.serverLocation + " " + this.portNum);
+				
 			} catch (SocketException e) {
 				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
 			}
@@ -124,6 +133,7 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/js/default.js", new JsHandler());
 			server.createContext("/settings.html", new SettingsHandler());
 			server.createContext("/update_settings", new UpdateSettingsHandler());
+			server.createContext("/restart_module", new RestartModuleHandler());
 			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -142,6 +152,9 @@ public class SimpleHttpServer implements Runnable {
 		resourceFolder = path;
 	}
 	
+	public void terminate() {
+		this.isRunning = false;
+	}
 	
 	private boolean portAvailable(int port) {
 		
@@ -165,10 +178,28 @@ public class SimpleHttpServer implements Runnable {
 	    }
 	    return results;
 	}
+	
+	public static int getPort() {
+		return portNum;
+	}
+	
+	public static String getServerLocation() {
+		return serverLocation;
+	}
 
 	@Override
 	public void run() {
 		server.start();
+		while (isRunning) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		Log.d(TAG, "terminating");
+		server.stop(0);
 	}
 	
 	public static HashMap<String, String> processQueryString(String query) {
@@ -454,8 +485,7 @@ public class SimpleHttpServer implements Runnable {
 	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 *
 	 */
-	private class ResourceHandler implements HttpHandler {
-	    
+	private class ResourceHandler implements HttpHandler { 
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
@@ -620,7 +650,36 @@ public class SimpleHttpServer implements Runnable {
 			} catch (IOException e) {
 				
 			}
-			new SettingsHandler().handle(exchange);
+			
+			byte[] response = "foobar".getBytes();
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Location", "http://" + SimpleHttpServer.getServerLocation() + ":" +
+					SimpleHttpServer.getServerLocation() + "settings.html");
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
+	        exchange.getResponseBody().write(response);
+	        exchange.close();
+	    };
+	}
+	
+	private class RestartModuleHandler implements HttpHandler { 
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			String query = exchange.getRequestURI().getQuery();
+			if (query != null) {
+				HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+				if (queryTags.containsKey("module")) {
+					Coordinator.restartModule(queryTags.get("module"));
+				}
+			}
+			byte[] response = "foobar".getBytes();
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Location", "http://" + SimpleHttpServer.getServerLocation() + ":" +
+					SimpleHttpServer.getServerLocation() + "settings.html");
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
+	        exchange.getResponseBody().write(response);
+	        exchange.close();
 	    };
 	}
 }
+

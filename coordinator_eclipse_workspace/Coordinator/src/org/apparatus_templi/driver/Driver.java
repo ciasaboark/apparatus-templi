@@ -147,6 +147,9 @@ public abstract class Driver implements Runnable {
 	}
 	
 	protected final synchronized void sleep(long sleepTime)  {
+		//this method should never be called on the main thread, indefinite blocking will result
+		assert Thread.currentThread().getId() != 1;
+		
 		Coordinator.scheduleSleep(this, System.currentTimeMillis() + sleepTime);
 		try {
 			this.wait();
