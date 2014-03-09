@@ -18,8 +18,8 @@ public final class TwitterService extends Service {
 	private Twitter twitter = null;
 	
 	public TwitterService() {
-		accessToken = Prefs.getInstance().getPreference("ACCESS_TOKEN");
-		accessTokenKey = Prefs.getInstance().getPreference("ACCESS_TOKEN_KEY");
+		accessToken = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccess);
+		accessTokenKey = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccessKey);
 		if (accessToken != null && accessTokenKey != null) {
 			ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true)

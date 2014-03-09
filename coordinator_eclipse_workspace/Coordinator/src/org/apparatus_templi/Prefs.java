@@ -28,6 +28,7 @@ public class Prefs {
 		DEF_PREFS.put(Prefs.Keys.webResourceFolder, "website/");
 		DEF_PREFS.put(Prefs.Keys.twtrAccess, "");
 		DEF_PREFS.put(Prefs.Keys.twtrAccessKey, "");
+		DEF_PREFS.put(Prefs.Keys.logFile, "coordinator.log");
 	}
 	
 	public static Prefs getInstance() {
@@ -48,7 +49,11 @@ public class Prefs {
 			props.load(fin);
 			fin.close();
 			
-			//read the port number and serial name from the configuration file
+			preferences.put(Prefs.Keys.logFile, props.getProperty(Keys.logFile,
+					DEF_PREFS.get(Keys.logFile)));
+			Log.d(TAG, "read preference '" + Keys.logFile + "' as '" +
+					getPreference(Keys.logFile) + "'");
+			
 			preferences.put(Prefs.Keys.portNum, props.getProperty(Keys.portNum,
 					DEF_PREFS.get(Keys.portNum)));
 			Log.d(TAG, "read preference '" + Keys.portNum + "' as '" +
@@ -153,5 +158,6 @@ public class Prefs {
 		public static final String serverBindLocalhost = "serverBindLocalhost";
 		public static final String twtrAccess = "twtr_access";
 		public static final String twtrAccessKey = "twtr_access_key";
+		public static final String logFile = "logFile";
 	}
 }

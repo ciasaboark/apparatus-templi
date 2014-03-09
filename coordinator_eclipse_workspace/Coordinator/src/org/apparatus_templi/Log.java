@@ -1,5 +1,15 @@
 package org.apparatus_templi;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.google.common.collect.EvictingQueue;
+
 
 /**
  * Logging facilities for Coordinator and the drivers
@@ -12,7 +22,44 @@ public class Log {
 	static final int LEVEL_WARN  = 1;
 	static final int LEVEL_ERR   = 0;
 	private static int logLevel = LEVEL_DEBUG;
+	//a buffer to hold the last 30 log messages.
+	private static EvictingQueue<String> prevLines = EvictingQueue.create(30);
+	//hold lines that could not yet be written to the log file
+	private static ArrayDeque<String> bufferedLines = new ArrayDeque<String>();
 	
+	private static void writeLogMessage(String logMessage) {
+		prevLines.add(logMessage);
+		PrintWriter out = null;
+		String logFile = Prefs.getInstance().getPreference(Prefs.Keys.logFile);
+		if (logFile == null) {
+			bufferedLines.add(logMessage);
+		} else {
+			try {
+				out = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)));
+				//write any buffered lines first
+				while (!bufferedLines.isEmpty()) {
+					out.println(bufferedLines.poll());
+				}
+				out.println(logMessage);
+				out.close();
+			} catch (IOException e) {
+				System.err.println("Log : could not write to log file: " + e.getMessage());
+			}
+		}
+	}
+	
+	/**
+	 * Writes a terminal error message to both the log and to {@link System#err}.
+	 * @param tag a String to identify the source of this message.
+	 * @param message the terminal failure message to be logged.
+	 */
+	static void t(String tag, String message) {
+		String logMessage = System.currentTimeMillis() + ": TERMINAL FAILURE: " + tag + ":" + message;
+		System.out.println(logMessage);
+		System.err.println(logMessage);
+		writeLogMessage(logMessage);
+	}
+
 	/**
 	 * Sets the logging level to the absolute value of newLogLevel.
 	 * 	The logging level determines which log statements are recorded.
@@ -43,9 +90,9 @@ public class Log {
 	 */
 	public static void d(String tag, String message) {
 		if (logLevel >= Log.LEVEL_DEBUG) {
-			System.out.println(System.currentTimeMillis() + ": " + tag + ":" +  message);
-//			LOGGER.setLevel(Level.ALL);
-//			LOGGER.info(System.currentTimeMillis() + ": " + tag + ":" +  message);
+			String logMessage = System.currentTimeMillis() + ": " + tag + ":" +  message;
+			System.out.println(logMessage);
+			writeLogMessage(logMessage);
 		}
 	}
 	
@@ -55,10 +102,10 @@ public class Log {
 	 * @param message the warning message to be logged.
 	 */
 	public static void w(String tag, String message) {
-		if (logLevel >= Log.LEVEL_WARN) {	
-			System.out.println(System.currentTimeMillis() + ": Warning: " + tag + ":" +  message);
-	//		LOGGER.setLevel(Level.ALL);
-	//		LOGGER.warning(System.currentTimeMillis() + ": " + tag + ":" +  message);
+		if (logLevel >= Log.LEVEL_WARN) {
+			String logMessage = System.currentTimeMillis() + ": Warning: " + tag + ":" +  message;
+			System.out.println(logMessage);
+			writeLogMessage(logMessage);
 		}
 	}
 	
@@ -69,19 +116,13 @@ public class Log {
 	 */
 	public static void e(String tag, String message) {
 		if (logLevel >= Log.LEVEL_ERR) {
-			System.err.println(System.currentTimeMillis() + ": Error: " + tag + ":" + message);
-//			LOGGER.setLevel(Level.ALL);
-//			LOGGER.severe(System.currentTimeMillis() + ": " + tag + ":" +  message);
+			String logMessage = System.currentTimeMillis() + ": Error: " + tag + ":" + message;
+			System.err.println(logMessage);
+			writeLogMessage(logMessage);
 		}
 	}
 	
-	/**
-	 * Writes a terminal error message to both the log and to {@link System#err}.
-	 * @param tag a String to identify the source of this message.
-	 * @param message the terminal failure message to be logged.
-	 */
-	static void t(String tag, String message) {
-		System.out.println(System.currentTimeMillis() + ": Terminal Failure: " + tag + ":" + message);
-		System.err.println(System.currentTimeMillis() + ": Terminal Failure: " + tag + ":" + message);
+	public static ArrayList<String> getRecentLog() {
+		return new ArrayList<String>(Arrays.asList(prevLines.toArray(new String[]{})));
 	}
 }

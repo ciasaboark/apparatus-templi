@@ -1,0 +1,29 @@
+<!--
+Basic redirect template.  Values for !TIMEOUT!
+and !LOCATION! will be filled in by the pre-processor
+-->
+<html>
+    <head>
+        <title>Redirecting...</title>
+        <META http-equiv="refresh" content="!TIMEOUT!;URL=!LOCATION!">
+        <script>
+            var $counter;
+            var $count = !TIMEOUT!;
+            function countdown() {
+                $count = $count - 1;
+                if ($count <= 0) {
+                    clearInterval($counter);
+                    document.getElementById("link").href = "!LOCATION!";
+                    return;
+                }
+                document.getElementById("timeout").innerHTML = $count;
+            }
+            window.onload($counter = setInterval(countdown, 1000));
+                
+        </script>
+    </head>
+    <body style="text-align: center">
+        <p>Redirecting to new site in <span id="timeout">!TIMEOUT!</span> seconds</p>
+        <p>If you are not automatically redirected you can access the new site at: <a id="link" href="javascript:;">!LOCATION!</a></p>
+    </body>
+</html>

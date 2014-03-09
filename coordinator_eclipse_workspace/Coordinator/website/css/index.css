@@ -169,6 +169,14 @@ a img:hover {
     color: #D47D7D;
 }
 
+#button_info:hover {
+    color: #0ABCDA;
+}
+
+#button_info:active {
+    color: #0894AC;
+}
+
 #header {
 /*    position: initial;*/
     position:fixed;

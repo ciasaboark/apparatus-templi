@@ -97,6 +97,7 @@ public class SimpleHttpServer implements Runnable {
 	}
 	
 	public SimpleHttpServer(int portNumber, boolean autoIncrement, boolean bindLocalhost) {
+		this.isRunning = true;
 		try {
 			//create a InetSocket on the port
 			InetSocketAddress socket;
@@ -238,18 +239,18 @@ public class SimpleHttpServer implements Runnable {
 				exchange.getResponseBody().write(response);
 			}
 	        exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
 	    	
-	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
-	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/index.inc");
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.html");
+	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/index.html");
 	    	
 	    	if (templateBytes != null && indexBytes != null) {
 		    	String templateHtml = new String(templateBytes);
 		    	String indexHtml = new String(indexBytes);	    	
-		    	templateHtml = templateHtml.replace("MAIN_CONTENT", indexHtml.toString());
+		    	templateHtml = templateHtml.replace("!MAIN_CONTENT!", indexHtml.toString());
 	    		returnBytes = templateHtml.getBytes();
 	    	}
 	    	
@@ -276,18 +277,18 @@ public class SimpleHttpServer implements Runnable {
 				exchange.getResponseBody().write(response);
 			}
 	        exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
 	    	
-	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
-	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/about.inc");
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.html");
+	    	byte[] indexBytes = getFileBytes(resourceFolder + "inc/about.html");
 	    	
 	    	if (templateBytes != null && indexBytes != null) {
 		    	String templateHtml = new String(templateBytes);
 		    	String indexHtml = new String(indexBytes);	    	
-		    	templateHtml = templateHtml.replace("MAIN_CONTENT", indexHtml.toString());
+		    	templateHtml = templateHtml.replace("!MAIN_CONTENT!", indexHtml.toString());
 	    		returnBytes = templateHtml.getBytes();
 	    	}
 	    	
@@ -321,7 +322,7 @@ public class SimpleHttpServer implements Runnable {
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
 	        exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse() {
 	    	String xml = xmlVersion + header;
@@ -350,7 +351,7 @@ public class SimpleHttpServer implements Runnable {
 	        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 	        exchange.getResponseBody().write(response);
 	        exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse() {
 	    	String jsCode = "$portnum = " + prefs.getPreference(Prefs.Keys.portNum) + ";";
@@ -379,11 +380,11 @@ public class SimpleHttpServer implements Runnable {
 				exchange.getResponseBody().write(response);
 			}
 	        exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse() {
 	    	byte[] returnBytes = null;
-	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.inc");
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.html");
 	    	if (templateBytes != null) {
 		    	String template = new String(templateBytes);
 		    	
@@ -408,7 +409,7 @@ public class SimpleHttpServer implements Runnable {
 	    					"class=\"pref_value\"><input id='f_config_file' type=\"text\" name=\"" + Prefs.Keys.configFile + "\" value=\"" + prefs.get(Prefs.Keys.configFile) +
 	    					"\" onChange='updateConfigFile()' onkeypress='updateConfigFile()' onkeyup='updateConfigFile()' onBlur='updateConfigFile()' /></span></div><br />\n");
 	    		prefs.remove(Prefs.Keys.configFile);
-	    		for (String key: new String[] {Prefs.Keys.serialPort, Prefs.Keys.driverList}) {
+	    		for (String key: new String[] {Prefs.Keys.serialPort, Prefs.Keys.driverList, Prefs.Keys.logFile}) {
 	    			String value = prefs.get(key);
 	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span " +
 	    					"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + value +
@@ -473,7 +474,7 @@ public class SimpleHttpServer implements Runnable {
 		    	html.append("</form>");
 		    	html.append("</div>");
 		    	
-		    	template = template.replace("MAIN_CONTENT", html.toString());
+		    	template = template.replace("!MAIN_CONTENT!", html.toString());
 	    		returnBytes = template.getBytes();
 	    	}
 	    	return returnBytes;
@@ -534,7 +535,7 @@ public class SimpleHttpServer implements Runnable {
 				}
 			}
 			exchange.close();
-	    };
+	    }
 	    
 	    private byte[] getResponse(String resourceName) throws IOException {
 	    	return getFileBytes(resourceFolder + resourceName);
@@ -574,7 +575,7 @@ public class SimpleHttpServer implements Runnable {
 			exchange.close();
 		}
 		
-		public byte[] getResponse(String driverName) {
+		private byte[] getResponse(String driverName) {
 			byte[] response = null;
 			String fullXml = Coordinator.requestFullPageXML(driverName);
 			if (fullXml != null) {
@@ -617,7 +618,7 @@ public class SimpleHttpServer implements Runnable {
 			exchange.close();
 		}
 		
-		public byte[] getResponse(String driverName) {
+		private byte[] getResponse(String driverName) {
 			byte[] response = null;
 			String widgetXml = Coordinator.requestWidgetXML(driverName);
 			if (widgetXml != null) {
@@ -645,20 +646,35 @@ public class SimpleHttpServer implements Runnable {
 			   Log.d(TAG, "update_settings query body: " + query);
 			   if (query != null && !query.equals("")) {
 				   HashMap<String, String> newPrefs = processQueryString(query);
-				   boolean prefsUpdated = prefs.savePreferences(newPrefs);
+				   prefs.savePreferences(newPrefs);
 			   }
 			} catch (IOException e) {
 				
 			}
 			
-			byte[] response = "foobar".getBytes();
+			byte[] response = getResponse();
 			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
 			headers.add("Location", "http://" + SimpleHttpServer.getServerLocation() + ":" +
-					SimpleHttpServer.getServerLocation() + "settings.html");
+					SimpleHttpServer.getPort() + "/settings.html");
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
-	        exchange.getResponseBody().write(response);
+			exchange.getResponseBody().write(response);
 	        exchange.close();
-	    };
+	    }
+		
+		private byte[] getResponse() {
+	    	byte[] returnBytes = null;
+	    	
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "redirect.html");
+	    	
+	    	if (templateBytes != null) {
+		    	String templateHtml = new String(templateBytes);    	
+		    	templateHtml = templateHtml.replace("!TIMEOUT!", "8");
+		    	templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + SimpleHttpServer.getPort() + "/settings.html");
+	    		returnBytes = templateHtml.getBytes();
+	    	}
+	    	
+	    	return returnBytes;
+	    }
 	}
 	
 	private class RestartModuleHandler implements HttpHandler { 
@@ -666,20 +682,41 @@ public class SimpleHttpServer implements Runnable {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 			String query = exchange.getRequestURI().getQuery();
+			HashMap<String, String> queryTags = null;
 			if (query != null) {
-				HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+				queryTags = SimpleHttpServer.processQueryString(exchange.getRequestURI().getQuery());
+			}
+			
+			byte[] response = getResponse(queryTags.get("module"));
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+			exchange.getResponseBody().write(response);
+	        exchange.close();
+	        
+	        if (queryTags != null) {
 				if (queryTags.containsKey("module")) {
 					Coordinator.restartModule(queryTags.get("module"));
 				}
 			}
-			byte[] response = "foobar".getBytes();
-			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
-			headers.add("Location", "http://" + SimpleHttpServer.getServerLocation() + ":" +
-					SimpleHttpServer.getServerLocation() + "settings.html");
-			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
-	        exchange.getResponseBody().write(response);
-	        exchange.close();
-	    };
+	    }
+		
+		private byte[] getResponse(String module) {
+	    	byte[] returnBytes = null;
+	    	
+	    	byte[] templateBytes = getFileBytes(resourceFolder + "redirect.html");
+	    	
+	    	if (templateBytes != null) {
+		    	String templateHtml = new String(templateBytes);    	
+		    	templateHtml = templateHtml.replace("!TIMEOUT!", "8");
+		    	if (module.equals("web")) {
+		    		templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + Prefs.getInstance().getPreference(Prefs.Keys.portNum) + "/settings.html");
+		    	} else {
+		    		templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + SimpleHttpServer.getPort() + "/settings.html");
+		    	}
+	    		returnBytes = templateHtml.getBytes();
+	    	}
+	    	
+	    	return returnBytes;
+	    }
 	}
 }
 

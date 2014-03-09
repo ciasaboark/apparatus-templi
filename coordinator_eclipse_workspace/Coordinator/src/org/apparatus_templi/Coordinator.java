@@ -36,9 +36,10 @@ public class Coordinator {
 	private static ConcurrentHashMap<Driver, Thread> driverThreads     = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long>   scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
 	private static ConcurrentHashMap<Event, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<EventWatcher>>();
-	private static SerialConnection serialConnection;
+	private static SerialConnection serialConnection = null;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
-	private static SimpleHttpServer webServer;
+	private static SimpleHttpServer webServer = null;
+	private static Thread webServerThread = null;
 	private static Prefs prefs = Prefs.getInstance();
 	private static boolean connectionReady = false;	
 
@@ -154,6 +155,11 @@ public class Coordinator {
 		return wakeDriver(driverName, true);
 	}
 	
+	private static synchronized Driver wakeDriver(String driverName, boolean autoStart) {
+		assert driverName != null;
+		return wakeDriver(driverName, autoStart, true);
+	}
+	
 	/**
 	 * Re-initializes the given driver if it's thread state is TERMINATED.
 	 * The thread will be started 
@@ -168,7 +174,7 @@ public class Coordinator {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	private static synchronized Driver wakeDriver(String driverName, boolean autoStart) {
+	private static synchronized Driver wakeDriver(String driverName, boolean autoStart, boolean wakeTerminated) {
 		assert driverName != null;
 		assert loadedDrivers.containsKey(driverName);
 		
@@ -176,7 +182,7 @@ public class Coordinator {
 		Thread t = driverThreads.get(d);
 		assert d != null && t != null;
 		
-		if (t.getState() == Thread.State.TERMINATED) {
+		if (t.getState() == Thread.State.TERMINATED && wakeTerminated) {
 			Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass() + "' of type '" + d.getClass().getName() + "'");
 			scheduledWakeUps.remove(d);
 			driverThreads.remove(d);
@@ -189,8 +195,9 @@ public class Coordinator {
 			try {
 				scheduledWakeUps.remove(d);
 				d.wake();
+				Log.d(TAG, "waking driver " + driverName);
 			} catch (Exception e) {
-				Log.d(TAG, "could not nofity object");
+				Log.d(TAG, "could not wake driver " + driverName);
 			}
 		}
 		return d;
@@ -317,13 +324,19 @@ public class Coordinator {
         webServer = new SimpleHttpServer(portNum, portNum == Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum)) ? false : true,
         		prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true : false);
         webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
-        new Thread(webServer).start();
+        webServerThread = new Thread(webServer);
+        webServerThread.start();
 	}
 	
-	private static void restartWebServer() throws UnknownHostException {
+	private static void restartWebServer() throws UnknownHostException, InterruptedException {
 		assert webServer != null;
 		
 		webServer.terminate();
+		Thread.sleep(1000);
+		while (webServerThread.getState() != Thread.State.TERMINATED) {
+			Log.d(TAG, "waiting on web server to terminate");
+			Thread.sleep(100);
+		}
 		webServer = null;
 		startWebServer();
 	}
@@ -365,16 +378,21 @@ public class Coordinator {
 	private static void restartDrivers() {
 		Log.d(TAG, "restarting all drivers");
 		
-		for (Driver d: loadedDrivers.values()) {
+		for (String driverName: loadedDrivers.keySet()) {
+			Driver d = loadedDrivers.get(driverName);
 			Log.d(TAG, "terminating driver " + d.getName());
 			d.terminate();
-			wakeDriver(d.getName());
+			
+			//only wake sleeping drivers, not TERMINATED ones
+			wakeDriver(d.getName(), false, false);
+			loadedDrivers.remove(driverName);
 		}
+		
 		//Block for a few seconds to allow all drivers to finish their termination
 		//+ procedure.  Since the drivers may call methods in this thread we need
 		//+ to do a non-blocking wait instead of using a call to Thread.sleep()
-		long sleepTime = System.currentTimeMillis() + (1000 * 5);
-		while (sleepTime > System.currentTimeMillis()) {}
+//		long sleepTime = System.currentTimeMillis() + (1000 * 5);
+//		while (sleepTime > System.currentTimeMillis()) {}
 		
 		while (!driverThreads.isEmpty()) {
 			for (Driver d: driverThreads.keySet()) {
@@ -383,28 +401,31 @@ public class Coordinator {
 					Log.d(TAG, "driver " + d.getName() + " terminated");
 					driverThreads.remove(d);
 				} else {
-					Log.d(TAG, "waiting on driver " + d.getName() + " to terminate");
+					Log.d(TAG, "waiting on driver " + d.getName() + " to terminate (state: " + t.getState().toString() + ")");
+					d.terminate();
+					wakeDriver(d.getName(), false, false);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-			
-			//its possible that a driver scheduled a sleep period during
-			//+ the termination process
-			for (Driver d: scheduledWakeUps.keySet()) {
-				wakeDriver(d.getName());
 			}
 		}
 		
-		driverThreads.clear();
-		loadedDrivers.clear();
+		assert driverThreads.isEmpty();
+		assert loadedDrivers.isEmpty();
+		
 		startDrivers();
 	}
 
-	static void exitWithReason(String reason) {
+	static synchronized void exitWithReason(String reason) {
 		Log.t(TAG, reason);
 		System.exit(1);
 	}
 	
-	static void restartModule(String module) {
+	static synchronized void restartModule(String module) {
 		switch (module) {
 			case "main":
 				Log.d(TAG, "restarting drivers");
@@ -414,7 +435,7 @@ public class Coordinator {
 				Log.d(TAG, "restarting web server");
 				try {
 					restartWebServer();
-				} catch (UnknownHostException e) {
+				} catch (UnknownHostException | InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
