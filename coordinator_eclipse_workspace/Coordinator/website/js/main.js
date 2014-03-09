@@ -48,3 +48,9 @@ $(document).ready(function() {
     getRunningDrivers();
     setInterval(getRunningDrivers, 30000);
 });
+
+function updateConfigFile() {
+    var $newConfig = document.getElementById('f_config_file').value;
+//    alert($newConfig);
+    document.getElementById('btn_conf_file').innerHTML = $newConfig;
+}

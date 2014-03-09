@@ -1,6 +1,7 @@
 package org.apparatus_templi;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -122,6 +123,7 @@ public class SimpleHttpServer implements Runnable {
 			server.createContext("/resource", new ResourceHandler());
 			server.createContext("/js/default.js", new JsHandler());
 			server.createContext("/settings.html", new SettingsHandler());
+			server.createContext("/update_settings", new UpdateSettingsHandler());
 			//server.createContext("/", new IndexHandler());
 			server.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -133,8 +135,8 @@ public class SimpleHttpServer implements Runnable {
 	
 	public void setResourceFolder(String path) {
 		//TODO check for a valid path
-		if (!path.endsWith("/")) {
-			path = path + "/";
+		if (!path.endsWith(File.separator)) {
+			path = path + File.separator;
 		}
 		Log.d(TAG, "using resources in '" + path + "'");
 		resourceFolder = path;
@@ -306,7 +308,8 @@ public class SimpleHttpServer implements Runnable {
 	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 *
 	 */
-	private class JsHandler implements HttpHandler {	    
+	private class JsHandler implements HttpHandler {
+		private Prefs prefs = Prefs.getInstance();
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
@@ -319,7 +322,7 @@ public class SimpleHttpServer implements Runnable {
 	    };
 	    
 	    private byte[] getResponse() {
-	    	String jsCode = "$portnum = 8000;";
+	    	String jsCode = "$portnum = " + prefs.getPreference(Prefs.Keys.portNum) + ";";
 	    	return jsCode.getBytes();
 	    }
 	}
@@ -330,6 +333,8 @@ public class SimpleHttpServer implements Runnable {
 	 *
 	 */
 	private class SettingsHandler implements HttpHandler {	    
+		private final String ENC_WARNING = "<i class=\"fa fa-exclamation-triangle\"></i>&nbsp;&nbsp;";
+		
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
@@ -352,67 +357,88 @@ public class SimpleHttpServer implements Runnable {
 		    	String template = new String(templateBytes);
 		    	
 	    		StringBuilder html = new StringBuilder();
-	    		HashMap<String, String> prefs = Preferences.getInstance().getPreferencesMap();
-	    		String configFile = prefs.get(Preferences.values.configFile);
+	    		HashMap<String, String> prefs = Prefs.getInstance().getPreferencesMap();
+	    		String configFile = prefs.get(Prefs.Keys.configFile);
 	    		File f = new File(configFile);
 	    		configFile = f.getAbsolutePath();
-	    		if (configFile.length() > 40) {
-	    			
-	    		}
-	    		prefs.remove(Preferences.values.configFile);
 	    		html.append("<p>The settings below represent what the server is currently using. If you want to" +
 	    				"reset a setting back to its default value then clear the input field before submitting." +
 	    				"Saving the settings will overwrite the entire contents of the configuration file, so it" +
 	    				"might be a good idea to have a backup stored elsewhere.</p>");
 	    		
 	    		//TODO update to a form so that the settings can be sent back in a POST request
-	    		html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\" method=\"POST\" >\n");
+	    		html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\"" +
+	    				"method=\"POST\" >\n");
 
 	    		//Preferences for the main section
-	    		html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>" + "<i  class=\"fa fa-edit\"></i>&nbsp;Main" + "</h2>");
-	    		for (String key: new String[] {Preferences.values.serialPort, Preferences.values.driverList}) {
+	    		html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>" +
+	    				"<i  class=\"fa fa-edit\"></i>&nbsp;Main" + "</h2>");
+	    		html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + Prefs.Keys.configFile + "</span><span " +
+	    					"class=\"pref_value\"><input id='f_config_file' type=\"text\" name=\"" + Prefs.Keys.configFile + "\" value=\"" + prefs.get(Prefs.Keys.configFile) +
+	    					"\" onChange='updateConfigFile()' onkeypress='updateConfigFile()' onkeyup='updateConfigFile()' onBlur='updateConfigFile()' /></span></div><br />\n");
+	    		prefs.remove(Prefs.Keys.configFile);
+	    		for (String key: new String[] {Prefs.Keys.serialPort, Prefs.Keys.driverList}) {
 	    			String value = prefs.get(key);
-	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + value + "\" /></span></div><br />\n");
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span " +
+	    					"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + value +
+	    					"\" /></span></div><br />\n");
 	    			prefs.remove(key);
 		    	}
+	    		html.append("<span class='restart_module'><a href='/restart_module?module=main'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
 	    		html.append("</div><p class='clear'></p>");
 	    		
 	    		//Preferences for web server
-	    		html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>" + "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
-	    		for (String key: new String[] {Preferences.values.portNum, Preferences.values.serverBindLocalhost}) {
-	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    		html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>" +
+	    				"<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
+	    		for (String key: new String[] {Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span" +
+	    					"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" +
+	    					prefs.get(key) + "\" /></span></div><br />\n");
 	    			prefs.remove(key);
 		    	}
+	    		html.append("<span class='restart_module'><a href='/restart_module?module=web'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
 	    		html.append("</div><p class='clear'></p>");
 	    		
 	    		//Preferences for web frontend
-	    		html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>" + "<i  class=\"fi-web\"></i>&nbsp;Web Frontend" + "</h2>");
-	    		for (String key: new String[] {Preferences.values.webResourceFolder}) {
-	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    		html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>" +
+	    				"<i  class=\"fi-web\"></i>&nbsp;Web Frontend" + "</h2>");
+	    		for (String key: new String[] {Prefs.Keys.webResourceFolder}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span" +
+	    					"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) +
+	    					"\" /></span></div><br />\n");
 	    			prefs.remove(key);
 		    	}
 	    		html.append("</div><p class='clear'></p>");
 	    		
 	    		//Preferences for the Twitter service
-	    		html.append("<div id='prefs_section_twitter' class='prefs_section'><h2 class='prefs_section_title'>" + "<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</h2>");
-	    		for (String key: new String[] {"ACCESS_TOKEN", "ACCESS_TOKEN_KEY"}) {
-	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+	    		html.append("<div id='prefs_section_twitter' class='prefs_section'><h2 class='prefs_section_title'>" +
+	    				"<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</h2>");
+	    		for (String key: new String[] {Prefs.Keys.twtrAccess, Prefs.Keys.twtrAccessKey}) {
+	    			html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span" +
+	    					"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) +
+	    					"\" /></span></div><br />\n");
 	    			prefs.remove(key);
 		    	}
+	    		html.append("<p class='warning'>" + ENC_WARNING + "All passwords are stored in plaintext.");
 	    		html.append("</div><p class='clear'></p>");
 	    		
 	    		//Any remaining unclassified preferences
 	    		if (!prefs.isEmpty()) {
-	    			html.append("<div id='prefs_section_unknown' class='prefs_section'><h2 class='prefs_section_title'>" + "<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</h2>");
+	    			html.append("<div id='prefs_section_unknown' class='prefs_section'><h2 class='prefs_section_title'>" +
+	    					"<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</h2>");
 		    		for (String key : prefs.keySet()) {
-			    		html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+			    		html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key + "</span><span" +
+			    				"class=\"pref_value\"><input type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key) +
+			    				"\" /></span></div><br />\n");
 			    		prefs.remove(key);
 			    	}
 		    		html.append("</div><p class='clear'></p>");
 	    		}
 	    		
-		    	
-		    	html.append("<a id=\"form_submit\" class=\"btn btn-default\" href=\"#\" onclick=\"document.getElementById('prefs').submit()\"><i class=\"fa fa-save\"></i>&nbsp;&nbsp;Save Preferences to " + configFile + "</a>");
+		    	//Save preferences button
+		    	html.append("<a id=\"form_submit\" class=\"btn btn-default\" href=\"#\"" +
+		    			"onclick=\"document.getElementById('prefs').submit()\"><i class=\"fa fa-save\"></i>&nbsp;&nbsp;" +
+		    			"Save Preferences to <span id='btn_conf_file'>" + configFile + "</span></a>");
 		    	html.append("</form>");
 		    	html.append("</div>");
 		    	
@@ -445,7 +471,7 @@ public class SimpleHttpServer implements Runnable {
 						byte[] response = getResponse(resourceName);
 						//get the MIME type of the file
 						//MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
-						String file = Preferences.getInstance().getPreference(Preferences.values.webResourceFolder) +  resourceName;
+						String file = Prefs.getInstance().getPreference(Prefs.Keys.webResourceFolder) +  resourceName;
 						String mime = null;
 						try (InputStream is = new FileInputStream(file);
 						        BufferedInputStream bis = new BufferedInputStream(is);) {
@@ -569,5 +595,32 @@ public class SimpleHttpServer implements Runnable {
 			}
 			return response;
 		}
+	}
+	
+	
+	private class UpdateSettingsHandler implements HttpHandler {
+	    private Prefs prefs = Prefs.getInstance();
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
+					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			try {
+				InputStream in = exchange.getRequestBody();
+				ByteArrayOutputStream bao = new ByteArrayOutputStream();
+				byte buf[] = new byte[4096];
+			    for (int n = in.read(buf); n > 0; n = in.read(buf)) {
+			        bao.write(buf, 0, n);
+			   }
+			   String query = new String(bao.toByteArray());
+			   query = java.net.URLDecoder.decode(query, "UTF-8");
+			   Log.d(TAG, "update_settings query body: " + query);
+			   if (query != null && !query.equals("")) {
+				   HashMap<String, String> newPrefs = processQueryString(query);
+				   boolean prefsUpdated = prefs.savePreferences(newPrefs);
+			   }
+			} catch (IOException e) {
+				
+			}
+			new SettingsHandler().handle(exchange);
+	    };
 	}
 }

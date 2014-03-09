@@ -1,7 +1,7 @@
 package org.apparatus_templi.service;
 
 import org.apparatus_templi.Log;
-import org.apparatus_templi.Preferences;
+import org.apparatus_templi.Prefs;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -18,8 +18,8 @@ public final class TwitterService extends Service {
 	private Twitter twitter = null;
 	
 	public TwitterService() {
-		accessToken = Preferences.getInstance().getPreference("ACCESS_TOKEN");
-		accessTokenKey = Preferences.getInstance().getPreference("ACCESS_TOKEN_KEY");
+		accessToken = Prefs.getInstance().getPreference("ACCESS_TOKEN");
+		accessTokenKey = Prefs.getInstance().getPreference("ACCESS_TOKEN_KEY");
 		if (accessToken != null && accessTokenKey != null) {
 			ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true)

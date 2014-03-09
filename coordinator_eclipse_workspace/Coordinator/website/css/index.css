@@ -107,7 +107,8 @@ a img:hover {
     text-align: center;
 }
 
-#driver_list ul {
+#driver_list ul li {
+    list-style-type:none;
     text-align: left;
 }
 
@@ -145,11 +146,11 @@ a img:hover {
 
 
 #button_home:hover {
-    color: #6F94E8;
+    color: #1075FD;
 }
 
 #button_home:active {
-    color: #5D7BC2;
+    color: #0A55BA;
 }
 
 #button_about:hover {
@@ -280,6 +281,9 @@ a img:hover {
     border-radius: 10px 10px 0px 0px;
 }
 
+
+
+
 .pref_input {
 /*    margin: 10px;*/
     vertical-align:middle;
@@ -324,18 +328,43 @@ a img:hover {
     color:#CCCCCC;
 }
 
-#prefs_section_webserver {
-/*    float:right;*/
-/*    margin-bottom: 40px;*/
+#prefs_section_webserver .restart_module i {
+    color: #C54343;
 }
 
 #prefs_section_main i {
-    color: #A3BFFF;
+    color: #606EFC;
+}
+
+.restart_module a {
+    color: black;
+    text-decoration:none;
+}
+
+.restart_module a:hover {
+    text-decoration: none;
+}
+
+#prefs_section_main .restart_module i {
+    color: #C54343;
+}
+
+.restart_module {
+    padding-left: 10px;
 }
 
 #prefs_section_main {
 /*    float: left;*/
 }
+
+#prefs_form .warning {
+    text-align:center;
+}
+
+#prefs_form .fa-exclamation-triangle {
+     color: red;
+}
+
 
 /*
 .clear {

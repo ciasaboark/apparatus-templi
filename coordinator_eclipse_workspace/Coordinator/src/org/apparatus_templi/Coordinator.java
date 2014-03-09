@@ -1,4 +1,5 @@
 package org.apparatus_templi;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +37,7 @@ public class Coordinator {
 	private static ConcurrentHashMap<Event, ArrayList<Driver>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<Driver>>();
 	private static SerialConnection serialConnection;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
-	private static Preferences preferences = Preferences.getInstance();
+	private static Prefs prefs = Prefs.getInstance();
 	private static boolean connectionReady = false;	
 
 	/**
@@ -533,32 +534,33 @@ public class Coordinator {
 		//Using apache commons cli to parse the command line options
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
+		
 		@SuppressWarnings("static-access")
-		Option portOption = OptionBuilder.withArgName("server_port")
+		Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum)
 				.hasArg()
 				.withDescription("Bind the server to the given port number")
-				.create("server_port");
+				.create(Prefs.Keys.portNum);
 		options.addOption(portOption);
 		
 		@SuppressWarnings("static-access")
-		Option serialOption = OptionBuilder.withArgName("serial")
+		Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort)
 				.hasArg()
 				.withDescription("Connect to the arduino on serial interface")
-				.create("serial");
+				.create(Prefs.Keys.serialPort);
 		options.addOption(serialOption);
 		
 		@SuppressWarnings("static-access")
-		Option configOption = OptionBuilder.withArgName("config_file")
+		Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile)
 				.hasArg()
 				.withDescription("Path to the configuration file")
-				.create("config_file");
+				.create(Prefs.Keys.configFile);
 		options.addOption(configOption);
 		
 		@SuppressWarnings("static-access")
-		Option resourcesOption = OptionBuilder.withArgName("folder path")
+		Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder)
 				.hasArg()
 				.withDescription("Web frontend will use resources in the specified folder")
-				.create("server_resources");
+				.create(Prefs.Keys.webResourceFolder);
 		options.addOption(resourcesOption);
 		
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
@@ -576,33 +578,36 @@ public class Coordinator {
 			
 			//Load the configuration file URI
 			String configFile;
-			if (cmd.hasOption("config_file")) {
-				configFile = cmd.getOptionValue("config_file");
+			if (cmd.hasOption(Prefs.Keys.configFile)) {
+				configFile = cmd.getOptionValue(Prefs.Keys.configFile);
+				if (configFile.startsWith("~" + File.separator)) {
+					configFile = System.getProperty("user.home") + configFile.substring(1);
+				}
 			} else {
-				configFile = Preferences.CONFIG_FILE;
+				configFile = Prefs.DEF_PREFS.get(Prefs.Keys.configFile);
 			}
-			preferences.putPreference(Preferences.values.configFile, configFile);
+			prefs.putPreference(Prefs.Keys.configFile, configFile);
 			
 			//Read in preferences from the config file
-			preferences.readPreferences(configFile);
+			prefs.readPreferences(configFile);
 			
 			//Read additional preferences from the command line options,
 			//+ overwriting preferences in the config file.
 			
 			//If the user specified a port number then we will only
 			//try binding to that port, else we try the default port number
-			if (cmd.hasOption("server_port")) {
-				preferences.putPreference(Preferences.values.portNum, cmd.getOptionValue("server_port"));
+			if (cmd.hasOption(Prefs.Keys.portNum)) {
+				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue(Prefs.Keys.portNum));
 			}
 			
-			if (cmd.hasOption("web_resources")) {
-				preferences.putPreference(Preferences.values.webResourceFolder, cmd.getOptionValue("web_resources"));
+			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
+				prefs.putPreference(Prefs.Keys.webResourceFolder, cmd.getOptionValue(Prefs.Keys.webResourceFolder));
 			}
 			
 			//if we were given a preferred port we will pass it to SerialConnection
 			//+ when initialized
-			if (cmd.hasOption("serial")) {
-				preferences.putPreference(Preferences.values.serialPort, cmd.getOptionValue("serial"));
+			if (cmd.hasOption(Prefs.Keys.serialPort)) {
+				prefs.putPreference(Prefs.Keys.serialPort, cmd.getOptionValue(Prefs.Keys.serialPort));
 			}
 			
 			
@@ -614,7 +619,7 @@ public class Coordinator {
 		}
 		
 		//open the serial connection
-		String serialPortName = preferences.getPreference(Preferences.values.serialPort);
+		String serialPortName = prefs.getPreference(Prefs.Keys.serialPort);
 		if (serialPortName == null) {
 			serialConnection = new UsbSerialConnection();
 		} else if (serialPortName.equals("dummy")) {
@@ -680,7 +685,7 @@ public class Coordinator {
         
         
 		//Instantiate all drivers specified in the config file
-		String driverList = preferences.getPreference(Preferences.values.driverList);
+		String driverList = prefs.getPreference(Prefs.Keys.driverList);
 		if (!driverList.equals("")) {
 			Log.c(TAG, "Initializing drivers...");
 			String[] drivers = driverList.split(",");
@@ -695,7 +700,7 @@ public class Coordinator {
 			}
 		} else {
 			Log.w(TAG, "No drivers were specified in the configuration file: '" +
-					preferences.getPreference(Preferences.values.configFile) +
+					prefs.getPreference(Prefs.Keys.configFile) +
 					"', nothing will be loaded");
 		}
 		
@@ -730,20 +735,20 @@ public class Coordinator {
         //start the web interface
         int portNum;
         try {
-        	portNum = Integer.valueOf(preferences.getPreference(Preferences.values.portNum));
+        	portNum = Integer.valueOf(prefs.getPreference(Prefs.Keys.portNum));
         } catch (NumberFormatException e) {
-        	portNum = Preferences.SERVER_PORT;
+        	portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
         }
-        if (preferences.getPreference(Preferences.values.serverBindLocalhost).equals("true")) {
+        if (prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
         			InetAddress.getLocalHost());
         } else {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
         }
     	
-        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == Preferences.SERVER_PORT ? false : true,
-        		preferences.getPreference(Preferences.values.serverBindLocalhost).equals("true") ? true : false);
-        server.setResourceFolder(preferences.getPreference(Preferences.values.webResourceFolder));
+        SimpleHttpServer server = new SimpleHttpServer(portNum, portNum == Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum)) ? false : true,
+        		prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true : false);
+        server.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
         new Thread(server).start();
         
         
