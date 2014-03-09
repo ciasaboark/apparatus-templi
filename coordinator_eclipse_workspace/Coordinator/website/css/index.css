@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 html {
-    min-width:700px;
+    min-width:740px;
     text-decoration: none;
 }
 
@@ -9,7 +9,7 @@ body {
     color: #4D4D4D;
     background-color: white;
 /*    overflow-x:hidden;*/
-    min-width: 700px;
+    min-width: 740px;
 }
 
 a:link {text-decoration:none;}
@@ -83,7 +83,7 @@ a img:hover {
 
 #RunningDrivers {
     position: fixed;
-    top: 65px;
+    top: 90px;
     left: 10px;
     width: 100pt;
 /*    height: 45%;*/
@@ -194,8 +194,9 @@ a img:hover {
     height:55px;
     background:#FCFCFC;
 /*    border-botom: 1px dashed ;*/
-    border-bottom: 1px dashed #808080;
-    min-width:700px;
+    border-bottom: 1px solid #ccc;
+    min-width:800px;
+    box-shadow: 0px 0px 20px 0px #ccc;
 }
 
 #footer {
@@ -214,6 +215,7 @@ a img:hover {
     text-align:right;
 /*    padding-right:20px;*/
     padding-top: 5px;
+    box-shadow: 0px 0px 50px 20px white;
 }
 
 #footer a {

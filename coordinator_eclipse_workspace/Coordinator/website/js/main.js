@@ -10,7 +10,7 @@ function getRunningDrivers() {
         url: "/get_running_drivers",
         dataType: "xml",
         async: true,
-        contentType: "text/xml; charset=\"utf-8\"",
+        contentType: "application/xml; charset=\"utf-8\"",
         success: function(xml) {
             var $driverList = "";
             $(xml).find('Module').each(function() {

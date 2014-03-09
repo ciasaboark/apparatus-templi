@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.cli.CommandLine;
@@ -316,7 +319,7 @@ public class Coordinator {
         }
         if (prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address " +
-        			InetAddress.getLocalHost());
+        			InetAddress.getLocalHost().getHostAddress());
         } else {
         	Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
         }
@@ -419,6 +422,61 @@ public class Coordinator {
 		
 		startDrivers();
 	}
+	
+	/**
+	 * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+	 *
+	 * @param packageName The base package
+	 * @return The classes
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	private static Class<org.apparatus_templi.driver.Driver>[] getClasses(String packageName)
+	        throws ClassNotFoundException, IOException {
+	    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+	    assert classLoader != null;
+	    String path = packageName.replace('.', '/');
+	    Enumeration<URL> resources = classLoader.getResources(path);
+	    List<File> dirs = new ArrayList<File>();
+	    while (resources.hasMoreElements()) {
+	        URL resource = resources.nextElement();
+	        dirs.add(new File(resource.getFile()));
+	    }
+	    ArrayList<Class<org.apparatus_templi.driver.Driver>> classes = new ArrayList<Class<org.apparatus_templi.driver.Driver>>();
+	    for (File directory : dirs) {
+	        classes.addAll(findClasses(directory, packageName));
+	    }
+	    return classes.toArray(new Class[classes.size()]);
+	}
+
+	/**
+	 * Recursive method used to find all classes in a given directory and subdirs.
+	 *
+	 * @param directory   The base directory
+	 * @param packageName The package name for classes found inside the base directory
+	 * @return The classes
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<Class<org.apparatus_templi.driver.Driver>> findClasses(File directory, String packageName) throws ClassNotFoundException {
+	    List<Class<org.apparatus_templi.driver.Driver>> classes = new ArrayList<Class<org.apparatus_templi.driver.Driver>>();
+	    if (!directory.exists()) {
+	        return classes;
+	    }
+	    File[] files = directory.listFiles();
+	    for (File file : files) {
+	        if (file.isDirectory()) {
+	            assert !file.getName().contains(".");
+	            classes.addAll(findClasses(file, packageName + "." + file.getName()));
+	        } else if (file.getName().endsWith(".class")) {
+	            classes.add((Class<org.apparatus_templi.driver.Driver>) Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+	        }
+	    }
+	    return classes;
+	}
+	
+	
 
 	static synchronized void exitWithReason(String reason) {
 		Log.t(TAG, reason);
@@ -740,10 +798,29 @@ public class Coordinator {
 		Log.d(TAG, "getLoadedDrivers()");
 		ArrayList<String> driverList = new ArrayList<String>();
 		for (String driverName: loadedDrivers.keySet()) {
-			driverList.add(driverName);
+			driverList.add(loadedDrivers.get(driverName).getClass().getSimpleName());
 		}
 		
 		return driverList;
+	}
+	
+	/**
+	 * Returns a list of available drivers.  This list is queried from
+	 * a hard-coded directory, and may not represent drivers loaded from
+	 * a different CLASSPATH. 
+	 * @return an ArrayList<String> of available driver classes.
+	 */
+	public static synchronized ArrayList<String> getAvailableDrivers() {
+		ArrayList<String> list = new ArrayList<String>();
+		try {
+			for (Class<org.apparatus_templi.driver.Driver> c: findClasses(new File("bin/org/apparatus_templi/driver/"), "org.apparatus_templi.driver")) {
+				list.add(c.getSimpleName());
+			}
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return list;
 	}
 	
 	public static void receiveEvent(Driver d, Event e) {
@@ -807,7 +884,7 @@ public class Coordinator {
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		//turn off debug messages
 //		Log.setLogLevel(Log.LEVEL_WARN);
-		
+		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);
 		
@@ -865,7 +942,7 @@ public class Coordinator {
 			Log.c(TAG, "Did not find any remote modules.");
 		}
         
-        
+		//initialize and start all drivers
 		startDrivers();
         
         //Add a shutdown hook so that the drivers can be notified when

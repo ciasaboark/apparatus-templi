@@ -12,8 +12,21 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -22,15 +35,17 @@ import org.apache.tika.parser.AutoDetectParser;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpsServer;
 
 public class SimpleHttpServer implements Runnable {
-	private static boolean isRunning = true;
-	private static HttpServer server = null;
+	private boolean isRunning = true;
+	private HttpsServer httpsServer = null;
 	private static final String TAG = "SimpleHttpServer";
-	private static String resourceFolder = "./website/";
-	private static String serverLocation;
-	private static int portNum;
+	private String resourceFolder = "./website/";
+	private String serverLocation;
+	private int portNum;
 	
 	
 	/**
@@ -115,28 +130,86 @@ public class SimpleHttpServer implements Runnable {
 			}
 			socket = new InetSocketAddress(address, portNumber);
 			try {
-				server = HttpServer.create(socket, 1);
-				this.serverLocation = socket.getHostString();
+				httpsServer = HttpsServer.create(socket, 1);
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+
+	            // initialise the keystore
+	            char[] password = "simulator".toCharArray();
+	            KeyStore ks = KeyStore.getInstance ("JKS");
+	            FileInputStream fis = new FileInputStream ("lig.keystore");
+	            ks.load (fis, password);
+
+	            // setup the key manager factory
+	            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+	            kmf.init(ks, password);
+
+	            // setup the trust manager factory
+	            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+	            tmf.init(ks);
+
+	            // setup the HTTPS context and parameters
+	            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+	            httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
+	                public void configure ( HttpsParameters params ) {
+	                    try {
+	                        // initialise the SSL context
+	                    	SSLContext c = SSLContext.getDefault();
+	                        SSLEngine engine = c.createSSLEngine();
+	                        params.setNeedClientAuth(false);
+	                        params.setCipherSuites(engine.getEnabledCipherSuites());
+	                        params.setProtocols(engine.getEnabledProtocols());
+
+	                        // get the default parameters
+	                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+	                        params.setSSLParameters(defaultSSLParameters);
+	                    } catch ( Exception ex ) {
+	                        Log.t(TAG, "Could not start https server");
+	                        Coordinator.exitWithReason("Could not start https server");
+	                    }
+	                }
+	            });
+				
+				if (!bindLocalhost) {
+					this.serverLocation = "localhost";
+				} else {
+					this.serverLocation = InetAddress.getLocalHost().getHostAddress();
+				}
 				this.portNum = socket.getPort();
 				//TODO getting the address on localhost does not work, only loopback
 				Log.d(TAG, "setting address and port to " + this.serverLocation + " " + this.portNum);
 				
 			} catch (SocketException e) {
+				Log.t(TAG, "could not bind to port " + portNumber + ": " + e.getMessage());
 				Coordinator.exitWithReason("could not bind to port " + portNumber + ": " + e.getMessage());
+			} catch (NoSuchAlgorithmException e) {
+				Log.t(TAG, "could not use requested encryption algorithm " + e.getMessage());
+				Coordinator.exitWithReason("could not use requested encryption algorithm " + e.getMessage());
+			} catch (KeyStoreException e) {
+				Log.t(TAG, "could not load key store " + e.getMessage());
+				Coordinator.exitWithReason("could not load key store " + e.getMessage());
+			} catch (CertificateException e) {
+				Log.d(TAG, "bad certificate " + e.getMessage());
+				Coordinator.exitWithReason("bad certificate " + e.getMessage());
+			} catch (UnrecoverableKeyException e) {
+				Log.d(TAG, "unrecoverable key " + e.getMessage());
+				Coordinator.exitWithReason("unrecoverable key " + e.getMessage());
+			} catch (KeyManagementException e) {
+				Log.d(TAG, "key management exception " + e.getMessage());
+				Coordinator.exitWithReason("key management exception " + e.getMessage());
 			}
-			server.createContext("/index.html", new IndexHandler());
-			server.createContext("/about.html", new AboutHandler());
-//			server.createContext("/", new IndexHandler());
-			server.createContext("/get_running_drivers", new RunningDriversHandler());
-			server.createContext("/full_xml", new FullXmlHandler());
-			server.createContext("/driver_widget", new WidgetXmlHandler());
-			server.createContext("/resource", new ResourceHandler());
-			server.createContext("/js/default.js", new JsHandler());
-			server.createContext("/settings.html", new SettingsHandler());
-			server.createContext("/update_settings", new UpdateSettingsHandler());
-			server.createContext("/restart_module", new RestartModuleHandler());
-			//server.createContext("/", new IndexHandler());
-			server.setExecutor(null);
+			httpsServer.createContext("/index.html", new IndexHandler());
+			httpsServer.createContext("/about.html", new AboutHandler());
+//			httpsServer.createContext("/", new IndexHandler());
+			httpsServer.createContext("/get_running_drivers", new RunningDriversHandler());
+			httpsServer.createContext("/full_xml", new FullXmlHandler());
+			httpsServer.createContext("/driver_widget", new WidgetXmlHandler());
+			httpsServer.createContext("/resource", new ResourceHandler());
+			httpsServer.createContext("/js/default.js", new JsHandler());
+			httpsServer.createContext("/settings.html", new SettingsHandler());
+			httpsServer.createContext("/update_settings", new UpdateSettingsHandler());
+			httpsServer.createContext("/restart_module", new RestartModuleHandler());
+			//httpsServer.createContext("/", new IndexHandler());
+			httpsServer.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to initialize the server");
@@ -180,17 +253,17 @@ public class SimpleHttpServer implements Runnable {
 	    return results;
 	}
 	
-	public static int getPort() {
+	public int getPort() {
 		return portNum;
 	}
 	
-	public static String getServerLocation() {
+	public String getServerLocation() {
 		return serverLocation;
 	}
 
 	@Override
 	public void run() {
-		server.start();
+		httpsServer.start();
 		while (isRunning) {
 			try {
 				Thread.sleep(100);
@@ -200,7 +273,7 @@ public class SimpleHttpServer implements Runnable {
 			}
 		}
 		Log.d(TAG, "terminating");
-		server.stop(0);
+		httpsServer.stop(0);
 	}
 	
 	public static HashMap<String, String> processQueryString(String query) {
@@ -229,6 +302,9 @@ public class SimpleHttpServer implements Runnable {
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+			
 			byte[] response = getResponse();
 			if (response != null) {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
@@ -267,6 +343,9 @@ public class SimpleHttpServer implements Runnable {
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+			
 			byte[] response = getResponse();
 			if (response != null) {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
@@ -370,6 +449,9 @@ public class SimpleHttpServer implements Runnable {
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+			
 			byte[] response = getResponse();
 			if (response != null) {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
@@ -634,6 +716,9 @@ public class SimpleHttpServer implements Runnable {
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+			
 			try {
 				InputStream in = exchange.getRequestBody();
 				ByteArrayOutputStream bao = new ByteArrayOutputStream();
@@ -653,9 +738,8 @@ public class SimpleHttpServer implements Runnable {
 			}
 			
 			byte[] response = getResponse();
-			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
-			headers.add("Location", "http://" + SimpleHttpServer.getServerLocation() + ":" +
-					SimpleHttpServer.getPort() + "/settings.html");
+			headers.add("Location", "https://" + getServerLocation() + ":" +
+					getPort() + "/settings.html");
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
 			exchange.getResponseBody().write(response);
 	        exchange.close();
@@ -669,7 +753,8 @@ public class SimpleHttpServer implements Runnable {
 	    	if (templateBytes != null) {
 		    	String templateHtml = new String(templateBytes);    	
 		    	templateHtml = templateHtml.replace("!TIMEOUT!", "8");
-		    	templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + SimpleHttpServer.getPort() + "/settings.html");
+		    	templateHtml = templateHtml.replace("!LOCATION!", "https://" + getServerLocation() + ":" +
+		    			getPort() + "/settings.html");
 	    		returnBytes = templateHtml.getBytes();
 	    	}
 	    	
@@ -681,6 +766,9 @@ public class SimpleHttpServer implements Runnable {
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG, "received request from " + exchange.getRemoteAddress() + " " +
 					exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+			
 			String query = exchange.getRequestURI().getQuery();
 			HashMap<String, String> queryTags = null;
 			if (query != null) {
@@ -708,9 +796,24 @@ public class SimpleHttpServer implements Runnable {
 		    	String templateHtml = new String(templateBytes);    	
 		    	templateHtml = templateHtml.replace("!TIMEOUT!", "8");
 		    	if (module.equals("web")) {
-		    		templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + Prefs.getInstance().getPreference(Prefs.Keys.portNum) + "/settings.html");
+		    		//The address the new server will be listening on may have changed
+					String newAddress = null;
+					if (Prefs.getInstance().getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
+						try {
+							newAddress = InetAddress.getLocalHost().getHostAddress();
+						} catch (UnknownHostException e) {
+							newAddress = "localhost";
+						}
+					} else {
+						newAddress = "localhost";
+					}
+					
+		    		templateHtml = templateHtml.replace("!LOCATION!", "https://" +
+		    				newAddress + ":" + Prefs.getInstance().getPreference(Prefs.Keys.portNum) +
+		    				"/settings.html");
 		    	} else {
-		    		templateHtml = templateHtml.replace("!LOCATION!", "http://" + SimpleHttpServer.getServerLocation() + ":" + SimpleHttpServer.getPort() + "/settings.html");
+		    		templateHtml = templateHtml.replace("!LOCATION!", "https://" +
+		    				getServerLocation() + ":" + getPort() + "/settings.html");
 		    	}
 	    		returnBytes = templateHtml.getBytes();
 	    	}
