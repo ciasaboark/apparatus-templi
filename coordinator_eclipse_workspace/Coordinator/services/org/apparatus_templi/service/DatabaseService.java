@@ -5,16 +5,16 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apparatus_templi.Log;
 
 public class DatabaseService extends org.apparatus_templi.service.Service {
+	private static final String TAG = "DatabaseService";
 	public DatabaseService() {
 		
 	}
-	
-	private static final String TAG = "DatabaseService";
 
 	/**
 	 * Stores the given data to persistent storage. Data is tagged with both the driver
@@ -27,7 +27,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	static synchronized int storeTextData(String driverName, String dataTag, String data) 
+	public static synchronized int storeTextData(String driverName, String dataTag, String data) 
 	{
 		Log.d(TAG, "storing text data");
 		Connection c = null;
@@ -42,7 +42,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
 			c.setAutoCommit(false);
-			if(readTextData(driverName, dataTag).equals(""))
+			if(readTextData(driverName, dataTag) == null)	//no previous data stored
 			{
 				sql = "INSERT INTO DRIVERTEXT VALUES (?, ?, ?)";
 				stmt = c.prepareStatement(sql);
@@ -65,8 +65,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			c.commit();
 			c.close();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return returnCode;
 	}
@@ -82,13 +81,12 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
 	 * 	0 if the data could not be written.
 	 */
-	static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storing binary data");
 		Connection c = null;
 		PreparedStatement stmt = null;
 		String sql = null;
 		int returnCode = 0;
-		String s = null;
 		
 		if (!checkTable("coordinator", "DRIVERBIN")) {
 			createDriverBin();
@@ -97,8 +95,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
 			c.setAutoCommit(false);
-			s = new String(readBinData(driverName, dataTag));
-			if(s.equals("error"))
+			if(readBinData(driverName, dataTag) == null)
 			{
 				sql = "INSERT INTO DRIVERBIN" + " VALUES (?,?,?)";
 				stmt = c.prepareStatement(sql);
@@ -121,8 +118,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			c.commit();
 			c.close();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+			Log.e(TAG, "storeBinData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return returnCode;
 	}
@@ -134,11 +130,11 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return the stored String data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	static synchronized String readTextData(String driverName, String dataTag) {
+	public static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "reading text data");	
 		Connection c = null;
 		Statement stmt = null;
-		String data = "error";
+		String data = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
@@ -155,8 +151,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+			Log.e(TAG, "readTextData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return data;
 	}
@@ -168,11 +163,11 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return the stored binary data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	static synchronized byte[] readBinData(String driverName, String dataTag) {
+	public static synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "reading binary data");
 		Connection c = null;
 		Statement stmt = null;
-		byte[] data = "error".getBytes();
+		byte[] data = null;
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -189,9 +184,8 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+		} catch (SQLException | ClassNotFoundException e) {
+			Log.e(TAG, "readBinData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return data;
 	}
@@ -212,9 +206,8 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			}
 			c.close();
 			return false;
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+		} catch (SQLException | ClassNotFoundException e) {
+			Log.e(TAG, "checkTable()" +  e.getClass().getName() + ": " + e.getMessage());
 			return false;
 		}
 	}
@@ -223,7 +216,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 		Connection c = null;
 		Statement stmt = null;
 		try {
-			Class.forName("org.sqlite.JDBC");
+//			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE DRIVERTEXT"
@@ -234,8 +227,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+			Log.e(TAG, "createDriverText()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 
@@ -254,8 +246,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
+			Log.e(TAG, "createDriverBin()" +  e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 }

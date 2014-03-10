@@ -22,6 +22,7 @@ import org.apache.commons.cli.ParseException;
 import org.apparatus_templi.driver.ControllerModule;
 import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.driver.SensorModule;
+import org.apparatus_templi.service.DatabaseService;
 
 /**
  * Coordinates message passing and driver loading.  Handles setting
@@ -595,7 +596,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
-		return 0;
+		return DatabaseService.storeTextData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -611,7 +612,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
-		return 0;
+		return DatabaseService.storeBinData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -623,7 +624,7 @@ public class Coordinator {
 	 */
 	public static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
-		return null;
+		return DatabaseService.readTextData(driverName, dataTag);
 	}
 	
 	/**
@@ -633,9 +634,9 @@ public class Coordinator {
 	 * @return the stored binary data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	public static synchronized Byte[] readBinData(String driverName, String dataTag) {
+	public static synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
-		return null;
+		return DatabaseService.readBinData(driverName, dataTag);
 	}
 	
 	/**
