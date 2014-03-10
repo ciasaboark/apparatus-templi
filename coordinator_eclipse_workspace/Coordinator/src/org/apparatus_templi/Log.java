@@ -18,9 +18,10 @@ import com.google.common.collect.EvictingQueue;
  */
 public class Log {
 //	private final static Logger LOGGER = Logger.getLogger(Coordinator.class.getSimpleName()); 
-	static final int LEVEL_DEBUG = 2;
-	static final int LEVEL_WARN  = 1;
-	static final int LEVEL_ERR   = 0;
+	static final int LEVEL_DEBUG = 3;
+	static final int LEVEL_WARN  = 2;
+	static final int LEVEL_ERR   = 1;
+	static final int LEVEL_TERM  = 0;
 	private static int logLevel = LEVEL_DEBUG;
 	//a buffer to hold the last 30 log messages.
 	private static EvictingQueue<String> prevLines = EvictingQueue.create(30);
@@ -55,20 +56,24 @@ public class Log {
 	 */
 	static void t(String tag, String message) {
 		String logMessage = System.currentTimeMillis() + ": TERMINAL FAILURE: " + tag + ":" + message;
-		System.out.println(logMessage);
 		System.err.println(logMessage);
 		writeLogMessage(logMessage);
 	}
 
 	/**
 	 * Sets the logging level to the absolute value of newLogLevel.
-	 * 	The logging level determines which log statements are recorded.
+	 * 	The logging level determines which log statements are printed
+	 * 	to {@link System#out} or {@link System#err}.  All log messages
+	 * 	are written to the log file regardless of the logging level.
 	 * 	The default value is {@link Log#LEVEL_DEBUG}, indicating that
-	 *  debug messages, warnings, and errors should all be logged.
+	 *  debug messages, warnings, errors, and terminal failures
+	 *  should all be printed.
 	 * @param newLogLevel the new log level. A value greater/equal to 
-	 * {@link Log#LEVEL_DEBUG} will	log all messages.  A value of
-	 * {@link Log#LEVEL_WARN} will log only warnings and errors.  A
-	 * 	value of {@link Log#LEVEL_ERR} or less will only log errors.
+	 * {@link Log#LEVEL_DEBUG} will	print all messages.  A value of
+	 * {@link Log#LEVEL_WARN} will print only warnings, errors, and
+	 * terminal errors.  A value of {@link Log#LEVEL_ERR} or less
+	 * will only print errors and terminal failures.  A value of
+	 * {@link Log#LEVEL_TERM} will only print terminal failures.
 	 */
 	public static void setLogLevel(int newLogLevel) {
 		logLevel = Math.abs(newLogLevel);
@@ -89,11 +94,11 @@ public class Log {
 	 * @param message the debugging message to be logged.
 	 */
 	public static void d(String tag, String message) {
+		String logMessage = System.currentTimeMillis() + ": " + tag + ":" +  message;
 		if (logLevel >= Log.LEVEL_DEBUG) {
-			String logMessage = System.currentTimeMillis() + ": " + tag + ":" +  message;
 			System.out.println(logMessage);
-			writeLogMessage(logMessage);
 		}
+		writeLogMessage(logMessage);
 	}
 	
 	/**
@@ -102,11 +107,11 @@ public class Log {
 	 * @param message the warning message to be logged.
 	 */
 	public static void w(String tag, String message) {
+		String logMessage = System.currentTimeMillis() + ": Warning: " + tag + ":" +  message;
 		if (logLevel >= Log.LEVEL_WARN) {
-			String logMessage = System.currentTimeMillis() + ": Warning: " + tag + ":" +  message;
 			System.out.println(logMessage);
-			writeLogMessage(logMessage);
 		}
+		writeLogMessage(logMessage);
 	}
 	
 	/**
@@ -115,11 +120,11 @@ public class Log {
 	 * @param message the error message to be logged.
 	 */
 	public static void e(String tag, String message) {
+		String logMessage = System.currentTimeMillis() + ": Error: " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_ERR) {
-			String logMessage = System.currentTimeMillis() + ": Error: " + tag + ":" + message;
 			System.err.println(logMessage);
-			writeLogMessage(logMessage);
 		}
+		writeLogMessage(logMessage);
 	}
 	
 	public static ArrayList<String> getRecentLog() {
