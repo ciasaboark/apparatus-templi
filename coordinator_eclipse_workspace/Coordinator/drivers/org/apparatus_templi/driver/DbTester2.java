@@ -6,10 +6,10 @@ import java.util.Arrays;
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 
-public class DbTester extends ControllerModule {
+public class DbTester2 extends ControllerModule {
 
-	public DbTester() {
-		this.name = "DB_TESTER";
+	public DbTester2() {
+		this.name = "DB_TESTER2";
 	}
 
 	@Override

@@ -395,8 +395,8 @@ public class Coordinator {
 		//Block for a few seconds to allow all drivers to finish their termination
 		//+ procedure.  Since the drivers may call methods in this thread we need
 		//+ to do a non-blocking wait instead of using a call to Thread.sleep()
-//		long sleepTime = System.currentTimeMillis() + (1000 * 5);
-//		while (sleepTime > System.currentTimeMillis()) {}
+		long sleepTime = System.currentTimeMillis() + (1000 * 5);
+		while (sleepTime > System.currentTimeMillis()) {}
 		
 		while (!driverThreads.isEmpty()) {
 			for (Driver d: driverThreads.keySet()) {
@@ -405,22 +405,22 @@ public class Coordinator {
 					Log.d(TAG, "driver " + d.getName() + " terminated");
 					driverThreads.remove(d);
 				} else {
-					Log.d(TAG, "waiting on driver " + d.getName() + " to terminate (state: " + t.getState().toString() + ")");
-					d.terminate();
+					Log.w(TAG, "waiting on driver " + d.getName() + " to terminate (state: " + t.getState().toString() + ")");
+//					d.terminate();
 					wakeDriver(d.getName(), false, false);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						Thread.sleep(200);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}
 		
 		assert driverThreads.isEmpty();
 		assert loadedDrivers.isEmpty();
-		
+		Log.w(TAG, "all drivers stopped");
 		startDrivers();
 	}
 	
@@ -596,7 +596,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
-		return DatabaseService.storeTextData(driverName, dataTag, data);
+		return DatabaseService.getInstance().storeTextData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -612,7 +612,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
-		return DatabaseService.storeBinData(driverName, dataTag, data);
+		return DatabaseService.getInstance().storeBinData(driverName, dataTag, data);
 	}
 	
 	/**
@@ -624,7 +624,7 @@ public class Coordinator {
 	 */
 	public static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
-		return DatabaseService.readTextData(driverName, dataTag);
+		return DatabaseService.getInstance().readTextData(driverName, dataTag);
 	}
 	
 	/**
@@ -636,7 +636,7 @@ public class Coordinator {
 	 */
 	public static synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
-		return DatabaseService.readBinData(driverName, dataTag);
+		return DatabaseService.getInstance().readBinData(driverName, dataTag);
 	}
 	
 	/**
@@ -882,7 +882,7 @@ public class Coordinator {
 		}
 	}
 	
-	public static void main(String argv[]) throws InterruptedException, IOException {
+	public static void main(String argv[]) throws InterruptedException, IOException {		
 		//turn off debug messages
 //		Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");

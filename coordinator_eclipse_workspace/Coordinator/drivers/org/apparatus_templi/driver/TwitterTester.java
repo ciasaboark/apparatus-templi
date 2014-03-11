@@ -6,7 +6,7 @@ import org.apparatus_templi.Log;
 import org.apparatus_templi.service.TwitterService;
 
 public final class TwitterTester extends SensorModule {
-	TwitterService twitterService = new TwitterService();
+	TwitterService twitterService = TwitterService.getInstance();
 	
 	public TwitterTester() {
 		this.name = "TwtrTest";

@@ -10,10 +10,24 @@ import java.sql.Statement;
 
 import org.apparatus_templi.Log;
 
-public class DatabaseService extends org.apparatus_templi.service.Service {
+public class DatabaseService implements ServiceInterface {
 	private static final String TAG = "DatabaseService";
-	public DatabaseService() {
+	private static DatabaseService instance = null;
+	private DatabaseService() {
+		if (!tableExists("coordinator", "DRIVERTEXT")) {
+			createTableText();
+		}
 		
+		if (!tableExists("coordinator", "DRIVERBIN")) {
+			createTableBin();
+		}
+	}
+	
+	public static DatabaseService getInstance() {
+		if (instance == null) {
+			instance = new DatabaseService();
+		}
+		return instance;
 	}
 
 	/**
@@ -23,21 +37,25 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @param dataTag a tag to assign to this data.  This tag should be specific for each data block
 	 * 	that your driver stores.  If there already exits data for the given dataTag the old data
 	 * 	will be overwritten.
-	 * @param data the string of data to store
+	 * @param data the text data to be stored.  The data must not be null.
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
-	 * 	0 if the data could not be written.
+	 * 	0 if the data could not be written or if the given data was null.
 	 */
-	public static synchronized int storeTextData(String driverName, String dataTag, String data) 
+	public synchronized int storeTextData(String driverName, String dataTag, String data) throws IllegalArgumentException
 	{
 		Log.d(TAG, "storing text data");
+		assert tableExists("coordinator", "DRIVERTEXT");
+		
+		if (data == null) {
+			Log.w(TAG, "database can not store null values");
+			return 0;
+		}
+		
 		Connection c = null;
 		PreparedStatement stmt = null;
 		String sql;
 		int returnCode = 0;
 		
-		if (!checkTable("coordinator", "DRIVERTEXT")) {
-			createDriverText();
-		}
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
@@ -77,20 +95,23 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @param dataTag a unique tag to assign to this data. This tag should be specific for each data
 	 * 	block that will be stored. If data has already been stored with the same driverName and
 	 * 	dataTag the old data will be overwritten.
-	 * @param data the data to be stored
+	 * @param data the data to be stored.  The data must not be null.
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written successfully.
-	 * 	0 if the data could not be written.
+	 * 	0 if the data could not be written or if the given data was null.
 	 */
-	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+	public synchronized int storeBinData(String driverName, String dataTag, byte[] data) throws IllegalArgumentException {
 		Log.d(TAG, "storing binary data");
+		assert tableExists("coordinator", "DRIVERBIN");
+		if (data == null) {
+			Log.w(TAG, "database can not store null values");
+			return 0;
+		}
+		
 		Connection c = null;
 		PreparedStatement stmt = null;
 		String sql = null;
 		int returnCode = 0;
 		
-		if (!checkTable("coordinator", "DRIVERBIN")) {
-			createDriverBin();
-		}
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
@@ -130,7 +151,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return the stored String data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	public static synchronized String readTextData(String driverName, String dataTag) {
+	public synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "reading text data");	
 		Connection c = null;
 		Statement stmt = null;
@@ -163,7 +184,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 	 * @return the stored binary data, or null if no data has been stored under the given driver name
 	 * 	and tag.
 	 */
-	public static synchronized byte[] readBinData(String driverName, String dataTag) {
+	public synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "reading binary data");
 		Connection c = null;
 		Statement stmt = null;
@@ -190,7 +211,7 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 		return data;
 	}
 	
-	private static boolean checkTable(String dbName, String tbName) {
+	private boolean tableExists(String dbName, String tbName) {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			Connection c = DriverManager
@@ -212,7 +233,8 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 		}
 	}
 
-	private static void createDriverText() {
+	private void createTableText() {
+		Log.d(TAG, "creating table for text data");
 		Connection c = null;
 		Statement stmt = null;
 		try {
@@ -220,9 +242,9 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE DRIVERTEXT"
-					+ "(NAME           TEXT    NOT NULL, "
-					+ " TAG            TEXT     NOT NULL, "
-					+ " DATA	       TEXT)";
+					+ "(NAME	TEXT	NOT NULL, "
+					+ " TAG		TEXT	NOT NULL, "
+					+ " DATA	TEXT	NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 			c.close();
@@ -231,7 +253,8 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 		}
 	}
 
-	private static void createDriverBin() {
+	private void createTableBin() {
+		Log.d(TAG, "creating table for binary data");
 		Connection c = null;
 		Statement stmt = null;
 		try {
@@ -239,14 +262,29 @@ public class DatabaseService extends org.apparatus_templi.service.Service {
 			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE DRIVERBIN"
-					+ "(NAME           TEXT    NOT NULL, "
-					+ " TAG            TEXT     NOT NULL, "
-					+ " DATA	        BYTES[])";
+					+ "(NAME	TEXT	NOT NULL, "
+					+ " TAG		TEXT	NOT NULL, "
+					+ " DATA	BYTES[]	NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
 			Log.e(TAG, "createDriverBin()" +  e.getClass().getName() + ": " + e.getMessage());
 		}
+	}
+
+	@Override
+	public void preferencesChanged() {
+		//nothing to do
+	}
+
+	@Override
+	public void restartService() {
+		//nothing to do
+	}
+
+	@Override
+	public void stopService() {
+		//nothing to do
 	}
 }

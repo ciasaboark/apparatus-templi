@@ -8,7 +8,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-public final class TwitterService extends Service {
+public final class TwitterService implements ServiceInterface {
 //	private static final String UPDATE_URI = "https://api.twitter.com/1.1/statuses/update.json";
 	private final String TAG = "TwitterService";
 	private final String CONSUMER_KEY = "m0nVUSS32WQAPqGmMGvZ8w";
@@ -16,8 +16,13 @@ public final class TwitterService extends Service {
 	private String accessToken = null;
 	private String accessTokenKey = null;
 	private Twitter twitter = null;
+	private static TwitterService instance = null;
 	
-	public TwitterService() {
+	private TwitterService() {
+		start();
+	}
+	
+	private void start() {
 		accessToken = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccess);
 		accessTokenKey = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccessKey);
 		if (accessToken != null && accessTokenKey != null) {
@@ -32,6 +37,13 @@ public final class TwitterService extends Service {
 		} else {
 			Log.e(TAG, "Twitter service requires authentication for a particular user account.");
 		}
+	}
+	
+	public static TwitterService getInstance() {
+		if (instance == null) {
+			instance = new TwitterService();
+		}
+		return instance;
 	}
 	
 	public synchronized boolean updateTimeline(String status) {
@@ -50,6 +62,22 @@ public final class TwitterService extends Service {
 			Log.w(TAG, "Can not post to timeline, check that the access token was provided");
 		}
 		return timelineUpdated;
+	}
+
+	@Override
+	public void preferencesChanged() {
+		start();
+	}
+
+	@Override
+	public void restartService() {
+		start();
+	}
+
+	@Override
+	public void stopService() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

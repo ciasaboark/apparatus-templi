@@ -91,7 +91,7 @@ public class SimpleHttpServer implements Runnable {
 	    			throw new IOException();
 	    		}
 	    	}
-    	} catch (Exception e) {
+    	} catch (IOException e) {
     		Log.w(TAG, "Error opening '" + fileName + "'");
     	}
     	
@@ -152,14 +152,14 @@ public class SimpleHttpServer implements Runnable {
 	            httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
 	                public void configure ( HttpsParameters params ) {
 	                    try {
-	                        // initialise the SSL context
+	                        //Initialize the SSL context
 	                    	SSLContext c = SSLContext.getDefault();
 	                        SSLEngine engine = c.createSSLEngine();
 	                        params.setNeedClientAuth(false);
 	                        params.setCipherSuites(engine.getEnabledCipherSuites());
 	                        params.setProtocols(engine.getEnabledProtocols());
 
-	                        // get the default parameters
+	                        //Get the default parameters
 	                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
 	                        params.setSSLParameters(defaultSSLParameters);
 	                    } catch ( Exception ex ) {
@@ -177,6 +177,7 @@ public class SimpleHttpServer implements Runnable {
 				this.portNum = socket.getPort();
 				//TODO getting the address on localhost does not work, only loopback
 				Log.d(TAG, "setting address and port to " + this.serverLocation + " " + this.portNum);
+				Log.c(TAG, "server available at https://" + this.serverLocation + ":" + this.portNum + "/index.html");
 				
 			} catch (SocketException e) {
 				Log.t(TAG, "could not bind to port " + portNumber + ": " + e.getMessage());
@@ -579,35 +580,26 @@ public class SimpleHttpServer implements Runnable {
 					Log.d(TAG, "value of 'file': '" + queryTags.get("file") + "'");
 					String resourceName = queryTags.get("file");
 					resourceName = resourceName.replaceAll("\\.\\./", "");
-					try {
-						//the file was found and read correctly
-						byte[] response = getResponse(resourceName);
-						//get the MIME type of the file
-						//MimetypesFileTypeMap mimeMap = new MimetypesFileTypeMap();
-						String file = Prefs.getInstance().getPreference(Prefs.Keys.webResourceFolder) +  resourceName;
-						String mime = null;
-						try (InputStream is = new FileInputStream(file);
-						        BufferedInputStream bis = new BufferedInputStream(is);) {
-						    AutoDetectParser parser = new AutoDetectParser();
-						    Detector detector = parser.getDetector();
-						    Metadata md = new Metadata();
-						    md.add(Metadata.RESOURCE_NAME_KEY, resourceName);
-						    MediaType mediaType = detector.detect(bis, md);
-						    mime = mediaType.toString();
-						}
-						if (mime != null) {					
-							com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
-							headers.add("Content-Type", mime);
-						}
-					    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
-				        exchange.getResponseBody().write(response);
-					} catch (IOException e) {
-						//the file either does not exist or could not be read
-						Log.e(TAG, "error opening resource '" + resourceFolder + resourceName + "' for reading");
-						byte[] response = get404ErrorPage(resourceName).getBytes();
-						exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
-						exchange.getResponseBody().write(response);
+					//the file was found and read correctly
+					byte[] response = getResponse(resourceName);
+					//get the MIME type of the file
+					String file = Prefs.getInstance().getPreference(Prefs.Keys.webResourceFolder) +  resourceName;
+					String mime = null;
+					try (	InputStream is = new FileInputStream(file);
+					        BufferedInputStream bis = new BufferedInputStream(is)) {
+					    AutoDetectParser parser = new AutoDetectParser();
+					    Detector detector = parser.getDetector();
+					    Metadata md = new Metadata();
+					    md.add(Metadata.RESOURCE_NAME_KEY, resourceName);
+					    MediaType mediaType = detector.detect(bis, md);
+					    mime = mediaType.toString();
 					}
+					if (mime != null) {					
+						com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+						headers.add("Content-Type", mime);
+					}
+				    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+			        exchange.getResponseBody().write(response);
 				} else {
 					//If the query string did not contain a key/value pair for file then the request
 					//+ is malformed
