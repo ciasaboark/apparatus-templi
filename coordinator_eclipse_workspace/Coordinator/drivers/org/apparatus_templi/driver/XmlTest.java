@@ -6,34 +6,33 @@ import org.apparatus_templi.Log;
 import org.apparatus_templi.XmlFormatter;
 
 public class XmlTest extends ControllerModule {
-	private XmlFormatter widgetXml;
-	private XmlFormatter.Sensor sensor1;
-	private XmlFormatter.Controller controller1;
-	private XmlFormatter.Button tempSensButton;
-	private XmlFormatter.Button controller1Button;
+	private final XmlFormatter widgetXml;
+	private final XmlFormatter.Sensor sensor1;
+	private final XmlFormatter.Controller controller1;
+	private final XmlFormatter.Button tempSensButton;
+	private final XmlFormatter.Button controller1Button;
 
 	public XmlTest() {
 		this.name = "XmlTest";
 		widgetXml = new XmlFormatter(this, "Xml Format Tester");
-		
+
 		sensor1 = new XmlFormatter.Sensor("Temperature");
 		sensor1.setValue("unknown");
 		controller1 = new XmlFormatter.Controller("Some Controller");
 		controller1.setStatus("waiting");
 		tempSensButton = new XmlFormatter.Button("Refresh");
 		tempSensButton.setAction("r");
-		tempSensButton.setInputType(XmlFormatter.InputType.NONE);
-		
+		tempSensButton.setInputType(XmlFormatter.Button.InputType.NONE);
+
 		controller1Button = new XmlFormatter.Button("Turn");
 		controller1Button.setAction("m$input");
-		controller1Button.setInputType(XmlFormatter.InputType.NUM);
-		
+		controller1Button.setInputType(XmlFormatter.Button.InputType.NUM);
+
 		widgetXml.addElement(sensor1);
 		widgetXml.addElement(tempSensButton);
 		widgetXml.addElement(controller1);
 		widgetXml.addElement(controller1Button);
-		
-		
+
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class XmlTest extends ControllerModule {
 	@Override
 	public void tellController(String controllerName, String command) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

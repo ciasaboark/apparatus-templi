@@ -131,7 +131,7 @@ a img:hover {
     left: 0px;
     top: 60px;
 */
-    font-family: 'Calibri';
+    font-family: 'Calibri', 'Varela Round', sans-serif;
     font-size: 14pt;
 /*    bottom: -40px;*/
     z-index:-1;
@@ -186,7 +186,7 @@ a img:hover {
 	text-align:right;
 /*    width: ;*/
     font-size: 13px;
-    font-family: 'Varela Round', sans-serif;
+    font-family: 'Calibri', 'Varela Round', sans-serif;
 /*    position: relative;*/
 /*    left: 61%;*/
 /*    background-color: white;*/

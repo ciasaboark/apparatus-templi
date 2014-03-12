@@ -8,19 +8,18 @@ import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.MotionEvent;
 
-
 /**
- * A sample driver that generates simulated motion tracker events every
- * few seconds.
+ * A sample driver that generates simulated motion tracker events every few seconds.
+ * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
- *
+ * 
  */
 public class MotionGenerator extends SensorModule implements EventGenerator {
 
 	public MotionGenerator() {
 		this.name = "MOT_GEN";
 	}
-	
+
 	@Override
 	public void run() {
 		Log.d(this.name, "starting");
@@ -28,7 +27,7 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 		this.queuedCommands.clear();
 
 		while (isRunning) {
-			//simulate motion events every few seconds
+			// simulate motion events every few seconds
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
@@ -62,12 +61,6 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 
 	@Override
 	public String getFullPageXML() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Event generateEvent() {
 		// TODO Auto-generated method stub
 		return null;
 	}

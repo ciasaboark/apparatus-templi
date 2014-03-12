@@ -65,17 +65,17 @@ public final class TwitterService implements ServiceInterface {
 	}
 
 	@Override
-	public void preferencesChanged() {
+	public synchronized void preferencesChanged() {
 		start();
 	}
 
 	@Override
-	public void restartService() {
+	public synchronized void restartService() {
 		start();
 	}
 
 	@Override
-	public void stopService() {
+	public synchronized void stopService() {
 		// TODO Auto-generated method stub
 		
 	}
