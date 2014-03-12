@@ -33,7 +33,7 @@ function getRunningDrivers() {
     document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
 }
 
-$( "#driver_refresh_button" ).click(function() {
+$("#driver_refresh_button").click(function() {
   $( "#driver_names" ).fadeOut( "slow", function() {
     // Animation complete.
   });

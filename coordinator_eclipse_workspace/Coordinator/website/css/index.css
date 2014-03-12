@@ -318,7 +318,11 @@ a img:hover {
     float: right;
 }
 
-#prefs_section_twitter i {
+#prefs_form i {
+    color: #cccccc;
+}
+
+#prefs_section_twitter h2 i {
     color: #36B8FF;
 }
 
@@ -326,7 +330,7 @@ a img:hover {
 /*    float: right;*/
 }
 
-#prefs_section_frontend i {
+#prefs_section_frontend h2 i {
     color:#FCD38B;
 }
 
@@ -334,15 +338,15 @@ a img:hover {
 /*    float: left;*/
 }
 
-#prefs_section_webserver i {
+#prefs_section_webserver h2 i {
     color:#CCCCCC;
 }
 
-#prefs_section_webserver .restart_module i {
+.restart_module i {
     color: #C54343;
 }
 
-#prefs_section_main i {
+#prefs_section_main h2 i {
     color: #606EFC;
 }
 
@@ -353,6 +357,7 @@ a img:hover {
 
 .restart_module a:hover {
     text-decoration: none;
+    color: #C54343;
 }
 
 #prefs_section_main .restart_module i {

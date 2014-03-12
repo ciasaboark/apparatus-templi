@@ -24,8 +24,6 @@ import java.util.HashMap;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -36,8 +34,7 @@ import org.apache.tika.parser.AutoDetectParser;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
 /**
@@ -51,9 +48,10 @@ import com.sun.net.httpserver.HttpsServer;
  */
 public class SimpleHttpServer implements Runnable {
 	private boolean isRunning = true;
-	private HttpsServer httpsServer = null;
+	private HttpServer httpsServer = null;
 	private static final String TAG = "SimpleHttpServer";
 	private String resourceFolder = "./website/";
+	private String protocol;
 	private String serverLocation;
 	private int portNum;
 
@@ -187,7 +185,7 @@ public class SimpleHttpServer implements Runnable {
 			}
 			socket = new InetSocketAddress(address, portNumber);
 			try {
-				httpsServer = HttpsServer.create(socket, 1);
+				httpsServer = HttpServer.create(socket, 0);
 				SSLContext sslContext = SSLContext.getInstance("TLS");
 
 				// initialise the keystore
@@ -206,27 +204,31 @@ public class SimpleHttpServer implements Runnable {
 
 				// setup the HTTPS context and parameters
 				sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-				httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
-					@Override
-					public void configure(HttpsParameters params) {
-						try {
-							// Initialize the SSL context
-							SSLContext c = SSLContext.getDefault();
-							SSLEngine engine = c.createSSLEngine();
-							params.setNeedClientAuth(false);
-							params.setCipherSuites(engine.getEnabledCipherSuites());
-							params.setProtocols(engine.getEnabledProtocols());
-
-							// Get the default parameters
-							SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
-							params.setSSLParameters(defaultSSLParameters);
-						} catch (Exception ex) {
-							Log.t(TAG, "Could not start https server");
-							Coordinator.exitWithReason("Could not start https server");
-						}
-					}
-				});
-
+				// httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
+				// @Override
+				// public void configure(HttpsParameters params) {
+				// try {
+				// // Initialize the SSL context
+				// SSLContext c = SSLContext.getDefault();
+				// SSLEngine engine = c.createSSLEngine();
+				// params.setNeedClientAuth(false);
+				// params.setCipherSuites(engine.getEnabledCipherSuites());
+				// params.setProtocols(engine.getEnabledProtocols());
+				//
+				// // Get the default parameters
+				// SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+				// params.setSSLParameters(defaultSSLParameters);
+				// } catch (Exception ex) {
+				// Log.t(TAG, "Could not start https server");
+				// Coordinator.exitWithReason("Could not start https server");
+				// }
+				// }
+				// });
+				if (httpsServer instanceof HttpsServer) {
+					protocol = "https://";
+				} else {
+					protocol = "http://";
+				}
 				if (!bindLocalhost) {
 					this.serverLocation = "localhost";
 				} else {
@@ -236,7 +238,7 @@ public class SimpleHttpServer implements Runnable {
 				// TODO getting the address on localhost does not work, only loopback
 				Log.d(TAG, "setting address and port to " + this.serverLocation + " "
 						+ this.portNum);
-				Log.c(TAG, "server available at https://" + this.serverLocation + ":"
+				Log.c(TAG, "server available at " + this.protocol + this.serverLocation + ":"
 						+ this.portNum + "/index.html");
 
 			} catch (SocketException e) {
@@ -352,6 +354,15 @@ public class SimpleHttpServer implements Runnable {
 	 */
 	public String getServerLocation() {
 		return serverLocation;
+	}
+
+	/**
+	 * Returns the protocol type
+	 * 
+	 * @return one of "http://" or "https://"
+	 */
+	public String getProtocol() {
+		return protocol;
 	}
 
 	/**
@@ -716,6 +727,9 @@ public class SimpleHttpServer implements Runnable {
 					html.append("</div><p class='clear'></p>");
 				}
 
+				// restart all modules
+				html.append("<div class='restart_module'><a href='/restart_module?module=all'>"
+						+ "<i class=\"fa fa-refresh\"></i> Restart All Modules</a></div>");
 				// Save preferences button
 				html.append("<a id=\"form_submit\" class=\"btn btn-default\" href=\"#\""
 						+ "onclick=\"document.getElementById('prefs').submit()\"><i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
@@ -749,7 +763,7 @@ public class SimpleHttpServer implements Runnable {
 				HashMap<String, String> queryTags = SimpleHttpServer.processQueryString(exchange
 						.getRequestURI().getQuery());
 				if (queryTags.containsKey("file")) {
-					Log.d(TAG, "value of 'file': '" + queryTags.get("file") + "'");
+					// Log.d(TAG, "value of 'file': '" + queryTags.get("file") + "'");
 					String resourceName = queryTags.get("file");
 					resourceName = resourceName.replaceAll("\\.\\./", "");
 					// the file was found and read correctly
@@ -915,7 +929,7 @@ public class SimpleHttpServer implements Runnable {
 				}
 				String query = new String(bao.toByteArray());
 				query = java.net.URLDecoder.decode(query, "UTF-8");
-				Log.d(TAG, "update_settings query body: " + query);
+				// Log.d(TAG, "update_settings query body: " + query);
 				if (query != null && !query.equals("")) {
 					HashMap<String, String> newPrefs = processQueryString(query);
 					prefs.savePreferences(newPrefs);
@@ -925,7 +939,7 @@ public class SimpleHttpServer implements Runnable {
 			}
 
 			byte[] response = getResponse();
-			headers.add("Location", "https://" + getServerLocation() + ":" + getPort()
+			headers.add("Location", getProtocol() + getServerLocation() + ":" + getPort()
 					+ "/settings.html");
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
 			exchange.getResponseBody().write(response);
@@ -940,8 +954,8 @@ public class SimpleHttpServer implements Runnable {
 			if (templateBytes != null) {
 				String templateHtml = new String(templateBytes);
 				templateHtml = templateHtml.replace("!TIMEOUT!", "8");
-				templateHtml = templateHtml.replace("!LOCATION!", "https://" + getServerLocation()
-						+ ":" + getPort() + "/settings.html");
+				templateHtml = templateHtml.replace("!LOCATION!", getProtocol()
+						+ getServerLocation() + ":" + getPort() + "/settings.html");
 				returnBytes = templateHtml.getBytes();
 			}
 
@@ -995,7 +1009,7 @@ public class SimpleHttpServer implements Runnable {
 			if (templateBytes != null) {
 				String templateHtml = new String(templateBytes);
 				templateHtml = templateHtml.replace("!TIMEOUT!", "8");
-				if (module.equals("web")) {
+				if ((module != null) && (module.equals("web") || module.equals("all"))) {
 					// The address the new server will be listening on may have changed
 					String newAddress = null;
 					if (Prefs.getInstance().getPreference(Prefs.Keys.serverBindLocalhost)
@@ -1009,11 +1023,11 @@ public class SimpleHttpServer implements Runnable {
 						newAddress = "localhost";
 					}
 
-					templateHtml = templateHtml.replace("!LOCATION!", "https://" + newAddress + ":"
-							+ Prefs.getInstance().getPreference(Prefs.Keys.portNum)
+					templateHtml = templateHtml.replace("!LOCATION!", getProtocol() + newAddress
+							+ ":" + Prefs.getInstance().getPreference(Prefs.Keys.portNum)
 							+ "/settings.html");
 				} else {
-					templateHtml = templateHtml.replace("!LOCATION!", "https://"
+					templateHtml = templateHtml.replace("!LOCATION!", getProtocol()
 							+ getServerLocation() + ":" + getPort() + "/settings.html");
 				}
 				returnBytes = templateHtml.getBytes();

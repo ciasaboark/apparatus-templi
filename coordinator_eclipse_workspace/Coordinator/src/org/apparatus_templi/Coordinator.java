@@ -552,7 +552,17 @@ public class Coordinator {
 	 *            drivers) or "web" (restart the web server).
 	 */
 	static synchronized void restartModule(String module) {
+		// TODO the chain should be better:
+		/*
+		 * all ->main ->web main ->drivers ->config read ->serial interface ->message center? web
+		 * ->config read? ->web server
+		 */
 		switch (module) {
+		case "all":
+			Log.d(TAG, "restarting all modules");
+			restartModule("main");
+			restartModule("web");
+			break;
 		case "main":
 			Log.d(TAG, "restarting drivers");
 			restartDrivers();
