@@ -9,7 +9,7 @@ import org.apparatus_templi.driver.Driver;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public final class Button implements Element {
+public final class Button implements ElementInterface {
 	private final String name;
 	private String action = null;
 	private String inputType = null;

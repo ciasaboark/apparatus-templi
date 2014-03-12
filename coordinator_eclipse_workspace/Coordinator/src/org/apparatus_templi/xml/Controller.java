@@ -7,7 +7,7 @@ package org.apparatus_templi.xml;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public final class Controller implements Element {
+public final class Controller implements ElementInterface {
 	private final String name;
 	private String icon = null;
 	private String status = null;

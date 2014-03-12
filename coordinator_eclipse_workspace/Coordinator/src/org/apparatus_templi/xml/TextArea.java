@@ -6,7 +6,7 @@ package org.apparatus_templi.xml;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public final class TextArea implements Element {
+public final class TextArea implements ElementInterface {
 	private String text;
 	private String name;
 

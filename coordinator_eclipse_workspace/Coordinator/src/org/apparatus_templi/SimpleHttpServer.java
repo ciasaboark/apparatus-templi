@@ -28,6 +28,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -616,6 +617,11 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>"
 						+ "<i  class=\"fa fa-edit\"></i>&nbsp;Main" + "</h2>");
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+						+ "<i class=\"fa fa-question-circle\" "
+						+ "title=\""
+						+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+								Prefs.Keys.configFile))
+						+ "\"></i>&nbsp;"
 						+ Prefs.Keys.configFile
 						+ "</span><span "
 						+ "class=\"pref_value\"><input id='f_config_file' type=\"text\" name=\""
@@ -632,9 +638,13 @@ public class SimpleHttpServer implements Runnable {
 					if (key.equals(Prefs.Keys.serialPort) && value == null) {
 						value = "";
 					}
-					html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key
-							+ "</span><span " + "class=\"pref_value\"><input type=\"text\" name=\""
-							+ key + "\" value=\"" + value + "\" /></span></div><br />\n");
+					html.append("<div class=\"pref_input\"><span class=\"pref_key \" title='test'>"
+							+ "<i class=\"fa fa-question-circle\" "
+							+ "title=\""
+							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+									key)) + "\"></i>&nbsp;" + key + "</span><span "
+							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
+							+ "\" value=\"" + value + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<span class='restart_module'><a href='/restart_module?module=main'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
@@ -644,9 +654,13 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>"
 						+ "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
 				for (String key : new String[] { Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost }) {
-					html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key
-							+ "</span><span" + "class=\"pref_value\"><input type=\"text\" name=\""
-							+ key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+							+ "<i class=\"fa fa-question-circle \" "
+							+ "title=\""
+							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+									key)) + "\"></i>&nbsp;" + key + "</span><span"
+							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
+							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<span class='restart_module'><a href='/restart_module?module=web'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
@@ -656,9 +670,13 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>"
 						+ "<i  class=\"fi-web\"></i>&nbsp;Web Frontend" + "</h2>");
 				for (String key : new String[] { Prefs.Keys.webResourceFolder }) {
-					html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key
-							+ "</span><span" + "class=\"pref_value\"><input type=\"text\" name=\""
-							+ key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+							+ "<i class=\"fa fa-question-circle \" "
+							+ "title=\""
+							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+									key)) + "\"></i>&nbsp;" + key + "</span><span"
+							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
+							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div><p class='clear'></p>");
@@ -667,9 +685,13 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='prefs_section_twitter' class='prefs_section'><h2 class='prefs_section_title'>"
 						+ "<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</h2>");
 				for (String key : new String[] { Prefs.Keys.twtrAccess, Prefs.Keys.twtrAccessKey }) {
-					html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key
-							+ "</span><span" + "class=\"pref_value\"><input type=\"text\" name=\""
-							+ key + "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+							+ "<i class=\"fa fa-question-circle \" "
+							+ "title=\""
+							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+									key)) + "\"></i>&nbsp;" + key + "</span><span"
+							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
+							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<p class='warning'>" + ENC_WARNING
@@ -681,7 +703,11 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<div id='prefs_section_unknown' class='prefs_section'><h2 class='prefs_section_title'>"
 							+ "<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</h2>");
 					for (String key : prefs.keySet()) {
-						html.append("<div class=\"pref_input\"><span class=\"pref_key\">" + key
+						html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+								+ "<i class=\"fa fa-question-circle \" "
+								+ "title=\""
+								+ StringEscapeUtils.escapeHtml4(Prefs.getInstance()
+										.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
 								+ "</span><span"
 								+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
 								+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");

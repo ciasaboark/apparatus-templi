@@ -6,7 +6,7 @@ package org.apparatus_templi.xml;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public interface Element {
+public interface ElementInterface {
 	/**
 	 * Returns the name of this Element.
 	 * 

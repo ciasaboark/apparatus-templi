@@ -6,7 +6,7 @@ package org.apparatus_templi.xml;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public final class Pre implements Element {
+public final class Pre implements ElementInterface {
 	private String name;
 	private String html;
 
@@ -40,7 +40,7 @@ public final class Pre implements Element {
 	public String getXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<pre name=\"" + name + "\">");
-		sb.append(html);
+		sb.append("<![CDATA[" + html + "]]>");
 		sb.append("</pre>");
 		return sb.toString();
 	}

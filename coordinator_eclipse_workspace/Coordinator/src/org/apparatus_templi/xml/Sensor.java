@@ -7,7 +7,7 @@ package org.apparatus_templi.xml;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public final class Sensor implements Element {
+public final class Sensor implements ElementInterface {
 	private final String name;
 	private String icon = null;
 	private String value = null;

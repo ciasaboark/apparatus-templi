@@ -14,7 +14,7 @@ import org.apparatus_templi.driver.Driver;
  */
 public class XmlFormatter {
 	private static final double VERSION = 1.0;
-	private ArrayList<Element> elements;
+	private ArrayList<ElementInterface> elementInterfaces;
 	private final String name;
 	private final String shortName;
 
@@ -27,7 +27,7 @@ public class XmlFormatter {
 	 *            a free-form String representing the name of this Driver.
 	 */
 	public XmlFormatter(Driver d, String longName) {
-		elements = new ArrayList<Element>();
+		elementInterfaces = new ArrayList<ElementInterface>();
 		this.name = longName;
 		this.shortName = d.getName();
 	}
@@ -36,7 +36,7 @@ public class XmlFormatter {
 	 * Removes all Elements.
 	 */
 	public void clearElements() {
-		elements = new ArrayList<Element>();
+		elementInterfaces = new ArrayList<ElementInterface>();
 	}
 
 	/**
@@ -45,8 +45,8 @@ public class XmlFormatter {
 	 * @param e
 	 *            the Element to add.
 	 */
-	public void addElement(Element e) {
-		elements.add(e);
+	public void addElement(ElementInterface e) {
+		elementInterfaces.add(e);
 	}
 
 	/**
@@ -55,8 +55,8 @@ public class XmlFormatter {
 	 * @param e
 	 *            the Element to remove.
 	 */
-	public void removeElement(Element e) {
-		elements.remove(e);
+	public void removeElement(ElementInterface e) {
+		elementInterfaces.remove(e);
 	}
 
 	/**
@@ -71,8 +71,8 @@ public class XmlFormatter {
 		xml.append("<module version=\"" + XmlFormatter.VERSION + "\" name=\"" + this.name
 				+ "\" driver=\"" + shortName + "\" "
 				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-				+ "xsi:noNamespaceSchemaLocation=\"resource?file=xml/widget-schema.xsd\" " + " >");
-		for (Element e : elements) {
+				+ "xsi:noNamespaceSchemaLocation=\"resource?file=xml/module-schema.xsd\" " + " >");
+		for (ElementInterface e : elementInterfaces) {
 			xml.append(e.getXml());
 		}
 		xml.append("</module>");

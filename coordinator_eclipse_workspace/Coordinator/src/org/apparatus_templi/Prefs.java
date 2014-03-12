@@ -161,6 +161,14 @@ public class Prefs {
 		return value;
 	}
 
+	public synchronized String getPreferenceDesc(String key) {
+		String value = null;
+		if (preferences.containsKey(key)) {
+			value = PREF_DESC.get(key);
+		}
+		return value;
+	}
+
 	/**
 	 * Update the value of a preference. Updating the preference value will only update the
 	 * preference resident in memory. To store the preference permanently
