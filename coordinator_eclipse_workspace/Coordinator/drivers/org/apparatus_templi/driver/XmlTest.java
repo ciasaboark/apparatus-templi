@@ -3,35 +3,64 @@ package org.apparatus_templi.driver;
 import java.util.ArrayList;
 
 import org.apparatus_templi.Log;
-import org.apparatus_templi.XmlFormatter;
+import org.apparatus_templi.xml.Button;
+import org.apparatus_templi.xml.Controller;
+import org.apparatus_templi.xml.InputType;
+import org.apparatus_templi.xml.Pre;
+import org.apparatus_templi.xml.Sensor;
+import org.apparatus_templi.xml.TextArea;
+import org.apparatus_templi.xml.XmlFormatter;
 
 public class XmlTest extends ControllerModule {
+	// we will use two instances of XmlFormatter, one to hold widget data, and one to hold the full
+	// page XML data
 	private final XmlFormatter widgetXml;
-	private final XmlFormatter.Sensor sensor1;
-	private final XmlFormatter.Controller controller1;
-	private final XmlFormatter.Button tempSensButton;
-	private final XmlFormatter.Button controller1Button;
+	private final XmlFormatter fullXml;
+
+	// the widget XmlFormatter will only hold one sensor, one controller, and two buttons. The full
+	// page generator will hold those same elements, plus some others.
+	private final Sensor sensor1;
+	private final Controller controller1;
+	private final Button tempSensButton;
+	private final Button controller1Button;
+
+	// some additional Elements that are only displayed in the full page XML
+	// Note that the pre-formatted area could link to resources served by the web server, or to
+	// outside resources
+	TextArea sensDesc = new TextArea("sensor description",
+			"Temperature data is provided via a DHT11 "
+					+ "sensor.  Readings are only accurate to +/- 1ºC.");
+	Pre sensLink = new Pre("sensor link", "<p>More information on the sensor can be found at the "
+			+ "<a href='http://www.adafruit.com/products/386' >AdaFruit</a> website.");
 
 	public XmlTest() {
 		this.name = "XmlTest";
 		widgetXml = new XmlFormatter(this, "Xml Format Tester");
+		fullXml = new XmlFormatter(this, "Xml Format Tester");
 
-		sensor1 = new XmlFormatter.Sensor("Temperature");
+		sensor1 = new Sensor("asdf");
 		sensor1.setValue("unknown");
-		controller1 = new XmlFormatter.Controller("Some Controller");
+		controller1 = new Controller("Some Controller");
 		controller1.setStatus("waiting");
-		tempSensButton = new XmlFormatter.Button("Refresh");
+		tempSensButton = new Button("Refresh");
 		tempSensButton.setAction("r");
-		tempSensButton.setInputType(XmlFormatter.Button.InputType.NONE);
+		tempSensButton.setInputType(InputType.NONE);
 
-		controller1Button = new XmlFormatter.Button("Turn");
+		controller1Button = new Button("Turn");
 		controller1Button.setAction("m$input");
-		controller1Button.setInputType(XmlFormatter.Button.InputType.NUM);
+		controller1Button.setInputType(InputType.NUM);
 
 		widgetXml.addElement(sensor1);
 		widgetXml.addElement(tempSensButton);
 		widgetXml.addElement(controller1);
 		widgetXml.addElement(controller1Button);
+
+		fullXml.addElement(sensor1);
+		fullXml.addElement(sensDesc);
+		fullXml.addElement(sensLink);
+		fullXml.addElement(tempSensButton);
+		fullXml.addElement(controller1);
+		fullXml.addElement(controller1Button);
 
 	}
 
@@ -68,14 +97,13 @@ public class XmlTest extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		String xml = widgetXml.generateWidgetXml();
+		String xml = widgetXml.generateXml();
 		return xml;
 	}
 
 	@Override
 	public String getFullPageXML() {
-		// TODO Auto-generated method stub
-		return null;
+		return fullXml.generateXml();
 	}
 
 	@Override
