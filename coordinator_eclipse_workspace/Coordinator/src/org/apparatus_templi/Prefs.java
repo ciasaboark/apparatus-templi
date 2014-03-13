@@ -105,9 +105,11 @@ public class Prefs {
 			Log.d(TAG, "read preference '" + Keys.portNum + "' as '" + getPreference(Keys.portNum)
 					+ "'");
 
-			// a blank serial port should be treated as non-existent
-			String sp = props.getProperty(Keys.serialPort, DEF_PREFS.get(Keys.portNum));
-			if (sp.equals("")) {
+			// setting the serial port to null from the web interface is not possible, the best we
+			// can do is set it to a blank value or the word 'null'. These values should be
+			// transcribed back to a null value.
+			String sp = props.getProperty(Keys.serialPort, DEF_PREFS.get(Keys.serialPort));
+			if (sp == null || sp.equals("") || sp.equals("null")) {
 				sp = null;
 			}
 			preferences.put(Prefs.Keys.serialPort, sp);

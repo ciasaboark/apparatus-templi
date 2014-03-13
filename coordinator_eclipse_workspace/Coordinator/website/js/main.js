@@ -51,6 +51,19 @@ $(document).ready(function() {
 
 function updateConfigFile() {
     var $newConfig = document.getElementById('f_config_file').value;
-//    alert($newConfig);
-    document.getElementById('btn_conf_file').innerHTML = $newConfig;
+    
+    if ($newConfig == "coordinator.conf" || $newConfig == "") {
+        if ($newConfig == "") {
+            $newConfig = "<empty>";
+        }
+        document.getElementById('btn_conf_file').innerHTML = $newConfig;
+        console.log("new config file name is the default config file");
+        document.getElementById('btn_conf_file').onclick = "";
+        document.getElementById('form_submit').classList.add("disabled");
+    } else {
+        document.getElementById('btn_conf_file').innerHTML = $newConfig;
+        console.log("new config file name not default config");
+        document.getElementById('btn_conf_file').onclick = function onclick(event) {document.getElementById('prefs').submit()};
+        document.getElementById('form_submit').classList.remove("disabled");
+    }
 }

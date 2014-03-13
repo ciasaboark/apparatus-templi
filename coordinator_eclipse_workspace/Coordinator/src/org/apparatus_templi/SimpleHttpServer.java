@@ -613,12 +613,22 @@ public class SimpleHttpServer implements Runnable {
 				StringBuilder html = new StringBuilder();
 				HashMap<String, String> prefs = Prefs.getInstance().getPreferencesMap();
 				String configFile = prefs.get(Prefs.Keys.configFile);
-				File f = new File(configFile);
-				configFile = f.getAbsolutePath();
-				html.append("<p>The settings below represent what the server is currently using. If you want to"
-						+ "reset a setting back to its default value then clear the input field before submitting."
-						+ "Saving the settings will overwrite the entire contents of the configuration file, so it"
-						+ "might be a good idea to have a backup stored elsewhere.</p>");
+
+				// if the config file is not the default then we will show the full file path,
+				// otherwise only the short name
+				if (!configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					File f = new File(configFile);
+					configFile = f.getAbsolutePath();
+				}
+
+				// if the user is still using the default config file then show a warning
+				if (prefs.get(Prefs.Keys.configFile).equals(
+						Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					html.append("<p class='warning_text'>The default config file can not be overwritten.  If you want to save your "
+							+ "preferences, then set a new location below and click save preferences.  To use the "
+							+ "new configuration file restart the service with the command line argument: "
+							+ "<pre style='display:inline'>--configFile path/to/the/new/file</pre></p>.");
+				}
 
 				// TODO update to a form so that the settings can be sent back in a POST request
 				html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\""
@@ -658,7 +668,6 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" value=\"" + value + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("<span class='restart_module'><a href='/restart_module?module=main'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
 				html.append("</div><p class='clear'></p>");
 
 				// Preferences for web server
@@ -674,7 +683,6 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("<span class='restart_module'><a href='/restart_module?module=web'><i class=\"fa fa-refresh\"></i> Restart Module</a></span>");
 				html.append("</div><p class='clear'></p>");
 
 				// Preferences for web frontend
@@ -727,14 +735,26 @@ public class SimpleHttpServer implements Runnable {
 					html.append("</div><p class='clear'></p>");
 				}
 
-				// restart all modules
-				html.append("<div class='restart_module'><a href='/restart_module?module=all'>"
-						+ "<i class=\"fa fa-refresh\"></i> Restart All Modules</a></div>");
+				// restart all modules button
+
+				html.append("<div><a id=\"restart_all_button\" class=\"btn btn-danger\" href=\"#\""
+						+ "onclick=\"document.getElementById('prefs').submit()\""
+						+ "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
+						+ "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
+						+ "Restart service</a></div>");
+
 				// Save preferences button
-				html.append("<a id=\"form_submit\" class=\"btn btn-default\" href=\"#\""
-						+ "onclick=\"document.getElementById('prefs').submit()\"><i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
+				// if the config file is the default then we want the save preferences button to be
+				// disabled until updated via javascript
+				html.append("<div id='form_submit'");
+				if (configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					html.append("class='btn btn-success disabled'>");
+				} else {
+					html.append("class='btn btn-success'>");
+				}
+				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
 						+ "Save Preferences to <span id='btn_conf_file'>" + configFile
-						+ "</span></a>");
+						+ "</span></div>");
 				html.append("</form>");
 				html.append("</div>");
 
@@ -1002,13 +1022,18 @@ public class SimpleHttpServer implements Runnable {
 		}
 
 		private byte[] getResponse(String module) {
+			assert module != null : "module to restart can not be null";
 			byte[] returnBytes = null;
 
 			byte[] templateBytes = getFileBytes(resourceFolder + "redirect.html");
 
 			if (templateBytes != null) {
 				String templateHtml = new String(templateBytes);
-				templateHtml = templateHtml.replace("!TIMEOUT!", "8");
+				if (module.equals("all")) {
+					templateHtml = templateHtml.replace("!TIMEOUT!", "15");
+				} else {
+					templateHtml = templateHtml.replace("!TIMEOUT!", "8");
+				}
 				if ((module != null) && (module.equals("web") || module.equals("all"))) {
 					// The address the new server will be listening on may have changed
 					String newAddress = null;

@@ -385,7 +385,7 @@ public class Coordinator {
 	}
 
 	private static void restartWebServer() throws UnknownHostException, InterruptedException {
-		assert webServer != null;
+		assert webServer != null : "attempting to restart web server when one is already active";
 
 		webServer.terminate();
 		Thread.sleep(1000);
@@ -399,11 +399,13 @@ public class Coordinator {
 
 	private static void startDrivers() {
 		// this should never be called when drivers are currently running
-		assert loadedDrivers.isEmpty();
-		assert driverThreads.isEmpty();
+		assert loadedDrivers.isEmpty() : "list of loaded drivers was not empty when starting drivers";
+		assert driverThreads.isEmpty() : "list of driver threads was not empty when starting drivers";
 
 		// Instantiate all drivers specified in the config file
 		String driverList = prefs.getPreference(Prefs.Keys.driverList);
+		assert driverList != null : "driver list should not be null";
+
 		if (!driverList.equals("")) {
 			Log.c(TAG, "Initializing drivers...");
 			String[] drivers = driverList.split(",");
@@ -418,7 +420,7 @@ public class Coordinator {
 			}
 		} else {
 			Log.w(TAG,
-					"No drivers were specified in the configuration file: '"
+					"No drivers were specified in the configuration " + "file: '"
 							+ prefs.getPreference(Prefs.Keys.configFile)
 							+ "', nothing will be loaded");
 		}
@@ -941,11 +943,13 @@ public class Coordinator {
 	 * {@link EventWatcher#receiveEvent(Event)} method.
 	 * 
 	 * @param d
-	 *            the Driver that generated this Event.
+	 *            the Driver that generated this Event, must not be null.
 	 * @param e
-	 *            the Event generated.
+	 *            the Event generated, must not be null
+	 * @throws IllegalArgumentException
+	 *             if the given Driver is null
 	 */
-	public static void receiveEvent(Driver d, Event e) {
+	public static void receiveEvent(Driver d, Event e) throws IllegalArgumentException {
 		if (d == null || e == null) {
 			throw new IllegalArgumentException();
 		}

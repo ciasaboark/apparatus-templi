@@ -250,7 +250,7 @@ a img:hover {
 
 
 #footer img {
-    vertical-align: bottom;
+    vertical-align: top;
 }
 
 #footer a:hover {
@@ -268,6 +268,10 @@ a img:hover {
 #form_submit {
 /*    float: right;*/
     margin-top: 20px;
+}
+
+#form_submit i {
+    color:white;
 }
 
 .prefs_section {
@@ -318,7 +322,7 @@ a img:hover {
     float: right;
 }
 
-#prefs_form i {
+#prefs_form  .pref_key i {
     color: #cccccc;
 }
 
@@ -368,9 +372,11 @@ a img:hover {
     padding-left: 10px;
 }
 
+/*
 #prefs_section_main {
-/*    float: left;*/
+    float: left;
 }
+*/
 
 #prefs_form .warning {
     text-align:center;
@@ -380,19 +386,3 @@ a img:hover {
      color: red;
 }
 
-
-/*
-.clear {
-    clear:both;
-}
-*/
-
-
-
-
-
-/*
-.footer span {
-    vertical-align: bottom;
-}
-*/
