@@ -736,9 +736,8 @@ public class SimpleHttpServer implements Runnable {
 				}
 
 				// restart all modules button
-
-				html.append("<div><a id=\"restart_all_button\" class=\"btn btn-danger\" href=\"#\""
-						+ "onclick=\"document.getElementById('prefs').submit()\""
+				html.append("<div><a id=\"restart_all_button\" class=\"btn btn-danger\" href='/restart_module?module=all' "
+						+ "onclick=\"document.getElementById('prefs').submit()\" "
 						+ "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
 						+ "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
 						+ "Restart service</a></div>");
@@ -750,7 +749,8 @@ public class SimpleHttpServer implements Runnable {
 				if (configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
 					html.append("class='btn btn-success disabled'>");
 				} else {
-					html.append("class='btn btn-success'>");
+					html.append("class ='btn btn-success'");
+					html.append("onclick = document.getElementById('prefs').submit() >");
 				}
 				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
 						+ "Save Preferences to <span id='btn_conf_file'>" + configFile

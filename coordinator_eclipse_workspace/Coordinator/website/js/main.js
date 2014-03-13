@@ -58,12 +58,12 @@ function updateConfigFile() {
         }
         document.getElementById('btn_conf_file').innerHTML = $newConfig;
         console.log("new config file name is the default config file");
-        document.getElementById('btn_conf_file').onclick = "";
+        document.getElementById('form_submit').onclick = "";
         document.getElementById('form_submit').classList.add("disabled");
     } else {
         document.getElementById('btn_conf_file').innerHTML = $newConfig;
         console.log("new config file name not default config");
-        document.getElementById('btn_conf_file').onclick = function onclick(event) {document.getElementById('prefs').submit()};
+        document.getElementById('form_submit').onclick = function onclick(event) {document.getElementById('prefs').submit()};
         document.getElementById('form_submit').classList.remove("disabled");
     }
 }

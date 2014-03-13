@@ -25,6 +25,7 @@ a img:hover {
 #header_title_text {
     font-size: 22pt;
     vertical-align: middle;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
 
 #header_links {
@@ -154,11 +155,11 @@ a img:hover {
 }
 
 #button_about:hover {
-    color: #04BFA0;
+    color: #E25FCB;
 }
 
 #button_about:active {
-    color: #00967D;
+    color: #C051AD;
 }
 
 #button_settings:hover {
@@ -210,7 +211,7 @@ a img:hover {
 */
     height:40px;
     background:#FCFCFC;
-    border-top: 1px dashed #808080;
+    border-top: 1px solid #ccc;
     width: 100%;
     text-align:right;
 /*    padding-right:20px;*/
@@ -293,6 +294,7 @@ a img:hover {
     padding-top: 4px;
     padding-bottom: 4px;
     border-radius: 10px 10px 0px 0px;
+    text-shadow: 3px 2px 3px rgba(0,0,0,0.15);
 }
 
 
