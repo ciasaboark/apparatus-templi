@@ -12,6 +12,11 @@ import java.util.HashMap;
 import org.apparatus_templi.Log;
 
 public class DatabaseService implements ServiceInterface {
+	// shared connection
+	private static Connection conn = null;
+	// semaphore to keep track of the number of open connections
+	private static int openConnections = 0;
+
 	private static final String TAG = "DatabaseService";
 	private static DatabaseService instance = null;
 
@@ -51,45 +56,63 @@ public class DatabaseService implements ServiceInterface {
 			throws IllegalArgumentException {
 		Log.d(TAG, "storing text data");
 		assert tableExists("coordinator", "DRIVERTEXT") : "database should already exist before storing data";
+		int returnCode = 0;
 
 		if (data == null) {
 			Log.w(TAG, "database can not store null values");
-			return 0;
-		}
+		} else {
+			openConnections++;
 
-		Connection c = null;
-		PreparedStatement stmt = null;
-		String sql;
-		int returnCode = 0;
+			PreparedStatement stmt = null;
+			String sql;
 
-		try {
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			c.setAutoCommit(false);
-			if (readTextData(driverName, dataTag) == null) // no previous data
-															// stored
-			{
-				sql = "INSERT INTO DRIVERTEXT VALUES (?, ?, ?)";
-				stmt = c.prepareStatement(sql);
-				stmt.setString(1, driverName);
-				stmt.setString(2, dataTag);
-				stmt.setString(3, data);
-				returnCode = 1;
-			} else {
-				sql = "UPDATE DRIVERTEXT SET DATA = ? WHERE NAME = ? AND TAG = ?";
-				stmt = c.prepareStatement(sql);
-				stmt.setString(1, data);
-				stmt.setString(2, driverName);
-				stmt.setString(3, dataTag);
-				returnCode = -1;
+			try {
+				Class.forName("org.sqlite.JDBC");
+				// if this was the first access then we need to open a connection to the DB
+				if (openConnections == 1) {
+					conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+				}
+				conn.setAutoCommit(false);
+				if (readTextData(driverName, dataTag) == null) // no previous data
+																// stored
+				{
+					sql = "INSERT INTO DRIVERTEXT VALUES (?, ?, ?)";
+					stmt = conn.prepareStatement(sql);
+					stmt.setString(1, driverName);
+					stmt.setString(2, dataTag);
+					stmt.setString(3, data);
+					returnCode = 1;
+				} else {
+					sql = "UPDATE DRIVERTEXT SET DATA = ? WHERE NAME = ? AND TAG = ?";
+					stmt = conn.prepareStatement(sql);
+					stmt.setString(1, data);
+					stmt.setString(2, driverName);
+					stmt.setString(3, dataTag);
+					returnCode = -1;
+				}
+				stmt.executeUpdate();
+				stmt.close();
+				conn.commit();
+
+			} catch (Exception e) {
+				Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+			} finally {
+				openConnections--;
 			}
-			stmt.executeUpdate();
-			stmt.close();
-			c.commit();
-			c.close();
-		} catch (Exception e) {
-			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+
+			// if this was the last access then we need to close the SQL connection
+			if (openConnections == 0) {
+				try {
+					Log.d(TAG, "last accessor closing SQL connection");
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					Log.e(TAG, "could not close sql connection");
+					e.printStackTrace();
+				}
+			}
 		}
+
 		return returnCode;
 	}
 
@@ -112,42 +135,58 @@ public class DatabaseService implements ServiceInterface {
 			throws IllegalArgumentException {
 		Log.d(TAG, "storing binary data");
 		assert tableExists("coordinator", "DRIVERBIN") : "database should already exist before storing data";
+		int returnCode = 0;
 
 		if (data == null) {
 			Log.w(TAG, "database can not store null values");
-			return 0;
-		}
+		} else {
+			openConnections++;
 
-		Connection c = null;
-		PreparedStatement stmt = null;
-		String sql = null;
-		int returnCode = 0;
+			PreparedStatement stmt = null;
+			String sql = null;
 
-		try {
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			c.setAutoCommit(false);
-			if (readBinData(driverName, dataTag) == null) {
-				sql = "INSERT INTO DRIVERBIN" + " VALUES (?,?,?)";
-				stmt = c.prepareStatement(sql);
-				stmt.setString(1, driverName);
-				stmt.setString(2, dataTag);
-				stmt.setBytes(3, data);
-				returnCode = 1;
-			} else {
-				sql = "UPDATE DRIVERBIN SET DATA = ? WHERE NAME = ? AND TAG = ?";
-				stmt = c.prepareStatement(sql);
-				stmt.setBytes(1, data);
-				stmt.setString(2, driverName);
-				stmt.setString(3, dataTag);
-				return -1;
+			try {
+				Class.forName("org.sqlite.JDBC");
+				// if this was the first access then we need to open a connection to the DB
+				if (openConnections == 1) {
+					conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+				}
+				conn.setAutoCommit(false);
+				if (readBinData(driverName, dataTag) == null) {
+					sql = "INSERT INTO DRIVERBIN" + " VALUES (?,?,?)";
+					stmt = conn.prepareStatement(sql);
+					stmt.setString(1, driverName);
+					stmt.setString(2, dataTag);
+					stmt.setBytes(3, data);
+					returnCode = 1;
+				} else {
+					sql = "UPDATE DRIVERBIN SET DATA = ? WHERE NAME = ? AND TAG = ?";
+					stmt = conn.prepareStatement(sql);
+					stmt.setBytes(1, data);
+					stmt.setString(2, driverName);
+					stmt.setString(3, dataTag);
+					returnCode = -1;
+				}
+				stmt.executeUpdate();
+				stmt.close();
+				conn.commit();
+			} catch (Exception e) {
+				Log.e(TAG, "storeBinData()" + e.getClass().getName() + ": " + e.getMessage());
+			} finally {
+				openConnections--;
 			}
-			stmt.executeUpdate();
-			stmt.close();
-			c.commit();
-			c.close();
-		} catch (Exception e) {
-			Log.e(TAG, "storeBinData()" + e.getClass().getName() + ": " + e.getMessage());
+
+			// if this was the last access then we need to close the SQL connection
+			if (openConnections == 0) {
+				try {
+					Log.d(TAG, "last accessor closing SQL connection");
+					conn.close();
+					conn = null;
+				} catch (SQLException e) {
+					Log.e(TAG, "could not close sql connection");
+					e.printStackTrace();
+				}
+			}
 		}
 		return returnCode;
 	}
@@ -164,14 +203,18 @@ public class DatabaseService implements ServiceInterface {
 	 */
 	public synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "reading text data");
-		Connection c = null;
+		openConnections++;
+
 		Statement stmt = null;
 		String data = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			c.setAutoCommit(false);
-			stmt = c.createStatement();
+			// if this was the first access then we need to open a connection to the DB
+			if (openConnections == 1) {
+				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+			}
+			conn.setAutoCommit(false);
+			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVERTEXT;");
 			while (rs.next()) {
 				if (rs.getString("NAME").equals(driverName) && rs.getString("TAG").equals(dataTag)) {
@@ -180,10 +223,24 @@ public class DatabaseService implements ServiceInterface {
 			}
 			rs.close();
 			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			Log.e(TAG, "readTextData()" + e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			openConnections--;
 		}
+
+		// if this was the last access then we need to close the SQL connection
+		if (openConnections == 0) {
+			try {
+				Log.d(TAG, "last accessor closing SQL connection");
+				conn.close();
+				conn = null;
+			} catch (SQLException e) {
+				Log.e(TAG, "could not close sql connection");
+				e.printStackTrace();
+			}
+		}
+
 		return data;
 	}
 
@@ -199,28 +256,19 @@ public class DatabaseService implements ServiceInterface {
 	 */
 	public synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "reading binary data");
-		Connection c = null;
+
+		openConnections++;
 		Statement stmt = null;
 		byte[] data = null;
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			boolean dbConnected = false;
-			// the SQLite database does not like parallel or nested queries
-			while (!dbConnected) {
-				try {
-					c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-					dbConnected = true;
-				} catch (NullPointerException e) {
-					// block for a bit
-					Log.e(TAG, "unable to get connection to database, will try again");
-					long wakeTime = System.currentTimeMillis() + 200;
-					while (System.currentTimeMillis() < wakeTime) {
-					}
-				}
+			// if this was the first access then we need to open a connection to the DB
+			if (openConnections == 1) {
+				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			}
-			c.setAutoCommit(false);
-			stmt = c.createStatement();
+			conn.setAutoCommit(false);
+			stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVERBIN;");
 			while (rs.next()) {
 				if (rs.getString("NAME").equals(driverName) && rs.getString("TAG").equals(dataTag)) {
@@ -229,14 +277,29 @@ public class DatabaseService implements ServiceInterface {
 			}
 			rs.close();
 			stmt.close();
-			c.close();
 		} catch (SQLException | ClassNotFoundException e) {
 			Log.e(TAG, "readBinData()" + e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			openConnections--;
 		}
+
+		// if this was the last access then we need to close the SQL connection
+		if (openConnections == 0) {
+			try {
+				Log.d(TAG, "last accessor closing SQL connection");
+				conn.close();
+				conn = null;
+			} catch (SQLException e) {
+				Log.e(TAG, "could not close sql connection");
+				e.printStackTrace();
+			}
+		}
+
 		return data;
 	}
 
 	public HashMap<String, String> getAllText(String driverName) {
+		// TODO
 		HashMap<String, String> resultSet = new HashMap<String, String>();
 		resultSet.put("key", "value");
 
@@ -244,59 +307,110 @@ public class DatabaseService implements ServiceInterface {
 	}
 
 	private boolean tableExists(String dbName, String tbName) {
+		openConnections++;
 		boolean tableExists = false;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			DatabaseMetaData meta = c.getMetaData();
+			if (openConnections == 1) {
+				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+			}
+			DatabaseMetaData meta = conn.getMetaData();
 			ResultSet res = meta.getTables(null, null, tbName, new String[] { "TABLE" });
 			while (res.next()) {
 				if (tbName.equals(res.getString("TABLE_NAME"))) {
-					c.close();
 					tableExists = true;
 					break;
 				}
 			}
-			c.close();
 		} catch (SQLException | ClassNotFoundException e) {
 			Log.e(TAG, "checkTable()" + e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			openConnections--;
 		}
+
+		// if this was the last access then we need to close the SQL connection
+		if (openConnections == 0) {
+			try {
+				Log.d(TAG, "last accessor closing SQL connection");
+				conn.close();
+				conn = null;
+			} catch (SQLException e) {
+				Log.e(TAG, "could not close sql connection");
+				e.printStackTrace();
+			}
+		}
+
 		return tableExists;
 	}
 
 	private void createTableText() {
 		Log.d(TAG, "creating table for text data");
-		Connection c = null;
+		openConnections++;
+
 		Statement stmt = null;
 		try {
-			// Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			stmt = c.createStatement();
+			Class.forName("org.sqlite.JDBC");
+			// if this was the first access then we need to open a connection to the DB
+			if (openConnections == 1) {
+				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+			}
+			stmt = conn.createStatement();
 			String sql = "CREATE TABLE DRIVERTEXT" + "(NAME	TEXT	NOT NULL, "
 					+ " TAG		TEXT	NOT NULL, " + " DATA	TEXT	NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			Log.e(TAG, "createDriverText()" + e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			openConnections--;
 		}
+
+		// if this was the last access then we need to close the SQL connection
+		if (openConnections == 0) {
+			try {
+				Log.d(TAG, "last accessor closing SQL connection");
+				conn.close();
+				conn = null;
+			} catch (SQLException e) {
+				Log.e(TAG, "could not close sql connection");
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	private void createTableBin() {
 		Log.d(TAG, "creating table for binary data");
-		Connection c = null;
+		openConnections++;
+
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
-			stmt = c.createStatement();
+			// if this was the first access then we need to open a connection to the DB
+			if (openConnections == 1) {
+				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+			}
+			stmt = conn.createStatement();
 			String sql = "CREATE TABLE DRIVERBIN" + "(NAME	TEXT	NOT NULL, "
 					+ " TAG		TEXT	NOT NULL, " + " DATA	BYTES[]	NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			Log.e(TAG, "createDriverBin()" + e.getClass().getName() + ": " + e.getMessage());
+		} finally {
+			openConnections--;
+		}
+
+		// if this was the last access then we need to close the SQL connection
+		if (openConnections == 0) {
+			try {
+				Log.d(TAG, "last accessor closing SQL connection");
+				conn.close();
+				conn = null;
+			} catch (SQLException e) {
+				Log.e(TAG, "could not close sql connection");
+				e.printStackTrace();
+			}
 		}
 	}
 
