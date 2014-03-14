@@ -59,10 +59,12 @@ public class Coordinator {
 	 *            the {@link Message} to route
 	 */
 	private static synchronized void routeIncomingMessage(Message m) {
-		assert m != null; // we should always have a valid message to work with
+		assert m != null : "we should always have a valid message to work with";
 
 		// Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
+		assert destination != null : "messge can not have null destination";
+
 		if (!isModulePresent(destination)) {
 			Log.d(TAG, "adding remote module '" + destination + "' to the list of known modules");
 			remoteModules.put(destination, "");
@@ -113,7 +115,7 @@ public class Coordinator {
 	 * Sends a query string to all remote modules "ALL:READY?"
 	 */
 	private static synchronized void queryRemoteModules() {
-		assert messageCenter != null;
+		assert messageCenter != null : "message center is not instantiated";
 
 		messageCenter.sendCommand("ALL", "READY?");
 	}
@@ -127,7 +129,7 @@ public class Coordinator {
 	 * @return true if the given driver was loaded, false otherwise.
 	 */
 	private static boolean loadDriver(Driver d) {
-		assert d != null;
+		assert d != null : "given driver must not be null";
 
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
@@ -161,7 +163,7 @@ public class Coordinator {
 	 * @throws NoSuchMethodException
 	 */
 	private static synchronized Driver wakeDriver(String driverName) {
-		assert driverName != null;
+		assert driverName != null : "given driver name can not be null";
 
 		return wakeDriver(driverName, true);
 	}
@@ -177,7 +179,7 @@ public class Coordinator {
 	 * @return a reference to the woken Driver.
 	 */
 	private static synchronized Driver wakeDriver(String driverName, boolean autoStart) {
-		assert driverName != null;
+		assert driverName != null : "given driver name can not be null";
 		return wakeDriver(driverName, autoStart, true);
 	}
 
@@ -213,12 +215,12 @@ public class Coordinator {
 	 */
 	private static synchronized Driver wakeDriver(String driverName, boolean autoStart,
 			boolean wakeTerminated) {
-		assert driverName != null;
-		assert loadedDrivers.containsKey(driverName);
+		assert driverName != null : "given driver name can not be null";
+		assert loadedDrivers.containsKey(driverName) : "driver must exist within the loaded drivers table";
 
 		Driver d = loadedDrivers.get(driverName);
 		Thread t = driverThreads.get(d);
-		assert d != null && t != null;
+		assert d != null && t != null : "the driver and its thread must be valid objects";
 
 		if (t.getState() == Thread.State.TERMINATED && wakeTerminated) {
 			Log.d(TAG, "restarting driver '" + d.getName() + "' of class '" + d.getClass()
@@ -436,6 +438,8 @@ public class Coordinator {
 
 	private static void restartDrivers() {
 		Log.d(TAG, "restarting all drivers");
+		Log.d(TAG, "removing all event watchers");
+		eventWatchers.clear();
 
 		for (String driverName : loadedDrivers.keySet()) {
 			Driver d = loadedDrivers.get(driverName);
@@ -465,7 +469,7 @@ public class Coordinator {
 					Log.w(TAG, "waiting on driver " + d.getName() + " to terminate (state: "
 							+ t.getState().toString() + ")");
 					d.terminate();
-					wakeDriver(d.getName(), false, false);
+					// wakeDriver(d.getName(), false, false);
 				}
 			}
 		}

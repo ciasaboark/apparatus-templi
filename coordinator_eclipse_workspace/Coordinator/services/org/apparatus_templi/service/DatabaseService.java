@@ -33,26 +33,24 @@ public class DatabaseService implements ServiceInterface {
 	}
 
 	/**
-	 * Stores the given data to persistent storage. Data is tagged with both the
-	 * driver name as well as a data tag.
+	 * Stores the given data to persistent storage. Data is tagged with both the driver name as well
+	 * as a data tag.
 	 * 
 	 * @param driverName
 	 *            the name of the driver to store the data under
 	 * @param dataTag
-	 *            a tag to assign to this data. This tag should be specific for
-	 *            each data block that your driver stores. If there already
-	 *            exits data for the given dataTag the old data will be
-	 *            overwritten.
+	 *            a tag to assign to this data. This tag should be specific for each data block that
+	 *            your driver stores. If there already exits data for the given dataTag the old data
+	 *            will be overwritten.
 	 * @param data
 	 *            the text data to be stored. The data must not be null.
-	 * @return -1 if data overwrote information from a previous dataTag. 1 if
-	 *         data was written successfully. 0 if the data could not be written
-	 *         or if the given data was null.
+	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
+	 *         successfully. 0 if the data could not be written or if the given data was null.
 	 */
-	public synchronized int storeTextData(String driverName, String dataTag,
-			String data) throws IllegalArgumentException {
+	public synchronized int storeTextData(String driverName, String dataTag, String data)
+			throws IllegalArgumentException {
 		Log.d(TAG, "storing text data");
-		assert tableExists("coordinator", "DRIVERTEXT");
+		assert tableExists("coordinator", "DRIVERTEXT") : "database should already exist before storing data";
 
 		if (data == null) {
 			Log.w(TAG, "database can not store null values");
@@ -66,7 +64,7 @@ public class DatabaseService implements ServiceInterface {
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			c.setAutoCommit(false);
 			if (readTextData(driverName, dataTag) == null) // no previous data
 															// stored
@@ -90,34 +88,31 @@ public class DatabaseService implements ServiceInterface {
 			c.commit();
 			c.close();
 		} catch (Exception e) {
-			Log.e(TAG,
-					"storeTextData()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return returnCode;
 	}
 
 	/**
-	 * Stores the given data to persistent storage. Data is stored based off the
-	 * given driverName and dataTag.
+	 * Stores the given data to persistent storage. Data is stored based off the given driverName
+	 * and dataTag.
 	 * 
 	 * @param driverName
 	 *            the name of the driver to store the data under
 	 * @param dataTag
-	 *            a unique tag to assign to this data. This tag should be
-	 *            specific for each data block that will be stored. If data has
-	 *            already been stored with the same driverName and dataTag the
-	 *            old data will be overwritten.
+	 *            a unique tag to assign to this data. This tag should be specific for each data
+	 *            block that will be stored. If data has already been stored with the same
+	 *            driverName and dataTag the old data will be overwritten.
 	 * @param data
 	 *            the data to be stored. The data must not be null.
-	 * @return -1 if data overwrote information from a previous dataTag. 1 if
-	 *         data was written successfully. 0 if the data could not be written
-	 *         or if the given data was null.
+	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
+	 *         successfully. 0 if the data could not be written or if the given data was null.
 	 */
-	public synchronized int storeBinData(String driverName, String dataTag,
-			byte[] data) throws IllegalArgumentException {
+	public synchronized int storeBinData(String driverName, String dataTag, byte[] data)
+			throws IllegalArgumentException {
 		Log.d(TAG, "storing binary data");
-		assert tableExists("coordinator", "DRIVERBIN");
+		assert tableExists("coordinator", "DRIVERBIN") : "database should already exist before storing data";
+
 		if (data == null) {
 			Log.w(TAG, "database can not store null values");
 			return 0;
@@ -130,7 +125,7 @@ public class DatabaseService implements ServiceInterface {
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			c.setAutoCommit(false);
 			if (readBinData(driverName, dataTag) == null) {
 				sql = "INSERT INTO DRIVERBIN" + " VALUES (?,?,?)";
@@ -152,9 +147,7 @@ public class DatabaseService implements ServiceInterface {
 			c.commit();
 			c.close();
 		} catch (Exception e) {
-			Log.e(TAG,
-					"storeBinData()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "storeBinData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return returnCode;
 	}
@@ -166,8 +159,8 @@ public class DatabaseService implements ServiceInterface {
 	 *            the name of the calling driver
 	 * @param dataTag
 	 *            the tag to uniquely identify the data
-	 * @return the stored String data, or null if no data has been stored under
-	 *         the given driver name and tag.
+	 * @return the stored String data, or null if no data has been stored under the given driver
+	 *         name and tag.
 	 */
 	public synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "reading text data");
@@ -176,13 +169,12 @@ public class DatabaseService implements ServiceInterface {
 		String data = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVERTEXT;");
 			while (rs.next()) {
-				if (rs.getString("NAME").equals(driverName)
-						&& rs.getString("TAG").equals(dataTag)) {
+				if (rs.getString("NAME").equals(driverName) && rs.getString("TAG").equals(dataTag)) {
 					data = rs.getString("DATA");
 				}
 			}
@@ -190,23 +182,20 @@ public class DatabaseService implements ServiceInterface {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			Log.e(TAG,
-					"readTextData()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "readTextData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return data;
 	}
 
 	/**
-	 * Returns binary data previously stored under the given module name and
-	 * tag.
+	 * Returns binary data previously stored under the given module name and tag.
 	 * 
 	 * @param driverName
 	 *            the name of the calling driver
 	 * @param dataTag
 	 *            the tag to uniquely identify the data
-	 * @return the stored binary data, or null if no data has been stored under
-	 *         the given driver name and tag.
+	 * @return the stored binary data, or null if no data has been stored under the given driver
+	 *         name and tag.
 	 */
 	public synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "reading binary data");
@@ -216,13 +205,25 @@ public class DatabaseService implements ServiceInterface {
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			boolean dbConnected = false;
+			// the SQLite database does not like parallel or nested queries
+			while (!dbConnected) {
+				try {
+					c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
+					dbConnected = true;
+				} catch (NullPointerException e) {
+					// block for a bit
+					Log.e(TAG, "unable to get connection to database, will try again");
+					long wakeTime = System.currentTimeMillis() + 200;
+					while (System.currentTimeMillis() < wakeTime) {
+					}
+				}
+			}
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVERBIN;");
 			while (rs.next()) {
-				if (rs.getString("NAME").equals(driverName)
-						&& rs.getString("TAG").equals(dataTag)) {
+				if (rs.getString("NAME").equals(driverName) && rs.getString("TAG").equals(dataTag)) {
 					data = rs.getBytes("DATA");
 				}
 			}
@@ -230,9 +231,7 @@ public class DatabaseService implements ServiceInterface {
 			stmt.close();
 			c.close();
 		} catch (SQLException | ClassNotFoundException e) {
-			Log.e(TAG,
-					"readBinData()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "readBinData()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 		return data;
 	}
@@ -245,27 +244,24 @@ public class DatabaseService implements ServiceInterface {
 	}
 
 	private boolean tableExists(String dbName, String tbName) {
+		boolean tableExists = false;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			Connection c = DriverManager
-					.getConnection("jdbc:sqlite:coordinator.db");
+			Connection c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			DatabaseMetaData meta = c.getMetaData();
-			ResultSet res = meta.getTables(null, null, null,
-					new String[] { "TABLE" });
+			ResultSet res = meta.getTables(null, null, tbName, new String[] { "TABLE" });
 			while (res.next()) {
-				if (res.getString("TABLE_NAME").equals(tbName)) {
+				if (tbName.equals(res.getString("TABLE_NAME"))) {
 					c.close();
-					return true;
+					tableExists = true;
+					break;
 				}
 			}
 			c.close();
-			return false;
 		} catch (SQLException | ClassNotFoundException e) {
-			Log.e(TAG,
-					"checkTable()" + e.getClass().getName() + ": "
-							+ e.getMessage());
-			return false;
+			Log.e(TAG, "checkTable()" + e.getClass().getName() + ": " + e.getMessage());
 		}
+		return tableExists;
 	}
 
 	private void createTableText() {
@@ -274,7 +270,7 @@ public class DatabaseService implements ServiceInterface {
 		Statement stmt = null;
 		try {
 			// Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE DRIVERTEXT" + "(NAME	TEXT	NOT NULL, "
 					+ " TAG		TEXT	NOT NULL, " + " DATA	TEXT	NOT NULL)";
@@ -282,9 +278,7 @@ public class DatabaseService implements ServiceInterface {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			Log.e(TAG,
-					"createDriverText()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "createDriverText()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 
@@ -294,7 +288,7 @@ public class DatabaseService implements ServiceInterface {
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:coordinator.db");
+			c = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE DRIVERBIN" + "(NAME	TEXT	NOT NULL, "
 					+ " TAG		TEXT	NOT NULL, " + " DATA	BYTES[]	NOT NULL)";
@@ -302,9 +296,7 @@ public class DatabaseService implements ServiceInterface {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			Log.e(TAG,
-					"createDriverBin()" + e.getClass().getName() + ": "
-							+ e.getMessage());
+			Log.e(TAG, "createDriverBin()" + e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 

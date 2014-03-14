@@ -19,7 +19,7 @@ public class XmlTest extends ControllerModule {
 
 	// the widget XmlFormatter will only hold one sensor, one controller, and two buttons. The full
 	// page generator will hold those same elements, plus some others.
-	private final Sensor sensor1;
+	private final Sensor tempSensor;
 	private final Controller controller1;
 	private final Button tempSensButton;
 	private final Button controller1Button;
@@ -29,7 +29,7 @@ public class XmlTest extends ControllerModule {
 	// outside resources
 	TextArea sensDesc = new TextArea("sensor description",
 			"Temperature data is provided via a DHT11 "
-					+ "sensor.  Readings are only accurate to +/- 1ºC.");
+					+ "sensor.  Readings are only accurate to +/- 1C.");
 	Pre sensLink = new Pre("sensor link", "<p>More information on the sensor can be found at the "
 			+ "<a href='http://www.adafruit.com/products/386' >AdaFruit</a> website.");
 
@@ -38,8 +38,8 @@ public class XmlTest extends ControllerModule {
 		widgetXml = new XmlFormatter(this, "Xml Format Tester");
 		fullXml = new XmlFormatter(this, "Xml Format Tester");
 
-		sensor1 = new Sensor("asdf");
-		sensor1.setValue("unknown");
+		tempSensor = new Sensor("asdf");
+		tempSensor.setValue("unknown");
 		controller1 = new Controller("Some Controller");
 		controller1.setStatus("waiting");
 		tempSensButton = new Button("Refresh");
@@ -50,12 +50,12 @@ public class XmlTest extends ControllerModule {
 		controller1Button.setAction("m$input");
 		controller1Button.setInputType(InputType.NUM);
 
-		widgetXml.addElement(sensor1);
+		widgetXml.addElement(tempSensor);
 		widgetXml.addElement(tempSensButton);
 		widgetXml.addElement(controller1);
 		widgetXml.addElement(controller1Button);
 
-		fullXml.addElement(sensor1);
+		fullXml.addElement(tempSensor);
 		fullXml.addElement(sensDesc);
 		fullXml.addElement(sensLink);
 		fullXml.addElement(tempSensButton);
@@ -73,11 +73,11 @@ public class XmlTest extends ControllerModule {
 			this.sleep(1000 * 60);
 			Integer i;
 			try {
-				i = Integer.parseInt(sensor1.getValue());
+				i = Integer.parseInt(tempSensor.getValue());
 				i++;
-				sensor1.setValue(String.valueOf(i));
+				tempSensor.setValue(String.valueOf(i));
 			} catch (NumberFormatException e) {
-				sensor1.setValue("1");
+				tempSensor.setValue("1");
 			}
 		}
 

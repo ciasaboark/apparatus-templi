@@ -2,12 +2,14 @@
  * Ajax request to update the running driver list
  */
 function getRunningDrivers() {
-    console.log("reuquesting");
+    console.log("requesting driver list");
     document.getElementById("driver_refresh_button").onclick = "";
-    document.getElementById("driver_names").innerHTML = "<i class=\"fa fa-spinner fa-spin fa-2x\"></i>";
+//    document.getElementById("driver_names").style.textAlign = "center";
+    document.getElementById("drivers_refresh_spinner").style.visibility = "visible";
+    document.getElementById("driver_names").style.color = "#ccc";
     $.ajax({
         type: "GET",
-        url: "/get_running_drivers",
+        url: "/drivers.xml",
         dataType: "xml",
         async: true,
         contentType: "application/xml; charset=\"utf-8\"",
@@ -17,20 +19,33 @@ function getRunningDrivers() {
                 var $module = $(this);
                 var $name = $module.attr('name');
                 console.log("found driver " + $name);
-                $driverList += "<li><a href='driver_widget?driver=" + $name + "'>" + $name + "</a></li>";
+                $driverList += "<li><a href='widget.xml?driver=" + $name + "'>" + $name + "</a></li>";
             })
+            document.getElementById("driver_names").style.textAlign = "left";
             document.getElementById("driver_names").innerHTML = $driverList;
+            document.getElementById("drivers_refresh_spinner").style.visibility = "hidden";
+            document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
         },
         error: function(xhr, status, error) {
             if (xhr.status != 404) {
-                document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
+                
+                document.getElementById("driver_names").innerHTML = "";
+                document.getElementById("drivers_refresh_spinner").classList = "";
+                document.getElementById("drivers_refresh_spinner").classList = "fa fa-warning fa-2x";
+                document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
             } 
             else {
-                document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
+                document.getElementById("driver_names").innerHTML = "";
+                document.getElementById("drivers_refresh_spinner").classList = "";
+                document.getElementById("drivers_refresh_spinner").classList = "fa fa-warning fa-2x";
+                document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
+//              document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
+//                document.getElementById("drivers_refresh_spinner").style.visibility = "hidden";
             }
         }
     });
-    document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
+    
+    
 }
 
 $("#driver_refresh_button").click(function() {
@@ -46,7 +61,9 @@ function showCommandBox() {
 $(document).ready(function() {
     //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
+    updateLog();
     setInterval(getRunningDrivers, 30000);
+    setInterval(updateLog, 10000);
 });
 
 function updateConfigFile() {
@@ -66,4 +83,33 @@ function updateConfigFile() {
         document.getElementById('form_submit').onclick = function onclick(event) {document.getElementById('prefs').submit()};
         document.getElementById('form_submit').classList.remove("disabled");
     }
+}
+
+function updateLog() {
+    console.log("updating log");
+    document.getElementById("log_refresh_spinner").style.visibility = "visible";
+    document.getElementById("log_refresh_button").onclick = "";
+    var $logDiv = document.getElementById("log");
+    $logDiv.style.color = "#ccc";
+    $.ajax({
+        url: "/log.txt",
+        dataType: "text",
+        async: true,
+        success: function(txt) {
+//            console.log("success");
+//            console.log(txt);
+            $logDiv.innerHTML = "";
+            $logDiv.innerHTML = txt;
+            $logDiv.scrollTop = $logDiv.scrollHeight;
+            $logDiv.style.color = "black";
+            document.getElementById("log_refresh_spinner").style.visibility = "hidden";
+            document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog()};
+        },
+        error: function(xhr, status, error) {
+            document.getElementById("log_refresh_spinner").style.visibility = "hidden";
+            $logDiv.innerHTML = "Error getting log";
+            document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog()};
+        }
+    });
+    
 }

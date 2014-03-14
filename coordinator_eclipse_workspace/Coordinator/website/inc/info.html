@@ -1,0 +1,37 @@
+<div id="sys_status">
+<h2>System Status</h2>
+    <div id="sys_status_box">
+        <div class="info_box">
+            <h3>Uptime</h3>
+            FILLER TEXT
+        </div>
+        <div class="info_box">
+            <h3>Loaded Divers</h3>
+            <div id="driver_list">
+                
+                <span class="refresh_button" id="driver_refresh_button" href="#" onclick="getRunningDrivers()">
+                    <span class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></span>
+                </span>
+                <ul id="driver_names">
+                </ul>
+                <span id="drivers_refresh_spinner" class="refreshing"><i class="fa fa-spinner fa-spin fa-2x"></i></span>
+            </div>
+        </div>
+        <div class="info_box">
+            <h3>Known Modules</h3>
+            FILLER TEXT
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+
+<div>
+    <h2>Recent Log</h2>
+    <div id="log_div">
+        <pre id="log"></pre>
+        <span id="log_refresh_button" class="btn btn-default refresh_button" onclick="updateLog()" >
+            <i class="fa fa-refresh"></i>
+        </span>
+        <span id="log_refresh_spinner" class="refreshing"><i class="fa fa-spinner fa-spin fa-2x"></i></span>
+    </div>
+</div>

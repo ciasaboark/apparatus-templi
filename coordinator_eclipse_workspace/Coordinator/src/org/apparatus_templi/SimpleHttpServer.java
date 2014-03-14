@@ -264,15 +264,18 @@ public class SimpleHttpServer implements Runnable {
 			}
 			httpsServer.createContext("/index.html", new IndexHandler());
 			httpsServer.createContext("/about.html", new AboutHandler());
+			httpsServer.createContext("/info.html", new InfoHandler());
 			// httpsServer.createContext("/", new IndexHandler());
-			httpsServer.createContext("/get_running_drivers", new RunningDriversHandler());
-			httpsServer.createContext("/full_xml", new FullXmlHandler());
-			httpsServer.createContext("/driver_widget", new WidgetXmlHandler());
+			httpsServer.createContext("/drivers.xml", new RunningDriversHandler());
+			httpsServer.createContext("/full.xml", new FullXmlHandler());
+			httpsServer.createContext("/widget.xml", new WidgetXmlHandler());
 			httpsServer.createContext("/resource", new ResourceHandler());
 			httpsServer.createContext("/js/default.js", new JsHandler());
 			httpsServer.createContext("/settings.html", new SettingsHandler());
 			httpsServer.createContext("/update_settings", new UpdateSettingsHandler());
 			httpsServer.createContext("/restart_module", new RestartModuleHandler());
+			httpsServer.createContext("/log.txt", new LogHandler());
+			// httpsServer.createContext("/send_command", new SendCommandHandler());
 			// httpsServer.createContext("/", new IndexHandler());
 			httpsServer.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -455,6 +458,44 @@ public class SimpleHttpServer implements Runnable {
 		}
 	}
 
+	private class InfoHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG,
+					"received request from " + exchange.getRemoteAddress() + " "
+							+ exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/html");
+
+			byte[] response = getResponse();
+			if (response != null) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				response = get404ErrorPage("info.html").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
+			exchange.close();
+		}
+
+		private byte[] getResponse() {
+			byte[] returnBytes = null;
+
+			byte[] templateBytes = getFileBytes(resourceFolder + "inc/template.html");
+			byte[] indexBytes = getFileBytes(resourceFolder + "inc/info.html");
+
+			if (templateBytes != null && indexBytes != null) {
+				String templateHtml = new String(templateBytes);
+				String indexHtml = new String(indexBytes);
+				templateHtml = templateHtml.replace("!MAIN_CONTENT!", indexHtml.toString());
+				returnBytes = templateHtml.getBytes();
+			}
+
+			return returnBytes;
+		}
+	}
+
 	/**
 	 * Handles requests for "/about.html". Opens the contents of the template html file, then
 	 * replaces the main body content with that of the about.html template.
@@ -476,7 +517,7 @@ public class SimpleHttpServer implements Runnable {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 				exchange.getResponseBody().write(response);
 			} else {
-				response = get404ErrorPage("index.html").getBytes();
+				response = get404ErrorPage("about.html").getBytes();
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 				exchange.getResponseBody().write(response);
 			}
@@ -631,8 +672,11 @@ public class SimpleHttpServer implements Runnable {
 				}
 
 				// TODO update to a form so that the settings can be sent back in a POST request
-				html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\""
+				html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\" "
 						+ "method=\"POST\" >\n");
+
+				// settings boxes div
+				html.append("<div id='settings_boxes'>");
 
 				// Preferences for the main section
 				html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>"
@@ -668,7 +712,7 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" value=\"" + value + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div><p class='clear'></p>");
+				html.append("</div>");
 
 				// Preferences for web server
 				html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>"
@@ -678,12 +722,12 @@ public class SimpleHttpServer implements Runnable {
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span"
+									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
 							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div><p class='clear'></p>");
+				html.append("</div>");
 
 				// Preferences for web frontend
 				html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>"
@@ -693,12 +737,12 @@ public class SimpleHttpServer implements Runnable {
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span"
+									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
 							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div><p class='clear'></p>");
+				html.append("</div>");
 
 				// Preferences for the Twitter service
 				html.append("<div id='prefs_section_twitter' class='prefs_section'><h2 class='prefs_section_title'>"
@@ -708,14 +752,14 @@ public class SimpleHttpServer implements Runnable {
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span"
+									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
 							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<p class='warning'>" + ENC_WARNING
 						+ "All passwords are stored in plaintext.");
-				html.append("</div><p class='clear'></p>");
+				html.append("</div>");
 
 				// Any remaining unclassified preferences
 				if (!prefs.isEmpty()) {
@@ -727,14 +771,21 @@ public class SimpleHttpServer implements Runnable {
 								+ "title=\""
 								+ StringEscapeUtils.escapeHtml4(Prefs.getInstance()
 										.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
-								+ "</span><span"
+								+ "</span><span "
 								+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
 								+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 						prefs.remove(key);
 					}
-					html.append("</div><p class='clear'></p>");
+					html.append("</div>");
 				}
+				// end settings boxes div
+				html.append("</div>");
+				html.append("</form>");
+				// clear the elements
+				html.append("<div class=\"clear\"></div>");
 
+				// buttons div
+				html.append("<div id=\"settings_buttons_div\">");
 				// restart all modules button
 				html.append("<div><a id=\"restart_all_button\" class=\"btn btn-danger\" href='/restart_module?module=all' "
 						+ "onclick=\"document.getElementById('prefs').submit()\" "
@@ -745,17 +796,20 @@ public class SimpleHttpServer implements Runnable {
 				// Save preferences button
 				// if the config file is the default then we want the save preferences button to be
 				// disabled until updated via javascript
-				html.append("<div id='form_submit'");
+				html.append("<div id='form_submit' ");
 				if (configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
 					html.append("class='btn btn-success disabled'>");
 				} else {
-					html.append("class ='btn btn-success'");
-					html.append("onclick = document.getElementById('prefs').submit() >");
+					html.append("class ='btn btn-success' ");
+					html.append("onclick = \"document.getElementById('prefs').submit()\" >");
 				}
 				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
 						+ "Save Preferences to <span id='btn_conf_file'>" + configFile
 						+ "</span></div>");
-				html.append("</form>");
+
+				// end buttons div
+				html.append("</div>");
+
 				html.append("</div>");
 
 				template = template.replace("!MAIN_CONTENT!", html.toString());
@@ -1059,6 +1113,37 @@ public class SimpleHttpServer implements Runnable {
 			}
 
 			return returnBytes;
+		}
+	}
+
+	private class LogHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			// Log.d(TAG,
+			// "received request from " + exchange.getRemoteAddress() + " "
+			// + exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/plain");
+
+			byte[] response = getResponse();
+			if (response != null) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				response = get404ErrorPage("logfile").getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
+			exchange.close();
+		}
+
+		private byte[] getResponse() {
+			StringBuilder sb = new StringBuilder("");
+			for (String logLine : Log.getRecentLog()) {
+				sb.append(logLine + "\n");
+			}
+
+			return sb.toString().getBytes();
 		}
 	}
 }
