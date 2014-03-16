@@ -58,6 +58,10 @@ public final class Controller implements ElementInterface {
 		return status;
 	}
 
+	/**
+	 * Generate an XML representation of this controller. This XML data generated is incomplete on
+	 * its own, and is expected to be wrapped into a container by the {@link XmlFormatter}.
+	 */
 	@Override
 	public String getXml() {
 		StringBuilder sb = new StringBuilder();

@@ -668,7 +668,7 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<p class='warning_text'>The default config file can not be overwritten.  If you want to save your "
 							+ "preferences, then set a new location below and click save preferences.  To use the "
 							+ "new configuration file restart the service with the command line argument: "
-							+ "<pre style='display:inline'>--configFile path/to/the/new/file</pre></p>.");
+							+ "<pre style='display:inline'>--configFile path/to/the/new/file</pre></p>");
 				}
 
 				// TODO update to a form so that the settings can be sent back in a POST request
@@ -884,7 +884,7 @@ public class SimpleHttpServer implements Runnable {
 	 * {@link Coordinator#requestFullPageXML(String)} to get the driver's full page XML
 	 * representation.
 	 * 
-	 * @author
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 * 
 	 */
 	private class FullXmlHandler implements HttpHandler {

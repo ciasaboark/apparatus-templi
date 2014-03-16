@@ -60,10 +60,8 @@ public class XmlFormatter {
 	}
 
 	/**
-	 * Generates an XML document that will validate against the widget XML schema. Elements are
-	 * processed in the order in which they were added.
-	 * 
-	 * @return the String representation of the widget XML data.
+	 * Generate an XML representation of this button. This XML data generated is incomplete on its
+	 * own, and is expected to be wrapped into a container by the {@link XmlFormatter}.
 	 */
 	public String generateXml() {
 		StringBuilder xml = new StringBuilder();

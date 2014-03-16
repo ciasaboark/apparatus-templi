@@ -14,7 +14,8 @@ public interface ElementInterface {
 	public String getName();
 
 	/**
-	 * Generate an XML representation of this Element.
+	 * Generate an XML representation of this Element. The XML data generated is expected to be
+	 * wrapped into a container by an {@link XmlFormatter} instance;
 	 */
 	public String getXml();
 }

@@ -100,14 +100,28 @@ public final class Button implements ElementInterface {
 		}
 	}
 
+	/**
+	 * Returns the default value that should be inserted into this Buttons input area.
+	 */
 	public String getInputVal() {
 		return inputVal;
 	}
 
+	/**
+	 * Set the default value of this Button's input area. Care should be taken to insure that this
+	 * data can conform to this Button's input type.
+	 * 
+	 * @param inputVal
+	 *            the default value that should be placed into this buttons input area.
+	 */
 	public void setInputVal(String inputVal) {
 		this.inputVal = inputVal;
 	}
 
+	/**
+	 * Generate an XML representation of this button. This XML data generated is incomplete on its
+	 * own, and is expected to be wrapped into a container by the {@link XmlFormatter}.
+	 */
 	@Override
 	public String getXml() {
 		StringBuilder sb = new StringBuilder();

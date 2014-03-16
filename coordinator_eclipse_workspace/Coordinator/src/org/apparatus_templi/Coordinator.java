@@ -23,7 +23,7 @@ import org.apache.commons.cli.ParseException;
 import org.apparatus_templi.driver.ControllerModule;
 import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.driver.SensorModule;
-import org.apparatus_templi.service.DatabaseService;
+import org.apparatus_templi.service.SQLiteDbService;
 
 /**
  * Coordinates message passing and driver loading. Handles setting up the environment, querying
@@ -50,7 +50,7 @@ public class Coordinator {
 	 * Sends the given message to the correct driver specified by {@link Message#getDestination()}.
 	 * If the module that sent this message was not previously known, then a record of its presence
 	 * is saved. If a driver matching that destination is loaded and its state is not
-	 * {@link Thread.State.TERMINATED} then the message contents will be routed to the drivers
+	 * {@link Thread.State#TERMINATED} then the message contents will be routed to the drivers
 	 * {@link Driver#receiveCommand(String)} or {@link Driver#receiveBinary(byte[])} methods. If the
 	 * driver is currently TERMINATED then the message contents will be placed in the drivers
 	 * appropriate queue, and the driver will be woken.
@@ -122,7 +122,7 @@ public class Coordinator {
 
 	/**
 	 * Loads the given driver, provided that the driver is not null, has a valid name, is not of
-	 * type {@link Driver.TYPE}, and a driver with a matching name has not already been loaded.
+	 * type {@link Driver}, and a driver with a matching name has not already been loaded.
 	 * 
 	 * @param d
 	 *            the driver to load, must not be null.
@@ -358,7 +358,7 @@ public class Coordinator {
 
 	/**
 	 * Start the web server on the port specified in {@link Prefs} bound to the address specified in
-	 * {@Prefs}. If the specified host and port can not be bound to then will sutdown the
+	 * {@link Prefs}. If the specified host and port can not be bound to then will sutdown the
 	 * entire service.
 	 * 
 	 * @throws UnknownHostException
@@ -408,7 +408,12 @@ public class Coordinator {
 		String driverList = prefs.getPreference(Prefs.Keys.driverList);
 		assert driverList != null : "driver list should not be null";
 
-		if (!driverList.equals("")) {
+		if (driverList.equals("")) {
+			Log.w(TAG,
+					"No drivers were specified in the configuration " + "file: '"
+							+ prefs.getPreference(Prefs.Keys.configFile)
+							+ "', nothing will be loaded");
+		} else {
 			Log.c(TAG, "Initializing drivers...");
 			String[] drivers = driverList.split(",");
 			for (String driverClassName : drivers) {
@@ -420,11 +425,7 @@ public class Coordinator {
 					Log.d(TAG, "unable to load driver '" + driverClassName + "'");
 				}
 			}
-		} else {
-			Log.w(TAG,
-					"No drivers were specified in the configuration " + "file: '"
-							+ prefs.getPreference(Prefs.Keys.configFile)
-							+ "', nothing will be loaded");
+
 		}
 
 		// Start the driver threads
@@ -490,7 +491,7 @@ public class Coordinator {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private static Class<org.apparatus_templi.driver.Driver>[] getClasses(String packageName)
 			throws ClassNotFoundException, IOException {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -695,7 +696,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
-		return DatabaseService.getInstance().storeTextData(driverName, dataTag, data);
+		return SQLiteDbService.getInstance().storeTextData(driverName, dataTag, data);
 	}
 
 	/**
@@ -715,7 +716,7 @@ public class Coordinator {
 	 */
 	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
-		return DatabaseService.getInstance().storeBinData(driverName, dataTag, data);
+		return SQLiteDbService.getInstance().storeBinData(driverName, dataTag, data);
 	}
 
 	/**
@@ -730,7 +731,7 @@ public class Coordinator {
 	 */
 	public static synchronized String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
-		return DatabaseService.getInstance().readTextData(driverName, dataTag);
+		return SQLiteDbService.getInstance().readTextData(driverName, dataTag);
 	}
 
 	/**
@@ -745,7 +746,7 @@ public class Coordinator {
 	 */
 	public static synchronized byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
-		return DatabaseService.getInstance().readBinData(driverName, dataTag);
+		return SQLiteDbService.getInstance().readBinData(driverName, dataTag);
 	}
 
 	/**

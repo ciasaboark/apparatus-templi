@@ -365,7 +365,7 @@
   </class>  
   <class id="41" language="java" name="org.apparatus_templi.event.HumidityChangedEvent" project="Coordinator" 
     file="/Coordinator/events/org/apparatus_templi/event/HumidityChangedEvent.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="3587" y="327"/>    
+    <position height="-1" width="-1" x="3607" y="263"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="false" static="true"/>      
@@ -445,295 +445,287 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <association id="50">    
-    <end type="SOURCE" refId="39" navigable="false">      
-      <attribute id="51" name="messageQueue"/>      
-      <multiplicity id="52" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="44" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="53">    
-    <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="54" name="fragments"/>      
-      <multiplicity id="55" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="33" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="56">    
-    <end type="SOURCE" refId="37" navigable="false">      
-      <attribute id="57" name="prefs"/>      
-      <multiplicity id="58" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="59">    
-    <end type="SOURCE" refId="21"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <association id="60">    
-    <end type="SOURCE" refId="13" navigable="false">      
-      <attribute id="61" name="elementInterfaces"/>      
-      <multiplicity id="62" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="20" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="63">    
-    <bendpoint x="1443" y="614"/>    
-    <end type="SOURCE" refId="34" navigable="false">      
-      <attribute id="64" name="serialConnection"/>      
-      <multiplicity id="65" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="19" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="66">    
-    <bendpoint x="2911" y="261"/>    
-    <end type="SOURCE" refId="41"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <nesting id="67">    
-    <bendpoint x="3079" y="1076"/>    
+  <nesting id="50">    
+    <bendpoint x="3163" y="1159"/>    
     <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="23"/>  
+    <end type="TARGET" refId="27"/>  
   </nesting>  
-  <nesting id="68">    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="37"/>  
-  </nesting>  
-  <nesting id="69">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="31"/>  
-  </nesting>  
-  <association id="70">    
-    <end type="SOURCE" refId="26" navigable="false">      
-      <attribute id="71" name="origin"/>      
-      <multiplicity id="72" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="73">    
-    <end type="SOURCE" refId="45" navigable="false">      
-      <attribute id="74" name="prefs"/>      
-      <multiplicity id="75" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="76">    
-    <bendpoint x="3031" y="257"/>    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <association id="77">    
-    <end type="SOURCE" refId="39" navigable="false">      
-      <attribute id="78" name="instance"/>      
-      <multiplicity id="79" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="39" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="80">    
-    <end type="SOURCE" refId="30"/>    
-    <end type="TARGET" refId="19"/>  
-  </generalization>  
-  <generalization id="81">    
-    <end type="SOURCE" refId="38"/>    
-    <end type="TARGET" refId="7"/>  
-  </generalization>  
-  <generalization id="82">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <realization id="83">    
-    <end type="SOURCE" refId="46"/>    
-    <end type="TARGET" refId="20"/>  
-  </realization>  
-  <association id="84">    
-    <end type="SOURCE" refId="25" navigable="false">      
-      <attribute id="85" name="instance"/>      
-      <multiplicity id="86" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="25" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="87">    
-    <end type="SOURCE" refId="28"/>    
-    <end type="TARGET" refId="7"/>  
-  </generalization>  
-  <nesting id="88">    
-    <bendpoint x="2647" y="1139"/>    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="5"/>  
-  </nesting>  
-  <association id="89">    
-    <bendpoint x="1002" y="785"/>    
-    <end type="SOURCE" refId="39" navigable="false">      
-      <attribute id="90" name="fragmentedMessages"/>      
-      <multiplicity id="91" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="12" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <nesting id="92">    
-    <bendpoint x="3317" y="1259"/>    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="47"/>  
-  </nesting>  
-  <generalization id="93">    
-    <end type="SOURCE" refId="10"/>    
-    <end type="TARGET" refId="19"/>  
-  </generalization>  
-  <realization id="94">    
-    <end type="SOURCE" refId="25"/>    
-    <end type="TARGET" refId="6"/>  
-  </realization>  
-  <association id="95">    
-    <end type="SOURCE" refId="34" navigable="false">      
-      <attribute id="96" name="loadedDrivers"/>      
-      <multiplicity id="97" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="98">    
-    <end type="SOURCE" refId="49" navigable="false">      
-      <attribute id="99" name="instance"/>      
-      <multiplicity id="100" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="49" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <nesting id="101">    
-    <bendpoint x="1001" y="852"/>    
-    <end type="SOURCE" refId="39"/>    
-    <end type="TARGET" refId="12"/>  
-  </nesting>  
-  <association id="102">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="103" name="instance"/>      
-      <multiplicity id="104" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="105">    
-    <end type="SOURCE" refId="29"/>    
-    <end type="TARGET" refId="20"/>  
-  </realization>  
-  <nesting id="106">    
-    <bendpoint x="2678" y="1304"/>    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="15"/>  
-  </nesting>  
-  <association id="107">    
-    <end type="SOURCE" refId="34" navigable="false">      
-      <attribute id="108" name="webServer"/>      
-      <multiplicity id="109" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="43" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="110">    
-    <bendpoint x="1531" y="614"/>    
-    <bendpoint x="1531" y="1059"/>    
-    <end type="SOURCE" refId="34" navigable="false">      
-      <attribute id="111" name="prefs"/>      
-      <multiplicity id="112" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <nesting id="113">    
-    <bendpoint x="2661" y="1448"/>    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="16"/>  
-  </nesting>  
-  <realization id="114">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="20"/>  
-  </realization>  
-  <nesting id="115">    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="17"/>  
-  </nesting>  
-  <nesting id="116">    
+  <nesting id="51">    
     <bendpoint x="1101" y="1059"/>    
     <end type="SOURCE" refId="39"/>    
     <end type="TARGET" refId="33"/>  
   </nesting>  
-  <nesting id="117">    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="4"/>  
-  </nesting>  
-  <association id="118">    
+  <realization id="52">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="20"/>  
+  </realization>  
+  <association id="53">    
+    <bendpoint x="1002" y="785"/>    
     <end type="SOURCE" refId="39" navigable="false">      
-      <attribute id="119" name="serialConnection"/>      
-      <multiplicity id="120" minimum="0" maximum="1"/>    
+      <attribute id="54" name="fragmentedMessages"/>      
+      <multiplicity id="55" minimum="0" maximum="2147483647"/>    
     </end>    
-    <end type="TARGET" refId="19" navigable="true"/>    
+    <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="121">    
-    <bendpoint x="276" y="791"/>    
-    <end type="SOURCE" refId="49"/>    
-    <end type="TARGET" refId="6"/>  
-  </realization>  
-  <generalization id="122">    
-    <bendpoint x="2585" y="327"/>    
-    <end type="SOURCE" refId="18"/>    
-    <end type="TARGET" refId="26"/>  
-  </generalization>  
-  <nesting id="123">    
+  <nesting id="56">    
     <bendpoint x="3238" y="1204"/>    
     <end type="SOURCE" refId="43"/>    
     <end type="TARGET" refId="35"/>  
   </nesting>  
-  <nesting id="124">    
+  <realization id="57">    
+    <end type="SOURCE" refId="48"/>    
+    <end type="TARGET" refId="20"/>  
+  </realization>  
+  <realization id="58">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="20"/>  
+  </realization>  
+  <realization id="59">    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="20"/>  
+  </realization>  
+  <nesting id="60">    
     <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="45"/>  
+    <end type="TARGET" refId="37"/>  
   </nesting>  
-  <generalization id="125">    
-    <end type="SOURCE" refId="22"/>    
-    <end type="TARGET" refId="26"/>  
+  <nesting id="61">    
+    <bendpoint x="3317" y="1259"/>    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="47"/>  
+  </nesting>  
+  <generalization id="62">    
+    <end type="SOURCE" refId="38"/>    
+    <end type="TARGET" refId="7"/>  
   </generalization>  
-  <nesting id="126">    
+  <nesting id="63">    
+    <bendpoint x="1001" y="852"/>    
+    <end type="SOURCE" refId="39"/>    
+    <end type="TARGET" refId="12"/>  
+  </nesting>  
+  <association id="64">    
+    <end type="SOURCE" refId="39" navigable="false">      
+      <attribute id="65" name="serialConnection"/>      
+      <multiplicity id="66" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="19" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="67">    
     <bendpoint x="2657" y="1248"/>    
     <end type="SOURCE" refId="43"/>    
     <end type="TARGET" refId="8"/>  
   </nesting>  
-  <generalization id="127">    
-    <end type="SOURCE" refId="42"/>    
-    <end type="TARGET" refId="26"/>  
+  <generalization id="68">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="19"/>  
   </generalization>  
-  <realization id="128">    
-    <end type="SOURCE" refId="9"/>    
+  <realization id="69">    
+    <end type="SOURCE" refId="46"/>    
     <end type="TARGET" refId="20"/>  
   </realization>  
-  <association id="129">    
+  <generalization id="70">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="71">    
+    <end type="SOURCE" refId="26" navigable="false">      
+      <attribute id="72" name="origin"/>      
+      <multiplicity id="73" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="74">    
+    <bendpoint x="2678" y="1304"/>    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="15"/>  
+  </nesting>  
+  <nesting id="75">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="17"/>  
+  </nesting>  
+  <nesting id="76">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="4"/>  
+  </nesting>  
+  <generalization id="77">    
+    <bendpoint x="2585" y="327"/>    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="78">    
+    <end type="SOURCE" refId="39" navigable="false">      
+      <attribute id="79" name="messageQueue"/>      
+      <multiplicity id="80" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="81">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="82" name="fragments"/>      
+      <multiplicity id="83" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="33" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="84">    
+    <bendpoint x="2647" y="1139"/>    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
+  <association id="85">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="86" name="elementInterfaces"/>      
+      <multiplicity id="87" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="88">    
+    <end type="SOURCE" refId="37" navigable="false">      
+      <attribute id="89" name="prefs"/>      
+      <multiplicity id="90" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="91">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="92" name="instance"/>      
+      <multiplicity id="93" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="94">    
+    <end type="SOURCE" refId="30"/>    
+    <end type="TARGET" refId="19"/>  
+  </generalization>  
+  <association id="95">    
     <end type="SOURCE" refId="34" navigable="false">      
-      <attribute id="130" name="messageCenter"/>      
-      <multiplicity id="131" minimum="0" maximum="1"/>    
+      <attribute id="96" name="messageCenter"/>      
+      <multiplicity id="97" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="39" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="132">    
+  <association id="98">    
+    <end type="SOURCE" refId="34" navigable="false">      
+      <attribute id="99" name="webServer"/>      
+      <multiplicity id="100" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="43" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="101">    
+    <bendpoint x="3079" y="1076"/>    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="23"/>  
+  </nesting>  
+  <generalization id="102">    
+    <end type="SOURCE" refId="28"/>    
+    <end type="TARGET" refId="7"/>  
+  </generalization>  
+  <realization id="103">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <association id="104">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="105" name="instance"/>      
+      <multiplicity id="106" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="25" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="107">    
+    <end type="SOURCE" refId="39" navigable="false">      
+      <attribute id="108" name="instance"/>      
+      <multiplicity id="109" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="39" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="110">    
+    <bendpoint x="1443" y="614"/>    
+    <end type="SOURCE" refId="34" navigable="false">      
+      <attribute id="111" name="serialConnection"/>      
+      <multiplicity id="112" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="19" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="113">    
+    <bendpoint x="3031" y="257"/>    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <generalization id="114">    
+    <end type="SOURCE" refId="21"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <association id="115">    
+    <bendpoint x="1531" y="614"/>    
+    <bendpoint x="1531" y="1059"/>    
+    <end type="SOURCE" refId="34" navigable="false">      
+      <attribute id="116" name="prefs"/>      
+      <multiplicity id="117" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="118">    
+    <bendpoint x="276" y="791"/>    
+    <end type="SOURCE" refId="49"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <generalization id="119">    
+    <end type="SOURCE" refId="42"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <nesting id="120">    
+    <bendpoint x="2661" y="1448"/>    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="16"/>  
+  </nesting>  
+  <association id="121">    
+    <end type="SOURCE" refId="34" navigable="false">      
+      <attribute id="122" name="loadedDrivers"/>      
+      <multiplicity id="123" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="124">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="45"/>  
+  </nesting>  
+  <association id="125">    
+    <end type="SOURCE" refId="45" navigable="false">      
+      <attribute id="126" name="prefs"/>      
+      <multiplicity id="127" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="128">    
+    <end type="SOURCE" refId="22"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <generalization id="129">    
+    <bendpoint x="3082" y="298"/>    
+    <end type="SOURCE" refId="41"/>    
+    <end type="TARGET" refId="26"/>  
+  </generalization>  
+  <generalization id="130">    
     <end type="SOURCE" refId="40"/>    
     <end type="TARGET" refId="26"/>  
   </generalization>  
-  <realization id="133">    
-    <end type="SOURCE" refId="48"/>    
-    <end type="TARGET" refId="20"/>  
-  </realization>  
-  <nesting id="134">    
-    <bendpoint x="3163" y="1159"/>    
-    <end type="SOURCE" refId="43"/>    
-    <end type="TARGET" refId="27"/>  
+  <nesting id="131">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="31"/>  
   </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
