@@ -126,7 +126,7 @@ function renderWidgets() {
             type: "GET",
             url: "/drivers.xml",
             dataType: "xml",
-            async: false,
+            async: true,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function(xml) {
                 var $driverList = "";
@@ -135,10 +135,11 @@ function renderWidgets() {
                     var $name = $module.attr('name');
                     console.log("found driver " + $name);
                     //for every driver get that drivers xml
-                    var $widgetHtml = renderWidget($name);
+                    var $widgetHtml = generateWidgetHtml($name);
                     $widgetsHtml += $widgetHtml;
                     console.log($widgetHtml);
-                })
+                });
+                document.getElementById('widgets_box').innerHTML = $widgetsHtml;
             },
             error: function(xhr, status, error) {
                 if (xhr.status != 404) {
@@ -147,14 +148,15 @@ function renderWidgets() {
                 else {
                     console.log("error getting driver list");
                 }
+                 document.getElementById('widgets_box').innerHTML = $widgetsHtml;
             }
         });
-        document.getElementById('widgets_box').innerHTML = $widgetsHtml;
+       
     }
 }
 
-function renderWidget(driverName) {
-    console.log("renderWidget(" + driverName + ")");
+function generateWidgetHtml(driverName) {
+    console.log("generateWidgetHtml(" + driverName + ")");
     var widgetHtml = "<div class='widget'>";
     $.ajax({
         type: "GET",
@@ -168,21 +170,24 @@ function renderWidget(driverName) {
                 var $module = $(this);
                 var $longName = $module.attr('name');
                 var $driver = $module.attr('driver');
-                widgetHtml += "<h4>" + $longName + "</h4>";
+                widgetHtml += "<div class='title'>" + $longName + "</div>";
                 $(this).children().each(function() {
                     var $elementType = this.nodeName;
                     console.log("current element " + $elementType);
                     if ($elementType == "sensor") {
-                        widgetHtml += renderSensorElement($(this).attr('name'));
+                        var $value = $(this).find('value').text();
+                        widgetHtml += renderSensorElement($(this).attr('name'), $value);
                     } else if ($elementType == "controller") {
-                        //TODO pull needed controller attributes and pass
-                        widgetHtml += renderControllerElement($(this).attr('name'));
+                        var $status = $(this).find('status').text();
+                        widgetHtml += renderControllerElement($(this).attr('name'), $status);
                     } else if ($elementType == "button") {
                         widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'));
                     } else {
                         console.log("unknown element type: " + $elementType);
                     }
                 });
+                widgetHtml += "</div>";
+                
             });
         },
         error: function(xhr, status, error) {
@@ -192,27 +197,29 @@ function renderWidget(driverName) {
             else {
                 console.log("error getting driver list");
             }
+            //if the driver has no xml or does not exist then we do not want to insert
+            //+ a div
+            widgetHtml = "";
         }
     });
-    widgetHtml += "</div>";
     return widgetHtml;
 }
 
-function renderSensorElement(name) {
-    console.log("renderSensor() unimplemented");
-    var $markup = "<div class='widget_sensor'><span>" + name + "</span></div>";
+function renderSensorElement(name, value) {
+    console.log("renderSensor() unfinished");
+    var $markup = "<div class='sensor'><span class='name'>Sensor: " + name + "</span><span class='value'>" + value + "</span></div>";
     return $markup;
 }
 
-function renderControllerElement(name) {
-    console.log("renderController() unimplemented");
-    var $markup = "<div class='widget_controller'><span>" + name + "</span></div>";
+function renderControllerElement(name, status) {
+    console.log("renderController() unfinished");
+    var $markup = "<div class='controller'><span class='name'>Controller: " + name + "</span><span class='status'>" + status + "</span></div>";
     return $markup;
 }
     
 function renderButtonElement(driver, title, action, input) {
-    console.log("renderButton() unimplemented");
-    var $markup = "<div class='widget_button'><a href='/send_command?driver=" + driver + "&command=" + action + "'><span>" + title + "</span></a></div>";
+    console.log("renderButton() unfinished");
+    var $markup = "<div class='button'><a href='/send_command?driver=" + driver + "&command=" + action + "'><span class=' btn btn-default'>" + title + "</span></a></div>";
     return $markup;
 }
     

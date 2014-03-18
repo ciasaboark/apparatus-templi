@@ -28,12 +28,7 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 
 		while (isRunning) {
 			// simulate motion events every few seconds
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.sleep(5000);
 			Log.d(this.name, "generating new motion event");
 			MotionEvent e = new MotionEvent(System.currentTimeMillis(), this);
 			Coordinator.receiveEvent(this, e);

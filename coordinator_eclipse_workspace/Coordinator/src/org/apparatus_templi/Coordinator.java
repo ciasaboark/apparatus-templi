@@ -922,7 +922,8 @@ public class Coordinator {
 		Log.d(TAG, "getLoadedDrivers()");
 		ArrayList<String> driverList = new ArrayList<String>();
 		for (String driverName : loadedDrivers.keySet()) {
-			driverList.add(loadedDrivers.get(driverName).getClass().getSimpleName());
+			// driverList.add(loadedDrivers.get(driverName).getClass().getSimpleName());
+			driverList.add(driverName);
 		}
 
 		return driverList;

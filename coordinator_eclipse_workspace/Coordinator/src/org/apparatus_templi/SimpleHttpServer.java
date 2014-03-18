@@ -957,12 +957,13 @@ public class SimpleHttpServer implements Runnable {
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 					exchange.getResponseBody().write(response);
 				} else {
-					response = get404ErrorPage("").getBytes();
+					response = get404ErrorPage("Driver " + driverName + " did not respond")
+							.getBytes();
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 					exchange.getResponseBody().write(response);
 				}
 			} else {
-				response = get404ErrorPage("").getBytes();
+				response = get404ErrorPage("No driver specified").getBytes();
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
 				exchange.getResponseBody().write(response);
 			}
@@ -1012,13 +1013,13 @@ public class SimpleHttpServer implements Runnable {
 					prefs.savePreferences(newPrefs);
 				}
 			} catch (IOException e) {
-
+				Log.e(TAG, "unable to update preferences");
 			}
 
 			byte[] response = getResponse();
-			headers.add("Location", getProtocol() + getServerLocation() + ":" + getPort()
-					+ "/settings.html");
-			exchange.sendResponseHeaders(HttpURLConnection.HTTP_MOVED_TEMP, response.length);
+			// headers.add("Location", getProtocol() + getServerLocation() + ":" + getPort()
+			// + "/settings.html");
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_ACCEPTED, response.length);
 			exchange.getResponseBody().write(response);
 			exchange.close();
 		}
