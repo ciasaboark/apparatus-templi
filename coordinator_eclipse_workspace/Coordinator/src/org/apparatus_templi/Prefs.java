@@ -25,18 +25,18 @@ public class Prefs {
 
 	private Prefs() {
 		// Singleton pattern
-		DEF_PREFS.put(Prefs.Keys.configFile, "coordinator.conf");
+		DEF_PREFS.put(Keys.configFile, "coordinator.conf");
 		PREF_DESC.put(Keys.configFile, "The configuration file to read preferences from. "
 				+ "If a preference is not specified in this file then the default value will"
 				+ " be used");
-		DEF_PREFS.put(Prefs.Keys.driverList, "");
+		DEF_PREFS.put(Keys.driverList, "");
 		PREF_DESC.put(Keys.driverList, "A comma seperated list of drivers to load."
 				+ "The drivers should be referenced by short class name.");
-		DEF_PREFS.put(Prefs.Keys.portNum, "8000");
+		DEF_PREFS.put(Keys.portNum, "8000");
 		PREF_DESC.put(Keys.portNum, "The port number that the web server will listen "
 				+ "on.  If this value is empty then the server will attempt to automatically "
 				+ "find an empty port");
-		DEF_PREFS.put(Prefs.Keys.serialPort, null);
+		DEF_PREFS.put(Keys.serialPort, null);
 		PREF_DESC.put(Keys.serialPort, "The port name of the serial port the controller "
 				+ "Arduino is connected to.  On a Windows system this will likely be COM3 or "
 				+ "COM4.  For a Mac this should be something like /dev/tty.usbmodemXXXX, where "
@@ -45,25 +45,31 @@ public class Prefs {
 				+ "is null, or left blank, then the Coordinator will attempt to find the correct "
 				+ "serial port.  A value of \"dummy\" indicates that the Coordinator should use "
 				+ "the dummy serial connection, which does not require any hardware.");
-		DEF_PREFS.put(Prefs.Keys.serverBindLocalhost, "false");
+		DEF_PREFS.put(Keys.serverBindLocalhost, "false");
 		PREF_DESC.put(Keys.serverBindLocalhost, "If this value is \"true\" then the web server"
 				+ "will attempt to bind to the computers public IP address and the server will be"
 				+ "accessable to any computer on the same network.  If this value is anything "
 				+ "else then the web server will only bind to the loopback address, and will "
 				+ "only be accessable from the computer running the service.");
-		DEF_PREFS.put(Prefs.Keys.webResourceFolder, "website/");
+		DEF_PREFS.put(Keys.webResourceFolder, "website/");
 		PREF_DESC.put(Keys.webResourceFolder, "The folder that contains the resources for the "
 				+ "web frontend.  This folder should follow the same directory structure and file "
 				+ "naming conventions as the website/ folder.");
-		DEF_PREFS.put(Prefs.Keys.twtrAccess, "");
+		DEF_PREFS.put(Keys.twtrAccess, "");
 		PREF_DESC.put(Keys.twtrAccess, "The public key of the Twitter user that the Twitter "
 				+ "service will use");
-		DEF_PREFS.put(Prefs.Keys.twtrAccessKey, "");
+		DEF_PREFS.put(Keys.twtrAccessKey, "");
 		PREF_DESC.put(Keys.twtrAccessKey, "The secret key of the Twitter user that the Twitter "
 				+ "service will use");
-		DEF_PREFS.put(Prefs.Keys.logFile, "coordinator.log");
+		DEF_PREFS.put(Keys.logFile, "coordinator.log");
 		PREF_DESC.put(Keys.logFile, "The log file that all debugging messages, warnings, errors, "
 				+ "and terminal failures will be written to.");
+		DEF_PREFS.put(Keys.autoIncPort, "true");
+		PREF_DESC.put(Keys.autoIncPort,
+				"If true then the web server will attempt to bind to the first available "
+						+ "port starting with the default port.  This setting has no effect if a "
+						+ "port number is specified in the config file or on the command line."
+						+ DEF_PREFS.get(Keys.portNum));
 	}
 
 	/**
@@ -95,12 +101,20 @@ public class Prefs {
 			props.load(fin);
 			fin.close();
 
-			preferences.put(Prefs.Keys.logFile,
+			preferences.put(Keys.logFile,
 					props.getProperty(Keys.logFile, DEF_PREFS.get(Keys.logFile)));
 			Log.d(TAG, "read preference '" + Keys.logFile + "' as '" + getPreference(Keys.logFile)
 					+ "'");
 
-			preferences.put(Prefs.Keys.portNum,
+			// if no port number was specified then we will set the port number to the default port
+			// and auto increment if needed when creating the server socket.
+			if (props.getProperty(Keys.portNum) == null) {
+				preferences.put(Keys.autoIncPort, "true");
+			} else {
+				preferences.put(Keys.autoIncPort, "false");
+			}
+
+			preferences.put(Keys.portNum,
 					props.getProperty(Keys.portNum, DEF_PREFS.get(Keys.portNum)));
 			Log.d(TAG, "read preference '" + Keys.portNum + "' as '" + getPreference(Keys.portNum)
 					+ "'");
@@ -112,22 +126,22 @@ public class Prefs {
 			if (sp == null || sp.equals("") || sp.equals("null")) {
 				sp = null;
 			}
-			preferences.put(Prefs.Keys.serialPort, sp);
+			preferences.put(Keys.serialPort, sp);
 			Log.d(TAG, "read preference '" + Keys.serialPort + "' as '"
 					+ getPreference(Keys.serialPort) + "'");
 
-			preferences.put(Prefs.Keys.webResourceFolder, props.getProperty(Keys.webResourceFolder,
+			preferences.put(Keys.webResourceFolder, props.getProperty(Keys.webResourceFolder,
 					DEF_PREFS.get(Keys.webResourceFolder)));
 			Log.d(TAG, "read preference '" + Keys.webResourceFolder + "' as '"
 					+ getPreference(Keys.webResourceFolder) + "'");
 
-			preferences.put(Prefs.Keys.driverList,
+			preferences.put(Keys.driverList,
 					props.getProperty(Keys.driverList, DEF_PREFS.get(Keys.driverList)));
 			Log.d(TAG, "read preference '" + Keys.driverList + "' as '"
 					+ getPreference(Keys.driverList) + "'");
 
 			preferences.put(
-					Prefs.Keys.serverBindLocalhost,
+					Keys.serverBindLocalhost,
 					props.getProperty(Keys.serverBindLocalhost,
 							DEF_PREFS.get(Keys.serverBindLocalhost)));
 			Log.d(TAG, "read preference '" + Keys.serverBindLocalhost + "' as '"
@@ -153,7 +167,7 @@ public class Prefs {
 	 * 
 	 * @param key
 	 *            the name of the preference to return. A set of keys is available for use in the
-	 *            {@link Prefs.Keys} class.
+	 *            {@link Keys} class.
 	 */
 	public synchronized String getPreference(String key) {
 		String value = null;
@@ -178,7 +192,7 @@ public class Prefs {
 	 * 
 	 * @param key
 	 *            the name of the preference to update. A set of keys is available for use in the
-	 *            {@link Prefs.Keys} class.
+	 *            {@link Keys} class.
 	 * @param value
 	 *            the value of the preference.
 	 */
@@ -248,5 +262,6 @@ public class Prefs {
 		public static final String twtrAccess = "twtr_access";
 		public static final String twtrAccessKey = "twtr_access_key";
 		public static final String logFile = "logFile";
+		public static final String autoIncPort = "autoIncPort";
 	}
 }

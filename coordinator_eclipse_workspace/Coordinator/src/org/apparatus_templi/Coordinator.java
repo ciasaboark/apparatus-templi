@@ -314,6 +314,9 @@ public class Coordinator {
 			// try binding to that port, else we try the default port number
 			if (cmd.hasOption(Prefs.Keys.portNum)) {
 				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue(Prefs.Keys.portNum));
+				// If the config file has no port number specified but one was given on the command
+				// line then we do not want to auto increment the port number
+				prefs.putPreference(Prefs.Keys.autoIncPort, "false");
 			}
 
 			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
@@ -366,21 +369,24 @@ public class Coordinator {
 	 */
 	private static void startWebServer() throws UnknownHostException {
 		int portNum;
+		boolean autoIncPort = prefs.getPreference(Prefs.Keys.autoIncPort).equals("true") ? true
+				: false;
+		boolean bindLocalhost = prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true
+				: false;
+
 		try {
 			portNum = Integer.valueOf(prefs.getPreference(Prefs.Keys.portNum));
 		} catch (NumberFormatException e) {
 			portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
 		}
-		if (prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true")) {
+		if (bindLocalhost) {
 			Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address "
 					+ InetAddress.getLocalHost().getHostAddress());
 		} else {
 			Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
 		}
 
-		webServer = new SimpleHttpServer(portNum, portNum == Integer.parseInt(Prefs.DEF_PREFS
-				.get(Prefs.Keys.portNum)) ? false : true, prefs.getPreference(
-				Prefs.Keys.serverBindLocalhost).equals("true") ? true : false);
+		webServer = new SimpleHttpServer(portNum, autoIncPort, bindLocalhost);
 		webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
 		webServerThread = new Thread(webServer);
 		webServerThread.start();

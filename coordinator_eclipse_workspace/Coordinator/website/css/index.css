@@ -402,6 +402,11 @@
   color:#C54343;
 }
 
+.widget {
+    border: 1px solid black;
+    background-color: #ccc;
+}
+
 a:link,a:visited,a:hover,a:active,a img:hover,#footer a:hover
 {
   text-decoration:none;

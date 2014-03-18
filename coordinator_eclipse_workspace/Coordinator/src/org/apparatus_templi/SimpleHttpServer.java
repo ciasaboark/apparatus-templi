@@ -653,6 +653,9 @@ public class SimpleHttpServer implements Runnable {
 
 				StringBuilder html = new StringBuilder();
 				HashMap<String, String> prefs = Prefs.getInstance().getPreferencesMap();
+				// remove any preferences that should be hidden from the frontend
+				prefs.remove(Prefs.Keys.autoIncPort);
+
 				String configFile = prefs.get(Prefs.Keys.configFile);
 
 				// if the config file is not the default then we will show the full file path,
