@@ -49,6 +49,7 @@ public class Local extends ControllerModule {
 			this.sleep(3000);
 		}
 
+		Coordinator.sendCommand(this, "RESET");
 		// thread is terminating, do whatever cleanup is needed
 		Log.d(this.name, "terminating");
 	}

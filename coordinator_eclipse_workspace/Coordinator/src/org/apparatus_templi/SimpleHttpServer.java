@@ -1031,7 +1031,7 @@ public class SimpleHttpServer implements Runnable {
 
 			if (templateBytes != null) {
 				String templateHtml = new String(templateBytes);
-				templateHtml = templateHtml.replace("!TIMEOUT!", "8");
+				templateHtml = templateHtml.replace("!TIMEOUT!", "4");
 				templateHtml = templateHtml.replace("!LOCATION!", getProtocol()
 						+ getServerLocation() + ":" + getPort() + "/settings.html");
 				returnBytes = templateHtml.getBytes();

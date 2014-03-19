@@ -64,8 +64,8 @@ $(document).ready(function() {
     updateLog();
     renderWidgets();
     setInterval(getRunningDrivers, 30000);
-    setInterval(updateLog, 10000);
-    setInterval(renderWidgets(), 30000);
+    setInterval(updateLog, 5000);
+    setInterval(renderWidgets, 30000);
 });
 
 function updateConfigFile() {

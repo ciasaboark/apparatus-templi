@@ -167,6 +167,109 @@ public class MessageCenter implements Runnable {
 	}
 
 	/**
+	 * Generates a Message with the given option byte already set. If the size of the Message is too
+	 * large then it will be broken into as many message fragments a needed before transmission.
+	 * 
+	 * @param moduleName
+	 *            the name of the module that this message should be sent to.
+	 * @param data
+	 *            the data block of the message.
+	 * @param options
+	 *            the option byte to use for this Message
+	 * @return true if the message was sent, false otherwise.
+	 */
+	private boolean sendMessage(String moduleName, byte[] data, byte options) {
+		boolean messageSent = false;
+		// If the data block will fit within a single fragment, then send it
+		if (data.length <= Message.MAX_DATA_SIZE) {
+			messageSent = sendMessageFragment(moduleName, data, 0, options);
+		} else {
+			// break the data into multiple fragments of MAX_DATA_SIZE or less
+			int curPos = 0;
+			int fragmentNum = (data.length / Message.MAX_DATA_SIZE);
+			while (fragmentNum >= 0) {
+				int payloadSize = ((data.length - curPos) > Message.MAX_DATA_SIZE) ? Message.MAX_DATA_SIZE
+						: data.length - curPos;
+				byte[] payload = new byte[payloadSize];
+				for (int i = 0; i < payloadSize; i++, curPos++) {
+					payload[i] = data[curPos];
+				}
+				messageSent = sendMessageFragment(moduleName, payload, fragmentNum, options);
+				fragmentNum--;
+			}
+		}
+		return messageSent;
+	}
+
+	/**
+	 * Send a message fragment to the serial connection. This method assumes that the given data can
+	 * generate a valid message fragment.
+	 * 
+	 * @param moduleName
+	 *            the name of the module this message fragment should be sent to
+	 * @param data
+	 *            the data to place in the data block of this message fragment
+	 * @param fragmentNumber
+	 *            the fragment number to write to this message fragment
+	 * @param optionsByte
+	 *            the options byte to use for this message fragment
+	 * @return true if the fragment was written to the serial connection, false otherwise.
+	 */
+	private boolean sendMessageFragment(String moduleName, byte[] data, int fragmentNumber,
+			byte optionsByte) {
+		// TODO add support for more options
+		boolean sendMessage = true;
+		boolean messageSent = false;
+		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0) {
+			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
+			byte[] fragmentNum = { fragmentNumberBytes[2], fragmentNumberBytes[3] };
+			byte[] destinationBytes = new byte[10];
+	
+			try {
+				destinationBytes = moduleName.getBytes("UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Log.d(TAG, "unable to translate destination '" + moduleName + "' into UTF-8 byte[]");
+				sendMessage = false;
+			}
+	
+			// build the outgoing message byte[]
+			if (sendMessage) {
+				messageSent = true;
+				// Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" +
+				// moduleName
+				// + "', fragment num: " + fragmentNumber + " of type "
+				// + ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
+				byte[] message = new byte[15 + data.length];
+				message[0] = Message.START_BYTE;
+				message[1] = optionsByte;
+				message[2] = (byte) data.length;
+				message[3] = fragmentNum[0];
+				message[4] = fragmentNum[1];
+				// copy the destination bytes
+				for (int i = 5, j = 0; j < destinationBytes.length; i++, j++) {
+					message[i] = destinationBytes[j];
+				}
+	
+				// copy the data bytes
+				for (int i = 15, j = 0; j < data.length; i++, j++) {
+					message[i] = data[j];
+				}
+	
+				messageSent = serialConnection.writeData(message);
+			}
+		}
+	
+		try {
+			Thread.sleep(20);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return messageSent;
+	}
+
+	/**
 	 * Returns a reference to the MessageCenter singleton
 	 */
 	static MessageCenter getInstance() {
@@ -263,109 +366,6 @@ public class MessageCenter implements Runnable {
 	 */
 	synchronized boolean sendBinary(String moduleName, byte[] data) {
 		return sendMessage(moduleName, data, Message.OPTION_TYPE_BIN);
-	}
-
-	/**
-	 * Generates a Message with the given option byte already set. If the size of the Message is too
-	 * large then it will be broken into as many message fragments a needed before transmission.
-	 * 
-	 * @param moduleName
-	 *            the name of the module that this message should be sent to.
-	 * @param data
-	 *            the data block of the message.
-	 * @param options
-	 *            the option byte to use for this Message
-	 * @return true if the message was sent, false otherwise.
-	 */
-	private boolean sendMessage(String moduleName, byte[] data, byte options) {
-		boolean messageSent = false;
-		// If the data block will fit within a single fragment, then send it
-		if (data.length <= Message.MAX_DATA_SIZE) {
-			messageSent = sendMessageFragment(moduleName, data, 0, options);
-		} else {
-			// break the data into multiple fragments of MAX_DATA_SIZE or less
-			int curPos = 0;
-			int fragmentNum = (data.length / Message.MAX_DATA_SIZE);
-			while (fragmentNum >= 0) {
-				int payloadSize = ((data.length - curPos) > Message.MAX_DATA_SIZE) ? Message.MAX_DATA_SIZE
-						: data.length - curPos;
-				byte[] payload = new byte[payloadSize];
-				for (int i = 0; i < payloadSize; i++, curPos++) {
-					payload[i] = data[curPos];
-				}
-				messageSent = sendMessageFragment(moduleName, payload, fragmentNum, options);
-				fragmentNum--;
-			}
-		}
-		return messageSent;
-	}
-
-	/**
-	 * Send a message fragment to the serial connection. This method assumes that the given data can
-	 * generate a valid message fragment.
-	 * 
-	 * @param moduleName
-	 *            the name of the module this message fragment should be sent to
-	 * @param data
-	 *            the data to place in the data block of this message fragment
-	 * @param fragmentNumber
-	 *            the fragment number to write to this message fragment
-	 * @param optionsByte
-	 *            the options byte to use for this message fragment
-	 * @return true if the fragment was written to the serial connection, false otherwise.
-	 */
-	private boolean sendMessageFragment(String moduleName, byte[] data, int fragmentNumber,
-			byte optionsByte) {
-		// TODO add support for more options
-		boolean sendMessage = true;
-		boolean messageSent = false;
-		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0) {
-			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
-			byte[] fragmentNum = { fragmentNumberBytes[2], fragmentNumberBytes[3] };
-			byte[] destinationBytes = new byte[10];
-
-			try {
-				destinationBytes = moduleName.getBytes("UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Log.d(TAG, "unable to translate destination '" + moduleName + "' into UTF-8 byte[]");
-				sendMessage = false;
-			}
-
-			// build the outgoing message byte[]
-			if (sendMessage) {
-				messageSent = true;
-				// Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" +
-				// moduleName
-				// + "', fragment num: " + fragmentNumber + " of type "
-				// + ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
-				byte[] message = new byte[15 + data.length];
-				message[0] = Message.START_BYTE;
-				message[1] = optionsByte;
-				message[2] = (byte) data.length;
-				message[3] = fragmentNum[0];
-				message[4] = fragmentNum[1];
-				// copy the destination bytes
-				for (int i = 5, j = 0; j < destinationBytes.length; i++, j++) {
-					message[i] = destinationBytes[j];
-				}
-
-				// copy the data bytes
-				for (int i = 15, j = 0; j < data.length; i++, j++) {
-					message[i] = data[j];
-				}
-
-				messageSent = serialConnection.writeData(message);
-			}
-		}
-
-		try {
-			Thread.sleep(20);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return messageSent;
 	}
 
 	/**

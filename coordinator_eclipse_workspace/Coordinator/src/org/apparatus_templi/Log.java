@@ -28,7 +28,7 @@ public class Log {
 	// hold lines that could not yet be written to the log file
 	private static ArrayDeque<String> bufferedLines = new ArrayDeque<String>();
 
-	private static void writeLogMessage(String logMessage) {
+	private synchronized static void writeLogMessage(String logMessage) {
 		prevLines.add(logMessage);
 		PrintWriter out = null;
 		String logFile = Prefs.getInstance().getPreference(Prefs.Keys.logFile);

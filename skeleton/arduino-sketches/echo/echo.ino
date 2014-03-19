@@ -1,5 +1,3 @@
-#include <RemoteModule.h>
-
 #include <XBee.h>
 #include <SoftwareSerial.h>
 
@@ -24,8 +22,11 @@
  
 
 
-
-
+const String BROADCAST_TAG = "ALL";
+const String MODULE_NAME = "ECHO";
+const int MAX_DATA_SIZE = 69;
+const int XBEE_5V = 12;	//pin number that powers the attached Xbee
+uint8_t serialNumber [8];
 
 // const byte START_BYTE = 0b00001101;
 
@@ -35,8 +36,7 @@ XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
 ModemStatusResponse msr = ModemStatusResponse();
 
-void setup() { 
-   MODULE_NAME = "ECHO"; 
+void setup() {  
 	// start serial
 	Serial.begin(115200);
 	softSerial.begin(9600);
@@ -160,6 +160,178 @@ void flashLED(int pinNum, int flashes) {
 		digitalWrite(pinNum, LOW);
 		delay(100);
 	}
+}
+
+void processMessage(uint8_t message[], int messageLength) {
+	debug("processMessage()");
+	//flashLED(5, 4);
+	if (messageLength >= 15) {
+		// debug("reading start byte");
+		uint8_t startByte = message[0];
+		if (startByte == (uint8_t) 0x0D) {
+			uint8_t optionsByte = message[1];
+			uint8_t dataLength = (uint8_t)message[2];
+			uint8_t fragmentNumber = (message[3] << 8 | message[4]);
+			char* destination = "          ";
+			memcpy(destination, message+5, 10);
+			String destinationString = String(destination);
+			Serial.print("destination string: ");
+			Serial.println(destinationString);
+
+			// debug("reading data block");
+			uint8_t data[dataLength];
+			memcpy(data, message+15, dataLength);
+
+			
+			//(destination, 10);
+			// debug("incoming message addressed to " + destinationString);
+			Serial.print("fragment number: ");
+			Serial.println(fragmentNumber);
+			Serial.print(" data size: ");
+			Serial.println(dataLength);
+
+			if (MODULE_NAME.compareTo(destinationString) == 0) {
+				debug("message to us");
+				processFragment(optionsByte, dataLength, fragmentNumber, destinationString, data);
+			} else if (BROADCAST_TAG.compareTo(destinationString) == 0) {
+				//a broadcast request, respond with our serial number
+				debug("broadcast message");
+				String serialString = byteArrayToString(serialNumber, 8);
+				debug("responding with ");
+				debug(serialString);
+				// sendCommand(serialString);
+				sendCommand("Ready");
+			} else {
+				debug("message not for us");
+			}
+		} else {
+			debug("invalid start byte, discarding message");
+		}
+	} else {
+		//flashLED(6, 3);
+		//message is too short to be properly formed
+		//TODO send error log
+		debug("received message too short to be valid, discarding");
+	}
+}
+
+
+
+void processFragment(uint8_t optionsByte, uint8_t dataLength, uint16_t fragmentNumber, String destination, uint8_t data[]) {
+	//Since the arduinos have very limited memory there is little use for receiving
+	//+ fragmented messages.  Every fragment above 0 is discarded.  Make sure to keep
+	//+ the commands and binary you send below the MAX_DATA_SIZE
+	if (fragmentNumber == 0) {
+		if ((optionsByte & 0b10000000) == 0) {
+			debug("message was text");
+			//this was a text command
+			String command = byteArrayToString(data, dataLength);
+			executeCommand(command);
+		} else {
+			debug("message was bin");
+			//this was a binary command
+			executeBinary(data, dataLength);
+		}
+	}
+}
+
+String byteArrayToString(uint8_t data[], int dataLength) {
+	debug("byteArrayToString()");
+	String response = "";
+	for (int i = 0; i < dataLength; i++) {
+		char curChar = (char)data[i];
+		if (curChar != NULL) {
+			response += String(curChar);
+		}
+	}
+	debug(response);
+	return response;
+}
+
+void sendCommand(String command) {
+	debug("sendCommand()\n   ");
+	debug(command);
+	//flashLED(7, 1);
+	if (command.length() <= MAX_DATA_SIZE) {
+		sendCommandFragment(command, 0);
+	} else {
+		int fragmentNumber = command.length() / MAX_DATA_SIZE;
+		int curPos = 0;
+		while (fragmentNumber >= 0 || curPos < command.length()) {
+			String commandFragment;
+			if (curPos + MAX_DATA_SIZE > command.length()) {
+				commandFragment = command.substring(curPos, command.length());
+			} else {
+				commandFragment = command.substring(curPos, curPos + MAX_DATA_SIZE);
+			}
+			sendCommandFragment(commandFragment, fragmentNumber);
+			curPos += MAX_DATA_SIZE;
+			fragmentNumber--;	
+		}
+	}
+}
+
+void debug(String message) {
+	Serial.println(message);
+	Serial.flush();
+}
+
+
+void sendCommandFragment(String commandFragment, int fragmentNo) {
+	//flashLED(6, 3);
+	debug("sendCommandFragment()");
+	uint8_t payload [15 + commandFragment.length()];
+	payload[1] = (byte)0x00;
+	payload[2] = (byte)commandFragment.length();
+	byte fragmentBytes[sizeof(int)];
+	memcpy(fragmentBytes, & fragmentNo, sizeof(int));
+	payload[3] = fragmentBytes[1];
+	payload[4] = fragmentBytes[0];
+
+	byte destinationBytes[10] = {0};
+	MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length() + 1);
+	for (int i = 0, j = 5; i < 10; i++, j++) {
+		payload[j] = destinationBytes[i];
+	}
+
+	byte commandBytes[commandFragment.length()];
+	commandFragment.getBytes(commandBytes, commandFragment.length() + 1);
+	for (int i = 0, j = 15; i < commandFragment.length(); i++, j++) {
+		payload[j] = commandBytes[i];
+	}
+
+	payload[0] = (byte)0x0D;
+	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
+	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+	xbee.send(zbTx);
+
+	//TESTING - maybe this will keep the coordinator from being overwhelmed
+	// delay(500);
+}
+
+void sendBinary(byte data[], int dataLength) {
+	debug("sendBinary()");
+	//TODO check if message needs to be fragmented
+	uint8_t payload [15 + dataLength];
+	payload[0] = (byte)0x0D;
+	payload[1] = (byte)0b10000000;
+	payload[2] = (byte)dataLength;
+	payload[3] = (byte)0x00;
+	payload[4] = (byte)0x00;
+
+	byte destinationBytes[10] = {0};
+	MODULE_NAME.getBytes(destinationBytes, MODULE_NAME.length() + 1);
+	for (int i = 0, j = 5; i < 10; i++, j++) {
+		payload[j] = destinationBytes[i];
+	}
+
+	for (int i = 0, j = 15; i < dataLength; i++, j++) {
+		payload[j] = data[i];
+	}
+
+	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
+	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+	xbee.send(zbTx);
 }
 
 

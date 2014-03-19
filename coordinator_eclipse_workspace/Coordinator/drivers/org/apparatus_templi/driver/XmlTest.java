@@ -38,7 +38,7 @@ public class XmlTest extends ControllerModule {
 		widgetXml = new XmlFormatter(this, "Xml Format Tester");
 		fullXml = new XmlFormatter(this, "Xml Format Tester");
 
-		tempSensor = new Sensor("asdf");
+		tempSensor = new Sensor("Some Sensor");
 		tempSensor.setValue("unknown");
 		controller1 = new Controller("Some Controller");
 		controller1.setStatus("waiting");

@@ -294,7 +294,8 @@
 {
   display:table;
   height:100%;
-  max-width:1040px;
+/*  max-width:1040px;*/
+  width: 100%;
   overflow:hidden;
 }
 
@@ -405,7 +406,7 @@
 .widget {
     border: 1px solid #ccc;
     border-radius: 3px;
-    background-color: #EAF0E5;
+    background-color: #F9F9F9;
     margin:10px;
     padding:0px;
     width:400px;
@@ -413,7 +414,7 @@
 }
 
 .widget .title {
-    background-color: #D7DCD3;
+    background-color: #d3d3d3;
 /*    padding: 0px 0px 5px 0px;*/
     width: 100%;
     font-size: larger;

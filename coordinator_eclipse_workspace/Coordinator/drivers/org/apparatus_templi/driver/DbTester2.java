@@ -16,15 +16,16 @@ public class DbTester2 extends ControllerModule {
 	public void run() {
 		while (isRunning) {
 			String data = "1234567890";
-			byte[] binData = {(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF};
-			for (int i = 1; i <= 100; i++) {
-				Log.d(this.name, "Test " + i + " of 100");
+			byte[] binData = { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+					(byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+			for (int i = 1; i <= 1000; i++) {
+				Log.d(this.name, "Test " + i + " of 1000");
 				int code = Coordinator.storeTextData(this.name, "txt", data);
 				if (code == -1) {
 					Log.d(this.name, "data overwritten");
 				} else if (code == 0) {
 					Log.d(this.name, "data could not be written");
-				} else if (code == 1) { 
+				} else if (code == 1) {
 					Log.d(this.name, "new data stored");
 				} else {
 					Log.e(this.name, "unknown code returned");
@@ -35,13 +36,13 @@ public class DbTester2 extends ControllerModule {
 				} else {
 					Log.e(this.name, "text data was not stored correctly");
 				}
-				
+
 				code = Coordinator.storeBinData(this.name, "bin", binData);
 				if (code == -1) {
 					Log.d(this.name, "data overwritten");
 				} else if (code == 0) {
 					Log.d(this.name, "data could not be written");
-				} else if (code == 1) { 
+				} else if (code == 1) {
 					Log.d(this.name, "new data stored");
 				} else {
 					Log.e(this.name, "unknown code returned");
