@@ -216,7 +216,10 @@ public class Coordinator {
 	private static synchronized Driver wakeDriver(String driverName, boolean autoStart,
 			boolean wakeTerminated) {
 		assert driverName != null : "given driver name can not be null";
-		assert loadedDrivers.containsKey(driverName) : "driver must exist within the loaded drivers table";
+		// NOTE using containsKey() does not always work for String values (different hash code may
+		// be generated)
+		assert loadedDrivers.get(driverName) != null : "driver " + driverName
+				+ " must exist within the loaded drivers table";
 
 		Driver d = loadedDrivers.get(driverName);
 		Thread t = driverThreads.get(d);
@@ -455,7 +458,7 @@ public class Coordinator {
 
 			// only wake sleeping drivers, not TERMINATED ones
 			wakeDriver(d.getName(), false, false);
-			loadedDrivers.remove(driverName);
+			// loadedDrivers.remove(driverName);
 		}
 
 		// Block for a few seconds to allow all drivers to finish their
@@ -476,10 +479,17 @@ public class Coordinator {
 					Log.w(TAG, "waiting on driver " + d.getName() + " to terminate (state: "
 							+ t.getState().toString() + ")");
 					d.terminate();
-					// wakeDriver(d.getName(), false, false);
+					wakeDriver(d.getName(), false, false);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
+		loadedDrivers.clear();
 
 		assert driverThreads.isEmpty();
 		assert loadedDrivers.isEmpty();
@@ -607,7 +617,9 @@ public class Coordinator {
 	 * @param command
 	 *            the command to send to the remote module
 	 */
-	public static synchronized boolean sendCommand(Driver caller, String command) {
+	public static boolean sendCommand(Driver caller, String command) {
+		assert loadedDrivers.contains(caller) : "driver " + caller
+				+ " should exists within loadedDrivers";
 		// Log.d(TAG, "sendCommand()");
 		boolean messageSent = false;
 
@@ -633,8 +645,7 @@ public class Coordinator {
 	 *         response. Note that the first incoming response is returned. If another message
 	 *         addressed to this
 	 */
-	public static synchronized String sendCommandAndWait(Driver caller, String command,
-			int waitPeriod) {
+	public static String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
 		// Log.d(TAG, "sendCommandAndWait()");
 		String responseData = null;
 		if (waitPeriod <= 6 && caller.getName() != null) {
@@ -671,7 +682,7 @@ public class Coordinator {
 	 * @param data
 	 *            the binary data to send
 	 */
-	public static synchronized boolean sendBinary(Driver caller, byte[] data) {
+	public static boolean sendBinary(Driver caller, byte[] data) {
 		// Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 
@@ -700,7 +711,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
 	 *         successfully. 0 if the data could not be written.
 	 */
-	public static synchronized int storeTextData(String driverName, String dataTag, String data) {
+	public synchronized static int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
 		return SQLiteDbService.getInstance().storeTextData(driverName, dataTag, data);
 	}
@@ -720,7 +731,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
 	 *         successfully. 0 if the data could not be written.
 	 */
-	public static synchronized int storeBinData(String driverName, String dataTag, byte[] data) {
+	public synchronized static int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
 		return SQLiteDbService.getInstance().storeBinData(driverName, dataTag, data);
 	}
@@ -735,7 +746,7 @@ public class Coordinator {
 	 * @return the stored String data, or null if no data has been stored under the given driver
 	 *         name and tag.
 	 */
-	public static synchronized String readTextData(String driverName, String dataTag) {
+	public static String readTextData(String driverName, String dataTag) {
 		Log.d(TAG, "readTextData()");
 		return SQLiteDbService.getInstance().readTextData(driverName, dataTag);
 	}
@@ -750,7 +761,7 @@ public class Coordinator {
 	 * @return the stored binary data, or null if no data has been stored under the given driver
 	 *         name and tag.
 	 */
-	public static synchronized byte[] readBinData(String driverName, String dataTag) {
+	public static byte[] readBinData(String driverName, String dataTag) {
 		Log.d(TAG, "readBinData()");
 		return SQLiteDbService.getInstance().readBinData(driverName, dataTag);
 	}
@@ -762,7 +773,7 @@ public class Coordinator {
 	 * @param caller
 	 *            A reference to the driver to sleep
 	 */
-	public static synchronized void scheduleSleep(Driver caller) {
+	public static void scheduleSleep(Driver caller) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, (long) 0);
 			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
@@ -781,7 +792,7 @@ public class Coordinator {
 	 * @param wakeTime
 	 * @throws InterruptedException
 	 */
-	public static synchronized void scheduleSleep(Driver caller, long wakeTime) {
+	public static void scheduleSleep(Driver caller, long wakeTime) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
 			String time;
