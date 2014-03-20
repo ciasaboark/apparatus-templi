@@ -35,7 +35,14 @@
 							<xs:extension base="xs:string">
 								<xs:attribute type="xs:string" name="action"   use="required" />
 								<xs:attribute type="xs:string" name="title"    use="required" />
-				                <xs:attribute type="xs:string" name="input"    use="required" />
+				                <!-- <xs:attribute type="xs:string" name="input"    use="required" /> -->
+				                <xs:attribute name="input" use="required">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:pattern value="(none|text|numeric)"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:attribute>
 				                <xs:attribute type="xs:string" name="inputval" use="optional" />
 				                <xs:attribute type="xs:string" name="icon"     use="optional" />
 							</xs:extension>
@@ -55,6 +62,7 @@
 			<xs:attribute type="xs:string" name="version" use="required"/>
 			<xs:attribute type="xs:string" name="name" use="required"/>
 			<xs:attribute type="xs:string" name="driver" use="required"/>
+			<xs:attribute type="xs:string" name="refresh" use="optional" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

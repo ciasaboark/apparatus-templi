@@ -17,6 +17,7 @@ public class XmlFormatter {
 	private ArrayList<ElementInterface> elementInterfaces;
 	private final String name;
 	private final String shortName;
+	private Integer refresh = null;
 
 	/**
 	 * Initialize a new XmlFormatter.
@@ -30,6 +31,16 @@ public class XmlFormatter {
 		elementInterfaces = new ArrayList<ElementInterface>();
 		this.name = longName;
 		this.shortName = d.getName();
+	}
+
+	/**
+	 * Set the preferred refresh rate of this XML data. The frontends are free to ignore this value.
+	 * 
+	 * @param refreshRate
+	 *            how often the frontend should refresh this data (in seconds).
+	 */
+	public void setRefresh(int refreshRate) {
+		refresh = refreshRate;
 	}
 
 	/**
@@ -68,6 +79,7 @@ public class XmlFormatter {
 		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 		xml.append("<module version=\"" + XmlFormatter.VERSION + "\" name=\"" + this.name
 				+ "\" driver=\"" + shortName + "\" "
+				+ (refresh == null ? "" : ("refresh=\"" + refresh + "\" "))
 				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				+ "xsi:noNamespaceSchemaLocation=\"resource?file=xml/module-schema.xsd\" " + " >");
 		for (ElementInterface e : elementInterfaces) {
