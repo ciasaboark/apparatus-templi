@@ -166,7 +166,6 @@ public abstract class Driver implements Runnable {
 			this.wait();
 		} catch (InterruptedException e) {
 			Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
-			this.notify();
 		}
 	}
 

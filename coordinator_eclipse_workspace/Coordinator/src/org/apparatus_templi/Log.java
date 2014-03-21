@@ -65,24 +65,6 @@ public class Log {
 	}
 
 	/**
-	 * Sets the logging level to the absolute value of newLogLevel. The logging level determines
-	 * which log statements are printed to {@link System#out} or {@link System#err}. All log
-	 * messages are written to the log file regardless of the logging level. The default value is
-	 * {@link Log#LEVEL_DEBUG}, indicating that debug messages, warnings, errors, and terminal
-	 * failures should all be printed.
-	 * 
-	 * @param newLogLevel
-	 *            the new log level. A value greater/equal to {@link Log#LEVEL_DEBUG} will print all
-	 *            messages. A value of {@link Log#LEVEL_WARN} will print only warnings, errors, and
-	 *            terminal errors. A value of {@link Log#LEVEL_ERR} or less will only print errors
-	 *            and terminal failures. A value of {@link Log#LEVEL_TERM} will only print terminal
-	 *            failures.
-	 */
-	public static void setLogLevel(int newLogLevel) {
-		logLevel = Math.abs(newLogLevel);
-	}
-
-	/**
 	 * Writes a message to the console as {@link System#out}. This message is not duplicated in the
 	 * log.
 	 * 
@@ -107,8 +89,9 @@ public class Log {
 		String logMessage = System.currentTimeMillis() + ": " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_DEBUG) {
 			System.out.println(logMessage);
+			writeLogMessage(logMessage);
 		}
-		writeLogMessage(logMessage);
+
 	}
 
 	/**
@@ -123,8 +106,9 @@ public class Log {
 		String logMessage = System.currentTimeMillis() + ": Warning: " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_WARN) {
 			System.out.println(logMessage);
+			writeLogMessage(logMessage);
 		}
-		writeLogMessage(logMessage);
+
 	}
 
 	/**
@@ -139,8 +123,9 @@ public class Log {
 		String logMessage = System.currentTimeMillis() + ": Error: " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_ERR) {
 			System.err.println(logMessage);
+			writeLogMessage(logMessage);
 		}
-		writeLogMessage(logMessage);
+
 	}
 
 	/**
@@ -150,5 +135,23 @@ public class Log {
 	 */
 	public static ArrayList<String> getRecentLog() {
 		return new ArrayList<String>(Arrays.asList(prevLines.toArray(new String[] {})));
+	}
+
+	/**
+	 * Sets the logging level to the absolute value of newLogLevel. The logging level determines
+	 * which log statements are printed to {@link System#out} or {@link System#err}. All log
+	 * messages are written to the log file regardless of the logging level. The default value is
+	 * {@link Log#LEVEL_DEBUG}, indicating that debug messages, warnings, errors, and terminal
+	 * failures should all be printed.
+	 * 
+	 * @param newLogLevel
+	 *            the new log level. A value greater/equal to {@link Log#LEVEL_DEBUG} will print all
+	 *            messages. A value of {@link Log#LEVEL_WARN} will print only warnings, errors, and
+	 *            terminal errors. A value of {@link Log#LEVEL_ERR} or less will only print errors
+	 *            and terminal failures. A value of {@link Log#LEVEL_TERM} will only print terminal
+	 *            failures.
+	 */
+	public static void setLogLevel(int newLogLevel) {
+		logLevel = Math.abs(newLogLevel);
 	}
 }

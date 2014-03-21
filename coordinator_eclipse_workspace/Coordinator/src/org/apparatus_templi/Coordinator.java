@@ -397,12 +397,13 @@ public class Coordinator {
 
 	private static void restartWebServer() throws UnknownHostException, InterruptedException {
 		assert webServer != null : "attempting to restart web server when one is already active";
+		Log.w(TAG, "restarting web server");
 
 		webServer.terminate();
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		while (webServerThread.getState() != Thread.State.TERMINATED) {
 			Log.d(TAG, "waiting on web server to terminate");
-			Thread.sleep(100);
+			Thread.sleep(200);
 		}
 		webServer = null;
 		startWebServer();
@@ -447,7 +448,7 @@ public class Coordinator {
 	}
 
 	private static void restartDrivers() {
-		Log.d(TAG, "restarting all drivers");
+		Log.w(TAG, "Restarting all drivers");
 		Log.d(TAG, "removing all event watchers");
 		eventWatchers.clear();
 
@@ -469,6 +470,7 @@ public class Coordinator {
 		while (sleepTime > System.currentTimeMillis()) {
 		}
 
+		int tryCount = 0;
 		while (!driverThreads.isEmpty()) {
 			for (Driver d : driverThreads.keySet()) {
 				Thread t = driverThreads.get(d);
@@ -476,7 +478,24 @@ public class Coordinator {
 					Log.d(TAG, "driver " + d.getName() + " terminated");
 					driverThreads.remove(d);
 				} else {
-					Log.w(TAG, "waiting on driver " + d.getName() + " to terminate (state: "
+					// we don't want to block forever waiting on a non-responsive driver thread
+					if (tryCount == 20) {
+						Log.w(TAG, "driver " + d.getName()
+								+ " non-responsive, interrupting thread.");
+						t.interrupt();
+						// t.notifyAll();
+					}
+
+					// Something is seriously wrong if the driver has not stopped by now. We should
+					// probably notify the user that the service is experiencing problems and should
+					// be restarted
+					if (tryCount == 30) {
+						Log.e(TAG, "driver " + d.getName()
+								+ " still non-responsive, force stopping");
+						t.stop();
+					}
+
+					Log.d(TAG, "waiting on driver " + d.getName() + " to terminate (state: "
 							+ t.getState().toString() + ")");
 					d.terminate();
 					wakeDriver(d.getName(), false, false);
@@ -488,7 +507,9 @@ public class Coordinator {
 					}
 				}
 			}
+			tryCount++;
 		}
+		scheduledWakeUps.clear();
 		loadedDrivers.clear();
 
 		assert driverThreads.isEmpty();
@@ -711,7 +732,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
 	 *         successfully. 0 if the data could not be written.
 	 */
-	public synchronized static int storeTextData(String driverName, String dataTag, String data) {
+	public static int storeTextData(String driverName, String dataTag, String data) {
 		Log.d(TAG, "storeTextData()");
 		return SQLiteDbService.getInstance().storeTextData(driverName, dataTag, data);
 	}
@@ -731,7 +752,7 @@ public class Coordinator {
 	 * @return -1 if data overwrote information from a previous dataTag. 1 if data was written
 	 *         successfully. 0 if the data could not be written.
 	 */
-	public synchronized static int storeBinData(String driverName, String dataTag, byte[] data) {
+	public static int storeBinData(String driverName, String dataTag, byte[] data) {
 		Log.d(TAG, "storeBinData()");
 		return SQLiteDbService.getInstance().storeBinData(driverName, dataTag, data);
 	}
@@ -1054,7 +1075,7 @@ public class Coordinator {
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		// turn off debug messages
-		// Log.setLogLevel(Log.LEVEL_WARN);
+		Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);

@@ -12,12 +12,12 @@
 
 #button_home:active
 {
-  color:#0A55BA;
+  color:#53B9F1;
 }
 
 #button_home:hover
 {
-  color:#1075FD;
+  color:#53B9F1;
 }
 
 #button_info:active
@@ -122,13 +122,20 @@
 
 #form_submit
 {
-  margin-top:20px;
+  margin-left: 20px;
+    float:left;
 }
 
 #form_submit i
 {
   color:white;
 }
+
+#restart_all_button {
+    float: left;
+    margin-bottom:100px;
+}
+
 
 #header
 {
@@ -256,22 +263,22 @@
 
 #prefs_section_frontend h2 i
 {
-  color:#FCD38B;
+  color: #53B9F1;
 }
 
 #prefs_section_main h2 i
 {
-  color: #1075FD;
+  color: #53B9F1;
 }
 
 #prefs_section_twitter h2 i
 {
-  color:#36B8FF;
+  color:#53B9F1;
 }
 
 #prefs_section_webserver h2 i
 {
-  color:#CCCCCC;
+  color:#53B9F1;
 }
 
 #send_command
@@ -363,7 +370,10 @@
   padding-bottom:4px;
   padding-left:10px;
   padding-top:4px;
-  text-shadow:3px 2px 3px rgba(0,0,0,0.15);
+}
+
+.prefs_section h2 i {
+    text-shadow: 2px 2px 3px rgba(156, 156, 156, 0.44)
 }
 
 .refresh_button

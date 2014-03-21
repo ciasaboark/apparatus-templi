@@ -15,10 +15,11 @@ public class DbTester2 extends ControllerModule {
 	@Override
 	public void run() {
 		while (isRunning) {
-			String data = "1234567890";
-			byte[] binData = { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-					(byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+			// long loops like this should be avoided in a real driver since the driver will not
+			// respond to it's terminate() call
 			for (int i = 1; i <= 1000; i++) {
+				String data = String.valueOf(System.currentTimeMillis());
+				byte[] binData = data.getBytes();
 				Log.d(this.name, "Test " + i + " of 1000");
 				int code = Coordinator.storeTextData(this.name, "txt", data);
 				if (code == -1) {
@@ -53,10 +54,14 @@ public class DbTester2 extends ControllerModule {
 				} else {
 					Log.e(this.name, "binary data was not stored correctly");
 				}
+
+				if (!isRunning) {
+					break;
+				}
 			}
 			this.sleep(1000 * 60 * 5);
 		}
-
+		Log.d(this.name, "terminating");
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -123,6 +123,43 @@ public class SimpleHttpServer implements Runnable {
 	}
 
 	/**
+	 * Attempts to create a Socket on the given port number. If a socket can be created then the
+	 * port number is available for binding.
+	 * 
+	 * @param port
+	 *            the port number to check
+	 * @return true if the socket could be bound, false otherwise.
+	 */
+	private boolean isPortAvailable(InetAddress addr, int port) {
+		boolean portAvailable = false;
+		ServerSocket ss = null;
+		try {
+			ss = new ServerSocket(port);
+			ss.setReuseAddress(true);
+			portAvailable = true;
+		} catch (IOException e) {
+		} finally {
+			if (ss != null) {
+				try {
+					ss.close();
+				} catch (IOException e) {
+					/* should not be thrown */
+				}
+			}
+		}
+
+		return portAvailable;
+	}
+
+	/**
+	 * Notify the web server that it should terminate all current connections and exit its run()
+	 * method.
+	 */
+	void terminate() {
+		this.isRunning = false;
+	}
+
+	/**
 	 * Start the web server bound to the loop-back interface on the given port number. If the port
 	 * number is already in use then the server will not attempt to find the next available port and
 	 * will trigger a terminal failure.
@@ -169,20 +206,36 @@ public class SimpleHttpServer implements Runnable {
 	public SimpleHttpServer(int portNumber, boolean autoIncrement, boolean bindLocalhost) {
 		this.isRunning = true;
 		try {
+			InetAddress address = null;
+			if (bindLocalhost) {
+				address = InetAddress.getLocalHost();
+			} else {
+				address = InetAddress.getLoopbackAddress();
+			}
+
 			// create a InetSocket on the port
 			InetSocketAddress socket;
 			if (autoIncrement) {
-				while (!portAvailable(portNumber)) {
+				while (!isPortAvailable(address, portNumber)) {
 					portNumber++;
 				}
-			} else if (!portAvailable(portNumber)) {
-				Coordinator.exitWithReason("could not start web server on port " + portNumber);
+			} else {
+				// There seems to be a Windows specific bug here. If the server is being restarted
+				// then we can not reuse the same port number. We can try checking for a few seconds
+				long endWait = System.currentTimeMillis() + 6000;
+				while (!isPortAvailable(address, portNumber)
+						&& System.currentTimeMillis() < endWait) {
+					Log.d(TAG, "waiting for port " + portNumber + " to be available");
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+				}
+				if (!isPortAvailable(address, portNumber)) {
+					Coordinator.exitWithReason("could not start web server on port " + portNumber);
+				}
 			}
 
-			InetAddress address = null;
-			if (!bindLocalhost) {
-				address = InetAddress.getLoopbackAddress();
-			}
 			socket = new InetSocketAddress(address, portNumber);
 			try {
 				httpsServer = HttpServer.create(socket, 0);
@@ -302,46 +355,6 @@ public class SimpleHttpServer implements Runnable {
 	}
 
 	/**
-	 * Notify the web server that it should terminate all current connections and exit its run()
-	 * method.
-	 */
-	public void terminate() {
-		this.isRunning = false;
-	}
-
-	/**
-	 * Attempts to create a Socket on the given port number. If a socket can be created then the
-	 * port number is available for binding.
-	 * 
-	 * @param port
-	 *            the port number to check
-	 * @return true if the socket could be bound, false otherwise.
-	 */
-	private boolean portAvailable(int port) {
-
-		boolean results = false;
-		Socket ignored = null;
-		try {
-			ignored = new Socket("localhost", port);
-			Log.d(TAG, "port number " + port + " not available");
-		} catch (IOException e) {
-			results = true;
-			Log.d(TAG, "port number " + port + " available");
-		} catch (IllegalArgumentException e) {
-			// Thrown when the port number is out of range
-			Coordinator.exitWithReason("port number '" + port + "' out of range");
-		} finally {
-			if (ignored != null) {
-				try {
-					ignored.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		return results;
-	}
-
-	/**
 	 * Returns the port number the server is bound to.
 	 * 
 	 */
@@ -385,7 +398,7 @@ public class SimpleHttpServer implements Runnable {
 			}
 		}
 		Log.d(TAG, "terminating");
-		httpsServer.stop(0);
+		httpsServer.stop(2);
 	}
 
 	/**
@@ -683,7 +696,7 @@ public class SimpleHttpServer implements Runnable {
 
 				// Preferences for the main section
 				html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i  class=\"fa fa-edit\"></i>&nbsp;Main" + "</h2>");
+						+ "<i  class=\"fa fa-code-fork\"></i>&nbsp;Main" + "</h2>");
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 						+ "<i class=\"fa fa-question-circle\" "
 						+ "title=\""
@@ -734,7 +747,7 @@ public class SimpleHttpServer implements Runnable {
 
 				// Preferences for web frontend
 				html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i  class=\"fi-web\"></i>&nbsp;Web Frontend" + "</h2>");
+						+ "<i  class=\"fa fa-globe\"></i>&nbsp;Web Frontend" + "</h2>");
 				for (String key : new String[] { Prefs.Keys.webResourceFolder }) {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
@@ -789,12 +802,25 @@ public class SimpleHttpServer implements Runnable {
 
 				// buttons div
 				html.append("<div id=\"settings_buttons_div\">");
+
 				// restart all modules button
-				html.append("<div><a id=\"restart_all_button\" class=\"btn btn-danger\" href='/restart_module?module=all' "
-						+ "onclick=\"document.getElementById('prefs').submit()\" "
-						+ "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
-						+ "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
-						+ "Restart service</a></div>");
+				// html.append("<div id=\"restart_all_button\"><a  class=\"btn btn-danger\" href='/restart_module?module=all' "
+				// + "onclick=\"document.getElementById('prefs').submit()\" "
+				// +
+				// "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
+				// + "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
+				// + "Restart service</a></div>");
+
+				// TODO what modules can be restarted?
+				html.append("<div id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
+						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\"><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
+						+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
+						+ "<span class=\"fa fa-caret-down\"></span></a>"
+						+ "<ul class=\"dropdown-menu\">"
+						+ "<li><a href=\"/restart_module?module=drivers\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
+						+ "<li><a href=\"/restart_module?module=web\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
+						+ "<li><a href=\"/restart_module?module=foobar\"><i class=\"fa fa-refresh fa-fw\"></i> Anything else?</a></li>"
+						+ "</ul> </div>");
 
 				// Save preferences button
 				// if the config file is the default then we want the save preferences button to be
