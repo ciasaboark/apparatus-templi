@@ -167,14 +167,18 @@ void processMessage(uint8_t message[], int messageLength) {
 	//flashLED(5, 4);
 	if (messageLength >= 15) {
 		// debug("reading start byte");
-		uint8_t startByte = message[0];
+		
 		if (startByte == (uint8_t) 0x0D) {
 			uint8_t optionsByte = message[1];
 			uint8_t dataLength = (uint8_t)message[2];
 			uint8_t fragmentNumber = (message[3] << 8 | message[4]);
+			
+			/* I am not really sure what this is for except printing */			
 			char* destination = "          ";
 			memcpy(destination, message+5, 10);
 			String destinationString = String(destination);
+			
+
 			Serial.print("destination string: ");
 			Serial.println(destinationString);
 
