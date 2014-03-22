@@ -38,7 +38,7 @@ public class Coordinator {
 	private static ConcurrentHashMap<String, Driver> loadedDrivers = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long> scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
-	private static ConcurrentHashMap<Event, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<EventWatcher>>();
+	private static ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>>();
 	private static SerialConnection serialConnection = null;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static SimpleHttpServer webServer = null;
@@ -383,10 +383,13 @@ public class Coordinator {
 			portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
 		}
 		if (bindLocalhost) {
-			Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address "
-					+ InetAddress.getLocalHost().getHostAddress());
+			Log.c(TAG, "Starting web server on "
+					+ (autoIncPort ? "random port " : "port " + portNum)
+					+ " bound to localhost address " + InetAddress.getLocalHost().getHostAddress());
 		} else {
-			Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
+			Log.c(TAG, "Starting web server on "
+					+ (autoIncPort ? "random port " : "port " + portNum)
+					+ " bound to loopback address");
 		}
 
 		webServer = new SimpleHttpServer(portNum, autoIncPort, bindLocalhost);
@@ -1011,10 +1014,10 @@ public class Coordinator {
 			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
 		}
 
-		ArrayList<EventWatcher> list = eventWatchers.get(e);
+		ArrayList<EventWatcher> list = eventWatchers.get(e.getClass());
 		if (list != null) {
 			for (EventWatcher dvr : list) {
-				Log.d(TAG, "notifying driver " + d.getName() + " of event "
+				Log.d(TAG, "notifying driver " + ((Driver) dvr).getName() + " of event "
 						+ e.getClass().getSimpleName() + ".");
 				dvr.receiveEvent(e);
 			}
@@ -1039,11 +1042,12 @@ public class Coordinator {
 		if (d instanceof EventWatcher) {
 			Log.d(TAG, " driver '" + d.getName() + "' requested to be notified of events of type '"
 					+ e.getClass().getSimpleName() + "'.");
-			ArrayList<EventWatcher> curList = eventWatchers.get(e);
+			ArrayList<EventWatcher> curList = eventWatchers.get(e.getClass());
 			if (curList == null) {
 				curList = new ArrayList<EventWatcher>();
 			}
 			curList.add((EventWatcher) d);
+			eventWatchers.put(e.getClass(), curList);
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' can not listen for events of type '"
 					+ e.getClass().getSimpleName() + "', must implement EventWatcher.");
