@@ -226,12 +226,17 @@ public class Prefs {
 			newPrefs.putAll(DEF_PREFS); // store the default preferences
 			newPrefs.putAll(prefs); // store the updated preferences
 			String configFile = newPrefs.remove(Keys.configFile);
-			for (String key : newPrefs.keySet()) {
-				Log.d(TAG, "savePreferences key " + key + " = " + newPrefs.get(key));
-			}
+			// for (String key : newPrefs.keySet()) {
+			// Log.d(TAG, "savePreferences key " + key + " = " + newPrefs.get(key));
+			// }
 
 			Properties props = new Properties();
-			props.putAll(newPrefs);
+			// if the value of a key is null then it should not appear in the saved config file
+			for (String key : newPrefs.keySet()) {
+				if (newPrefs.get(key) != null) {
+					props.setProperty(key, newPrefs.get(key));
+				}
+			}
 			try {
 				FileOutputStream fout = new FileOutputStream(configFile);
 				props.store(fout, "");

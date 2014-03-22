@@ -608,6 +608,11 @@ public class Coordinator {
 			restartModule("web");
 			break;
 		case "main":
+			// TODO this should eventually restart the serial connection and message center as well.
+			Log.d(TAG, "restarting main");
+			restartModule("dirvers");
+			break;
+		case "drivers":
 			Log.d(TAG, "restarting drivers");
 			restartDrivers();
 			break;
@@ -1075,7 +1080,7 @@ public class Coordinator {
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		// turn off debug messages
-		Log.setLogLevel(Log.LEVEL_WARN);
+		// Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);

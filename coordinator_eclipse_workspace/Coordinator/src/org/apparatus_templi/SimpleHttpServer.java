@@ -152,6 +152,37 @@ public class SimpleHttpServer implements Runnable {
 	}
 
 	/**
+	 * Breaks the given query string into a series of key/value pairs.
+	 * 
+	 * @param query
+	 *            the query string to process. This should be the contents of the request string
+	 *            after '?'
+	 * @return a HashMap representation of the key/value pairs.
+	 */
+	private static HashMap<String, String> processQueryString(String query) {
+		HashMap<String, String> queryTags = new HashMap<String, String>();
+		// break the query string into key/value pairs by '&'
+		if (query != null) {
+			for (String keyValue : query.split("&")) {
+				// break the key/value pairs by '='
+				String[] pair = keyValue.split("=");
+				// put the key/value pairs into the map
+				if (pair.length == 2) {
+					queryTags.put(pair[0], pair[1]);
+				} else if (pair.length == 1) {
+					// put in a null value for a key with no value
+					queryTags.put(pair[0], null);
+				} else {
+					// somehow we got a key, key, value or perhaps a key, value, value "pair"
+					Log.w(TAG, "unable to process " + keyValue);
+				}
+			}
+		}
+
+		return queryTags;
+	}
+
+	/**
 	 * Notify the web server that it should terminate all current connections and exit its run()
 	 * method.
 	 */
@@ -399,31 +430,6 @@ public class SimpleHttpServer implements Runnable {
 		}
 		Log.d(TAG, "terminating");
 		httpsServer.stop(2);
-	}
-
-	/**
-	 * Breaks the given query string into a series of key/value pairs.
-	 * 
-	 * @param query
-	 *            the query string to process. This should be the contents of the request string
-	 *            after '?'
-	 * @return a HashMap representation of the key/value pairs.
-	 */
-	public static HashMap<String, String> processQueryString(String query) {
-		HashMap<String, String> queryTags = new HashMap<String, String>();
-		// break the query string into key/value pairs by '&'
-		if (query != null) {
-			for (String keyValue : query.split("&")) {
-				// break the key/value pairs by '='
-				String[] pair = keyValue.split("=");
-				// only put in tags that have a value associated
-				if (pair.length == 2) {
-					queryTags.put(pair[0], pair[1]);
-				}
-			}
-		}
-
-		return queryTags;
 	}
 
 	/**
@@ -734,13 +740,23 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>"
 						+ "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
 				for (String key : new String[] { Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost }) {
+					String value = prefs.get(key);
+					// TODO this is an ugly hack. If the user specified no port number in the config
+					// file then a flag will be set to auto increment the port number, and the port
+					// number would have been read from the default preferences. We need to simulate
+					// this here by blanking the port entry if the auto increment flag was set.
+					if (key.equals(Prefs.Keys.portNum)
+							&& Prefs.getInstance().getPreference(Prefs.Keys.autoIncPort)
+									.equals("true")) {
+						value = "";
+					}
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+							+ "\" value=\"" + value + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -799,6 +815,7 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</form>");
 				// clear the elements
 				html.append("<div class=\"clear\"></div>");
+				html.append("<hr class=\"fancy-line\"></hr>");
 
 				// buttons div
 				html.append("<div id=\"settings_buttons_div\">");
