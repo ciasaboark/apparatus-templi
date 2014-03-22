@@ -161,11 +161,21 @@ public abstract class Driver implements Runnable {
 	 * affect the execution of the {@link Driver#run()} method.
 	 */
 	protected final synchronized void sleep() {
-		Coordinator.scheduleSleep(this);
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
+		// this method should only be called on the driver's thread, indefinite blocking could
+		// result otherwise
+		long thisThread = Thread.currentThread().getId();
+		long driverThread = Coordinator.getDriverThreadId(this);
+
+		if (Thread.currentThread().getId() == Coordinator.getDriverThreadId(this)) {
+			Coordinator.scheduleSleep(this, Thread.currentThread().getId());
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
+				this.notify();
+			}
+		} else {
+			Log.e(this.name, "driver can only sleep on its own thread");
 		}
 	}
 
@@ -180,15 +190,20 @@ public abstract class Driver implements Runnable {
 	 *            the length of time in milliseconds that this driver should block.
 	 */
 	protected final synchronized void sleep(long sleepPeriod) {
-		// this method should never be called on the main thread, indefinite blocking will result
-		assert Thread.currentThread().getId() != 1;
+		// this method should only be called on the driver's thread, indefinite blocking could
+		// result otherwise
 
-		Coordinator.scheduleSleep(this, System.currentTimeMillis() + sleepPeriod);
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
-			this.notify();
+		if (Thread.currentThread().getId() == Coordinator.getDriverThreadId(this)) {
+			Coordinator.scheduleSleep(this, System.currentTimeMillis() + sleepPeriod, Thread
+					.currentThread().getId());
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				Log.d(this.getClass().getName(), "sleeping driver woken by interrupt");
+				this.notify();
+			}
+		} else {
+			Log.e(this.name, "driver can only sleep on its own thread");
 		}
 	}
 

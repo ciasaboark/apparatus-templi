@@ -34,6 +34,7 @@ import org.apparatus_templi.service.SQLiteDbService;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
+	public static final long threadId = Thread.currentThread().getId();
 	private static HashMap<String, String> remoteModules = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads = new ConcurrentHashMap<Driver, Thread>();
@@ -802,10 +803,14 @@ public class Coordinator {
 	 * @param caller
 	 *            A reference to the driver to sleep
 	 */
-	public static void scheduleSleep(Driver caller) {
+	public static void scheduleSleep(Driver caller, long threadID) {
 		if (caller != null) {
-			scheduledWakeUps.put(caller, (long) 0);
-			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
+			if (threadID == driverThreads.get(caller).getId()) {
+				scheduledWakeUps.put(caller, (long) 0);
+				Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
+			} else {
+				Log.w(TAG, "driver " + caller.getName() + " can only sleep on its own thread.");
+			}
 		}
 	}
 
@@ -821,7 +826,7 @@ public class Coordinator {
 	 * @param wakeTime
 	 * @throws InterruptedException
 	 */
-	public static void scheduleSleep(Driver caller, long wakeTime) {
+	public static void scheduleSleep(Driver caller, long wakeTime, long threadID) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
 			String time;
@@ -1082,7 +1087,23 @@ public class Coordinator {
 		}
 	}
 
+	/**
+	 * Accessor method to the the thread id number for a particular driver.
+	 * 
+	 * @param d
+	 *            the driver whose thread number should be looked for
+	 * @return the id of the drivers thread, or -1 if no such thread exists.
+	 */
+	public static long getDriverThreadId(Driver d) {
+		long threadId = -1;
+		if (driverThreads.containsKey(d)) {
+			threadId = driverThreads.get(d).getId();
+		}
+		return threadId;
+	}
+
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
 		// Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
@@ -1152,6 +1173,7 @@ public class Coordinator {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				Thread.currentThread().setName("Shutdown Hook");
 				Log.d(TAG, "system is going down. Notifying all drivers.");
 				// cancel any pending driver restarts
 				scheduledWakeUps.clear();
