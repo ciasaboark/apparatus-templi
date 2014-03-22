@@ -686,8 +686,12 @@ public class SimpleHttpServer implements Runnable {
 				}
 
 				// if the user is still using the default config file then show a warning
+				boolean usingDefaultConfig = false;
 				if (prefs.get(Prefs.Keys.configFile).equals(
 						Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					usingDefaultConfig = true;
+				}
+				if (usingDefaultConfig) {
 					html.append("<p class='warning_text'>The default config file can not be overwritten.  If you want to save your "
 							+ "preferences, then set a new location below and click save preferences.  To use the "
 							+ "new configuration file restart the service with the command line argument: "
@@ -731,8 +735,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + value + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -756,8 +762,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + value + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -771,8 +779,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -786,8 +796,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<p class='warning'>" + ENC_WARNING
@@ -804,9 +816,10 @@ public class SimpleHttpServer implements Runnable {
 								+ "title=\""
 								+ StringEscapeUtils.escapeHtml4(Prefs.getInstance()
 										.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
-								+ "</span><span "
-								+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-								+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+								+ "</span><span " + "class=\"pref_value\"><input "
+								+ (usingDefaultConfig ? "disabled='disabled'" : "")
+								+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+								+ "\" /></span></div><br />\n");
 						prefs.remove(key);
 					}
 					html.append("</div>");
