@@ -1,5 +1,4 @@
-#include "library.h"
-
+#include "message.h"
 
 /* This function will populate the message struct with the oppropiate data.
    It is the responsibility of the caller to free the memory that is being used
@@ -24,5 +23,4 @@ void processMessage(message_t *message, uint8_t *buffer) {
 }
 
 void sendCommand(message_t *message) {
-
 }

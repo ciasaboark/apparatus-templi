@@ -1,22 +1,9 @@
 #ifndef LIBRARY_H
-#define
+#define LIBRARY_H
 
 #include <XBee.h>
 #include <SoftwareSerial.h>
-
-typedef struct {
-	uint8_t  signature;
-	uint8_t  option;
-	uint8_t  data_length;
-	uint16_t fragment_number;
-	uint8_t  *data; //pointer to the data buffer
-} message_t;
-
-typedef struct {
-	uint8_t   signature;
-	uint8_t   fragment_length;
-	message_t *message;
-} payload;
+#include "types.h"
 
 /* This will populate a message struct from the data supplied by the buffer. 
    It dynamically allocates memory for the data, then copies it from the buffer
