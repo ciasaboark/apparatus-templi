@@ -419,6 +419,7 @@ public class SimpleHttpServer implements Runnable {
 	 */
 	@Override
 	public void run() {
+		Thread.currentThread().setName("SimpleHttpServer");
 		httpsServer.start();
 		while (isRunning) {
 			try {

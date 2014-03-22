@@ -1,8 +1,10 @@
 package org.apparatus_templi;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -220,8 +222,18 @@ public class Prefs {
 		boolean fileUpdated = false;
 		String newPrefsFile = prefs.get(Keys.configFile);
 		String defPrefsFile = DEF_PREFS.get(Keys.configFile);
+		File newPrefsFileName = new File(newPrefsFile);
+		File defPrefsFileName = new File(defPrefsFile);
 
-		if (!defPrefsFile.equals(newPrefsFile)) {
+		boolean sameFiles = true;
+		try {
+			sameFiles = Files.isSameFile(newPrefsFileName.toPath(), defPrefsFileName.toPath());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		if (!sameFiles) {
 			HashMap<String, String> newPrefs = new HashMap<String, String>();
 			newPrefs.putAll(DEF_PREFS); // store the default preferences
 			newPrefs.putAll(prefs); // store the updated preferences
