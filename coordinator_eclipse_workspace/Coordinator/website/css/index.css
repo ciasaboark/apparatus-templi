@@ -69,7 +69,8 @@
   background:#FCFCFC;
   border-top:1px solid #ccc;
   bottom:0;
-  box-shadow:0 0 50px 20px white;
+/*  box-shadow:0 0 50px 20px #ccc;*/
+    box-shadow:0 0 20px 0 #ccc;
   height:40px;
   padding-top:5px;
   position:fixed;
@@ -122,8 +123,9 @@
 
 #form_submit
 {
-  margin-left: 20px;
+  
     float:left;
+    margin-bottom:100px;
 }
 
 #form_submit i
@@ -133,7 +135,9 @@
 
 #restart_all_button {
     float: left;
-    margin-bottom:100px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    
 }
 
 
@@ -469,6 +473,13 @@
 .widget .btn {
     width: 100%;
 }
+
+/*
+hr:before {
+    content: <i class='fa-star'></i>;
+}
+*/
+
 
 a:link,a:visited,a:hover,a:active,a img:hover,#footer a:hover
 {
