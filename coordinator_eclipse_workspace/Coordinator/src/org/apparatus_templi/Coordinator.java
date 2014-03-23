@@ -34,11 +34,12 @@ import org.apparatus_templi.service.SQLiteDbService;
  */
 public class Coordinator {
 	private static final String TAG = "Coordinator";
+	public static final long threadId = Thread.currentThread().getId();
 	private static HashMap<String, String> remoteModules = new HashMap<String, String>();
 	private static ConcurrentHashMap<String, Driver> loadedDrivers = new ConcurrentHashMap<String, Driver>();
 	private static ConcurrentHashMap<Driver, Thread> driverThreads = new ConcurrentHashMap<Driver, Thread>();
 	private static ConcurrentHashMap<Driver, Long> scheduledWakeUps = new ConcurrentHashMap<Driver, Long>();
-	private static ConcurrentHashMap<Event, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Event, ArrayList<EventWatcher>>();
+	private static ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>>();
 	private static SerialConnection serialConnection = null;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static SimpleHttpServer webServer = null;
@@ -134,14 +135,14 @@ public class Coordinator {
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
 			if (!loadedDrivers.containsKey(d.getModuleName())
-					&& (d instanceof ControllerModule || d instanceof SensorModule)) {
+					&& (d instanceof ControllerModule || d instanceof SensorModule)
+					&& d.getName().length() <= 10) {
 				loadedDrivers.put(d.getModuleName(), d);
 				Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName()
 						+ " initialized");
 				isDriverLoaded = true;
 			} else {
-				Log.e(TAG, "error loading driver " + d.getClass().getName()
-						+ " a driver with the name " + d.getModuleName() + " already exists");
+				Log.e(TAG, "error loading driver " + d.getClass().getName());
 			}
 		}
 
@@ -383,10 +384,13 @@ public class Coordinator {
 			portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
 		}
 		if (bindLocalhost) {
-			Log.c(TAG, "Starting web server on port " + portNum + " bound to localhost address "
-					+ InetAddress.getLocalHost().getHostAddress());
+			Log.c(TAG, "Starting web server on "
+					+ (autoIncPort ? "random port " : "port " + portNum)
+					+ " bound to localhost address " + InetAddress.getLocalHost().getHostAddress());
 		} else {
-			Log.c(TAG, "Starting web server on port " + portNum + " bound to loopback address");
+			Log.c(TAG, "Starting web server on "
+					+ (autoIncPort ? "random port " : "port " + portNum)
+					+ " bound to loopback address");
 		}
 
 		webServer = new SimpleHttpServer(portNum, autoIncPort, bindLocalhost);
@@ -610,7 +614,7 @@ public class Coordinator {
 		case "main":
 			// TODO this should eventually restart the serial connection and message center as well.
 			Log.d(TAG, "restarting main");
-			restartModule("dirvers");
+			restartModule("drivers");
 			break;
 		case "drivers":
 			Log.d(TAG, "restarting drivers");
@@ -799,10 +803,14 @@ public class Coordinator {
 	 * @param caller
 	 *            A reference to the driver to sleep
 	 */
-	public static void scheduleSleep(Driver caller) {
+	public static void scheduleSleep(Driver caller, long threadID) {
 		if (caller != null) {
-			scheduledWakeUps.put(caller, (long) 0);
-			Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
+			if (threadID == driverThreads.get(caller).getId()) {
+				scheduledWakeUps.put(caller, (long) 0);
+				Log.d(TAG, "scheduled an indefinite sleep for driver '" + caller.getName() + "'");
+			} else {
+				Log.w(TAG, "driver " + caller.getName() + " can only sleep on its own thread.");
+			}
 		}
 	}
 
@@ -818,7 +826,7 @@ public class Coordinator {
 	 * @param wakeTime
 	 * @throws InterruptedException
 	 */
-	public static void scheduleSleep(Driver caller, long wakeTime) {
+	public static void scheduleSleep(Driver caller, long wakeTime, long threadID) {
 		if (caller != null) {
 			scheduledWakeUps.put(caller, wakeTime);
 			String time;
@@ -1011,10 +1019,10 @@ public class Coordinator {
 			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
 		}
 
-		ArrayList<EventWatcher> list = eventWatchers.get(e);
+		ArrayList<EventWatcher> list = eventWatchers.get(e.getClass());
 		if (list != null) {
 			for (EventWatcher dvr : list) {
-				Log.d(TAG, "notifying driver " + d.getName() + " of event "
+				Log.d(TAG, "notifying driver " + ((Driver) dvr).getName() + " of event "
 						+ e.getClass().getSimpleName() + ".");
 				dvr.receiveEvent(e);
 			}
@@ -1039,11 +1047,12 @@ public class Coordinator {
 		if (d instanceof EventWatcher) {
 			Log.d(TAG, " driver '" + d.getName() + "' requested to be notified of events of type '"
 					+ e.getClass().getSimpleName() + "'.");
-			ArrayList<EventWatcher> curList = eventWatchers.get(e);
+			ArrayList<EventWatcher> curList = eventWatchers.get(e.getClass());
 			if (curList == null) {
 				curList = new ArrayList<EventWatcher>();
 			}
 			curList.add((EventWatcher) d);
+			eventWatchers.put(e.getClass(), curList);
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' can not listen for events of type '"
 					+ e.getClass().getSimpleName() + "', must implement EventWatcher.");
@@ -1078,9 +1087,25 @@ public class Coordinator {
 		}
 	}
 
+	/**
+	 * Accessor method to the the thread id number for a particular driver.
+	 * 
+	 * @param d
+	 *            the driver whose thread number should be looked for
+	 * @return the id of the drivers thread, or -1 if no such thread exists.
+	 */
+	public static long getDriverThreadId(Driver d) {
+		long threadId = -1;
+		if (driverThreads.containsKey(d)) {
+			threadId = driverThreads.get(d).getId();
+		}
+		return threadId;
+	}
+
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
-		// Log.setLogLevel(Log.LEVEL_WARN);
+		Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);
@@ -1148,6 +1173,7 @@ public class Coordinator {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				Thread.currentThread().setName("Shutdown Hook");
 				Log.d(TAG, "system is going down. Notifying all drivers.");
 				// cancel any pending driver restarts
 				scheduledWakeUps.clear();

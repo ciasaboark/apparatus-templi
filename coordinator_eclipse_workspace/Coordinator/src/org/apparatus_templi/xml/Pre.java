@@ -10,9 +10,9 @@ public final class Pre implements ElementInterface {
 	private String name;
 	private String html;
 
-	public Pre(String name) {
-		this(name, null);
-	}
+	// public Pre(String name) {
+	// this(name, null);
+	// }
 
 	public Pre(String name, String html) {
 		this.name = name;

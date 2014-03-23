@@ -10,9 +10,9 @@ public final class TextArea implements ElementInterface {
 	private String text;
 	private String name;
 
-	public TextArea(String name) {
-		this(name, null);
-	}
+	// public TextArea(String name) {
+	// this(name, null);
+	// }
 
 	public TextArea(String name, String text) {
 		this.name = name;

@@ -7,12 +7,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -20,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -182,6 +184,39 @@ public class SimpleHttpServer implements Runnable {
 		return queryTags;
 	}
 
+	private String bestAddress() {
+		String bestAddress = null;
+		System.setProperty("java.net.preferIPv4Stack", "true");
+		Enumeration<NetworkInterface> nInterfaces = null;
+		try {
+			nInterfaces = NetworkInterface.getNetworkInterfaces();
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<InetAddress> addresses = new ArrayList<InetAddress>();
+		while (nInterfaces != null && nInterfaces.hasMoreElements()) {
+			NetworkInterface ni = nInterfaces.nextElement();
+			Enumeration<InetAddress> niAddresses = ni.getInetAddresses();
+			while (niAddresses.hasMoreElements()) {
+				addresses.add(niAddresses.nextElement());
+			}
+		}
+		for (InetAddress curAddr : addresses) {
+			if (curAddr.isLoopbackAddress() && bestAddress == null) {
+				bestAddress = curAddr.getHostAddress();
+			} else {
+				// stop looking at the first non-loopback address
+				if (!(curAddr instanceof Inet6Address)) {
+					bestAddress = curAddr.getHostAddress();
+					break;
+				}
+
+			}
+		}
+		return bestAddress;
+	}
+
 	/**
 	 * Notify the web server that it should terminate all current connections and exit its run()
 	 * method.
@@ -238,8 +273,11 @@ public class SimpleHttpServer implements Runnable {
 		this.isRunning = true;
 		try {
 			InetAddress address = null;
+
 			if (bindLocalhost) {
-				address = InetAddress.getLocalHost();
+				// try to find the best interface to bind to. Build a list of all available
+				// addresses
+				address = InetAddress.getByName(bestAddress());
 			} else {
 				address = InetAddress.getLoopbackAddress();
 			}
@@ -316,7 +354,8 @@ public class SimpleHttpServer implements Runnable {
 				if (!bindLocalhost) {
 					this.serverLocation = "localhost";
 				} else {
-					this.serverLocation = InetAddress.getLocalHost().getHostAddress();
+					this.serverLocation = httpsServer.getAddress().getHostString();
+					// this.serverLocation = InetAddress.getLocalHost().getHostAddress();
 				}
 				this.portNum = socket.getPort();
 				// TODO getting the address on localhost does not work, only loopback
@@ -419,6 +458,7 @@ public class SimpleHttpServer implements Runnable {
 	 */
 	@Override
 	public void run() {
+		Thread.currentThread().setName("SimpleHttpServer");
 		httpsServer.start();
 		while (isRunning) {
 			try {
@@ -685,8 +725,12 @@ public class SimpleHttpServer implements Runnable {
 				}
 
 				// if the user is still using the default config file then show a warning
+				boolean usingDefaultConfig = false;
 				if (prefs.get(Prefs.Keys.configFile).equals(
 						Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					usingDefaultConfig = true;
+				}
+				if (usingDefaultConfig) {
 					html.append("<p class='warning_text'>The default config file can not be overwritten.  If you want to save your "
 							+ "preferences, then set a new location below and click save preferences.  To use the "
 							+ "new configuration file restart the service with the command line argument: "
@@ -730,8 +774,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + value + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -755,8 +801,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + value + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -770,8 +818,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");
@@ -785,8 +835,10 @@ public class SimpleHttpServer implements Runnable {
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("<p class='warning'>" + ENC_WARNING
@@ -803,9 +855,10 @@ public class SimpleHttpServer implements Runnable {
 								+ "title=\""
 								+ StringEscapeUtils.escapeHtml4(Prefs.getInstance()
 										.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
-								+ "</span><span "
-								+ "class=\"pref_value\"><input type=\"text\" name=\"" + key
-								+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
+								+ "</span><span " + "class=\"pref_value\"><input "
+								+ (usingDefaultConfig ? "disabled='disabled'" : "")
+								+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+								+ "\" /></span></div><br />\n");
 						prefs.remove(key);
 					}
 					html.append("</div>");
@@ -1040,7 +1093,7 @@ public class SimpleHttpServer implements Runnable {
 							+ exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
 			headers.add("Content-Type", "text/html");
-
+			boolean newServerLoopback = true;
 			try {
 				InputStream in = exchange.getRequestBody();
 				ByteArrayOutputStream bao = new ByteArrayOutputStream();
@@ -1054,6 +1107,9 @@ public class SimpleHttpServer implements Runnable {
 				if (query != null && !query.equals("")) {
 					HashMap<String, String> newPrefs = processQueryString(query);
 					prefs.savePreferences(newPrefs);
+					if (newPrefs.get(Prefs.Keys.serverBindLocalhost).equals("true")) {
+						newServerLoopback = false;
+					}
 				}
 			} catch (IOException e) {
 				Log.e(TAG, "unable to update preferences");
@@ -1140,11 +1196,7 @@ public class SimpleHttpServer implements Runnable {
 					String newAddress = null;
 					if (Prefs.getInstance().getPreference(Prefs.Keys.serverBindLocalhost)
 							.equals("true")) {
-						try {
-							newAddress = InetAddress.getLocalHost().getHostAddress();
-						} catch (UnknownHostException e) {
-							newAddress = "localhost";
-						}
+						newAddress = bestAddress();
 					} else {
 						newAddress = "localhost";
 					}

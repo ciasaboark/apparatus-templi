@@ -58,7 +58,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	}
 
 	private void createTableText() {
-		Log.d(TAG, "creating table for text data");
+		// Log.d(TAG, "creating table for text data");
 		Connection myConn = null;
 		Statement stmt = null;
 		String sql = null;
@@ -81,7 +81,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	}
 
 	private void createTableBin() {
-		Log.d(TAG, "creating table for binary data");
+		// Log.d(TAG, "creating table for binary data");
 		String sql = null;
 		Connection myConn = null;
 		Statement stmt = null;
@@ -116,7 +116,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	@Override
 	public int storeTextData(String driverName, String dataTag, String data)
 			throws IllegalArgumentException {
-		Log.d(TAG, "storing text data");
+		// Log.d(TAG, "storing text data");
 		assert tableExists("coordinator", "DRIVERTEXT") : "database should already exist before storing data";
 		int returnCode = 0;
 
@@ -169,7 +169,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	@Override
 	public int storeBinData(String driverName, String dataTag, byte[] data)
 			throws IllegalArgumentException {
-		Log.d(TAG, "storing binary data");
+		// Log.d(TAG, "storing binary data");
 		assert tableExists("coordinator", "DRIVERBIN") : "database should already exist before storing data";
 		int returnCode = 0;
 
@@ -216,7 +216,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 
 	@Override
 	public String readTextData(String driverName, String dataTag) {
-		Log.d(TAG, "reading text data");
+		// Log.d(TAG, "reading text data");
 		Connection myConn = null;
 		Statement stmt = null;
 		String data = null;
@@ -249,7 +249,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 
 	@Override
 	public byte[] readBinData(String driverName, String dataTag) {
-		Log.d(TAG, "reading binary data");
+		// Log.d(TAG, "reading binary data");
 
 		Statement stmt = null;
 		byte[] data = null;
@@ -324,11 +324,11 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 		 */
 		public static synchronized Connection openConnection() throws SQLException,
 				ClassNotFoundException {
-			Log.d(TAG, "openConnection(), current open connections: " + openConnections);
+			// Log.d(TAG, "openConnection(), current open connections: " + openConnections);
 			openConnections++;
 			Class.forName("org.sqlite.JDBC");
 			if (openConnections == 1) {
-				Log.d(TAG, "first accessor opening connection to database");
+				// Log.d(TAG, "first accessor opening connection to database");
 				conn = DriverManager.getConnection("jdbc:sqlite:coordinator.sqlite");
 			}
 			return conn;
@@ -338,7 +338,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 		 * Closes the connection to the database if there are no other open connections.
 		 */
 		public static synchronized void closeConnection() {
-			Log.d(TAG, "closeConnection(), current open connections: " + openConnections);
+			// Log.d(TAG, "closeConnection(), current open connections: " + openConnections);
 			openConnections--;
 			if (openConnections == 0) {
 				try {

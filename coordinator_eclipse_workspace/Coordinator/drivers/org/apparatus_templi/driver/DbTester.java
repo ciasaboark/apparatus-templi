@@ -5,17 +5,24 @@ import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.xml.TextArea;
+import org.apparatus_templi.xml.XmlFormatter;
 
 public class DbTester extends ControllerModule {
+	private final XmlFormatter widgetXml = new XmlFormatter(this, "Database Tester");
+	private final TextArea description = new TextArea("status", "");
 
 	public DbTester() {
 		this.name = "DB_TESTER";
+		widgetXml.setRefresh(5);
+		widgetXml.addElement(description);
+
 	}
 
 	@Override
 	public void run() {
 		while (isRunning) {
-
+			description.setText("Saving and reading 1000 values");
 			for (int i = 1; i <= 1000; i++) {
 				String data = String.valueOf(System.currentTimeMillis());
 				byte[] binData = data.getBytes();
@@ -58,6 +65,7 @@ public class DbTester extends ControllerModule {
 					break;
 				}
 			}
+			description.setText("Sleeping...");
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
@@ -96,8 +104,7 @@ public class DbTester extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		// TODO Auto-generated method stub
-		return null;
+		return widgetXml.generateXml();
 	}
 
 	@Override

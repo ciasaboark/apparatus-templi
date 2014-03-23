@@ -22,6 +22,7 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 
 	@Override
 	public void run() {
+		Thread.currentThread().setName("Message Center");
 		Log.d(this.name, "starting");
 		this.queuedBinary.clear();
 		this.queuedCommands.clear();
