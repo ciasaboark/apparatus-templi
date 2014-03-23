@@ -4,12 +4,12 @@
    It is the responsibility of the caller to free the memory that is being used
    by the message structure. It also frees the memory allocated by the buffer */
 void assembleMessage(message_t *message, uint8_t *buffer) {
-	if(*buffer != NULL) {
+	if(buffer != NULL) {
 		message->format = buffer[0];
 		message->data_length = buffer[1];
 		message->data = malloc(message->data_length * sizeof(char));
 		if(message->data != NULL) {
-			memcpy(message->data, buffer[5], message->data_length);	
+			memcpy(message->data, &buffer[5], message->data_length);	
 		}
 	}
 }
