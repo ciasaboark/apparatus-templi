@@ -2,7 +2,7 @@
 
 /* This function will populate the message struct with the oppropiate data.
    It is the responsibility of the caller to free the memory that is being used
-   by the message structure. It also frees the memory allocated by the buffer */
+   by the message structure. */
 void assembleMessage(message_t *message, uint8_t *buffer) {
 	if(buffer != NULL) {
 		message->format = buffer[0];

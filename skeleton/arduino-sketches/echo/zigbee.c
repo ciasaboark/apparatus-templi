@@ -3,17 +3,14 @@
 		
 }
 
-/* Build an Xbee packet that is no larger than MAX_DATA_SIZE */
+/* This is only for testing right now. Eventually this will fragment messages,
+   but it only packages up on message for now. */
 void assemblePayload(message_t *message) {
-	int fragment = 0;
 	payload_t *payload = malloc(sizeof(payload_t));
 	if(payload != NULL) {
 		payload->fragment_number = fragment;
+		/* The payload_t is six bytes + how ever many bytes the message data buffer is */
+		payload->fragment_length = sizeof(payload_t) + message->data_length;
+		payload->message = message;
 	}	
-	if(message->data_length > MAX_DATA_SIZE) {
-		payload->message = malloc(MAX_PAYLOAD_SIZE - sizeof(payload_t));
-		if(payload->message != NULL) {
-			//fragment the packet here
-		}
-	}
 }
