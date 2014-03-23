@@ -16,8 +16,8 @@ public class XmlFormatter {
 	private static final double VERSION = 1.0;
 	private ArrayList<ElementInterface> elementInterfaces;
 	private final String name;
-	private final String shortName;
 	private Integer refresh = null;
+	private final Driver driver;
 
 	/**
 	 * Initialize a new XmlFormatter.
@@ -30,7 +30,7 @@ public class XmlFormatter {
 	public XmlFormatter(Driver d, String longName) {
 		elementInterfaces = new ArrayList<ElementInterface>();
 		this.name = longName;
-		this.shortName = d.getName();
+		this.driver = d;
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class XmlFormatter {
 		StringBuilder xml = new StringBuilder();
 		xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 		xml.append("<module version=\"" + XmlFormatter.VERSION + "\" name=\"" + this.name
-				+ "\" driver=\"" + shortName + "\" "
+				+ "\" driver=\"" + driver.getName() + "\" "
 				+ (refresh == null ? "" : ("refresh=\"" + refresh + "\" "))
 				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				+ "xsi:noNamespaceSchemaLocation=\"resource?file=xml/module-schema.xsd\" " + " >");

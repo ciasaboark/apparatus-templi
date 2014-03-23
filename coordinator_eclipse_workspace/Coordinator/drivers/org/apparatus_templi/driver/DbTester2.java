@@ -5,18 +5,25 @@ import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.xml.TextArea;
+import org.apparatus_templi.xml.XmlFormatter;
 
 public class DbTester2 extends ControllerModule {
+	private final XmlFormatter widgetXml;
+	private final TextArea description = new TextArea("status", "");
 
 	public DbTester2() {
 		this.name = "DB_TESTER2";
+		widgetXml = new XmlFormatter(this, "Database Tester2");
+		widgetXml.setRefresh(5);
+		widgetXml.addElement(description);
+
 	}
 
 	@Override
 	public void run() {
 		while (isRunning) {
-			// long loops like this should be avoided in a real driver since the driver will not
-			// respond to it's terminate() call
+			description.setText("Saving and reading 1000 values");
 			for (int i = 1; i <= 1000; i++) {
 				String data = String.valueOf(System.currentTimeMillis());
 				byte[] binData = data.getBytes();
@@ -59,9 +66,11 @@ public class DbTester2 extends ControllerModule {
 					break;
 				}
 			}
+			description.setText("Sleeping...");
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
+
 	}
 
 	@Override
@@ -96,8 +105,7 @@ public class DbTester2 extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		// TODO Auto-generated method stub
-		return null;
+		return widgetXml.generateXml();
 	}
 
 	@Override

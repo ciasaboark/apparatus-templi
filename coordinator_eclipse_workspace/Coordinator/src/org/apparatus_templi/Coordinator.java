@@ -135,14 +135,14 @@ public class Coordinator {
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
 			if (!loadedDrivers.containsKey(d.getModuleName())
-					&& (d instanceof ControllerModule || d instanceof SensorModule)) {
+					&& (d instanceof ControllerModule || d instanceof SensorModule)
+					&& d.getName().length() <= 10) {
 				loadedDrivers.put(d.getModuleName(), d);
 				Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName()
 						+ " initialized");
 				isDriverLoaded = true;
 			} else {
-				Log.e(TAG, "error loading driver " + d.getClass().getName()
-						+ " a driver with the name " + d.getModuleName() + " already exists");
+				Log.e(TAG, "error loading driver " + d.getClass().getName());
 			}
 		}
 
@@ -614,7 +614,7 @@ public class Coordinator {
 		case "main":
 			// TODO this should eventually restart the serial connection and message center as well.
 			Log.d(TAG, "restarting main");
-			restartModule("dirvers");
+			restartModule("drivers");
 			break;
 		case "drivers":
 			Log.d(TAG, "restarting drivers");
@@ -1105,7 +1105,7 @@ public class Coordinator {
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
-		// Log.setLogLevel(Log.LEVEL_WARN);
+		Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);
