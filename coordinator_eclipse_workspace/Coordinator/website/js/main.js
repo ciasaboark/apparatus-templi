@@ -13,6 +13,7 @@ function getRunningDrivers() {
             url: "/drivers.xml",
             dataType: "xml",
             async: true,
+            timeout: 10000,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function(xml) {
                 var $driverList = "";
@@ -43,6 +44,7 @@ function getRunningDrivers() {
     //              document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
     //                document.getElementById("drivers_refresh_spinner").style.visibility = "hidden";
                 }
+                console.log(error);
             }
         });
     }
@@ -98,6 +100,7 @@ function updateLog() {
             url: "/log.txt",
             dataType: "text",
             async: true,
+            timeout: 3000,
             success: function(txt) {
     //            console.log("success");
     //            console.log(txt);
@@ -112,6 +115,7 @@ function updateLog() {
                 document.getElementById("log_refresh_spinner").style.visibility = "hidden";
                 $logDiv.innerHTML = "Error getting log";
                 document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog()};
+                console.log(error);
             }
         });
     }  
@@ -127,6 +131,7 @@ function renderWidgets() {
             url: "/drivers.xml",
             dataType: "xml",
             async: true,
+            timeout: 10000,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function(xml) {
                 var $driverList = "";
@@ -148,7 +153,8 @@ function renderWidgets() {
                 else {
                     console.log("error getting driver list");
                 }
-                 document.getElementById('widgets_box').innerHTML = $widgetsHtml;
+                console.log(error);
+                document.getElementById('widgets_box').innerHTML = "<div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i></div>";
             }
         });
        
@@ -157,12 +163,13 @@ function renderWidgets() {
 
 function generateWidgetHtml(driverName) {
     console.log("generateWidgetHtml(" + driverName + ")");
-    var widgetHtml = "<div class='widget'>";
+    var widgetHtml = "<div class='widget info-box'>";
     $.ajax({
         type: "GET",
         url: "/widget.xml?driver=" + driverName,
         dataType: "xml",
         async: false,
+        timeout: 6000,
         contentType: "application/xml; charset=\"utf-8\"",
         success: function (xml) {
             //var to hold html
@@ -170,7 +177,7 @@ function generateWidgetHtml(driverName) {
                 var $module = $(this);
                 var $longName = $module.attr('name');
                 var $driver = $module.attr('driver');
-                widgetHtml += "<div class='title'>" + $longName + "</div>";
+                widgetHtml += "<div class='title'><span class=\"refresh-btn\"><a href='#'><i class=\"fa fa-refresh\"></i></a></span>" + $longName + "<span class=\"expand-btn\"><a href='#'><i class=\"fa fa-expand\"></i></a></span></div>";
                 $(this).children().each(function() {
                     var $elementType = this.nodeName;
                     console.log("current element " + $elementType);
@@ -197,6 +204,7 @@ function generateWidgetHtml(driverName) {
             else {
                 console.log("error getting driver list");
             }
+            console.log(error);
             //if the driver has no xml or does not exist then we do not want to insert
             //+ a div
             widgetHtml = "";

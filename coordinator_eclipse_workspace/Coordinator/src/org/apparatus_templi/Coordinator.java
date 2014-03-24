@@ -232,6 +232,7 @@ public class Coordinator {
 			scheduledWakeUps.remove(d);
 			driverThreads.remove(d);
 			Thread newThread = new Thread(d);
+			newThread.setPriority(Thread.MIN_PRIORITY);
 			driverThreads.put(d, newThread);
 			if (autoStart) {
 				newThread.start();
@@ -396,6 +397,7 @@ public class Coordinator {
 		webServer = new SimpleHttpServer(portNum, autoIncPort, bindLocalhost);
 		webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
 		webServerThread = new Thread(webServer);
+
 		webServerThread.start();
 	}
 
@@ -446,6 +448,7 @@ public class Coordinator {
 		for (String driverName : loadedDrivers.keySet()) {
 			Log.c(TAG, "Starting driver " + driverName);
 			Thread t = new Thread(loadedDrivers.get(driverName));
+			t.setPriority(Thread.MIN_PRIORITY);
 			driverThreads.put(loadedDrivers.get(driverName), t);
 			t.start();
 		}
@@ -1103,9 +1106,10 @@ public class Coordinator {
 	}
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
-		Log.setLogLevel(Log.LEVEL_WARN);
+		// Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
 		parseCommandLineOptions(argv);

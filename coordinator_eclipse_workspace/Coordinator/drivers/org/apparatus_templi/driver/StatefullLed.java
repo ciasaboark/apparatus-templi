@@ -57,7 +57,6 @@ public class StatefullLed extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		Log.w(this.name, "getWidgetXML() unimplimented");
 		String xml = widgetXml.generateXml();
 		return xml;
 	}

@@ -105,8 +105,7 @@ public class XmlTest extends ControllerModule {
 
 	@Override
 	public String getWidgetXML() {
-		String xml = widgetXml.generateXml();
-		return xml;
+		return widgetXml.generateXml();
 	}
 
 	@Override

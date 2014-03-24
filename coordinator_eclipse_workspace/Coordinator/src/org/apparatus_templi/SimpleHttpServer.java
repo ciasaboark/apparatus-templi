@@ -724,6 +724,42 @@ public class SimpleHttpServer implements Runnable {
 					configFile = f.getAbsolutePath();
 				}
 
+				// Buttons
+				html.append("<span id='settings-buttons'>");
+				// TODO what modules can be restarted?
+				html.append("<div id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
+						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\"><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
+						+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
+						+ "<span class=\"fa fa-caret-down\"></span></a>"
+						+ "<ul class=\"dropdown-menu\">"
+						+ "<li><a href=\"/restart_module?module=drivers\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
+						+ "<li><a href=\"/restart_module?module=web\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
+						+ "<li><a href=\"/restart_module?module=foobar\"><i class=\"fa fa-refresh fa-fw\"></i> Anything else?</a></li>"
+						+ "</ul> </span>");
+
+				// Save preferences button
+				// if the config file is the default then we want the save preferences button to be
+				// disabled until updated via javascript
+				html.append("<span id='form_submit' ");
+				if (configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					html.append("class='btn btn-success disabled'>");
+				} else {
+					html.append("class ='btn btn-success' ");
+					html.append("onclick = \"document.getElementById('prefs').submit()\" >");
+				}
+				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
+						+ "Save Preferences to <span id='btn_conf_file'>" + configFile
+						+ "</span></div>");
+
+				// end submit span
+				html.append("</span>");
+
+				// end buttons div
+				html.append("</div>");
+
+				// clear the elements
+				html.append("<div class=\"clear\"></div>");
+
 				// if the user is still using the default config file then show a warning
 				boolean usingDefaultConfig = false;
 				if (prefs.get(Prefs.Keys.configFile).equals(
@@ -731,10 +767,10 @@ public class SimpleHttpServer implements Runnable {
 					usingDefaultConfig = true;
 				}
 				if (usingDefaultConfig) {
-					html.append("<p class='warning_text'>The default config file can not be overwritten.  If you want to save your "
+					html.append("<span class='warning_text'>The default config file can not be overwritten.  If you want to save your "
 							+ "preferences, then set a new location below and click save preferences.  To use the "
 							+ "new configuration file restart the service with the command line argument: "
-							+ "<pre style='display:inline'>--configFile path/to/the/new/file</pre></p>");
+							+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
 				}
 
 				// TODO update to a form so that the settings can be sent back in a POST request
@@ -745,8 +781,8 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div id='settings_boxes'>");
 
 				// Preferences for the main section
-				html.append("<div id='prefs_section_main' class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i  class=\"fa fa-code-fork\"></i>&nbsp;Main" + "</h2>");
+				html.append("<div id='prefs_section_main' class='prefs_section info-box'><div class='title'>"
+						+ "<i  class=\"fa fa-code-fork\"></i>&nbsp;Main" + "</div>");
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 						+ "<i class=\"fa fa-question-circle\" "
 						+ "title=\""
@@ -783,8 +819,8 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</div>");
 
 				// Preferences for web server
-				html.append("<div id='prefs_section_webserver'  class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</h2>");
+				html.append("<div id='prefs_section_webserver'  class='prefs_section info-box'><div class='title'>"
+						+ "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</div>");
 				for (String key : new String[] { Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost }) {
 					String value = prefs.get(key);
 					// TODO this is an ugly hack. If the user specified no port number in the config
@@ -810,8 +846,8 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</div>");
 
 				// Preferences for web frontend
-				html.append("<div id='prefs_section_frontend' class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i  class=\"fa fa-globe\"></i>&nbsp;Web Frontend" + "</h2>");
+				html.append("<div id='prefs_section_frontend' class='prefs_section info-box'><div class='title'>"
+						+ "<i  class=\"fa fa-globe\"></i>&nbsp;Web Frontend" + "</div>");
 				for (String key : new String[] { Prefs.Keys.webResourceFolder }) {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
@@ -827,8 +863,8 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</div>");
 
 				// Preferences for the Twitter service
-				html.append("<div id='prefs_section_twitter' class='prefs_section'><h2 class='prefs_section_title'>"
-						+ "<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</h2>");
+				html.append("<div id='prefs_section_twitter' class='prefs_section info-box'><div class='title'>"
+						+ "<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</div>");
 				for (String key : new String[] { Prefs.Keys.twtrAccess, Prefs.Keys.twtrAccessKey }) {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
@@ -847,8 +883,8 @@ public class SimpleHttpServer implements Runnable {
 
 				// Any remaining unclassified preferences
 				if (!prefs.isEmpty()) {
-					html.append("<div id='prefs_section_unknown' class='prefs_section'><h2 class='prefs_section_title'>"
-							+ "<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</h2>");
+					html.append("<div id='prefs_section_unknown' class='prefs_section info-box'><div class='title'>"
+							+ "<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</div>");
 					for (String key : prefs.keySet()) {
 						html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 								+ "<i class=\"fa fa-question-circle \" "
@@ -868,7 +904,7 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</form>");
 				// clear the elements
 				html.append("<div class=\"clear\"></div>");
-				html.append("<hr class=\"fancy-line\"></hr>");
+				// html.append("<hr class=\"fancy-line\"></hr>");
 
 				// buttons div
 				html.append("<div id=\"settings_buttons_div\">");
@@ -880,34 +916,6 @@ public class SimpleHttpServer implements Runnable {
 				// "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
 				// + "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
 				// + "Restart service</a></div>");
-
-				// TODO what modules can be restarted?
-				html.append("<div id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
-						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\"><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
-						+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
-						+ "<span class=\"fa fa-caret-down\"></span></a>"
-						+ "<ul class=\"dropdown-menu\">"
-						+ "<li><a href=\"/restart_module?module=drivers\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
-						+ "<li><a href=\"/restart_module?module=web\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
-						+ "<li><a href=\"/restart_module?module=foobar\"><i class=\"fa fa-refresh fa-fw\"></i> Anything else?</a></li>"
-						+ "</ul> </div>");
-
-				// Save preferences button
-				// if the config file is the default then we want the save preferences button to be
-				// disabled until updated via javascript
-				html.append("<div id='form_submit' ");
-				if (configFile.equals(Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
-					html.append("class='btn btn-success disabled'>");
-				} else {
-					html.append("class ='btn btn-success' ");
-					html.append("onclick = \"document.getElementById('prefs').submit()\" >");
-				}
-				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"
-						+ "Save Preferences to <span id='btn_conf_file'>" + configFile
-						+ "</span></div>");
-
-				// end buttons div
-				html.append("</div>");
 
 				html.append("</div>");
 
