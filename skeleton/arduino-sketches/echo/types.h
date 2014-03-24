@@ -1,8 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#define MAX_PAYLOAD_SIZE 84 
-#define MAX_MESSAGE_SIZE 78
+#define MAX_PAYLOAD_SIZE 72 
+#define MAX_MESSAGE_SIZE 69
 
 /* values will take on defaults 
    Binary = 0, Text = 1, Hex = 3, Octal = 4 */

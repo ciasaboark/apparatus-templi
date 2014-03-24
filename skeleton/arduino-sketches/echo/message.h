@@ -3,12 +3,10 @@
 
 #include "types.h"
 
-#define MAX_MESSAGE_SIZE 69
-
-/* This will populate a message struct from the data supplied by the buffer. 
-   It dynamically allocates memory for the data, then copies it from the buffer
-   to the message struct buffer. It is the responsability of the caller to free the
-   allocated memory */
-void assembleMessage(message_t *message, uint8_t *buffer);
+/* This function will populate the message struct with the oppropiate data.
+   It is the responsibility of the caller to free the memory that is being used
+   by the message structure. You should free the memory that message->data points 
+   to first before freeing the memory used by message struct. */
+message_t* assembleMessage(uint8_t *buffer);
 
 #endif
