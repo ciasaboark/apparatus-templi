@@ -2,17 +2,17 @@
 
 #button_about:active
 {
-  color:#C051AD;
+  color:#3987b2;
 }
 
 #button_about:hover
 {
-  color:#E25FCB;
+  color:#53B9F1;
 }
 
 #button_home:active
 {
-  color:#53B9F1;
+  color:#3987b2;
 }
 
 #button_home:hover
@@ -22,22 +22,22 @@
 
 #button_info:active
 {
-  color:#0894AC;
+  color:#3987b2;
 }
 
 #button_info:hover
 {
-  color:#0ABCDA;
+color:#53B9F1;
 }
 
 #button_settings:active
 {
-  color:#D47D7D;
+  color:#3987b2;
 }
 
 #button_settings:hover
 {
-  color:#E88989;
+  color:#53B9F1;
 }
 
 #driver_list
@@ -125,7 +125,7 @@
 
 #form_submit
 {
-    margin-left: 10px;
+
 }
 
 #form_submit i
@@ -134,9 +134,10 @@
 }
 
 #restart_all_button {
-/*    float: left;*/
-    margin-bottom: 10px;
-    margin-right: 20px;
+margin-right: 10px;
+    z-index: 3;
+    text-align: left;
+    
     
 }
 
@@ -231,7 +232,7 @@
   font-family:Calibri, 'Varela Round', sans-serif;
   font-size:14pt;
 /*  min-width:100%;*/
-  padding:70px 20px 0px 0px;
+  padding:55px 20px 0px 0px;
 /*    margin-top: 55px;*/
     margin-left: 40px;
   text-align:left;
@@ -250,10 +251,11 @@
 #prefs_form
 {
   font-size:12pt;
-  margin:10px;
+  margin:65px 10px 10px 10px;
   overflow:hidden;
-  padding:10px;
+  padding:0px 10px 10px 10px;
   width:100%;
+    text-align: center;
 }
 
 #prefs_form .fa-exclamation-triangle
@@ -318,8 +320,31 @@
 
 #settings-buttons {
     margin:0px;
-    padding: 0px;
-    float: left;
+    padding: 10px;
+/*        background: rgb(255, 255, 255);*/
+
+    background: linear-gradient(135deg, rgb(244, 244, 244) 25%,
+        rgb(239, 239, 239) 25%, rgb(239, 239, 239) 50%, 
+       rgb(244, 244, 244) 50%, rgb(244, 244, 244) 75%, 
+        rgb(239, 239, 239) 75%
+    );
+    background-size: 10px 10px;
+    box-shadow: inset 0  30px 30px -30px #696868; 
+/*                        inset 0 -10px 10px -10px #696868;*/
+    border-top:1px solid #ccc;
+/*    box-shadow:0 0 20px 0 #ccc;*/
+/*    float: left;*/
+    height: 55px;
+    display: inline-block;
+/*    z-index: 0;*/
+    width: 100%;
+    max-width: 100%;
+/*    overflow-x:hidden;*/
+    white-space: nowrap;
+    position: fixed;
+    top: 54px;
+    left: 0px;
+    display: none;
 }
 
 
@@ -330,6 +355,11 @@
   overflow:hidden;
   padding:5px;
   width:100%;
+}
+
+#widgets_box {
+    margin-top: 65px;
+    text-align: center;
 }
 
 .clear,#settings_buttons_div
@@ -375,7 +405,9 @@
 /*  background-color:#FAFAFA;*/
 /*  border:1px solid #E6E6E6;*/
 /*  border-radius:3px;*/
-  float:left;
+/*  float:left;*/
+    display: inline-block;
+    vertical-align: top;
   margin:10px;
   padding-top:0;
   width:500px;
@@ -435,7 +467,7 @@
 }
 
 .info-box {
-    /*    border: 1px solid #ccc;*/
+        border: 1px solid #ccc;
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.60);
  
@@ -445,6 +477,7 @@
 
     overflow: hidden;
     color: #f0f0f0;
+    text-align: left;
 /*    border: 1px solid rgba(255, 255, 255, 0);*/
 /*    border 1px 1px 0px 1px solid red;*/
 }
@@ -473,7 +506,7 @@
 }
 
 .warning_text {
-    margin: 30px;
+    margin: 65px 30px 30px 30px;
     padding: 20px;
 /*    display:inline-block;*/
     display:block;
@@ -498,7 +531,8 @@
     width:400px;
     height:200px;
     
-    float: left;
+/*    float: left;*/
+    display:inline-block;
 }
 
 .widget .title {

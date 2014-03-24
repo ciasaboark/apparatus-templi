@@ -724,10 +724,26 @@ public class SimpleHttpServer implements Runnable {
 					configFile = f.getAbsolutePath();
 				}
 
+				// if the user is still using the default config file then show a warning
+				boolean usingDefaultConfig = false;
+				if (prefs.get(Prefs.Keys.configFile).equals(
+						Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
+					usingDefaultConfig = true;
+				}
+				if (usingDefaultConfig) {
+					html.append("<span class='warning_text'>The default config file can not be overwritten.  If you want to save your "
+							+ "preferences, then set a new location below and click save preferences.  To use the "
+							+ "new configuration file restart the service with the command line argument: "
+							+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
+				}
+
+				// TODO update to a form so that the settings can be sent back in a POST request
+				html.append("<div id=\"prefs_form\">");
+
 				// Buttons
-				html.append("<span id='settings-buttons'>");
+				html.append("<div id='settings-buttons'>");
 				// TODO what modules can be restarted?
-				html.append("<div id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
+				html.append("<span id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
 						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\"><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
 						+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
 						+ "<span class=\"fa fa-caret-down\"></span></a>"
@@ -755,26 +771,12 @@ public class SimpleHttpServer implements Runnable {
 				html.append("</span>");
 
 				// end buttons div
-				html.append("</div>");
+				// html.append("</div>");
 
 				// clear the elements
-				html.append("<div class=\"clear\"></div>");
+				// html.append("<div class=\"clear\"></div>");
 
-				// if the user is still using the default config file then show a warning
-				boolean usingDefaultConfig = false;
-				if (prefs.get(Prefs.Keys.configFile).equals(
-						Prefs.DEF_PREFS.get(Prefs.Keys.configFile))) {
-					usingDefaultConfig = true;
-				}
-				if (usingDefaultConfig) {
-					html.append("<span class='warning_text'>The default config file can not be overwritten.  If you want to save your "
-							+ "preferences, then set a new location below and click save preferences.  To use the "
-							+ "new configuration file restart the service with the command line argument: "
-							+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
-				}
-
-				// TODO update to a form so that the settings can be sent back in a POST request
-				html.append("<div id=\"prefs_form\"><form name='prefs' id='prefs' action=\"update_settings\" "
+				html.append("<form name='prefs' id='prefs' action=\"update_settings\" "
 						+ "method=\"POST\" >\n");
 
 				// settings boxes div
@@ -909,15 +911,7 @@ public class SimpleHttpServer implements Runnable {
 				// buttons div
 				html.append("<div id=\"settings_buttons_div\">");
 
-				// restart all modules button
-				// html.append("<div id=\"restart_all_button\"><a  class=\"btn btn-danger\" href='/restart_module?module=all' "
-				// + "onclick=\"document.getElementById('prefs').submit()\" "
-				// +
-				// "title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server' >"
-				// + "<i class=\"fa fa-refresh\"></i>&nbsp;&nbsp;"
-				// + "Restart service</a></div>");
-
-				html.append("</div>");
+				html.append("</div></div>");
 
 				template = template.replace("!MAIN_CONTENT!", html.toString());
 				returnBytes = template.getBytes();

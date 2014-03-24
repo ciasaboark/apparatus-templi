@@ -60,14 +60,15 @@ function showCommandBox() {
     $("#send_command").slideToggle("slow");
 }
 
-$(document).ready(function() {
+$(window).load(function() {
     //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
     updateLog();
     renderWidgets();
+    slideDownSettingsButtons();
     setInterval(getRunningDrivers, 30000);
     setInterval(updateLog, 5000);
-    setInterval(renderWidgets, 30000);
+    setInterval(renderWidgets, 10000);
 });
 
 function updateConfigFile() {
@@ -229,6 +230,15 @@ function renderButtonElement(driver, title, action, input) {
     console.log("renderButton() unfinished");
     var $markup = "<div class='button'><a href='/send_command?driver=" + driver + "&command=" + action + "'><span class=' btn btn-default'>" + title + "</span></a></div>";
     return $markup;
+}
+
+function slideDownSettingsButtons() {
+    var $buttons = document.getElementById("settings-buttons");
+    if ( $buttons != null ){
+////        $($buttons).slideUp(2000);
+//        $($buttons).slideDown(1000);
+        $( $buttons ).fadeIn(1000);
+    }
 }
     
 
