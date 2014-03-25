@@ -68,7 +68,7 @@ $(window).load(function() {
     slideDownSettingsButtons();
     setInterval(getRunningDrivers, 30000);
     setInterval(updateLog, 5000);
-    setInterval(renderWidgets, 10000);
+    setInterval(renderWidgets, 1000);
 });
 
 function updateConfigFile() {
@@ -108,7 +108,6 @@ function updateLog() {
                 $logDiv.innerHTML = "";
                 $logDiv.innerHTML = txt;
                 $logDiv.scrollTop = $logDiv.scrollHeight;
-                $logDiv.style.color = "black";
                 document.getElementById("log_refresh_spinner").style.visibility = "hidden";
                 document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog()};
             },
@@ -136,6 +135,11 @@ function renderWidgets() {
             contentType: "application/xml; charset=\"utf-8\"",
             success: function(xml) {
                 var $driverList = "";
+                var $numDrivers = $(xml).find('Module').length;
+                var $step = 100 / $numDrivers;
+                var $progress = 0;
+                $('#widgets_progress').attr('max', $numDrivers);
+                $('#widgets_progress').attr('value', $progress);
                 $(xml).find('Module').each(function() {
                     var $module = $(this);
                     var $name = $module.attr('name');
@@ -143,7 +147,10 @@ function renderWidgets() {
                     //for every driver get that drivers xml
                     var $widgetHtml = generateWidgetHtml($name);
                     $widgetsHtml += $widgetHtml;
-                    console.log($widgetHtml);
+//                    console.log($widgetHtml);
+                    $progress += $step;
+                    console.log("done processing widget " + $progress);
+                    $('#widgets_progress').val($progress);
                 });
                 document.getElementById('widgets_box').innerHTML = $widgetsHtml;
             },
@@ -237,7 +244,9 @@ function slideDownSettingsButtons() {
     if ( $buttons != null ){
 ////        $($buttons).slideUp(2000);
 //        $($buttons).slideDown(1000);
-        $( $buttons ).fadeIn(1000);
+//        $( $buttons ).fadeIn(1000);
+        document.getElementById("settings-buttons").style.visibility = "visible";
+        $('#settings-buttons').addClass('animated fadeInDownBig');
     }
 }
     

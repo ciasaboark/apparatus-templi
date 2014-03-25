@@ -1,37 +1,49 @@
 <div id="sys_status">
-<h2>System Status</h2>
     <div id="sys_status_box">
-        <div class="info_box">
-            <h3>Uptime</h3>
+        <div class="info-box sys-status-box">
+            <div class="title">Uptime</div>
             FILLER TEXT
         </div>
-        <div class="info_box">
-            <h3>Loaded Divers</h3>
+        <div class="info-box sys-status-box">
+            <div class="title">
+                Loaded Divers
+                <i id="driver_refresh_button" class="fa fa-refresh refresh_button" onclick="getRunningDrivers()"></i>
+            </div>
             <div id="driver_list">
                 
-                <span class="refresh_button" id="driver_refresh_button" href="#" onclick="getRunningDrivers()">
-                    <span class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></span>
+<!--
+                <span class="refresh_button" id="driver_refresh_button" href="#" >
+                    <span class="btn btn-default btn-sm"></span>
                 </span>
+-->
                 <ul id="driver_names">
                 </ul>
                 <span id="drivers_refresh_spinner" class="refreshing"><i class="fa fa-spinner fa-spin fa-2x"></i></span>
             </div>
         </div>
-        <div class="info_box">
-            <h3>Known Modules</h3>
+        <div class="info-box sys-status-box">
+            <div class="title">Known Modules</div>
             FILLER TEXT
         </div>
-    </div>
-    <div class="clear"></div>
+<!--
+        <div class="info-box sys-status-box">
+            <div class="title">Other stuff?</div>
+            FILLER TEXT
+        </div>
+-->
+        <div class="clear"></div>
+        <div class="info-box">
+            <div class="title">
+                Recent Log
+                    <a href="#"><i id="log_refresh_button" class="fa fa-refresh refresh_button" onclick="updateLog()"></i></a>
+            </div>
+            <div id="log_div">
+                <pre id="log"></pre>
+                
+                <span id="log_refresh_spinner" class="refreshing" style="text-align: center; position:fixed; left: 50%; top:50%;"><i class="fa fa-spinner fa-spin fa-2x"></i></span>
+            </div>
+        </div>
+        
+    </div>  
 </div>
 
-<div>
-    <h2>Recent Log</h2>
-    <div id="log_div">
-        <pre id="log"></pre>
-        <span id="log_refresh_button" class="btn btn-default refresh_button" onclick="updateLog()" >
-            <i class="fa fa-refresh"></i>
-        </span>
-        <span id="log_refresh_spinner" class="refreshing"><i class="fa fa-spinner fa-spin fa-2x"></i></span>
-    </div>
-</div>

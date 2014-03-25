@@ -840,7 +840,8 @@ public class SimpleHttpServer implements Runnable {
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input "
-							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ (key.equals((Prefs.Keys.portNum)) ? " type='number' " : "")
+							+ (usingDefaultConfig ? " disabled='disabled' " : "")
 							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
