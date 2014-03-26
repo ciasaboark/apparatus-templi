@@ -18,7 +18,7 @@ public class Local extends ControllerModule {
 
 	public Local() {
 		this.name = "LOCAL";
-		widgetXml.setRefresh(10);
+		widgetXml.setRefresh(3);
 		widgetXml.addElement(led1);
 		widgetXml.addElement(led2);
 		widgetXml.addElement(led3);

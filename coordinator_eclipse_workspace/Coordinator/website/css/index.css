@@ -606,10 +606,16 @@ margin-right: 10px;
     
 }
 
-.widget .sensor {
-/*    background-color: yellow;*/
+.widget .content {
     padding: 5px;
 }
+
+/*
+.widget .sensor {
+    background-color: yellow;
+    padding: 5px;
+}
+*/
 
 .widget .sensor .name {
 /*    background-color: white;*/
@@ -620,10 +626,12 @@ margin-right: 10px;
     float: right;
 }
 
+/*
 .widget .controller {
-/*    background-color: yellow;*/
+    background-color: yellow;
     padding: 5px;
 }
+*/
 
 .widget .controller .name {
 /*    background-color: white;*/
@@ -636,7 +644,6 @@ margin-right: 10px;
 
 .widget .button {
     width: 100%;
-    padding: 5px;
 }
 
 .widget .btn {

@@ -26,7 +26,7 @@ public class XmlTest extends ControllerModule {
 	private final TextArea text1 = new TextArea("text area 1", "This is a long line of text that "
 			+ "should be wrapped it it does not fit within a single physical line");
 	private final Pre pre1 = new Pre("pre1",
-			"<p>Some pre-formatted html.</p><img src='/resources?file=images/arduino_icon.png'");
+			"<p>Some pre-formatted html.</p><img src='/resources?file=images/arduino_icon.png'>");
 
 	// some additional Elements that are only displayed in the full page XML
 	// Note that the pre-formatted area could link to resources served by the web server, or to

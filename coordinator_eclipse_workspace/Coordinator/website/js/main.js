@@ -1,3 +1,6 @@
+var refreshIntervals = {};
+var firstRefresh = {};
+
 /*
  * Ajax request to update the running driver list
  */
@@ -64,11 +67,10 @@ $(window).load(function() {
     //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
     updateLog();
-    renderWidgets();
     slideDownSettingsButtons();
     setInterval(getRunningDrivers, 30000);
     setInterval(updateLog, 5000);
-    setInterval(renderWidgets, 1000);
+    renderWidgets();
 });
 
 function updateConfigFile() {
@@ -122,10 +124,22 @@ function updateLog() {
 }
 
 function renderWidgets() {
+   //clear any previous intervals
+    var $intervalNum;
+    if ('renderWidgets' in refreshIntervals) {
+        console.log("clearing previous interval for 'renderWidgets'");
+        $intervalNum = refreshIntervals.renderWidgets;
+        clearInterval($intervalNum);
+    } else {
+        console.log("no previous interval set for 'renderWidets'");
+    }
+    
     //get a list of all drivers the iterate through the list rendering the widgets
-    if (document.getElementById('widgets_box') != null) {
+    if (document.getElementById('widgets_box') !== null) {
         console.log("beginRenderWidgets()");
         var $widgetsHtml = "";
+
+        var $widgets_div_html = "";
         $.ajax({
             type: "GET",
             url: "/drivers.xml",
@@ -134,6 +148,7 @@ function renderWidgets() {
             timeout: 10000,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function(xml) {
+                var $widgets_div = document.getElementById('widgets_box').innerHTML = "";
                 var $driverList = "";
                 var $numDrivers = $(xml).find('Module').length;
                 var $step = 100 / $numDrivers;
@@ -141,18 +156,33 @@ function renderWidgets() {
                 $('#widgets_progress').attr('max', $numDrivers);
                 $('#widgets_progress').attr('value', $progress);
                 $(xml).find('Module').each(function() {
+                    //create a unique div for each module, then so an async call to update the contents of each div
                     var $module = $(this);
                     var $name = $module.attr('name');
-                    console.log("found driver " + $name);
-                    //for every driver get that drivers xml
-                    var $widgetHtml = generateWidgetHtml($name);
-                    $widgetsHtml += $widgetHtml;
-//                    console.log($widgetHtml);
+                    document.getElementById('widgets_box').innerHTML += "<span style='visibility:hidden' id='widget-" + $name + "'></span>";
+                    updateWidget($name);
+                    
+//                    console.log("found driver " + $name);
+//                    $widgets_div = document.getElementById('widgets_box').innerHTML = "";
+//                    
+//                    //for every driver get that drivers xml
+//                    var $widgetHtml = generateWidgetHtml($name);
+//                    $widgetsHtml += $widgetHtml;
+////                    console.log($widgetHtml);
                     $progress += $step;
-                    console.log("done processing widget " + $progress);
+//                    console.log("done processing widget " + $progress);
                     $('#widgets_progress').val($progress);
                 });
-                document.getElementById('widgets_box').innerHTML = $widgetsHtml;
+                //if there were no modules then we should do a short interval, otherwise once a minute should be fine
+                if ($numDrivers === 0) {
+                    document.getElementById('widgets_box').innerHTML = "<div  style='width: 500pt; height: 100pt; text-align: center; position:absolute; left: 50%; top:50%; padding:10px; margin-left: -250pt; margin-top: -50pt;' class='info-box'><h1>No Modules Loaded</h1><i class=\"fa fa-info-circle\"></i>&nbsp;&nbsp;You can specify which drivers to load from the <a href='settings.html'>settings</a> page</div>";
+                    firstRefresh = {};
+                    $intervalNum = setInterval(renderWidgets, 5000);
+                    refreshIntervals.renderWidget = $intervalNum;
+                } else {
+                    $intervalNum = setInterval(renderWidgets, 60000);
+                    refreshIntervals.renderWidget = $intervalNum;
+                }
             },
             error: function(xhr, status, error) {
                 if (xhr.status != 404) {
@@ -163,20 +193,35 @@ function renderWidgets() {
                 }
                 console.log(error);
                 document.getElementById('widgets_box').innerHTML = "<div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i></div>";
+                //set a new refresh interval
+                $intervalNum = setInterval(renderWidgets, 10000);
+                refreshIntervals.renderWidget = $intervalNum;
             }
         });
        
+        
     }
 }
 
-function generateWidgetHtml(driverName) {
-    console.log("generateWidgetHtml(" + driverName + ")");
+function updateWidget(driverName) {
+    var $id = '#widget-' + driverName;
+    
+    //clear any previous intervals
+    if (driverName in refreshIntervals) {
+        console.log("clearing previous interval for " + driverName);
+        var $intervalNum = refreshIntervals[driverName];
+        clearInterval($intervalNum);
+    } else {
+        console.log("no previous interval set for " + driverName);
+    }
+    
+//    document.getElementById('widget-' + driverName).innerHTML = "<div class='widget info-box'><i style='position:absolute; left: 50%; top:50%;' class=\"fa fa-spinner fa-spin fa-2x\"></i></div>";
     var widgetHtml = "<div class='widget info-box'>";
     $.ajax({
         type: "GET",
         url: "/widget.xml?driver=" + driverName,
         dataType: "xml",
-        async: false,
+        async: true,
         timeout: 6000,
         contentType: "application/xml; charset=\"utf-8\"",
         success: function (xml) {
@@ -185,10 +230,18 @@ function generateWidgetHtml(driverName) {
                 var $module = $(this);
                 var $longName = $module.attr('name');
                 var $driver = $module.attr('driver');
+                var $refreshInterval = $module.attr('refresh');
+                if ($refreshInterval < 3) {
+                    $refreshInterval = 3;
+                } else if ($refreshInterval > 60) {
+                    $refreshInterval = 60;
+                }
+                
                 widgetHtml += "<div class='title'><span class=\"refresh-btn\"><a href='#'><i class=\"fa fa-refresh\"></i></a></span>" + $longName + "<span class=\"expand-btn\"><a href='#'><i class=\"fa fa-expand\"></i></a></span></div>";
+                widgetHtml += "<div class='content'>";
                 $(this).children().each(function() {
                     var $elementType = this.nodeName;
-                    console.log("current element " + $elementType);
+//                    console.log("current element " + $elementType);
                     if ($elementType == "sensor") {
                         var $value = $(this).find('value').text();
                         widgetHtml += renderSensorElement($(this).attr('name'), $value);
@@ -197,51 +250,121 @@ function generateWidgetHtml(driverName) {
                         widgetHtml += renderControllerElement($(this).attr('name'), $status);
                     } else if ($elementType == "button") {
                         widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'));
+                    } else if ($elementType == "textarea") {
+                        widgetHtml += renderTextAreaElement($(this).text());
+                    } else if ($elementType == "pre") {
+                        widgetHtml += renderPreElement($.trim( $(this).text()));
                     } else {
-                        console.log("unknown element type: " + $elementType);
+                        console.error("unknown element type: " + $elementType);
                     }
                 });
-                widgetHtml += "</div>";
+                widgetHtml += "</div>"; //close content div
+                widgetHtml += "</div>"; //close widget div
+                if (document.getElementById('widget-' + driverName) !== null) {
+                    
+                    console.log("updating id widget-" + driverName);
+                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
+                    console.log("first refresh? " + firstRefresh[$id]);
+                    if (typeof firstRefresh[$id] == 'undefined') {
+                        console.log($id + " first refresh");
+                        $($id).css("visibility","visible");
+                        $($id).removeClass();
+                        window.setTimeout(
+                            function(){
+                                $($id).addClass("animated fadeInDownBig");
+                            },10
+                        );
+                        firstRefresh[$id] = "false";
+                    } else {
+                        $($id).css("visibility","visible");
+                        console.log($id + " NOT first refresh");
+                        $($id).removeClass();
+//                        window.setTimeout(
+//                            function(){
+//                                $($id).addClass("animated tada");
+//                            },10
+//                        );
+                        $($id).fadeOut(1).fadeIn(500);
+                    }
+                } else {
+                    console.log("unable to find id widget-" + driverName);
+                }
+                
+                //set a new refresh interval
+                $intervalNum = setInterval(function() { updateWidget(driverName); }, $refreshInterval * 1000);
+                console.log("setting interval to update " + driverName + " to " + $refreshInterval + " seconds.");
+                refreshIntervals[driverName] = $intervalNum;
                 
             });
+            
         },
         error: function(xhr, status, error) {
-            if (xhr.status != 404) {
-                console.log("error getting driver list");
-            } 
-            else {
-                console.log("error getting driver list");
-            }
+            console.log("unable to get xml for widget-" + driverName);
             console.log(error);
             //if the driver has no xml or does not exist then we do not want to insert
             //+ a div
-            widgetHtml = "";
+            if (document.getElementById('widget-' + driverName) !== null) {
+                console.log("removing id widget-" + driverName);
+                $($id).removeClass();
+                $($id).addClass("animated fadeOutUpBig");
+                //scale out the widget horizontally 
+                window.setTimeout(
+                    function() {
+                        $($id).toggle({ effect: "scale", direction: "horizontal", duration: "6000"});
+                    }, 600
+                );
+                
+                //remove the entire widget, this should be timed to complete after the horizontal scale is completed
+                //TODO is there a callback method available?
+                window.setTimeout(
+                    function(){
+                        $($id).remove();
+                        if ($("#widgets_box").is(':empty')) {
+                            //if this was the last widget then we need to update the widget box
+                            console.log("last widget removed, updating available widgets");
+                            renderWidgets();
+                            firstRefresh = {};
+                        }
+                    },1200
+                );
+                
+               
+            } else {
+                console.log("unable to get id for widget-" + driverName);
+            }
         }
     });
-    return widgetHtml;
 }
 
 function renderSensorElement(name, value) {
-    console.log("renderSensor() unfinished");
+//    console.log("renderSensor() unfinished");
     var $markup = "<div class='sensor'><span class='name'>Sensor: " + name + "</span><span class='value'>" + value + "</span></div>";
     return $markup;
 }
 
 function renderControllerElement(name, status) {
-    console.log("renderController() unfinished");
+//    console.log("renderController() unfinished");
     var $markup = "<div class='controller'><span class='name'>Controller: " + name + "</span><span class='status'>" + status + "</span></div>";
     return $markup;
 }
     
 function renderButtonElement(driver, title, action, input) {
-    console.log("renderButton() unfinished");
+//    console.log("renderButton() unfinished");
     var $markup = "<div class='button'><a href='/send_command?driver=" + driver + "&command=" + action + "'><span class=' btn btn-default'>" + title + "</span></a></div>";
     return $markup;
 }
 
+function renderTextAreaElement(content) {
+    return "<p>" + content + "</p>";
+}
+
+function renderPreElement(content) {
+    return content;
+}
+
 function slideDownSettingsButtons() {
     var $buttons = document.getElementById("settings-buttons");
-    if ( $buttons != null ){
+    if ( $buttons !== null ){
 ////        $($buttons).slideUp(2000);
 //        $($buttons).slideDown(1000);
 //        $( $buttons ).fadeIn(1000);
@@ -250,6 +373,7 @@ function slideDownSettingsButtons() {
     }
 }
     
+
 
 // $.get(tocURL, function(toc) {
 //    function makeToc($xml) {

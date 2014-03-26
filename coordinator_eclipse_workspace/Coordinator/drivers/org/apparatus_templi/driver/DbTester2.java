@@ -15,7 +15,7 @@ public class DbTester2 extends ControllerModule {
 	public DbTester2() {
 		this.name = "DB_TESTER2";
 		widgetXml = new XmlFormatter(this, "Database Tester2");
-		widgetXml.setRefresh(5);
+		widgetXml.setRefresh(9);
 		widgetXml.addElement(description);
 
 	}

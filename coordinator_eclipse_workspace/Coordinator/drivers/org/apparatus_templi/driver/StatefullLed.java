@@ -33,7 +33,7 @@ public class StatefullLed extends ControllerModule {
 
 	public StatefullLed() {
 		this.name = "State_LED";
-		widgetXml.setRefresh(10);
+		widgetXml.setRefresh(13);
 		widgetXml.addElement(led1);
 		widgetXml.addElement(led2);
 		widgetXml.addElement(led3);
