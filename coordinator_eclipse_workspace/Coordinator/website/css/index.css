@@ -677,3 +677,29 @@ html
   min-width:740px;
   text-decoration:none;
 }
+
+
+/*
+custom CSS animations
+*/
+
+@-webkit-keyframes DIV-BORDER {
+    0%   { box-shadow: 0px 0px 0px 0px #fff }
+    50%  { box-shadow: 0px 0px 20px 1px #fff }
+    100% { box-shadow: 0px 0px 0px 0px #fff }
+}
+
+@keyframes DIV-BORDER {
+    0%   { box-shadow: 0px 0px 0px 0px #fff }
+    50%  { box-shadow: 0px 0px 20px 1px #fff }
+    100% { box-shadow: 0px 0px 0px 0px #fff }
+}
+
+.flash-border {
+/*    border: 1px solid;*/
+/*    box-shadow: 0px 0px 20px 1px #fff;*/
+    
+/*    -webkit-transition: all 1s;*/
+    -webkit-animation: DIV-BORDER 2s;
+    animation: DIV-BORDER 2s;
+}

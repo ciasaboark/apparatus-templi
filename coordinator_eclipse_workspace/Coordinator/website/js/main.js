@@ -124,15 +124,13 @@ function updateLog() {
 }
 
 function renderWidgets() {
-   //clear any previous intervals
-    var $intervalNum;
-    if ('renderWidgets' in refreshIntervals) {
-        console.log("clearing previous interval for 'renderWidgets'");
-        $intervalNum = refreshIntervals.renderWidgets;
-        clearInterval($intervalNum);
-    } else {
-        console.log("no previous interval set for 'renderWidets'");
+   //clear any previous intervals (including widget updates
+    for (var key in refreshIntervals) {
+        clearInterval(key);
+        delete refreshIntervals[key];
+        console.log(refreshIntervals);
     }
+    
     
     //get a list of all drivers the iterate through the list rendering the widgets
     if (document.getElementById('widgets_box') !== null) {
@@ -278,13 +276,13 @@ function updateWidget(driverName) {
                     } else {
                         $($id).css("visibility","visible");
                         console.log($id + " NOT first refresh");
-                        $($id).removeClass();
-//                        window.setTimeout(
-//                            function(){
-//                                $($id).addClass("animated tada");
-//                            },10
-//                        );
-                        $($id).fadeOut(1).fadeIn(500);
+                        $($id).find('.widget').addClass('flash-border');
+                        window.setTimeout(
+                            function(){
+                                $($id).find('.widget').removeClass("flash-border");
+                            },2000
+                        );
+//                        $($id).fadeOut(1).fadeIn(20);
                     }
                 } else {
                     console.log("unable to find id widget-" + driverName);
