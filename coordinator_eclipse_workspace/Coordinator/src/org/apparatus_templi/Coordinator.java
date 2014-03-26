@@ -1105,7 +1105,21 @@ public class Coordinator {
 		return threadId;
 	}
 
+	public static String getServerAddress() {
+		StringBuilder address = new StringBuilder();
+		address.append(webServer.getProtocol());
+		address.append(webServer.getServerLocation());
+		address.append(":");
+		address.append(webServer.getPort());
+		address.append("/index.html");
+		Log.d(TAG, "server address: " + address.toString());
+		return address.toString();
+	}
+
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		// disable dock icon in MacOS
+		System.setProperty("apple.awt.UIElement", "true");
+
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
@@ -1196,6 +1210,9 @@ public class Coordinator {
 
 		// start the web interface
 		startWebServer();
+
+		// start the system tray icon listener
+		SysTrayListener sysTray = new SysTrayListener();
 
 		// enter main loop
 		while (true) {
