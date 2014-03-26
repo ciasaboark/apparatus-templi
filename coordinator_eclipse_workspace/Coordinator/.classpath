@@ -12,11 +12,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coordinator/lib/RXTX/win-x64"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/RXTX/linux-i386/RXTXcomm.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coordinator/lib/RXTX/linux-i386"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/RXTX/linux-x86_64/RXTXcomm.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coordinator/lib/RXTX/linux-x86_64"/>
