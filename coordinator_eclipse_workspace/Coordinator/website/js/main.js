@@ -123,17 +123,16 @@ function updateLog() {
     }  
 }
 
-function renderWidgets() {
-   //clear any previous intervals (including widget updates
-    for (var key in refreshIntervals) {
-        clearInterval(key);
-        delete refreshIntervals[key];
-        console.log(refreshIntervals);
-    }
-    
-    
+function renderWidgets() { 
     //get a list of all drivers the iterate through the list rendering the widgets
     if (document.getElementById('widgets_box') !== null) {
+        //clear any previous intervals (including widget updates
+        console.log("refresh intervals: " + refreshIntervals);
+        for (var key in refreshIntervals) {
+            clearInterval(key);
+            delete refreshIntervals[key];
+            console.log("refresh intervals: " + refreshIntervals);
+        }
         console.log("beginRenderWidgets()");
         var $widgetsHtml = "";
 
@@ -159,25 +158,18 @@ function renderWidgets() {
                     var $name = $module.attr('name');
                     document.getElementById('widgets_box').innerHTML += "<span style='visibility:hidden' id='widget-" + $name + "'></span>";
                     updateWidget($name);
-                    
-//                    console.log("found driver " + $name);
-//                    $widgets_div = document.getElementById('widgets_box').innerHTML = "";
-//                    
-//                    //for every driver get that drivers xml
-//                    var $widgetHtml = generateWidgetHtml($name);
-//                    $widgetsHtml += $widgetHtml;
-////                    console.log($widgetHtml);
                     $progress += $step;
-//                    console.log("done processing widget " + $progress);
                     $('#widgets_progress').val($progress);
                 });
                 //if there were no modules then we should do a short interval, otherwise once a minute should be fine
                 if ($numDrivers === 0) {
+                    console.log("setting short refresh interval");
                     document.getElementById('widgets_box').innerHTML = "<div  style='width: 500pt; height: 100pt; text-align: center; position:absolute; left: 50%; top:50%; padding:10px; margin-left: -250pt; margin-top: -50pt;' class='info-box'><h1>No Modules Loaded</h1><i class=\"fa fa-info-circle\"></i>&nbsp;&nbsp;You can specify which drivers to load from the <a href='settings.html'>settings</a> page</div>";
                     firstRefresh = {};
                     $intervalNum = setInterval(renderWidgets, 5000);
                     refreshIntervals.renderWidget = $intervalNum;
                 } else {
+                    console.log("setting long refresh interval");
                     $intervalNum = setInterval(renderWidgets, 60000);
                     refreshIntervals.renderWidget = $intervalNum;
                 }
@@ -192,12 +184,11 @@ function renderWidgets() {
                 console.log(error);
                 document.getElementById('widgets_box').innerHTML = "<div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i></div>";
                 //set a new refresh interval
+                console.log("setting medium refresh interval");
                 $intervalNum = setInterval(renderWidgets, 10000);
                 refreshIntervals.renderWidget = $intervalNum;
             }
         });
-       
-        
     }
 }
 
@@ -259,31 +250,38 @@ function updateWidget(driverName) {
                 widgetHtml += "</div>"; //close content div
                 widgetHtml += "</div>"; //close widget div
                 if (document.getElementById('widget-' + driverName) !== null) {
-                    
+                    $($id).css("visibility","visible");
                     console.log("updating id widget-" + driverName);
-                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
+                    
                     console.log("first refresh? " + firstRefresh[$id]);
+                    //if this was the first time the widget was refresh then do a fancy dropdown animation
+                    //+ otherwise flash the background
                     if (typeof firstRefresh[$id] == 'undefined') {
                         console.log($id + " first refresh");
-                        $($id).css("visibility","visible");
                         $($id).removeClass();
                         window.setTimeout(
                             function(){
                                 $($id).addClass("animated fadeInDownBig");
+                                document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                             },10
                         );
                         firstRefresh[$id] = "false";
                     } else {
-                        $($id).css("visibility","visible");
                         console.log($id + " NOT first refresh");
+                        $($id).removeClass();
+//                        document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
+                        $($id).html(widgetHtml);
                         $($id).find('.widget').addClass('flash-border');
+                                                
                         window.setTimeout(
                             function(){
                                 $($id).find('.widget').removeClass("flash-border");
                             },2000
                         );
+                        
 //                        $($id).fadeOut(1).fadeIn(20);
                     }
+//                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                 } else {
                     console.log("unable to find id widget-" + driverName);
                 }

@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -46,6 +49,12 @@ public class Coordinator {
 	private static Thread webServerThread = null;
 	private static Prefs prefs = Prefs.getInstance();
 	private static boolean connectionReady = false;
+
+	private static SysTray sysTray;
+
+	// version information
+	public static final int VERSION_NUMBER = 0;
+	public static final String RELEASE_NUMBER = "20140326";
 
 	/**
 	 * Sends the given message to the correct driver specified by {@link Message#getDestination()}.
@@ -399,9 +408,11 @@ public class Coordinator {
 		webServerThread = new Thread(webServer);
 
 		webServerThread.start();
+		sysTray.setStatus(SysTray.Status.RUNNING);
 	}
 
 	private static void restartWebServer() throws UnknownHostException, InterruptedException {
+		sysTray.setStatus(SysTray.Status.WAITING);
 		assert webServer != null : "attempting to restart web server when one is already active";
 		Log.w(TAG, "restarting web server");
 
@@ -1117,8 +1128,18 @@ public class Coordinator {
 	}
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		// disable dock icon in MacOS
 		System.setProperty("apple.awt.UIElement", "true");
+
+		// start the system tray icon listener
+		sysTray = new SysTray();
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
@@ -1191,6 +1212,7 @@ public class Coordinator {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				sysTray.setStatus(SysTray.Status.TERM);
 				Thread.currentThread().setName("Shutdown Hook");
 				Log.d(TAG, "system is going down. Notifying all drivers.");
 				// cancel any pending driver restarts
@@ -1210,9 +1232,6 @@ public class Coordinator {
 
 		// start the web interface
 		startWebServer();
-
-		// start the system tray icon listener
-		SysTrayListener sysTray = new SysTrayListener();
 
 		// enter main loop
 		while (true) {
