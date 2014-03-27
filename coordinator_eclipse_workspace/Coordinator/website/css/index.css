@@ -558,17 +558,13 @@ margin-right: 10px;
 .widget {
     width:400px;
     height:200px;
-    
 /*    float: left;*/
     display:inline-block;
     vertical-align: top;
 }
 
 .widget .title {
-/*
-    padding-left: 5px;
-    padding-right 5px;
-*/
+    height: 30px;
 }
 
 .widget .title .expand-btn {
@@ -577,7 +573,8 @@ margin-right: 10px;
     color: white;
     text-decoration: none;
     font-size: smaller;
-    line-height: 25pt;
+    line-height: 30px;
+    cursor: pointer;
 }
 
 .widget .title .refresh-btn {
@@ -586,7 +583,8 @@ margin-right: 10px;
     color: white;
     text-decoration: none;
     font-size:smaller;
-    line-height: 25pt;
+    line-height: 30px;
+    cursor: pointer;
 }
 
 
@@ -608,6 +606,9 @@ margin-right: 10px;
 
 .widget .content {
     padding: 5px;
+    overflow: hidden;
+    max-width: 390px;
+    max-height: 160px;
 }
 
 /*
@@ -646,8 +647,12 @@ margin-right: 10px;
     width: 100%;
 }
 
+.widget .button input {
+    float:right;
+}
+
 .widget .btn {
-    width: 100%;
+/*    width: 100%;*/
 }
 
 /*

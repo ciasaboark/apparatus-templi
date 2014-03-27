@@ -124,16 +124,16 @@ function updateLog() {
 }
 
 function renderWidgets() { 
+    console.log("renderWidgets()");
     //get a list of all drivers the iterate through the list rendering the widgets
     if (document.getElementById('widgets_box') !== null) {
         //clear any previous intervals (including widget updates
-        console.log("refresh intervals: " + refreshIntervals);
-        for (var key in refreshIntervals) {
-            clearInterval(key);
-            delete refreshIntervals[key];
-            console.log("refresh intervals: " + refreshIntervals);
+        for (var $key in refreshIntervals) {
+            console.log("refresh intervals: " + refreshIntervals[$key]);
+            clearInterval(refreshIntervals[$key]);
+            delete refreshIntervals[$key];
         }
-        console.log("beginRenderWidgets()");
+        
         var $widgetsHtml = "";
 
         var $widgets_div_html = "";
@@ -197,15 +197,15 @@ function updateWidget(driverName) {
     
     //clear any previous intervals
     if (driverName in refreshIntervals) {
-        console.log("clearing previous interval for " + driverName);
+//        console.log("clearing previous interval for " + driverName);
         var $intervalNum = refreshIntervals[driverName];
         clearInterval($intervalNum);
     } else {
-        console.log("no previous interval set for " + driverName);
+//        console.log("no previous interval set for " + driverName);
     }
     
 //    document.getElementById('widget-' + driverName).innerHTML = "<div class='widget info-box'><i style='position:absolute; left: 50%; top:50%;' class=\"fa fa-spinner fa-spin fa-2x\"></i></div>";
-    var widgetHtml = "<div class='widget info-box'>";
+    var widgetHtml = "<div class='widget info-box' draggable='true' >";
     $.ajax({
         type: "GET",
         url: "/widget.xml?driver=" + driverName,
@@ -220,13 +220,17 @@ function updateWidget(driverName) {
                 var $longName = $module.attr('name');
                 var $driver = $module.attr('driver');
                 var $refreshInterval = $module.attr('refresh');
-                if ($refreshInterval < 3) {
+                console.log($driver + " refresh: " + $refreshInterval);
+                if ($refreshInterval === undefined) {
+                    $refreshInterval = 60;
+                } else if ($refreshInterval < 3) {
                     $refreshInterval = 3;
                 } else if ($refreshInterval > 60) {
                     $refreshInterval = 60;
                 }
+                var $refreshOnClick = "updateWidget('" + $driver + "')";
                 
-                widgetHtml += "<div class='title'><span class=\"refresh-btn\"><a href='#'><i class=\"fa fa-refresh\"></i></a></span>" + $longName + "<span class=\"expand-btn\"><a href='#'><i class=\"fa fa-expand\"></i></a></span></div>";
+                widgetHtml += "<div class='title'><span class=\"refresh-btn\"><a onclick=\"" + $refreshOnClick + "\" ><i class=\"fa fa-refresh\"></i></a></span>" + $longName + "<span class=\"expand-btn\"><a href='#'><i class=\"fa fa-expand\"></i></a></span></div>";
                 widgetHtml += "<div class='content'>";
                 $(this).children().each(function() {
                     var $elementType = this.nodeName;
@@ -251,13 +255,13 @@ function updateWidget(driverName) {
                 widgetHtml += "</div>"; //close widget div
                 if (document.getElementById('widget-' + driverName) !== null) {
                     $($id).css("visibility","visible");
-                    console.log("updating id widget-" + driverName);
+//                    console.log("updating id widget-" + driverName);
                     
-                    console.log("first refresh? " + firstRefresh[$id]);
+//                    console.log("first refresh? " + firstRefresh[$id]);
                     //if this was the first time the widget was refresh then do a fancy dropdown animation
                     //+ otherwise flash the background
                     if (typeof firstRefresh[$id] == 'undefined') {
-                        console.log($id + " first refresh");
+//                        console.log($id + " first refresh");
                         $($id).removeClass();
                         window.setTimeout(
                             function(){
@@ -267,7 +271,7 @@ function updateWidget(driverName) {
                         );
                         firstRefresh[$id] = "false";
                     } else {
-                        console.log($id + " NOT first refresh");
+//                        console.log($id + " NOT first refresh");
                         $($id).removeClass();
 //                        document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                         $($id).html(widgetHtml);
@@ -283,12 +287,12 @@ function updateWidget(driverName) {
                     }
 //                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                 } else {
-                    console.log("unable to find id widget-" + driverName);
+                    console.error("unable to find id widget-" + driverName);
                 }
                 
                 //set a new refresh interval
                 $intervalNum = setInterval(function() { updateWidget(driverName); }, $refreshInterval * 1000);
-                console.log("setting interval to update " + driverName + " to " + $refreshInterval + " seconds.");
+//                console.log("setting interval to update " + driverName + " to " + $refreshInterval + " seconds.");
                 refreshIntervals[driverName] = $intervalNum;
                 
             });
@@ -346,7 +350,21 @@ function renderControllerElement(name, status) {
     
 function renderButtonElement(driver, title, action, input) {
 //    console.log("renderButton() unfinished");
-    var $markup = "<div class='button'><a href='/send_command?driver=" + driver + "&command=" + action + "'><span class=' btn btn-default'>" + title + "</span></a></div>";
+    var $markup = "<div class='button'><a ";
+    var $buttonID =  "widget-input-" + driver + "-" + title;
+    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + $buttonID + "','" + action + "')\"><span class=' btn btn-default'>" + title + "</span></a>";
+    if (input !== null && input != "none") {
+        $markup += "<input type='";
+        if (input == "text") {
+            $markup += "text";
+        } else if (input == "numeric") {
+            $markup += "number";
+        }
+        $markup += "' ";
+        $markup += "id='" + $buttonID + "'";
+        $markup += "></input>";
+    }
+    $markup += "</div>";
     return $markup;
 }
 
@@ -368,6 +386,39 @@ function slideDownSettingsButtons() {
         $('#settings-buttons').addClass('animated fadeInDownBig');
     }
 }
+
+function widgetButtonOnClick(driver, button, action) {
+    console.log("button clicked");
+    var $buttonInput = $("#" + button).val();
+    var $actionCommand;
+    if ($buttonInput !== null || $buttonInput !== "" || $buttonInput !== undefined) {
+        $actionCommand = action.replace("$input", $buttonInput);
+        console.log($actionCommand);
+    } else {
+        $actionCommand = action.replace("$input", "");
+        console.log($actionCommand);
+    }
+    
+    var $url = "/send_command";
+    var $data = "?driver=" + driver + "&command=" + $actionCommand;
+    $.ajax({
+        type: "GET",
+        url: $url + $data,
+        success: function() {
+            console.log("button command data '" + $actionCommand + "' sent correctly");
+            window.setTimeout(
+                function(){
+                    updateWidget(driver);
+                },600
+            );
+        },
+        error: function() {
+            console.log("command '" + $actionCommand + "' could not be sent");
+        }
+    });
+    
+}
+    
     
 
 

@@ -40,7 +40,7 @@ public class XmlTest extends ControllerModule {
 	public XmlTest() {
 		this.name = "XmlTest";
 		widgetXml = new XmlFormatter(this, "Xml Format Tester");
-		widgetXml.setRefresh(10);
+		widgetXml.setRefresh(600);
 		fullXml = new XmlFormatter(this, "Xml Format Tester");
 		fullXml.setRefresh(5);
 

@@ -2,6 +2,7 @@ package org.apparatus_templi;
 
 import java.awt.AWTException;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -15,20 +16,24 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class SysTray implements ActionListener {
 	private static String TAG = "SysTrayListener";
 	private TrayIcon trayIcon;
 	private MenuItem webInterface;
+	private final AboutDialog aboutDialog = new AboutDialog();
 	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("waiting20x20.png");
 	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icon20x20.png");
 	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("term20x20.png");
 
 	public SysTray() {
+		aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		// display system tray icon
-		// --- BEGIN PASTE
-		// Check the SystemTray is supported
 		if (!SystemTray.isSupported()) {
 			System.out.println("SystemTray is not supported");
 			return;
@@ -97,19 +102,21 @@ public class SysTray implements ActionListener {
 			Coordinator.exitWithReason("Shutdown from tray icon");
 			break;
 		case "about":
-			final ImageIcon icon = new ImageIcon("/icon.png");
-			new Runnable() {
-				@Override
-				public void run() {
-					JOptionPane.showMessageDialog(null, "Apparatus Templi\nVersion: "
-							+ Coordinator.RELEASE_NUMBER + "\nHome automation", "About",
-							JOptionPane.INFORMATION_MESSAGE, icon);
-				}
-			}.run();
+			aboutDialog.setLocationRelativeTo(null);
+			aboutDialog.setVisible(true);
+
+			// final ImageIcon icon = new ImageIcon("/icon.png");
+			// new Runnable() {
+			// @Override
+			// public void run() {
+			// JOptionPane.showMessageDialog(null, "Apparatus Templi\nVersion: "
+			// + Coordinator.RELEASE_NUMBER + "\nHome automation", "About",
+			// JOptionPane.INFORMATION_MESSAGE, icon);
+			// }
+			// }.run();
 			break;
 		case "web":
 			if (Desktop.isDesktopSupported()) {
-				// String address = S
 				try {
 					Desktop.getDesktop().browse(new URI(Coordinator.getServerAddress()));
 				} catch (IOException | URISyntaxException e1) {
@@ -125,5 +132,58 @@ public class SysTray implements ActionListener {
 		public static final int WAITING = 0;
 		public static final int RUNNING = 1;
 		public static final int TERM = 2;
+	}
+
+	public class AboutDialog extends JDialog {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private final JPanel contentPanel = new JPanel();
+
+		// /**
+		// * Launch the application.
+		// */
+		// public static void main(String[] args) {
+		// try {
+		// AboutDialog dialog = new AboutDialog();
+		// dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		// dialog.setVisible(true);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// }
+
+		/**
+		 * Create the dialog.
+		 */
+		public AboutDialog() {
+			setResizable(false);
+			setBounds(100, 100, 345, 211);
+			getContentPane().setLayout(null);
+			contentPanel.setBounds(0, 0, 344, 189);
+			contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			getContentPane().add(contentPanel);
+			contentPanel.setLayout(null);
+			{
+				JLabel appTitleLabel = new JLabel("Apparatus Templi");
+				appTitleLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+				appTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				appTitleLabel.setBounds(6, 107, 332, 20);
+				contentPanel.add(appTitleLabel);
+			}
+
+			JLabel largeIconLabel = new JLabel("");
+			largeIconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			largeIconLabel.setIcon(new ImageIcon("large_logo.png"));
+			largeIconLabel.setBounds(6, 6, 332, 89);
+			contentPanel.add(largeIconLabel);
+
+			JLabel versionNumLabel = new JLabel("v " + Coordinator.RELEASE_NUMBER);
+			versionNumLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			versionNumLabel.setBounds(6, 139, 332, 16);
+			contentPanel.add(versionNumLabel);
+		}
 	}
 }

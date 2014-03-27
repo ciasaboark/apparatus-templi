@@ -5,16 +5,25 @@ import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Pre;
+import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
 public class DbTester extends ControllerModule {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Database Tester");
+	private final Pre intro = new Pre("test pre",
+			"<p>Saving and reading back 1000 values to the db</p>");
 	private final Pre status = new Pre("test pre", "");
+	private final TextArea curCycle = new TextArea("cycle", "");
+	private final Button restartTestButton = new Button("restart");
 
 	public DbTester() {
 		this.name = "DB_TESTER";
-		widgetXml.setRefresh(15);
+		restartTestButton.setAction("r");
+		widgetXml.setRefresh(5);
+		widgetXml.addElement(intro);
+		widgetXml.addElement(curCycle);
 		widgetXml.addElement(status);
 
 	}
@@ -22,8 +31,10 @@ public class DbTester extends ControllerModule {
 	@Override
 	public void run() {
 		while (isRunning) {
-			status.setHtml("<p>Saving and reading back 1000 values to the database</p><p style='font-family: \"fantasy\"'>Sit back, relax and have a &nbsp;<i class=\"fa fa-beer\"></i>, this could take a while.</p>");
+			widgetXml.removeElement(restartTestButton);
+			status.setHtml("<p style='font-size: 9pt; font-family: \"Herculanum\"'>Sit back, relax and have a &nbsp;<i class=\"fa fa-beer\"></i>, this could take a while.</p>");
 			for (int i = 1; i <= 1000; i++) {
+				curCycle.setText("Current cycle: " + String.valueOf(i));
 				String data = String.valueOf(System.currentTimeMillis());
 				byte[] binData = data.getBytes();
 				Log.d(this.name, "Test " + i + " of 1000");
@@ -66,6 +77,7 @@ public class DbTester extends ControllerModule {
 				}
 			}
 			status.setHtml("<p>Sleeping...<p>");
+			widgetXml.addElement(restartTestButton);
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
@@ -92,7 +104,10 @@ public class DbTester extends ControllerModule {
 
 	@Override
 	public void receiveCommand(String command) {
-		// TODO Auto-generated method stub
+		if ("r".equals(command)) {
+			Log.d(this.name, "received restart command, waking self");
+			Coordinator.wakeSelf(this);
+		}
 
 	}
 

@@ -398,7 +398,7 @@ public class SimpleHttpServer implements Runnable {
 			httpsServer.createContext("/update_settings", new UpdateSettingsHandler());
 			httpsServer.createContext("/restart_module", new RestartModuleHandler());
 			httpsServer.createContext("/log.txt", new LogHandler());
-			// httpsServer.createContext("/send_command", new SendCommandHandler());
+			httpsServer.createContext("/send_command", new SendCommandHandler());
 			// httpsServer.createContext("/", new IndexHandler());
 			httpsServer.setExecutor(null);
 			Log.d(TAG, "waiting on port " + portNumber);
@@ -1246,6 +1246,37 @@ public class SimpleHttpServer implements Runnable {
 			}
 
 			return sb.toString().getBytes();
+		}
+	}
+
+	private class SendCommandHandler implements HttpHandler {
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+			Log.d(TAG,
+					"received request from " + exchange.getRemoteAddress() + " "
+							+ exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
+			com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
+			headers.add("Content-Type", "text/plain");
+
+			String query = exchange.getRequestURI().getQuery();
+			HashMap<String, String> queryTags = null;
+			if (query != null) {
+				queryTags = SimpleHttpServer
+						.processQueryString(exchange.getRequestURI().getQuery());
+			}
+
+			boolean commandSent = Coordinator.passCommand(TAG, queryTags.get("driver"),
+					queryTags.get("command"));
+			if (commandSent) {
+				byte[] response = "OK".getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+				exchange.getResponseBody().write(response);
+			} else {
+				byte[] response = "FAIL".getBytes();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.getResponseBody().write(response);
+			}
+			exchange.close();
 		}
 	}
 }
