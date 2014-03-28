@@ -1,5 +1,6 @@
 var refreshIntervals = {};
 var firstRefresh = {};
+var widgetCache = {};
 
 /*
  * Ajax request to update the running driver list
@@ -67,6 +68,7 @@ $(window).load(function() {
     //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     getRunningDrivers();
     updateLog();
+    formSubmitHandler();
     slideDownSettingsButtons();
     setInterval(getRunningDrivers, 30000);
     setInterval(updateLog, 5000);
@@ -194,7 +196,12 @@ function renderWidgets() {
 
 function updateWidget(driverName) {
     var $id = '#widget-' + driverName;
-    
+    $($id).find('.fa-refresh').addClass('fa-spin');
+    window.setTimeout(
+        function(){
+            $($id).find('.fa-refresh').removeClass('fa-spin');
+        },500
+    );
     //clear any previous intervals
     if (driverName in refreshIntervals) {
 //        console.log("clearing previous interval for " + driverName);
@@ -205,7 +212,7 @@ function updateWidget(driverName) {
     }
     
 //    document.getElementById('widget-' + driverName).innerHTML = "<div class='widget info-box'><i style='position:absolute; left: 50%; top:50%;' class=\"fa fa-spinner fa-spin fa-2x\"></i></div>";
-    var widgetHtml = "<div class='widget info-box' draggable='true' >";
+    var widgetHtml = "<div class='widget info-box' >";
     $.ajax({
         type: "GET",
         url: "/widget.xml?driver=" + driverName,
@@ -214,6 +221,10 @@ function updateWidget(driverName) {
         timeout: 6000,
         contentType: "application/xml; charset=\"utf-8\"",
         success: function (xml) {
+            var $prevXml = widgetCache[driverName];
+            var $curXml = (new XMLSerializer()).serializeToString(xml);
+
+            widgetCache[driverName] = $curXml;
             //var to hold html
             $(xml).find('module').each(function() {
                 var $module = $(this);
@@ -229,7 +240,7 @@ function updateWidget(driverName) {
                     $refreshInterval = 60;
                 }
                 var $refreshOnClick = "updateWidget('" + $driver + "')";
-                
+
                 widgetHtml += "<div class='title'><span class=\"refresh-btn\"><a onclick=\"" + $refreshOnClick + "\" ><i class=\"fa fa-refresh\"></i></a></span>" + $longName + "<span class=\"expand-btn\"><a href='#'><i class=\"fa fa-expand\"></i></a></span></div>";
                 widgetHtml += "<div class='content'>";
                 $(this).children().each(function() {
@@ -256,47 +267,47 @@ function updateWidget(driverName) {
                 if (document.getElementById('widget-' + driverName) !== null) {
                     $($id).css("visibility","visible");
 //                    console.log("updating id widget-" + driverName);
-                    
+
 //                    console.log("first refresh? " + firstRefresh[$id]);
                     //if this was the first time the widget was refresh then do a fancy dropdown animation
                     //+ otherwise flash the background
+                    $($id).html(widgetHtml);
                     if (typeof firstRefresh[$id] == 'undefined') {
 //                        console.log($id + " first refresh");
                         $($id).removeClass();
                         window.setTimeout(
                             function(){
                                 $($id).addClass("animated fadeInDownBig");
-                                document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
+//                                document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                             },10
                         );
                         firstRefresh[$id] = "false";
-                    } else {
+                    } else if ($prevXml !== $curXml) {
+                        
 //                        console.log($id + " NOT first refresh");
                         $($id).removeClass();
 //                        document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
-                        $($id).html(widgetHtml);
+                        
                         $($id).find('.widget').addClass('flash-border');
-                                                
+
                         window.setTimeout(
                             function(){
                                 $($id).find('.widget').removeClass("flash-border");
                             },2000
                         );
-                        
+
 //                        $($id).fadeOut(1).fadeIn(20);
                     }
 //                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                 } else {
                     console.error("unable to find id widget-" + driverName);
                 }
-                
+
                 //set a new refresh interval
                 $intervalNum = setInterval(function() { updateWidget(driverName); }, $refreshInterval * 1000);
 //                console.log("setting interval to update " + driverName + " to " + $refreshInterval + " seconds.");
                 refreshIntervals[driverName] = $intervalNum;
-                
             });
-            
         },
         error: function(xhr, status, error) {
             console.log("unable to get xml for widget-" + driverName);
@@ -418,7 +429,20 @@ function widgetButtonOnClick(driver, button, action) {
     });
     
 }
-    
+
+function formSubmitHandler() {
+    var $form = $("#prefs");
+    if (document.getElementById("prefs") !== null) {
+        $form.submit(function(e) {
+            console.log("submit handler");
+            console.log(e);
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    } else {
+        console.log("no prefs form found");
+    }
+}
     
 
 
