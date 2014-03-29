@@ -70,7 +70,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 			stmt.executeUpdate(sql);
 			stmt.close();
 		} catch (Exception e) {
-			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "createTableText()" + e.getClass().getName() + ": " + e.getMessage());
 			Log.e(TAG, "connection: " + myConn);
 			Log.e(TAG, "statement: " + sql);
 			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
@@ -93,7 +93,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 			stmt.executeUpdate(sql);
 			stmt.close();
 		} catch (Exception e) {
-			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "createTableBin()" + e.getClass().getName() + ": " + e.getMessage());
 			Log.e(TAG, "connection: " + myConn);
 			Log.e(TAG, "statement: " + sql);
 			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
@@ -201,7 +201,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 				stmt.close();
 				// myConn.commit();
 			} catch (Exception e) {
-				Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+				Log.e(TAG, "storeBinData()" + e.getClass().getName() + ": " + e.getMessage());
 				Log.e(TAG, "connection: " + myConn);
 				Log.e(TAG, "statement: " + sql);
 				Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
@@ -235,7 +235,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 			rs.close();
 			stmt.close();
 		} catch (Exception e) {
-			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "readTextData()" + e.getClass().getName() + ": " + e.getMessage());
 			Log.e(TAG, "connection: " + myConn);
 			Log.e(TAG, "statement: " + sql);
 			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
@@ -269,7 +269,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 			rs.close();
 			stmt.close();
 		} catch (SQLException | ClassNotFoundException e) {
-			Log.e(TAG, "storeTextData()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "readBinData()" + e.getClass().getName() + ": " + e.getMessage());
 			Log.e(TAG, "connection: " + myConn);
 			Log.e(TAG, "statement: " + sql);
 			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());

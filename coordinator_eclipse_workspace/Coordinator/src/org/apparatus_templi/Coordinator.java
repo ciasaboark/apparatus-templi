@@ -112,7 +112,11 @@ public class Coordinator {
 				// + then we need to notify it to wake
 				if (scheduledWakeUps.get(driver) != null && scheduledWakeUps.get(driver) == 0) {
 					scheduledWakeUps.remove(driver);
-					driver.notify();
+					try {
+						driver.notify();
+					} catch (IllegalMonitorStateException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		} else {
@@ -760,7 +764,7 @@ public class Coordinator {
 	 *         successfully. 0 if the data could not be written.
 	 */
 	public static int storeTextData(String driverName, String dataTag, String data) {
-		Log.d(TAG, "storeTextData()");
+		// Log.d(TAG, "storeTextData()");
 		return SQLiteDbService.getInstance().storeTextData(driverName, dataTag, data);
 	}
 
@@ -780,7 +784,7 @@ public class Coordinator {
 	 *         successfully. 0 if the data could not be written.
 	 */
 	public static int storeBinData(String driverName, String dataTag, byte[] data) {
-		Log.d(TAG, "storeBinData()");
+		// Log.d(TAG, "storeBinData()");
 		return SQLiteDbService.getInstance().storeBinData(driverName, dataTag, data);
 	}
 
@@ -795,7 +799,7 @@ public class Coordinator {
 	 *         name and tag.
 	 */
 	public static String readTextData(String driverName, String dataTag) {
-		Log.d(TAG, "readTextData()");
+		// Log.d(TAG, "readTextData()");
 		return SQLiteDbService.getInstance().readTextData(driverName, dataTag);
 	}
 
@@ -810,7 +814,7 @@ public class Coordinator {
 	 *         name and tag.
 	 */
 	public static byte[] readBinData(String driverName, String dataTag) {
-		Log.d(TAG, "readBinData()");
+		// Log.d(TAG, "readBinData()");
 		return SQLiteDbService.getInstance().readBinData(driverName, dataTag);
 	}
 
@@ -897,7 +901,7 @@ public class Coordinator {
 	 * @return the String representation of the XML data, or null if the driver does not exist
 	 */
 	public static synchronized String requestWidgetXML(String driverName) {
-		Log.d(TAG, "requestWidgetXML()");
+		// Log.d(TAG, "requestWidgetXML()");
 		String xmlData = null;
 		if (loadedDrivers.containsKey(driverName)) {
 			Driver driver = loadedDrivers.get(driverName);
@@ -982,7 +986,7 @@ public class Coordinator {
 	 *         empty list.
 	 */
 	public static synchronized ArrayList<String> getLoadedDrivers() {
-		Log.d(TAG, "getLoadedDrivers()");
+		// Log.d(TAG, "getLoadedDrivers()");
 		ArrayList<String> driverList = new ArrayList<String>();
 		for (String driverName : loadedDrivers.keySet()) {
 			// driverList.add(loadedDrivers.get(driverName).getClass().getSimpleName());
@@ -1137,7 +1141,7 @@ public class Coordinator {
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		// disable dock icon in MacOS
-		// System.setProperty("apple.awt.UIElement", "true");
+		System.setProperty("apple.awt.UIElement", "true");
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -1232,9 +1236,9 @@ public class Coordinator {
 					Log.d(TAG, "notified driver '" + driverName + "'");
 				}
 				// give the drivers ~4s to finalize their termination
-				try {
-					Thread.sleep(4000);
-				} catch (InterruptedException e) {
+				long wakeTime = System.currentTimeMillis() + 4 * 1000;
+				while (System.currentTimeMillis() < wakeTime) {
+					// do a non-blocking sleep so that incoming message can still be routed
 				}
 			}
 		});

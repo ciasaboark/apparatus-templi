@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.XmlFormatter;
 
@@ -12,16 +13,20 @@ public class Local extends ControllerModule {
 	private final boolean[] ledsState = { false, false, false };
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Local Controller");
 	private final XmlFormatter fullFormatter = new XmlFormatter(this, "Local Controller");
-	private final Controller led1 = new Controller("Led1");
-	private final Controller led2 = new Controller("Led2");
-	private final Controller led3 = new Controller("Led3");
+	private final Controller led1 = new Controller("0: Purple");
+	private final Controller led2 = new Controller("1: Green");
+	private final Controller led3 = new Controller("2: White");
+	private final Button toggleButton = new Button("ToggleLED");
 
 	public Local() {
 		this.name = "LOCAL";
-		widgetXml.setRefresh(3);
+		toggleButton.setAction("$input");
+		toggleButton.setInputType("numeric");
+		widgetXml.setRefresh(6000);
 		widgetXml.addElement(led1);
 		widgetXml.addElement(led2);
 		widgetXml.addElement(led3);
+		widgetXml.addElement(toggleButton);
 		led1.setStatus("off");
 		led2.setStatus("off");
 		led3.setStatus("off");
@@ -43,11 +48,9 @@ public class Local extends ControllerModule {
 		// }
 
 		while (isRunning) {
-			// run through a hard-coded loop for now.
-			int ledNum = 0 + (int) (Math.random() * ((2 - 0) + 1));
-			Log.d(this.name, "toggling LED " + ledNum);
-			toggleLED(ledNum);
-			this.sleep(3000);
+			// all interaction with this module is done through the widget,
+			// just sleep until a message is received
+			this.sleep();
 		}
 
 		Coordinator.sendCommand(this, "RESET");
@@ -56,7 +59,7 @@ public class Local extends ControllerModule {
 	}
 
 	private void toggleLED(int ledNum) {
-		if (ledNum > 2 || ledNum < 0) {
+		if (ledNum < 0 || ledNum > 2) {
 			Log.e(this.name, "toggleLED() given invalid led number");
 		} else {
 			boolean newState = !ledsState[ledNum];
@@ -98,7 +101,17 @@ public class Local extends ControllerModule {
 
 	@Override
 	public void receiveCommand(String command) {
-		// TODO Auto-generated method stub
+		Integer i = null;
+		try {
+			i = Integer.parseInt(command);
+			if (i < 0 || i > 2) {
+				throw new NumberFormatException("Led number out of range");
+			}
+			Coordinator.wakeSelf(this);
+			toggleLED(i);
+		} catch (NumberFormatException e) {
+			Log.w(this.name, "not a valid number");
+		}
 
 	}
 

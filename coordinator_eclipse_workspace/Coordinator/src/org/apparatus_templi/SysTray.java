@@ -104,6 +104,7 @@ public class SysTray implements ActionListener {
 		case "about":
 			aboutDialog.setLocationRelativeTo(null);
 			aboutDialog.setVisible(true);
+			aboutDialog.show();
 
 			// final ImageIcon icon = new ImageIcon("/icon.png");
 			// new Runnable() {

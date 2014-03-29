@@ -184,7 +184,7 @@ function renderWidgets() {
                     console.log("error getting driver list");
                 }
                 console.log(error);
-                document.getElementById('widgets_box').innerHTML = "<div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i></div>";
+                document.getElementById('widgets_box').innerHTML = "<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>";
                 //set a new refresh interval
                 console.log("setting medium refresh interval");
                 $intervalNum = setInterval(renderWidgets, 10000);
@@ -288,11 +288,14 @@ function updateWidget(driverName) {
                         $($id).removeClass();
 //                        document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                         
+                        $($id).find('.widget').addClass('bounce');
                         $($id).find('.widget').addClass('flash-border');
-
+                        $($id).find('.title').addClass('flash-title');
                         window.setTimeout(
                             function(){
+                                $($id).find('.widget').removeClass("bounce");
                                 $($id).find('.widget').removeClass("flash-border");
+                                $($id).find('.title').removeClass('flash-title');
                             },2000
                         );
 
@@ -318,6 +321,7 @@ function updateWidget(driverName) {
                 console.log("removing id widget-" + driverName);
                 $($id).removeClass();
                 $($id).addClass("animated fadeOutUpBig");
+                
                 //scale out the widget horizontally 
                 window.setTimeout(
                     function() {
@@ -349,13 +353,13 @@ function updateWidget(driverName) {
 
 function renderSensorElement(name, value) {
 //    console.log("renderSensor() unfinished");
-    var $markup = "<div class='sensor'><span class='name'>Sensor: " + name + "</span><span class='value'>" + value + "</span></div>";
+    var $markup = "<div class='sensor'><span class='name'>" + name + "</span><span class='value'>" + value + "</span></div>";
     return $markup;
 }
 
 function renderControllerElement(name, status) {
 //    console.log("renderController() unfinished");
-    var $markup = "<div class='controller'><span class='name'>Controller: " + name + "</span><span class='status'>" + status + "</span></div>";
+    var $markup = "<div class='controller'><span class='name'>" + name + "</span><span class='status'>" + status + "</span></div>";
     return $markup;
 }
     

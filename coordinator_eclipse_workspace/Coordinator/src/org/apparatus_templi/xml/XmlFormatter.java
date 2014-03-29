@@ -16,7 +16,7 @@ public class XmlFormatter {
 	private static final double VERSION = 1.0;
 	private ArrayList<ElementInterface> elementInterfaces;
 	private final String name;
-	private Integer refresh = null;
+	private Integer refresh = 60;
 	private final Driver driver;
 
 	/**

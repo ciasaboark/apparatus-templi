@@ -16,11 +16,16 @@ public class DbTester extends ControllerModule {
 			"<p>Saving and reading back 1000 values to the db</p>");
 	private final Pre status = new Pre("test pre", "");
 	private final TextArea curCycle = new TextArea("cycle", "");
-	private final Button restartTestButton = new Button("restart");
+	private final Button restartTestButton = new Button("Restart Test");
+	private final Button pauseTestButton = new Button("Pause Test");
+	private final Button resumeTestButton = new Button("Resume Test");
+	private boolean pauseTest = false;
 
 	public DbTester() {
 		this.name = "DB_TESTER";
-		restartTestButton.setAction("r");
+		restartTestButton.setAction("s");
+		pauseTestButton.setAction("p");
+		resumeTestButton.setAction("r");
 		widgetXml.setRefresh(5);
 		widgetXml.addElement(intro);
 		widgetXml.addElement(curCycle);
@@ -32,44 +37,50 @@ public class DbTester extends ControllerModule {
 	public void run() {
 		while (isRunning) {
 			widgetXml.removeElement(restartTestButton);
+			widgetXml.removeElement(resumeTestButton);
+			widgetXml.addElement(pauseTestButton);
 			status.setHtml("<p style='font-size: 9pt; font-family: \"Herculanum\"'>Sit back, relax and have a &nbsp;<i class=\"fa fa-beer\"></i>, this could take a while.</p>");
 			for (int i = 1; i <= 1000; i++) {
 				curCycle.setText("Current cycle: " + String.valueOf(i));
 				String data = String.valueOf(System.currentTimeMillis());
 				byte[] binData = data.getBytes();
-				Log.d(this.name, "Test " + i + " of 1000");
+				// Log.d(this.name, "Test " + i + " of 1000");
 				int code = Coordinator.storeTextData(this.name, "txt", data);
 				if (code == -1) {
-					Log.d(this.name, "data overwritten");
+					// Log.d(this.name, "data overwritten");
 				} else if (code == 0) {
-					Log.d(this.name, "data could not be written");
+					// Log.d(this.name, "data could not be written");
 				} else if (code == 1) {
-					Log.d(this.name, "new data stored");
+					// Log.d(this.name, "new data stored");
 				} else {
-					Log.e(this.name, "unknown code returned");
+					// Log.e(this.name, "unknown code returned");
 				}
 				String storedData = Coordinator.readTextData(this.name, "txt");
 				if (data.equals(storedData)) {
-					Log.d(this.name, "text data stored and retrieved correctly");
+					// Log.d(this.name, "text data stored and retrieved correctly");
 				} else {
-					Log.e(this.name, "text data was not stored correctly");
+					// Log.e(this.name, "text data was not stored correctly");
 				}
 
 				code = Coordinator.storeBinData(this.name, "bin", binData);
 				if (code == -1) {
-					Log.d(this.name, "data overwritten");
+					// Log.d(this.name, "data overwritten");
 				} else if (code == 0) {
-					Log.d(this.name, "data could not be written");
+					// Log.d(this.name, "data could not be written");
 				} else if (code == 1) {
-					Log.d(this.name, "new data stored");
+					// Log.d(this.name, "new data stored");
 				} else {
-					Log.e(this.name, "unknown code returned");
+					// Log.e(this.name, "unknown code returned");
 				}
 				byte[] storedBin = Coordinator.readBinData(this.name, "bin");
 				if (Arrays.equals(binData, storedBin)) {
-					Log.d(this.name, "binary data stored and retrieved correctly");
+					// Log.d(this.name, "binary data stored and retrieved correctly");
 				} else {
-					Log.e(this.name, "binary data was not stored correctly");
+					// Log.e(this.name, "binary data was not stored correctly");
+				}
+
+				if (pauseTest) {
+					this.sleep();
 				}
 
 				if (!isRunning) {
@@ -77,6 +88,8 @@ public class DbTester extends ControllerModule {
 				}
 			}
 			status.setHtml("<p>Sleeping...<p>");
+			widgetXml.removeElement(pauseTestButton);
+			widgetXml.removeElement(resumeTestButton);
 			widgetXml.addElement(restartTestButton);
 			this.sleep(1000 * 60 * 5);
 		}
@@ -104,11 +117,21 @@ public class DbTester extends ControllerModule {
 
 	@Override
 	public void receiveCommand(String command) {
-		if ("r".equals(command)) {
+		if ("s".equals(command)) {
 			Log.d(this.name, "received restart command, waking self");
 			Coordinator.wakeSelf(this);
+		} else if ("p".endsWith(command)) {
+			Log.d(this.name, "received pause command");
+			widgetXml.removeElement(pauseTestButton);
+			widgetXml.addElement(resumeTestButton);
+			this.pauseTest = true;
+		} else if ("r".endsWith(command)) {
+			Log.d(this.name, "received resume command");
+			widgetXml.removeElement(resumeTestButton);
+			widgetXml.addElement(pauseTestButton);
+			this.pauseTest = false;
+			Coordinator.wakeSelf(this);
 		}
-
 	}
 
 	@Override

@@ -761,6 +761,7 @@ public class SimpleHttpServer implements Runnable {
 					html.append("class='btn btn-success disabled'>");
 				} else {
 					html.append("class ='btn btn-success' ");
+					html.append("form=\"prefs\" ");
 					html.append("onclick = \"document.getElementById('prefs').submit()\" >");
 				}
 				html.append("<i class=\"fa fa-save\"></i>&nbsp;&nbsp;"

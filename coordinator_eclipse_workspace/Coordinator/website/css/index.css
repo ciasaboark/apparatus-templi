@@ -488,7 +488,7 @@ margin-right: 10px;
 }
 
 .info-box {
-        border: 1px solid #ccc;
+        border: 1px solid #f0f0f0;
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.60);
  
@@ -505,10 +505,11 @@ margin-right: 10px;
 
 .info-box .title {
    /*    background-color: #d3d3d3;*/
-    background-color: rgba(255, 255, 255, 0.96);
+/*    background-color: rgba(255, 255, 255, 0.96);*/
+    background-color: #f0f0f0;
 /*    padding: 0px 0px 5px 0px;*/
     width: 100%;
-    border-radius: 3px 3px 0px 0px;
+/*    border-radius: 4px 4px 0px 0px;*/
     color: #464646;
 /*    border: 1px solid #2c2c2c;*/
     text-align: center;
@@ -669,7 +670,8 @@ a:link,a:visited,a:hover,a:active,a img:hover,#footer a:hover
 
 body
 {
-    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;
+/*    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;*/
+    background: url("/resource?file=images/stardust.png") repeat;
 /*    background-size: cover;*/
   color:#4D4D4D;
   min-width:740px;
@@ -688,23 +690,82 @@ html
 custom CSS animations
 */
 
+/*
 @-webkit-keyframes DIV-BORDER {
-    0%   { box-shadow: 0px 0px 0px 0px #53B9F1 }
-    50%  { box-shadow: 0px 0px 20px 1px #98dbff }
-    100% { box-shadow: 0px 0px 0px 0px #53B9F1 }
+    0%   { box-shadow: 0px 0px 0px 0px #efefef }
+    50%  { box-shadow: 0px 0px 20px 1px #efefef }
+    100% { box-shadow: 0px 0px 0px 0px #efefef }
 }
+*/
 
+/*
 @keyframes DIV-BORDER {
     0%   { box-shadow: 0px 0px 0px 0px #53B9F1 }
     50%  { box-shadow: 0px 0px 20px 1px #98dbff }
     100% { box-shadow: 0px 0px 0px 0px #53B9F1 }
 }
+*/
+
+/*
+@keyframes DIV-BORDER {
+    0%   { box-shadow: 0px 0px 0px 0px #efefef }
+    50%  { box-shadow: 0px 0px 20px 1px #efefef }
+    100% { box-shadow: 0px 0px 0px 0px #efefef }
+}
+*/
+@-webkit-keyframes WIDGET-BOUNCE {
+     0% { -webkit-transform: scale(1,1) }
+    50% {-webkit-transform: scale(1.02,1.02)}
+    100% {-webkit-transform: scale(1,1)}
+    
+}
+
+@keyframes WIDGET-BOUNCE {
+    0% { transform: scale(1,1) }
+    50% {transform: scale(1.02,1.02)}
+    100% {transform: scale(1,1)}
+    
+}
+
+
+@-webkit-keyframes DIV-BORDER {
+    0%   { border-color: #f0f0f0 }
+    50%  { border-color: #b9f7a2 }
+    100% { border-color: #f0f0f0 }
+}
+
+@keyframes DIV-BORDER {
+    0%   { border-color: #f0f0f0 }
+    50%  { border-color: #b9f7a2 }
+    100% { border-color: #f0f0f0 }
+}
+
+@-webkit-keyframes WIDGET-TITLE {
+    0% { background-color: #f0f0f0 }
+    50% { background-color: #b9f7a2 }
+    100% { background-color: #f0f0f0 }
+}
+
+@keyframes WIDGET-TITLE {
+    0% { background-color: #f0f0f0 }
+    50% { background-color: #b9f7a2 }
+    100% { background-color: #f0f0f0 }
+}
+
+.flash-title {
+    -webkit-animation: WIDGET-TITLE 1.2s;
+    animation: WIDGET-TITLE 1.2s;
+}
+
+.bounce {
+    -webkit-animation: DIV-BORDER 1.2s;
+    animation: DIV-BORDER 1.2s;
+}
 
 .flash-border {
-/*    border: 1px solid;*/
-/*    box-shadow: 0px 0px 20px 1px #fff;*/
+    -webkit-animation: DIV-BORDER 1.2s;
+    animation: DIV-BORDER 1.2s;
+    -webkit-animation: WIDGET-BOUNCE 1s;
+    animation: WIDGET-BOUNCE 1s;
     
-/*    -webkit-transition: all 1s;*/
-    -webkit-animation: DIV-BORDER 2s;
-    animation: DIV-BORDER 2s;
 }

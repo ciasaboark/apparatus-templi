@@ -21,19 +21,19 @@ import org.apparatus_templi.xml.XmlFormatter;
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
-public class StatefullLed extends ControllerModule {
+public class StatefulLed extends ControllerModule {
 
 	// our remote module has three LEDs attached
 	private final int[] leds = { 5, 6, 7 };
 	private final boolean[] ledsState = { false, false, false };
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Stateful LED");
-	private final Controller led1 = new Controller("Led1");
-	private final Controller led2 = new Controller("Led2");
-	private final Controller led3 = new Controller("Led3");
+	private final Controller led1 = new Controller("Yellow LED");
+	private final Controller led2 = new Controller("Green LED");
+	private final Controller led3 = new Controller("Red LED");
 
-	public StatefullLed() {
+	public StatefulLed() {
 		this.name = "State_LED";
-		widgetXml.setRefresh(13);
+		widgetXml.setRefresh(3);
 		widgetXml.addElement(led1);
 		widgetXml.addElement(led2);
 		widgetXml.addElement(led3);
