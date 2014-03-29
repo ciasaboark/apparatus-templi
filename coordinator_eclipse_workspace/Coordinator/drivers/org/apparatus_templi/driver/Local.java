@@ -101,18 +101,23 @@ public class Local extends ControllerModule {
 
 	@Override
 	public void receiveCommand(String command) {
-		Integer i = null;
-		try {
-			i = Integer.parseInt(command);
-			if (i < 0 || i > 2) {
-				throw new NumberFormatException("Led number out of range");
+		if (command != null) {
+			if (command.startsWith("OK")) {
+				Log.d(this.name, "received confirmation from remote module: " + command);
+			} else {
+				Integer i = null;
+				try {
+					i = Integer.parseInt(command);
+					if (i < 0 || i > 2) {
+						throw new NumberFormatException("Led number out of range");
+					}
+					// Coordinator.wakeSelf(this);
+					toggleLED(i);
+				} catch (NumberFormatException e) {
+					Log.w(this.name, "not a valid number");
+				}
 			}
-			Coordinator.wakeSelf(this);
-			toggleLED(i);
-		} catch (NumberFormatException e) {
-			Log.w(this.name, "not a valid number");
 		}
-
 	}
 
 	@Override

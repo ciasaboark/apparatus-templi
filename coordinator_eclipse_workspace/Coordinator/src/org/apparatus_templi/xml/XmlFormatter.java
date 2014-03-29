@@ -15,7 +15,7 @@ import org.apparatus_templi.driver.Driver;
 public class XmlFormatter {
 	private static final double VERSION = 1.0;
 	private ArrayList<ElementInterface> elementInterfaces;
-	private final String name;
+	private String name;
 	private Integer refresh = 60;
 	private final Driver driver;
 
@@ -58,6 +58,14 @@ public class XmlFormatter {
 	 */
 	public void addElement(ElementInterface e) {
 		elementInterfaces.add(e);
+	}
+
+	public void setName(String name) throws IllegalArgumentException {
+		if (name != null) {
+			this.name = name;
+		} else {
+			throw new IllegalArgumentException("Name can not be null");
+		}
 	}
 
 	/**

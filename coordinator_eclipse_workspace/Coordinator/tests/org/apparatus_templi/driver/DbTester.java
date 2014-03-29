@@ -91,6 +91,7 @@ public class DbTester extends ControllerModule {
 			widgetXml.removeElement(pauseTestButton);
 			widgetXml.removeElement(resumeTestButton);
 			widgetXml.addElement(restartTestButton);
+			widgetXml.setName("Database Tester (sleeping)");
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
@@ -119,16 +120,19 @@ public class DbTester extends ControllerModule {
 	public void receiveCommand(String command) {
 		if ("s".equals(command)) {
 			Log.d(this.name, "received restart command, waking self");
+			widgetXml.setName("Database Tester");
 			Coordinator.wakeSelf(this);
 		} else if ("p".endsWith(command)) {
 			Log.d(this.name, "received pause command");
 			widgetXml.removeElement(pauseTestButton);
 			widgetXml.addElement(resumeTestButton);
+			widgetXml.setName("Database Tester (paused)");
 			this.pauseTest = true;
 		} else if ("r".endsWith(command)) {
 			Log.d(this.name, "received resume command");
 			widgetXml.removeElement(resumeTestButton);
 			widgetXml.addElement(pauseTestButton);
+			widgetXml.setName("Database Tester");
 			this.pauseTest = false;
 			Coordinator.wakeSelf(this);
 		}
