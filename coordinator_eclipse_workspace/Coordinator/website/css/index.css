@@ -1,5 +1,26 @@
 @charset utf-8;
 
+body
+{
+/*    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;*/
+    background-color: black;
+    background: url("/resource?file=images/stardust.png") repeat;
+/*    background-size: cover;*/
+  color:#4D4D4D;
+  min-width:740px;
+    max-width: 100%;
+    overflow-x:hidden;
+/*    height: 100vh;*/
+    min-height: 100%;
+    height:100%;
+}
+
+html
+{
+  min-width:740px;
+  text-decoration:none;
+}
+
 #button_about:active
 {
   color:#3987b2;
@@ -250,6 +271,7 @@ margin-right: 10px;
     height: 100%;
     min-height: 100%;
     width: 100%;
+    color: #fff;
 }
 
 /*
@@ -363,6 +385,9 @@ margin-right: 10px;
     visibility: hidden;
 }
 
+#sys_status {
+    padding-top: 85px;
+}
 
 #sys_status_box
 {
@@ -378,6 +403,7 @@ margin-right: 10px;
     margin-top: 55px;
     text-align: center;
     height: 100%;
+    min-height: 100%;
     width: 100%;
 }
 
@@ -565,6 +591,7 @@ margin-right: 10px;
 /*    float: left;*/
     display:inline-block;
     vertical-align: top;
+    margin-top:30px;
 }
 
 .widget .title {
@@ -672,49 +699,43 @@ hr:before {
     width: 100%;
     height: 100%;
     margin: 0px;
+    overflow:hidden;
 }
 
 .fullscreenWidget .title {
     margin:0px;
-/*    padding: 10px;*/
-        background: rgb(255, 255, 255);
-    background: linear-gradient(135deg, rgb(244, 244, 244) 25%,
-        rgb(239, 239, 239) 25%, rgb(239, 239, 239) 50%, 
-       rgb(244, 244, 244) 50%, rgb(244, 244, 244) 75%, 
-        rgb(239, 239, 239) 75%
+    background: rgb(255, 255, 255);
+    background: linear-gradient(135deg, rgba(244, 244, 244, .97) 25%,
+        rgba(239, 239, 239, .97) 25%, rgba(239, 239, 239, .97) 50%, 
+       rgba(244, 244, 244, .97) 50%, rgba(244, 244, 244, .97) 75%, 
+        rgba(239, 239, 239, .97) 75%
     );
     background-size: 10px 10px;
     border-bottom: 1px solid #7c7c7c;
-/*    box-shadow: inset 0  30px 30px -30px #696868; */
-/*                        inset 0 -10px 10px -10px #696868;*/
     border-top:1px solid #ccc;
-/*    box-shadow:0 0 20px 0 #ccc;*/
-/*    float: left;*/
     height: 55px;
     line-height: 55px;
     font-size: 32px;
-/*    display: inline-block;*/
-/*    z-index: 0;*/
     width: 100%;
     max-width: 100%;
-/*    overflow-x:hidden;*/
-    white-space: nowrap;
-/*    position: fixed;*/
-/*
-    top: 54px;
-    left: 0px;
-*/
+    color: #505050;
+    position:fixed;
+    top: 55;
 }
 
 .fullscreenWidget .content {
     height: 100%;
-    width: 100%;
+    min-height: 100%;
+    width: 50%;
     min-width: 100vw;
     min-height: 100vh;
-    padding:10px;
     text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    
     background-color: rgba(0, 0, 0, 0.45);
     color: white;
+    padding: 68px 10px 10px 80px;
 }
 
 .fullscreenWidget .content .busy {
@@ -726,6 +747,9 @@ hr:before {
 
 .fullscreenWidget .refresh-btn {
     float: left;
+    margin-left: 0px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .fullscreenWidget .refresh-btn .fa {
@@ -735,6 +759,9 @@ hr:before {
 
 .fullscreenWidget .expand-btn {
     float: right;
+    margin-right: 0px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .fullscreenWidget .expand-btn .fa {
@@ -742,29 +769,73 @@ hr:before {
     text-shadow: 0px 2px 2px rgba(255, 255, 255, 0.4);
 }
 
+.fullscreenWidget .title span i:hover {
+    color: #727272;
+}
+
+.fullscreenWidget .title span i:active {
+    color: #a25454;
+}
+
+.about {
+    margin: 80px 20px 80px 20px;
+    width: 80%;
+    text-align: center;
+}
 
 a:link,a:visited,a:hover,a:active,a img:hover,#footer a:hover
 {
   text-decoration:none;
 }
 
-body
-{
-/*    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;*/
-    background: url("/resource?file=images/stardust.png") repeat;
-/*    background-size: cover;*/
-  color:#4D4D4D;
-  min-width:740px;
-    max-width: 100%;
-    overflow-x:hidden;
-    height: 100vh;
+/******************
+/*
+.widget .sensor {
+    background-color: yellow;
+    padding: 5px;
+}
+*/
+
+.fullscreenWidget .sensor {
+    max-width: 800px;
 }
 
-html
-{
-  min-width:740px;
-  text-decoration:none;
+.fullscreenWidget .controller {
+    max-width: 800px;
 }
+
+.fullscreenWidget .button {
+    max-width: 800px;
+}
+
+.fullscreenWidget .sensor .name {
+/*    background-color: white;*/
+    
+}
+
+.fullscreenWidget .sensor .value {
+    float: right;
+}
+
+.fullscreenWidget .controller .status {
+    float: right;
+}
+
+
+.fullscreenWidget .button input {
+    float:right;
+    background-color: rgba(70, 70, 70, 0.35);
+    color: white;
+    border: 2px solid rgb(160, 198, 250);
+    border-radius: 3px;
+}
+
+.fullscreenWidget .btn {
+/*    width: 100%;*/
+}
+
+
+/******************
 
 
 /*

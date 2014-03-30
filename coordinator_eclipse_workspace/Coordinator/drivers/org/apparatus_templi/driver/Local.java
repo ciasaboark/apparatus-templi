@@ -6,6 +6,7 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
+import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.XmlFormatter;
 
 public class Local extends ControllerModule {
@@ -17,6 +18,12 @@ public class Local extends ControllerModule {
 	private final Controller led2 = new Controller("1: Green");
 	private final Controller led3 = new Controller("2: White");
 	private final Button toggleButton = new Button("ToggleLED");
+	private final Pre description = new Pre(
+			"desc",
+			"<h3>Stateful LED controller</h3>"
+					+ "<p>Controll an array of LED elements.  Input the number of the LED to toggle"
+					+ ", then click the \"ToggleLED\" button</p>"
+					+ "<img src=\"http://icons.iconarchive.com/icons/double-j-design/electronics/256/LED-icon.png\" />");
 
 	public Local() {
 		this.name = "LOCAL";
@@ -27,6 +34,12 @@ public class Local extends ControllerModule {
 		widgetXml.addElement(led2);
 		widgetXml.addElement(led3);
 		widgetXml.addElement(toggleButton);
+		fullFormatter.setRefresh(6000);
+		fullFormatter.addElement(description);
+		fullFormatter.addElement(led1);
+		fullFormatter.addElement(led2);
+		fullFormatter.addElement(led3);
+		fullFormatter.addElement(toggleButton);
 		led1.setStatus("off");
 		led2.setStatus("off");
 		led3.setStatus("off");

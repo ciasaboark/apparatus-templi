@@ -4,6 +4,24 @@ var widgetCache = {};
 var widgetsToRestore = [];
 var inFullScreenMode = false;
 
+
+function preload(arrayOfImages) {
+    $(arrayOfImages).each(function(){
+        $('<img/>')[0].src = this;
+        // Alternatively you could use:
+        // (new Image()).src = this;
+    });
+}
+
+// Usage:
+/*
+preload([
+    'img/imageName.jpg',
+    'img/anotherOne.jpg',
+    'img/blahblahblah.jpg'
+]);
+*/
+
 /*
  * Ajax request to update the running driver list
  */
@@ -68,6 +86,10 @@ function showCommandBox() {
 
 $(window).load(function() {
     //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
+    //preload the background image
+    preload([
+        '/resource?file=images/stardust.png'
+    ]);
     getRunningDrivers();
     updateLog();
     formSubmitHandler();
@@ -500,6 +522,8 @@ function expandWidget(driver) {
             $("#widget-" + driver).find('.info-box').removeClass('info-box');
             $("#widget-" + driver).addClass('fullscreenWidget');
             $("#widget-" + driver).find(".content").html("");
+            $("#widget-" + driver).find('.expand-btn').find('i').removeClass('fa-expand');
+            $("#widget-" + driver).find('.expand-btn').find('i').addClass('fa-compress');
             $("#widget-" + driver).find('span').animate({
                 width:"100%",
                 height:"100%",
@@ -510,6 +534,7 @@ function expandWidget(driver) {
                     //***********************************************************
                     $("#widget-" + driver).find('.expand-btn').find('a').removeAttr("onClick");
                     $("#widget-" + driver).find('.expand-btn').click(function() {collapseFullScreenWidget();});
+                    
                     $.ajax({
                         type: "GET",
                         url: "/full.xml?driver=" + driver,

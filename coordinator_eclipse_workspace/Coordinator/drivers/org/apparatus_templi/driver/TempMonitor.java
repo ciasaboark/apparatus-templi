@@ -101,6 +101,11 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 		widgetXml.addElement(lastUpdated);
 		widgetXml.addElement(refreshButton);
 
+		fullPageXml.addElement(intro);
+		fullPageXml.addElement(temp);
+		fullPageXml.addElement(lastUpdated);
+		fullPageXml.addElement(refreshButton);
+
 	}
 
 	@Override
