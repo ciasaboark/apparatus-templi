@@ -261,7 +261,7 @@ function updateWidget(driverName) {
                     var $longName = $module.attr('name');
                     var $driver = $module.attr('driver');
                     var $refreshInterval = $module.attr('refresh');
-                    console.log($driver + " refresh: " + $refreshInterval);
+//                    console.log($driver + " refresh: " + $refreshInterval);
                     if ($refreshInterval === undefined) {
                         $refreshInterval = 60;
                     } else if ($refreshInterval < 3) {
@@ -344,12 +344,12 @@ function updateWidget(driverName) {
                 });
             },
             error: function(xhr, status, error) {
-                console.log("unable to get xml for widget-" + driverName);
+//                console.log("unable to get xml for widget-" + driverName);
                 console.log(error);
                 //if the driver has no xml or does not exist then we do not want to insert
                 //+ a div
                 if (document.getElementById('widget-' + driverName) !== null) {
-                    console.log("removing id widget-" + driverName);
+//                    console.log("removing id widget-" + driverName);
                     $($id).removeClass();
                     $($id).addClass("animated fadeOutUpBig");
 
@@ -367,7 +367,7 @@ function updateWidget(driverName) {
                             $($id).remove();
                             if ($("#widgets_box").is(':empty')) {
                                 //if this was the last widget then we need to update the widget box
-                                console.log("last widget removed, updating available widgets");
+//                                console.log("last widget removed, updating available widgets");
                                 renderWidgets();
                                 firstRefresh = {};
                             }
@@ -376,12 +376,12 @@ function updateWidget(driverName) {
 
 
                 } else {
-                    console.log("unable to get id for widget-" + driverName);
+//                    console.log("unable to get id for widget-" + driverName);
                 }
             }
         });
     } else {
-        console.log("will not update widgets while in full screen mode");
+//        console.log("will not update widgets while in full screen mode");
     }
 }
 
@@ -439,15 +439,15 @@ function slideDownSettingsButtons() {
 function widgetButtonOnClick(driver, button, action) {
     var $id = '#widget-' + driver;
     $($id).find('.fa-refresh').addClass('fa-spin');
-    console.log("button clicked");
+//    console.log("button clicked");
     var $buttonInput = $("#" + button).val();
     var $actionCommand;
     if ($buttonInput !== null || $buttonInput !== "" || $buttonInput !== undefined) {
         $actionCommand = action.replace("$input", $buttonInput);
-        console.log($actionCommand);
+//        console.log($actionCommand);
     } else {
         $actionCommand = action.replace("$input", "");
-        console.log($actionCommand);
+//        console.log($actionCommand);
     }
     
     var $url = "/send_command";
@@ -474,13 +474,13 @@ function formSubmitHandler() {
     var $form = $("#prefs");
     if (document.getElementById("prefs") !== null) {
         $form.submit(function(e) {
-            console.log("submit handler");
-            console.log(e);
+//            console.log("submit handler");
+//            console.log(e);
             e.preventDefault();
             e.stopPropagation();
         });
     } else {
-        console.log("no prefs form found");
+//        console.log("no prefs form found");
     }
 }
 
@@ -490,37 +490,41 @@ function expandWidget(driver) {
     widgetsToRestore = [];
     console.log("expandWidget() " + driver);
     $('#widgets_box span[id^="widget-"]').each(function() {
-        console.log(this.id);
+//        console.log(this.id);
         //hide all other widgets
         if (this.id != "widget-" + driver) {
-            console.log(this);
+//            console.log(this);
             var $id = this.id;
-            console.log("found widget to hide: " + $id);
+//            console.log("found widget to hide: " + $id);
             widgetsToRestore.push($id);
             var $widget = $($id).find('.widget');
             $(this).removeClass();
             $(this).addClass('animated');
             $(this).addClass('fadeOutUpBig');
-            console.log($id);
+//            console.log($id);
             window.setTimeout(
                 function() {
-                    console.log("removing widgets");
+//                    console.log("removing widgets");
                     var thisWidget = document.getElementById($id);
-                    console.log("parent element: " + thisWidget.parentElement);
+//                    console.log("parent element: " + thisWidget.parentElement);
                     thisWidget.parentElement.removeChild(thisWidget);
                 }, 500
             );
+        } else {
+            $(this).addClass('animated fadeOutUpBig');
         }
     });
     
     //expand this widget
     window.setTimeout(
         function() {
-            console.log("expanding widget");
+//            console.log("expanding widget");
             $("#widget-" + driver).removeClass();
             $("#widget-" + driver).find('.widget').removeClass('widget');
+            $("#widget-" + driver).find('.info-box').addClass('fullscreenWidget');
             $("#widget-" + driver).find('.info-box').removeClass('info-box');
-            $("#widget-" + driver).addClass('fullscreenWidget');
+            $("#widget-" + driver).find('.title').hide();
+            $("#widget-" + driver).find('.fullscreenWidget').addClass('animated bounceIn');
             $("#widget-" + driver).find(".content").html("");
             $("#widget-" + driver).find('.expand-btn').find('i').removeClass('fa-expand');
             $("#widget-" + driver).find('.expand-btn').find('i').addClass('fa-compress');
@@ -532,8 +536,12 @@ function expandWidget(driver) {
                 function() {
                     $("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
                     //***********************************************************
-                    $("#widget-" + driver).find('.expand-btn').find('a').removeAttr("onClick");
-                    $("#widget-" + driver).find('.expand-btn').click(function() {collapseFullScreenWidget();});
+//                    $("#widget-" + driver).find('.expand-btn').find('a').removeAttr("onClick");
+                    $("#widget-" + driver).find('.expand-btn').find("a").attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
+                    $("#widget-" + driver).find('.refresh-btn').find("a").attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
+//                    $("#widget-" + driver).find('.expand-btn').click(function() {collapseFullScreenWidget();});
+                    $("#widget-" + driver).find('.title').addClass('animated fadeInDownBig');
+                    $("#widget-" + driver).find('.title').show();
                     
                     $.ajax({
                         type: "GET",
@@ -557,7 +565,7 @@ function expandWidget(driver) {
                                 } else if ($refreshInterval > 60) {
                                     $refreshInterval = 60;
                                 }
-                                console.log($("#widget-" + driver).find('.expand-btn').find('a').attr("onClick"));
+//                                console.log($("#widget-" + driver).find('.expand-btn').find('a').attr("onClick"));
                                 
 
                                 widgetHtml = "";
@@ -580,11 +588,14 @@ function expandWidget(driver) {
                                         console.error("unknown element type: " + $elementType);
                                     }
                                 });
+                                $("#widget-" + driver).find(".content").hide();
                                 $("#widget-" + driver).find(".content").html(widgetHtml);
+                                $("#widget-" + driver).find(".content").addClass('animated fadeIn');
+                                $("#widget-" + driver).find(".content").show();
                             });
                         },
                         error: function(xhr, status, error) {
-                            console.log("unable to get full xml for widget-" + driver);
+//                            console.log("unable to get full xml for widget-" + driver);
                             console.log(error);
                             $("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
                         }
@@ -598,10 +609,34 @@ function expandWidget(driver) {
     );
 }
 
-function collapseFullScreenWidget() {
-    console.log("collapseFullscreenWidget()");
+function collapseFullScreenWidget(driver) {
+    console.log("collapseFullscreenWidget()" + driver);
 //    widgetCache = {};
-    inFullScreenMode = false;
-    $("#widgets_box").html("");
-    renderWidgets();
+//    widgetsToRestore = [];
+    
+    var $id = $("#widget-" + driver);
+    $($id).find('.fullscreenWidget').addClass('animated bounceOut');
+    $($id).find('.fullscreenWidget').css("border-radius", "6px");
+    window.setTimeout(function() {
+        $("#widget-" + driver).find('.fullscreenWidget').removeClass().addClass('widget info-box');
+        $('.title').removeClass('fadeInDownBig animated');
+        $('.content').removeClass('animated fadeIn');
+        $("#widgets_box").empty();
+        $("#widgets_box").hide();
+        inFullScreenMode = false;
+        renderWidgets();
+        window.setTimeout(function() {
+            $("#widgets_box").addClass('animated fadeIn');
+            $("#widgets_box").show();
+            window.setTimeout(function() {
+                $("#widgets_box").removeClass("animated fadeIn");
+            }, 1000);
+        }, 1000);
+    }, 1000);
+    
+    
+}
+
+function refreshFullScreenWidget(driver) {
+    console.log("refreshFullScreenWidget() unimlemented");
 }
