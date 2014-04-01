@@ -359,7 +359,7 @@ margin-right: 10px;
 #settings-buttons {
     margin:0px;
     padding: 10px;
-        background: rgb(255, 255, 255);
+    background: rgb(255, 255, 255);
     background: linear-gradient(135deg, rgb(244, 244, 244) 25%,
         rgb(239, 239, 239) 25%, rgb(239, 239, 239) 50%, 
        rgb(244, 244, 244) 50%, rgb(244, 244, 244) 75%, 
@@ -536,6 +536,16 @@ margin-right: 10px;
    /*    background-color: #d3d3d3;*/
 /*    background-color: rgba(255, 255, 255, 0.96);*/
     background-color: #f0f0f0;
+/*    overflow: hidden;*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+/*
+    background: linear-gradient(135deg, rgb(244, 244, 244) 25%,
+        rgb(222, 222, 222) 25%, rgb(222, 222, 222) 50%, 
+       rgb(244, 244, 244) 50%, rgb(244, 244, 244) 75%, 
+        rgb(222, 222, 222) 75%
+    );
+*/
 /*    padding: 0px 0px 5px 0px;*/
     width: 100%;
 /*    border-radius: 4px 4px 0px 0px;*/
@@ -585,13 +595,22 @@ margin-right: 10px;
     display: inline;
 }
 
+.grayscale {
+/*
+    filter: url(resource?file=css/grayscale.svg#greyscale);
+    filter: gray;
+*/
+    -webkit-filter: blur(5px); /* contrast(0.3) grayscale(80%);*/
+}
+
 .widget {
-    width:400px;
-    height:200px;
+    width:412px;
+    height:242px;
 /*    float: left;*/
     display:inline-block;
     vertical-align: top;
     margin-top:30px;
+    overflow: hidden;
 }
 
 .widget .title {
@@ -682,7 +701,13 @@ margin-right: 10px;
 
 .widget .button input {
     float:right;
+    text-align: right;
 }
+
+.widget .button .icon {
+    padding-right: 5px;
+}
+
 
 .widget .btn {
 /*    width: 100%;*/
@@ -699,7 +724,12 @@ hr:before {
     width: 100%;
     height: 100%;
     margin: 0px;
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
+    position:absolute;
+    top:55;
+    left:0;
+    padding-bottom: 155px;
 }
 
 .fullscreenWidget .title {
@@ -719,22 +749,24 @@ hr:before {
     width: 100%;
     max-width: 100%;
     color: #505050;
-    position:fixed;
-    top: 55;
     z-index: 3;
 }
 
 .fullscreenWidget .content {
+/*
     height: 100%;
     min-height: 100%;
-    width: 50%;
-    min-width: 100vw;
-    min-height: 100vh;
+*/
+    width: 85%;
+/*    min-width: 100vw;*/
+/*    min-height: 100vh;*/
     text-align: left;
     margin-left: auto;
     margin-right: auto;
     color: white;
-    padding: 68px 10px 10px 80px;
+    padding-top: 68px;
+    padding-bottom:100px;
+/*    padding: 68px 10px 100px 80px;*/
 }
 
 .fullscreenWidget .content .busy {
@@ -780,6 +812,11 @@ hr:before {
     margin: 80px 20px 80px 20px;
     width: 80%;
     text-align: center;
+}
+
+.title-err {
+    background-color: #f05a5a !important;
+    border-color: #f05a5a !important;
 }
 
 a:link,a:visited,a:hover,a:active,a img:hover,#footer a:hover
@@ -864,6 +901,16 @@ custom CSS animations
     100% { box-shadow: 0px 0px 0px 0px #efefef }
 }
 */
+@keyframes BLUR-OUT {
+    0% { filter:blur(0px) }
+    100% {filter:blur(5px) }
+}
+
+@keyframes BLUR-IN {
+    0% { filter:blur(5px) }
+    100% {filter:blur(0px) }
+}
+
 @-webkit-keyframes WIDGET-BOUNCE {
      0% { -webkit-transform: scale(1,1) }
     50% {-webkit-transform: scale(1.02,1.02)}
@@ -879,11 +926,13 @@ custom CSS animations
 }
 
 
+/*
 @-webkit-keyframes DIV-BORDER {
     0%   { border-color: #f0f0f0 }
     50%  { border-color: #b9f7a2 }
     100% { border-color: #f0f0f0 }
 }
+*/
 
 @keyframes DIV-BORDER {
     0%   { border-color: #f0f0f0 }
@@ -891,11 +940,27 @@ custom CSS animations
     100% { border-color: #f0f0f0 }
 }
 
+@keyframes WIDGET-TITLE-ERR {
+    0%  { background-color: #f0f0f0 }
+    50% { background-color: #d39696 }
+    100% { background-color: #f05a5a }
+}
+    
+/*
+@-webkit-keyframes WIDGET-TITLE-ERR {
+    0%  { background-color: #f0f0f0 }
+    50% { background-color: #d39696 }
+    100% { background-color: #f05a5a }
+}
+*/
+
+/*
 @-webkit-keyframes WIDGET-TITLE {
     0% { background-color: #f0f0f0 }
     50% { background-color: #b9f7a2 }
     100% { background-color: #f0f0f0 }
 }
+*/
 
 @keyframes WIDGET-TITLE {
     0% { background-color: #f0f0f0 }
@@ -903,11 +968,13 @@ custom CSS animations
     100% { background-color: #f0f0f0 }
 }
 
+/*
 @-webkit-keyframes EXPAND-WIDGET-X {
     0%      { width: 400px }
     50%     { width: 50%   }
     100%    { width: 100%  }
 }
+*/
 
 @keyframes EXPAND-WIDGET-X {
      0%     { width: 400px }
@@ -915,11 +982,13 @@ custom CSS animations
     100%    { width: 100%  }
 }
 
+/*
 @-webkit-keyframes EXPAND-WIDGET-Y {
     0% {    height: 200px }
     50% {   height: 50% }
     100% {  height: 100% }
 }
+*/
 
 @keyframes EXPAND-WIDGET-Y {
     0% {    height: 200px }
@@ -941,14 +1010,27 @@ custom CSS animations
 }
 */
 
+.blurout {
+    animation: BLUR-OUT 1s;
+}
+
+.blurin {
+    animation: BLUR-IN 1s;
+}
+
 .fadeout {
-    -webkit-animation: HORIZONTAL-COLLAPSE 1s;
+/*    -webkit-animation: HORIZONTAL-COLLAPSE 1s;*/
     animation: HORIZONTAL-COLLAPSE 1s;
 }
 
 .flash-title {
     -webkit-animation: WIDGET-TITLE 1.2s;
     animation: WIDGET-TITLE 1.2s;
+}
+
+.flash-title-err {
+    -webkit-animation: WIDGET-TITLE-ERR 1s;
+    animation: WIDGET-TITLE-ERR 1s;
 }
 
 .bounce {

@@ -38,8 +38,9 @@ public final class Controller implements ElementInterface {
 	 * 
 	 * @param icon
 	 */
-	public void setIcon(String icon) {
+	public Controller setIcon(String icon) {
 		this.icon = icon;
+		return this;
 	}
 
 	/**
@@ -47,8 +48,9 @@ public final class Controller implements ElementInterface {
 	 * 
 	 * @param status
 	 */
-	public void setStatus(String status) {
+	public Controller setStatus(String status) {
 		this.status = status;
+		return this;
 	}
 
 	/**

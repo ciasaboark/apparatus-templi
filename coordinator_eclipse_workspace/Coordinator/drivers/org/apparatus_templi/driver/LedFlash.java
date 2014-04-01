@@ -1,7 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 
@@ -16,7 +14,7 @@ import org.apparatus_templi.Log;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
 
-public class LedFlash extends ControllerModule {
+public class LedFlash extends Driver {
 
 	public LedFlash() {
 		this.name = "LED_FLASH";
@@ -28,71 +26,6 @@ public class LedFlash extends ControllerModule {
 	 * isControllerModule(). I think the latter would be best, since additional types might be added
 	 * later.
 	 */
-
-	/*
-	 * Since every driver is exited to have intimate knowledge of the remote module that it
-	 * corresponds with this can be a hard coded XML response.
-	 */
-	@Override
-	public ArrayList<String> getControllerList() {
-		Log.d(name, "getControllerListXML() returning hard coded value for now");
-		// return new String( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-		// "<controlerList>" +
-		// "<controler>" +
-		// "<name>LED 1</name>" +
-		// "</controler>" +
-		// "<controler>" +
-		// "<name>LED 2</name>" +
-		// "</controler>" +
-		// "<controler>" +
-		// "<name>LED 1</name>" +
-		// "</controler>" +
-		// "</controlerList>");
-		return null;
-
-	}
-
-	/*
-	 * Since our simple driver does not keep track of the status of the LEDs it can only respond
-	 * with 'Unknown' for the status. If this were a real driver you would want to check that the
-	 * controlerName is valid, and return a response based of of the controller's last known status.
-	 */
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		Log.d(name, "getControllerStatusXML() returning hard coded value for now");
-		return new String("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<controller>"
-				+ "<name>" + controllerName + "</name>" + "<status>Unknown</status>"
-				+ "</controller>");
-	}
-
-	/*
-	 * This method will be called by the Coordinator on behalf of the front-ends. It is up to you do
-	 * validate the incoming controllerName and command (if desired). In this case we will switch
-	 * based off the controllerName. Since the only thing that this driver does is flash the LED we
-	 * do not even have to check the command.
-	 * 
-	 * Note that the commands being send are very simple (a single digit number corresponding to a
-	 * pin on the arduino). A more complex driver might send multiple pin numbers at a time, or even
-	 * a length of time in which to flash. The format of the command is free form text, but steer
-	 * clear of using the line feed character for now.
-	 */
-	@Override
-	public void tellController(String controllerName, String command) {
-		switch (controllerName) {
-		case "LED 1":
-			Coordinator.sendCommand(this, "4");
-			break;
-		case "LED 2":
-			Coordinator.sendCommand(this, "5");
-			break;
-		case "LED 3":
-			Coordinator.sendCommand(this, "6");
-			break;
-		default:
-			Log.e(name, "tellController() Given invalid LED name");
-			break;
-		}
-	}
 
 	/*
 	 * Our starting point of execution for this driver. This simply runs a loop sending commands to

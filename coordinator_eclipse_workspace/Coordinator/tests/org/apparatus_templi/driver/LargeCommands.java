@@ -1,7 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 
@@ -10,7 +8,7 @@ import org.apparatus_templi.Log;
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
-public class LargeCommands extends SensorModule {
+public class LargeCommands extends Driver {
 
 	private static final String command1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,<.>/?;:\'\"[{]}\\|-_=+`~";
 	private static final byte[] command2 = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7,
@@ -37,18 +35,6 @@ public class LargeCommands extends SensorModule {
 			this.sleep(60000);
 		}
 
-	}
-
-	@Override
-	public ArrayList<String> getSensorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSensorData(String sensorName) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

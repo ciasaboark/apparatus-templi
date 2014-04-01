@@ -24,12 +24,14 @@ public final class TextArea implements ElementInterface {
 		return name;
 	}
 
-	public void setName(String name) {
+	public TextArea setName(String name) {
 		this.name = name;
+		return this;
 	}
 
-	public void setText(String text) {
+	public TextArea setText(String text) {
 		this.text = text;
+		return this;
 	}
 
 	public String getText() {

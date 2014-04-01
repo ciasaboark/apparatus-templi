@@ -13,15 +13,6 @@ function preload(arrayOfImages) {
     });
 }
 
-// Usage:
-/*
-preload([
-    'img/imageName.jpg',
-    'img/anotherOne.jpg',
-    'img/blahblahblah.jpg'
-]);
-*/
-
 /*
  * Ajax request to update the running driver list
  */
@@ -29,7 +20,6 @@ function getRunningDrivers() {
     if (document.getElementById('driver_names') != null) {
         console.log("requesting dr  iver list");
         document.getElementById("driver_refresh_button").onclick = "";
-    //    document.getElementById("driver_names").style.textAlign = "center";
         document.getElementById("drivers_refresh_spinner").style.visibility = "visible";
         document.getElementById("driver_names").style.color = "#ccc";
         $.ajax({
@@ -65,8 +55,6 @@ function getRunningDrivers() {
                     document.getElementById("drivers_refresh_spinner").classList = "";
                     document.getElementById("drivers_refresh_spinner").classList = "fa fa-warning fa-2x";
                     document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
-    //              document.getElementById("driver_names").innerHTML = "<i style=\"color: pink\" class=\"fa fa-warning fa-2x\"></i>";
-    //                document.getElementById("drivers_refresh_spinner").style.visibility = "hidden";
                 }
                 console.log(error);
             }
@@ -85,7 +73,6 @@ function showCommandBox() {
 }
 
 $(window).load(function() {
-    //alert("For now the site will try to refresh the \"current running driver list\" every 30 seconds");
     //preload the background image
     preload([
         '/resource?file=images/stardust.png'
@@ -131,8 +118,6 @@ function updateLog() {
             async: true,
             timeout: 3000,
             success: function(txt) {
-    //            console.log("success");
-    //            console.log(txt);
                 $logDiv.innerHTML = "";
                 $logDiv.innerHTML = txt;
                 $logDiv.scrollTop = $logDiv.scrollHeight;
@@ -194,12 +179,7 @@ function renderWidgets() {
                         console.log("setting short refresh interval");
                         document.getElementById('widgets_box').innerHTML = "<div  style='width: 500pt; height: 100pt; text-align: center; position:absolute; left: 50%; top:50%; padding:10px; margin-left: -250pt; margin-top: -50pt;' class='info-box'><h1>No Modules Loaded</h1><i class=\"fa fa-info-circle\"></i>&nbsp;&nbsp;You can specify which drivers to load from the <a href='settings.html'>settings</a> page</div>";
                         firstRefresh = {};
-                        $intervalNum = setInterval(renderWidgets, 5000);
-                        refreshIntervals.renderWidget = $intervalNum;
                     } else {
-                        console.log("setting long refresh interval");
-                        $intervalNum = setInterval(renderWidgets, 60000);
-                        refreshIntervals.renderWidget = $intervalNum;
                     }
                 },
                 error: function(xhr, status, error) {
@@ -211,10 +191,6 @@ function renderWidgets() {
                     }
                     console.log(error);
                     document.getElementById('widgets_box').innerHTML = "<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widgets</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>";
-                    //set a new refresh interval
-                    console.log("setting medium refresh interval");
-                    $intervalNum = setInterval(renderWidgets, 10000);
-                    refreshIntervals.renderWidget = $intervalNum;
                 }
             });
         }
@@ -232,16 +208,7 @@ function updateWidget(driverName) {
                 $($id).find('.fa-refresh').removeClass('fa-spin');
             },500
         );
-        //clear any previous intervals
-        if (driverName in refreshIntervals) {
-    //        console.log("clearing previous interval for " + driverName);
-            var $intervalNum = refreshIntervals[driverName];
-            clearInterval($intervalNum);
-        } else {
-    //        console.log("no previous interval set for " + driverName);
-        }
-
-    //    document.getElementById('widget-' + driverName).innerHTML = "<div class='widget info-box'><i style='position:absolute; left: 50%; top:50%;' class=\"fa fa-spinner fa-spin fa-2x\"></i></div>";
+        
         var widgetHtml = "<div class='widget info-box' >";
         $.ajax({
             type: "GET",
@@ -251,6 +218,12 @@ function updateWidget(driverName) {
             timeout: 6000,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function (xml) {
+                //clear any previous intervals
+                if (driverName in refreshIntervals) {
+                    var $intervalNum = refreshIntervals[driverName];
+                    clearInterval($intervalNum);
+                } else {
+                }
                 var $prevXml = widgetCache[driverName];
                 var $curXml = (new XMLSerializer()).serializeToString(xml);
 
@@ -261,13 +234,13 @@ function updateWidget(driverName) {
                     var $longName = $module.attr('name');
                     var $driver = $module.attr('driver');
                     var $refreshInterval = $module.attr('refresh');
-//                    console.log($driver + " refresh: " + $refreshInterval);
+                    console.log($driver + " " + $refreshInterval);
                     if ($refreshInterval === undefined) {
                         $refreshInterval = 60;
-                    } else if ($refreshInterval < 3) {
+                    } else if ($refreshInterval < 3) {      //refresh at most once every 3 seconds
                         $refreshInterval = 3;
-                    } else if ($refreshInterval > 60) {
-                        $refreshInterval = 60;
+                    } else if ($refreshInterval >60 * 30) { //refresh at least once every 30 minutes
+                        $refreshInterval = 60 * 30;
                     }
                     var $refreshOnClick = "updateWidget('" + $driver + "')";
                     var $expandWidgetOnClick = "expandWidget('" + $driver + "')";
@@ -276,7 +249,6 @@ function updateWidget(driverName) {
                     widgetHtml += "<div class='content'>";
                     $(this).children().each(function() {
                         var $elementType = this.nodeName;
-    //                    console.log("current element " + $elementType);
                         if ($elementType == "sensor") {
                             var $value = $(this).find('value').text();
                             widgetHtml += renderSensorElement($(this).attr('name'), $value);
@@ -284,7 +256,7 @@ function updateWidget(driverName) {
                             var $status = $(this).find('status').text();
                             widgetHtml += renderControllerElement($(this).attr('name'), $status);
                         } else if ($elementType == "button") {
-                            widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'));
+                            widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'));
                         } else if ($elementType == "textarea") {
                             widgetHtml += renderTextAreaElement($(this).text());
                         } else if ($elementType == "pre") {
@@ -297,28 +269,19 @@ function updateWidget(driverName) {
                     widgetHtml += "</div>"; //close widget div
                     if (document.getElementById('widget-' + driverName) !== null) {
                         $($id).css("visibility","visible");
-    //                    console.log("updating id widget-" + driverName);
-
-    //                    console.log("first refresh? " + firstRefresh[$id]);
                         //if this was the first time the widget was refresh then do a fancy dropdown animation
                         //+ otherwise flash the background
                         $($id).html(widgetHtml);
                         if (typeof firstRefresh[$id] == 'undefined') {
-    //                        console.log($id + " first refresh");
                             $($id).removeClass();
                             window.setTimeout(
                                 function(){
                                     $($id).addClass("animated fadeInDownBig");
-    //                                document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                                 },10
                             );
                             firstRefresh[$id] = "false";
                         } else if ($prevXml !== $curXml) {
-
-    //                        console.log($id + " NOT first refresh");
                             $($id).removeClass();
-    //                        document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
-
                             $($id).find('.widget').addClass('bounce');
                             $($id).find('.widget').addClass('flash-border');
                             $($id).find('.title').addClass('flash-title');
@@ -329,88 +292,83 @@ function updateWidget(driverName) {
                                     $($id).find('.title').removeClass('flash-title');
                                 },2000
                             );
-
-    //                        $($id).fadeOut(1).fadeIn(20);
                         }
-    //                    document.getElementById('widget-' + driverName).innerHTML = widgetHtml;
                     } else {
                         console.error("unable to find id widget-" + driverName);
                     }
 
                     //set a new refresh interval
                     $intervalNum = setInterval(function() { updateWidget(driverName); }, $refreshInterval * 1000);
-    //                console.log("setting interval to update " + driverName + " to " + $refreshInterval + " seconds.");
                     refreshIntervals[driverName] = $intervalNum;
                 });
             },
             error: function(xhr, status, error) {
-//                console.log("unable to get xml for widget-" + driverName);
                 console.log(error);
                 //if the driver has no xml or does not exist then we do not want to insert
                 //+ a div
                 if (document.getElementById('widget-' + driverName) !== null) {
-//                    console.log("removing id widget-" + driverName);
                     $($id).removeClass();
-                    $($id).addClass("animated fadeOutUpBig");
-
-                    //scale out the widget horizontally 
-                    window.setTimeout(
-                        function() {
-                            $($id).toggle({ effect: "scale", direction: "horizontal", duration: "6000"});
-                        }, 600
-                    );
-
-                    //remove the entire widget, this should be timed to complete after the horizontal scale is completed
-                    //TODO is there a callback method available?
-                    window.setTimeout(
-                        function(){
-                            $($id).remove();
-                            if ($("#widgets_box").is(':empty')) {
-                                //if this was the last widget then we need to update the widget box
-//                                console.log("last widget removed, updating available widgets");
-                                renderWidgets();
-                                firstRefresh = {};
-                            }
-                        },1200
-                    );
-
-
+                    if (!$($id).find('.title').hasClass('title-err')) {
+                        $($id).find('.title').addClass('flash-title-err');
+                        window.setTimeout(function() {
+                            $($id).find('.title').addClass('title-err').removeClass('flash-title-err');
+                        }, 1000);
+                    }
+                    if ($($id).find('.widget').find('.content').hasClass('grayscale')) {
+                        console.log("widget already disabled");
+                    } else {
+                        $($id).find('.widget').find('.content').addClass("blurout");
+                        window.setTimeout(function() {
+                            $($id).find('.widget').find('.content').addClass('grayscale').removeClass('blurout');
+                        }, 1000);
+                    }
                 } else {
-//                    console.log("unable to get id for widget-" + driverName);
                 }
             }
         });
     } else {
-//        console.log("will not update widgets while in full screen mode");
     }
 }
 
 function renderSensorElement(name, value) {
-//    console.log("renderSensor() unfinished");
     var $markup = "<div class='sensor'><span class='name'>" + name + "</span><span class='value'>" + value + "</span></div>";
     return $markup;
 }
 
 function renderControllerElement(name, status) {
-//    console.log("renderController() unfinished");
     var $markup = "<div class='controller'><span class='name'>" + name + "</span><span class='status'>" + status + "</span></div>";
     return $markup;
 }
     
-function renderButtonElement(driver, title, action, input) {
-//    console.log("renderButton() unfinished");
+function renderButtonElement(driver, title, action, input, inputval, icon) {
+    title = title.split(' ').join('_');
+    console.log("renderButtonElement()" + "driver '" + driver + "' title '" +  title + "' action '" +  action + "' input '" + input + "' inputval '" +  inputval + "' icon '" +  icon + "'");
+    
+    if (inputval === null || inputval === undefined) {
+        inputval = "";
+    }
+    if (icon === null || icon === undefined) {
+        icon = "";
+    }
+    
     var $markup = "<div class='button'><a ";
     var $buttonID =  "widget-input-" + driver + "-" + title;
-    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + $buttonID + "','" + action + "')\"><span class=' btn btn-default'>" + title + "</span></a>";
-    if (input !== null && input != "none") {
+    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + $buttonID + "','" + action + "')\"><span class=' btn btn-default'>";
+    if (icon !== "") {
+        $markup += "<i class='icon " + icon + "'></i>";
+    }
+    $markup += title + "</span></a>";
+    if (input !== null && input !== "none") {
         $markup += "<input type='";
-        if (input == "text") {
+        if (input === "text") {
             $markup += "text";
         } else if (input == "numeric") {
             $markup += "number";
         }
         $markup += "' ";
-        $markup += "id='" + $buttonID + "'";
+        $markup += "id='" + $buttonID + "' ";
+        console.log("button value '" + inputval + "'");
+        $markup += "value='" + inputval + "' ";
         $markup += "></input>";
     }
     $markup += "</div>";
@@ -428,9 +386,6 @@ function renderPreElement(content) {
 function slideDownSettingsButtons() {
     var $buttons = document.getElementById("settings-buttons");
     if ( $buttons !== null ){
-////        $($buttons).slideUp(2000);
-//        $($buttons).slideDown(1000);
-//        $( $buttons ).fadeIn(1000);
         document.getElementById("settings-buttons").style.visibility = "visible";
         $('#settings-buttons').addClass('animated fadeInDownBig');
     }
@@ -439,15 +394,12 @@ function slideDownSettingsButtons() {
 function widgetButtonOnClick(driver, button, action) {
     var $id = '#widget-' + driver;
     $($id).find('.fa-refresh').addClass('fa-spin');
-//    console.log("button clicked");
     var $buttonInput = $("#" + button).val();
     var $actionCommand;
     if ($buttonInput !== null || $buttonInput !== "" || $buttonInput !== undefined) {
         $actionCommand = action.replace("$input", $buttonInput);
-//        console.log($actionCommand);
     } else {
         $actionCommand = action.replace("$input", "");
-//        console.log($actionCommand);
     }
     
     var $url = "/send_command";
@@ -474,13 +426,10 @@ function formSubmitHandler() {
     var $form = $("#prefs");
     if (document.getElementById("prefs") !== null) {
         $form.submit(function(e) {
-//            console.log("submit handler");
-//            console.log(e);
             e.preventDefault();
             e.stopPropagation();
         });
     } else {
-//        console.log("no prefs form found");
     }
 }
 
@@ -490,41 +439,49 @@ function expandWidget(driver) {
     widgetsToRestore = [];
     console.log("expandWidget() " + driver);
     $('#widgets_box span[id^="widget-"]').each(function() {
-//        console.log(this.id);
         //hide all other widgets
-        if (this.id != "widget-" + driver) {
-//            console.log(this);
+        if (this.id !== "widget-" + driver) {
             var $id = this.id;
-//            console.log("found widget to hide: " + $id);
             widgetsToRestore.push($id);
             var $widget = $($id).find('.widget');
-            $(this).removeClass();
-            $(this).addClass('animated');
-            $(this).addClass('fadeOutUpBig');
-//            console.log($id);
+            $(this).removeClass().addClass('animated fadeOutUpBig');
             window.setTimeout(
                 function() {
-//                    console.log("removing widgets");
+                    $(this).removeClass('animated fadeOutUpBig');
                     var thisWidget = document.getElementById($id);
-//                    console.log("parent element: " + thisWidget.parentElement);
                     thisWidget.parentElement.removeChild(thisWidget);
-                }, 500
+                }, 1000
             );
         } else {
-            $(this).addClass('animated fadeOutUpBig');
+            $(this).removeClass().addClass('animated bounceOut');
+            window.setTimeout(
+                function() {
+                    $(this).hide();
+                    $(this).removeClass('animated bounceOut');
+//                    var thisWidget = document.getElementById($id);
+//                    thisWidget.parentElement.removeChild(thisWidget);
+                }, 1000
+            );
         }
     });
+//
+//    window.setTimeout(function() {
+//        $("#widget-" + driver).addClass('animated fadeOut');
+//        window.setTimeout(function() {
+//            $("#widget-" + driver).removeClass('animated fadeOut');
+//        },1000);
+//    }, 1000);
     
     //expand this widget
     window.setTimeout(
         function() {
-//            console.log("expanding widget");
             $("#widget-" + driver).removeClass();
             $("#widget-" + driver).find('.widget').removeClass('widget');
             $("#widget-" + driver).find('.info-box').addClass('fullscreenWidget');
             $("#widget-" + driver).find('.info-box').removeClass('info-box');
             $("#widget-" + driver).find('.title').hide();
-            $("#widget-" + driver).find('.fullscreenWidget').addClass('animated bounceIn');
+            $("#widget-" + driver).find('.fullscreenWidget').addClass('animated slideInDown');
+            $("#widget-" + driver).find('.content').removeClass('grayscale');
             $("#widget-" + driver).find(".content").html("");
             $("#widget-" + driver).find('.expand-btn').find('i').removeClass('fa-expand');
             $("#widget-" + driver).find('.expand-btn').find('i').addClass('fa-compress');
@@ -535,11 +492,8 @@ function expandWidget(driver) {
             window.setTimeout(
                 function() {
                     $("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
-                    //***********************************************************
-//                    $("#widget-" + driver).find('.expand-btn').find('a').removeAttr("onClick");
                     $("#widget-" + driver).find('.expand-btn').find("a").attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
                     $("#widget-" + driver).find('.refresh-btn').find("a").attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
-//                    $("#widget-" + driver).find('.expand-btn').click(function() {collapseFullScreenWidget();});
                     $("#widget-" + driver).find('.title').addClass('animated fadeInDownBig');
                     $("#widget-" + driver).find('.title').show();
                     
@@ -554,7 +508,6 @@ function expandWidget(driver) {
                             //var to hold html
                             $(xml).find('module').each(function() {
                                 var $module = $(this);
-//                                var $longName = $module.attr('name');
                                 var $driver = $module.attr('driver');
                                 var $refreshInterval = $module.attr('refresh');
                                 console.log($driver + " refresh: " + $refreshInterval);
@@ -565,13 +518,10 @@ function expandWidget(driver) {
                                 } else if ($refreshInterval > 60) {
                                     $refreshInterval = 60;
                                 }
-//                                console.log($("#widget-" + driver).find('.expand-btn').find('a').attr("onClick"));
-                                
 
                                 widgetHtml = "";
                                 $(this).children().each(function() {
                                     var $elementType = this.nodeName;
-                //                    console.log("current element " + $elementType);
                                     if ($elementType == "sensor") {
                                         var $value = $(this).find('value').text();
                                         widgetHtml += renderSensorElement($(this).attr('name'), $value);
@@ -579,7 +529,7 @@ function expandWidget(driver) {
                                         var $status = $(this).find('status').text();
                                         widgetHtml += renderControllerElement($(this).attr('name'), $status);
                                     } else if ($elementType == "button") {
-                                        widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'));
+                                        widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'));
                                     } else if ($elementType == "textarea") {
                                         widgetHtml += renderTextAreaElement($(this).text());
                                     } else if ($elementType == "pre") {
@@ -595,7 +545,6 @@ function expandWidget(driver) {
                             });
                         },
                         error: function(xhr, status, error) {
-//                            console.log("unable to get full xml for widget-" + driver);
                             console.log(error);
                             $("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
                         }
@@ -605,22 +554,19 @@ function expandWidget(driver) {
                     
                 }, 1000
             );
-        }, 1200
+        }, 1500
     );
 }
 
 function collapseFullScreenWidget(driver) {
     console.log("collapseFullscreenWidget()" + driver);
-//    widgetCache = {};
-//    widgetsToRestore = [];
-    
     var $id = $("#widget-" + driver);
-    $($id).find('.fullscreenWidget').addClass('animated bounceOut');
-    $($id).find('.fullscreenWidget').css("border-radius", "6px");
+    $($id).find('.fullscreenWidget').css("border-radius", "16px");
+    $($id).find('.fullscreenWidget').removeClass().addClass('fullscreenWidget animated bounceOut');
     window.setTimeout(function() {
-        $("#widget-" + driver).find('.fullscreenWidget').removeClass().addClass('widget info-box');
-        $('.title').removeClass('fadeInDownBig animated');
-        $('.content').removeClass('animated fadeIn');
+        $($id).find('.fullscreenWidget').removeClass('animated bounceOut');
+        $($id).find('.fullscreenWidget').hide();
+        
         $("#widgets_box").empty();
         $("#widgets_box").hide();
         inFullScreenMode = false;

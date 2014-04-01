@@ -14,7 +14,7 @@ import org.apparatus_templi.event.MotionEvent;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public class MotionGenerator extends SensorModule implements EventGenerator {
+public class MotionGenerator extends Driver implements EventGenerator {
 
 	public MotionGenerator() {
 		this.name = "MOT_GEN";
@@ -67,17 +67,4 @@ public class MotionGenerator extends SensorModule implements EventGenerator {
 		list.add(new MotionEvent());
 		return list;
 	}
-
-	@Override
-	public ArrayList<String> getSensorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSensorData(String sensorName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

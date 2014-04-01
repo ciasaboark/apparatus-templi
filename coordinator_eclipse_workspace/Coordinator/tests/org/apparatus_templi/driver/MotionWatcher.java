@@ -1,7 +1,6 @@
 package org.apparatus_templi.driver;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.apparatus_templi.Coordinator;
@@ -18,7 +17,7 @@ import org.apparatus_templi.xml.XmlFormatter;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public class MotionWatcher extends SensorModule implements EventWatcher {
+public class MotionWatcher extends Driver implements EventWatcher {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Motion Watcher");
 	private final Sensor motion = new Sensor("Last motion event");
 
@@ -52,18 +51,6 @@ public class MotionWatcher extends SensorModule implements EventWatcher {
 			Log.d(this.name, "received unknown event type");
 		}
 
-	}
-
-	@Override
-	public ArrayList<String> getSensorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSensorData(String sensorName) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

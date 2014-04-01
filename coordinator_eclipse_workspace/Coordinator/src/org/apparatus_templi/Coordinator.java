@@ -23,9 +23,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apparatus_templi.driver.ControllerModule;
 import org.apparatus_templi.driver.Driver;
-import org.apparatus_templi.driver.SensorModule;
 import org.apparatus_templi.service.SQLiteDbService;
 
 /**
@@ -49,6 +47,7 @@ public class Coordinator {
 	private static Thread webServerThread = null;
 	private static Prefs prefs = Prefs.getInstance();
 	private static boolean connectionReady = false;
+	private static final long startTime = System.currentTimeMillis();
 
 	private static SysTray sysTray;
 
@@ -147,9 +146,7 @@ public class Coordinator {
 
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
-			if (!loadedDrivers.containsKey(d.getModuleName())
-					&& (d instanceof ControllerModule || d instanceof SensorModule)
-					&& d.getName().length() <= 10) {
+			if (!loadedDrivers.containsKey(d.getModuleName()) && d.getName().length() <= 10) {
 				loadedDrivers.put(d.getModuleName(), d);
 				Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName()
 						+ " initialized");
@@ -948,16 +945,16 @@ public class Coordinator {
 	 *         given driver is not of type {@link SensorModule} or if the driver is not loaded then
 	 *         returns null.
 	 */
-	public static synchronized ArrayList<String> getSensorList(String driverName) {
-		ArrayList<String> results = null;
-		if (loadedDrivers.containsKey(driverName)) {
-			Driver d = loadedDrivers.get(driverName);
-			if (d instanceof org.apparatus_templi.driver.SensorModule) {
-				results = ((SensorModule) d).getSensorList();
-			}
-		}
-		return results;
-	}
+	// public static synchronized ArrayList<String> getSensorList(String driverName) {
+	// ArrayList<String> results = null;
+	// if (loadedDrivers.containsKey(driverName)) {
+	// Driver d = loadedDrivers.get(driverName);
+	// if (d instanceof org.apparatus_templi.driver.SensorModule) {
+	// results = ((SensorModule) d).getSensorList();
+	// }
+	// }
+	// return results;
+	// }
 
 	/**
 	 * Returns a list of controllers that the given driver interacts with.
@@ -968,16 +965,16 @@ public class Coordinator {
 	 *         the given driver is not of type {@link ControllerModule} or if the driver is not
 	 *         loaded then returns null.
 	 */
-	public static synchronized ArrayList<String> getControllerList(String driverName) {
-		ArrayList<String> results = new ArrayList<String>();
-		if (loadedDrivers.containsKey(driverName)) {
-			Driver d = loadedDrivers.get(driverName);
-			if (d instanceof org.apparatus_templi.driver.ControllerModule) {
-				results = ((ControllerModule) d).getControllerList();
-			}
-		}
-		return results;
-	}
+	// public static synchronized ArrayList<String> getControllerList(String driverName) {
+	// ArrayList<String> results = new ArrayList<String>();
+	// if (loadedDrivers.containsKey(driverName)) {
+	// Driver d = loadedDrivers.get(driverName);
+	// if (d instanceof org.apparatus_templi.driver.ControllerModule) {
+	// results = ((ControllerModule) d).getControllerList();
+	// }
+	// }
+	// return results;
+	// }
 
 	/**
 	 * Returns a list of all loaded drivers.
@@ -1137,6 +1134,13 @@ public class Coordinator {
 		address.append("/index.html");
 		Log.d(TAG, "server address: " + address.toString());
 		return address.toString();
+	}
+
+	/**
+	 * Returns the number of seconds that have passes since the service first started
+	 */
+	public static long getUptime() {
+		return (System.currentTimeMillis() - startTime) / 1000;
 	}
 
 	public static void main(String argv[]) throws InterruptedException, IOException {

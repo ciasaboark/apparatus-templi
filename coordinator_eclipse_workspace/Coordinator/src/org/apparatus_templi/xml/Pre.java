@@ -24,16 +24,18 @@ public final class Pre implements ElementInterface {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Pre setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public String getHtml() {
 		return html;
 	}
 
-	public void setHtml(String html) {
+	public Pre setHtml(String html) {
 		this.html = html;
+		return this;
 	}
 
 	@Override

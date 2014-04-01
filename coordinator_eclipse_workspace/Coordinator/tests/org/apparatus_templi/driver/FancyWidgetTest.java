@@ -1,12 +1,10 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class FancyWidgetTest extends ControllerModule {
+public class FancyWidgetTest extends Driver {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Barrow Sea Ice Webcam");
 	private final XmlFormatter fullXml = new XmlFormatter(this, "Fancy Widget Test");
 	private final Pre widgetVideo = new Pre("html", "");
@@ -17,7 +15,7 @@ public class FancyWidgetTest extends ControllerModule {
 		this.name = "FancyWidgt";
 		widgetVideo
 				.setHtml("<div style=\"text-align: center\">"
-						+ "<video controls autoplay muted=\"muted\" poster=\"http://feeder.gina.alaska.edu/feeds/webcam-uaf-barrow-seaice-images/movies/current-1_day_animation.png\" preload=\"none\" height=\"150px\" width=\"250px\" >"
+						+ "<video controls autoplay muted=\"muted\" poster=\"http://feeder.gina.alaska.edu/feeds/webcam-uaf-barrow-seaice-images/movies/current-1_day_animation.png\" preload=\"none\" height=\"200px\" width=\"400px\" >"
 						// +
 						+ "<source src=\"http://feeder.gina.alaska.edu/feeds/webcam-uaf-barrow-seaice-images/movies/current-1_day_animation.mp4\" type=\"video/mp4\">"
 						+ "<source src=\"http://feeder.gina.alaska.edu/feeds/webcam-uaf-barrow-seaice-images/movies/current-1_day_animation.webm\" type=\"video/webm\"> +"
@@ -41,24 +39,6 @@ public class FancyWidgetTest extends ControllerModule {
 	@Override
 	public void run() {
 		// do nothing
-
-	}
-
-	@Override
-	public ArrayList<String> getControllerList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void tellController(String controllerName, String command) {
-		// TODO Auto-generated method stub
 
 	}
 

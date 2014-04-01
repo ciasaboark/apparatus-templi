@@ -1,6 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
@@ -10,7 +9,7 @@ import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class DbTester extends ControllerModule {
+public class DbTester extends Driver {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Database Tester");
 	private final Pre intro = new Pre("test pre",
 			"<p>Saving and reading back 1000 values to the db</p>");
@@ -95,24 +94,6 @@ public class DbTester extends ControllerModule {
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
-
-	}
-
-	@Override
-	public ArrayList<String> getControllerList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void tellController(String controllerName, String command) {
-		// TODO Auto-generated method stub
 
 	}
 

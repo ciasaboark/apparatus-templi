@@ -1,6 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
@@ -8,7 +7,7 @@ import org.apparatus_templi.Log;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class DbTester2 extends ControllerModule {
+public class DbTester2 extends Driver {
 	private final XmlFormatter widgetXml;
 	private final TextArea description = new TextArea("status", "");
 
@@ -70,24 +69,6 @@ public class DbTester2 extends ControllerModule {
 			this.sleep(1000 * 60 * 5);
 		}
 		Log.d(this.name, "terminating");
-
-	}
-
-	@Override
-	public ArrayList<String> getControllerList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void tellController(String controllerName, String command) {
-		// TODO Auto-generated method stub
 
 	}
 

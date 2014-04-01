@@ -38,8 +38,9 @@ public final class Button implements ElementInterface {
 	 * 
 	 * @param icon
 	 */
-	public void setIcon(String icon) {
+	public Button setIcon(String icon) {
 		this.icon = icon;
+		return this;
 	}
 
 	@Override
@@ -67,8 +68,9 @@ public final class Button implements ElementInterface {
 	 * @param action
 	 *            the command to send to this Driver when the button is clicked.
 	 */
-	public void setAction(String action) {
+	public Button setAction(String action) {
 		this.action = action;
+		return this;
 	}
 
 	/**
@@ -92,12 +94,13 @@ public final class Button implements ElementInterface {
 	 * @throws IllegalArgumentException
 	 *             if the given inputType does match known values from {@link InputType}
 	 */
-	public void setInputType(String inputType) throws IllegalArgumentException {
+	public Button setInputType(String inputType) throws IllegalArgumentException {
 		if (InputType.isValidInputType(inputType)) {
 			this.inputType = inputType;
 		} else {
 			throw new IllegalArgumentException("Unknown input type");
 		}
+		return this;
 	}
 
 	/**
@@ -114,8 +117,9 @@ public final class Button implements ElementInterface {
 	 * @param inputVal
 	 *            the default value that should be placed into this buttons input area.
 	 */
-	public void setInputVal(String inputVal) {
+	public Button setInputVal(String inputVal) {
 		this.inputVal = inputVal;
+		return this;
 	}
 
 	/**

@@ -1,7 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.xml.Button;
@@ -9,7 +7,7 @@ import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class Local extends ControllerModule {
+public class Local extends Driver {
 	private final int[] leds = { 5, 6, 7 };
 	private final boolean[] ledsState = { false, false, false };
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Local Controller");
@@ -92,24 +90,6 @@ public class Local extends ControllerModule {
 				break;
 			}
 		}
-	}
-
-	@Override
-	public ArrayList<String> getControllerList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void tellController(String controllerName, String command) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

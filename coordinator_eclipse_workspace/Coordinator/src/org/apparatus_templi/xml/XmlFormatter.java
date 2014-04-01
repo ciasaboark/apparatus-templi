@@ -39,8 +39,9 @@ public class XmlFormatter {
 	 * @param refreshRate
 	 *            how often the frontend should refresh this data (in seconds).
 	 */
-	public void setRefresh(int refreshRate) {
+	public XmlFormatter setRefresh(int refreshRate) {
 		refresh = refreshRate;
+		return this;
 	}
 
 	/**

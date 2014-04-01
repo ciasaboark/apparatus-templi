@@ -1,7 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.EventWatcher;
@@ -9,7 +7,7 @@ import org.apparatus_templi.Log;
 import org.apparatus_templi.event.TempChangedEvent;
 import org.apparatus_templi.service.TwitterService;
 
-public final class TwitterTester extends SensorModule implements EventWatcher {
+public final class TwitterTester extends Driver implements EventWatcher {
 	TwitterService twitterService = TwitterService.getInstance();
 
 	public TwitterTester() {
@@ -31,18 +29,6 @@ public final class TwitterTester extends SensorModule implements EventWatcher {
 			this.sleep();
 		}
 
-	}
-
-	@Override
-	public ArrayList<String> getSensorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSensorData(String sensorName) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

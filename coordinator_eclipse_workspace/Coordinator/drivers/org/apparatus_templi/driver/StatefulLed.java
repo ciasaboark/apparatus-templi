@@ -1,7 +1,5 @@
 package org.apparatus_templi.driver;
 
-import java.util.ArrayList;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.xml.Controller;
@@ -21,7 +19,7 @@ import org.apparatus_templi.xml.XmlFormatter;
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
-public class StatefulLed extends ControllerModule {
+public class StatefulLed extends Driver {
 
 	// our remote module has three LEDs attached
 	private final int[] leds = { 5, 6, 7 };
@@ -117,25 +115,6 @@ public class StatefulLed extends ControllerModule {
 				break;
 			}
 		}
-	}
-
-	@Override
-	public ArrayList<String> getControllerList() {
-		Log.w(this.name, "getControllerListXML() unimplimented for now");
-		return null;
-	}
-
-	@Override
-	public String getControllerStatusXML(String controllerName) {
-		Log.w(this.name, "getControllerStatusXML() unimplimented for now");
-		return null;
-	}
-
-	@Override
-	public void tellController(String controllerName, String command) {
-		Log.d(this.name, "tellController() not validating command, passing without verification");
-		Coordinator.sendCommand(this, command);
-
 	}
 
 }

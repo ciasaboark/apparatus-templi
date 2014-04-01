@@ -1,6 +1,7 @@
 package org.apparatus_templi.driver;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,21 +13,91 @@ import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.TempChangedEvent;
 import org.apparatus_templi.xml.Button;
+import org.apparatus_templi.xml.InputType;
 import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.Sensor;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class TempMonitor extends SensorModule implements EventGenerator {
-	private final XmlFormatter widgetXml = new XmlFormatter(this, "Temperature Monitor");
-	private final XmlFormatter fullPageXml = new XmlFormatter(this, "Temperature Monitor");
+public class TempMonitor extends Driver implements EventGenerator {
+	private XmlFormatter widgetXml = new XmlFormatter(this, "Temperature Monitor");
+	private XmlFormatter fullPageXml = new XmlFormatter(this, "Temperature Monitor");
 	private final Sensor temp = new Sensor("Downstairs Temperature");
 	private final Pre intro = new Pre("description", "");
 	private final TextArea lastUpdated = new TextArea("lastUpdated", "");
-	private final Button refreshButton = new Button("Refresh");
 	private final String DB_KEY_LASTUPDATE = "last";
+	private final int DEFAULT_REFRESH_RATE = 15 * 60;
+	private final String DEFAULT_LOCATION = "";
+	private Integer refreshRate = null;
+	private String location = null;
 
+	private final Pre widgetPre = new Pre("fancy", "");
 	private Integer lastKnownTemp = null;
+	private final String noContact = "<div style='text-align: right;'><span style=' font-size: 100px'>"
+			+ "?"
+			+ "&deg;</span></div>"
+			+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+			+ "could not contact module</span></div>";
+
+	private void buildWidgetXml(String temp, String time) {
+		String loc = (location == null) ? DEFAULT_LOCATION : location;
+		int ref = ((refreshRate == null) ? DEFAULT_REFRESH_RATE : refreshRate);
+		widgetXml = new XmlFormatter(this, loc + " Temperature");
+
+		if (temp == null || time == null) {
+			// set a default unknown state with a short refresh interval
+			widgetXml.setRefresh(3);
+			widgetXml
+					.addElement(new Pre(
+							"status",
+							"<div style='text-align: right;'><span style=' font-size: 100px'>"
+									+ "?"
+									+ "&deg;</span></div>"
+									+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+									+ "no reading</span></div>"));
+		} else {
+			widgetXml.setRefresh(ref);
+			String date = "";
+			try {
+				// Date d = new java.util.Date(Long.parseLong(time));
+				// SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss z");
+				date = new SimpleDateFormat().format(Long.parseLong(time));
+			} catch (IllegalArgumentException e) {
+				date = "unknown";
+			}
+			widgetXml
+					.addElement(new Pre(
+							"status",
+							"<div style='text-align: right;'><span style=' font-size: 100px'>"
+									+ temp
+									+ "&deg;</span></div>"
+									+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+									+ "Last Updated: " + date + "</span></div>"));
+		}
+	}
+
+	// rebuild the full page XmlFormatter
+	private void buildFullPageXml() {
+		int refRate = (((refreshRate == null) ? DEFAULT_REFRESH_RATE : refreshRate) / 60);
+		String loc = ((location == null) ? DEFAULT_LOCATION : location);
+
+		fullPageXml = new XmlFormatter(this, loc + " Temperature");
+		fullPageXml.addElement(intro);
+		// add button to set refresh rate
+		fullPageXml.addElement(new TextArea("refresh descr",
+				"How often the temperature should be checked (in minutes)"));
+		fullPageXml.addElement(new Button("Set Refresh Rate").setAction("rr$input")
+				.setInputType(InputType.NUM).setInputVal(String.valueOf(refRate)));
+		// spacer
+		fullPageXml.addElement(new Pre("spacer", "&nbsp;"));
+
+		// add button to set location name
+		fullPageXml.addElement(new TextArea("loc descr",
+				"What area of the house is the reading coming from"));
+		fullPageXml.addElement(new Button("Set Location").setAction("name$input")
+				.setInputType(InputType.TEXT).setInputVal(loc));
+
+	}
 
 	private Map<String, String> getLastReading() {
 		Log.d(this.name, "getLastReading()");
@@ -52,30 +123,35 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 		this.lastUpdated.setText("Last update: "
 				+ DateFormat.getDateTimeInstance().format(new Date(time)));
 		this.temp.setValue(String.valueOf(temp));
+		this.widgetPre
+				.setHtml("<div style='text-align: right;'><span style=' font-size: 100px'>"
+						+ this.temp.getValue()
+						+ "&deg;</span></div>"
+						+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+						+ lastUpdated.getText() + "</span></div>");
 
 		// write the new temp data to the database
 		Coordinator.storeTextData(this.name, String.valueOf(time), String.valueOf(temp));
 		Coordinator.storeTextData(this.name, DB_KEY_LASTUPDATE, String.valueOf(time));
 	}
 
-	private boolean readRemoteTemp() {
+	private Integer readRemoteTemp() {
 		Log.d(this.name, "readRemoteTemp()");
-		boolean isTempUpdated = false;
+		Integer temp = null;
 		String response = Coordinator.sendCommandAndWait(this, "t", 6);
 		if (response != null) {
 			// if the response was not formatted like a temperature reading then pass the data to
 			// receiveCommand
 			if (response.startsWith("t")) {
 				try {
-					Integer i = Integer.parseInt(response.substring(1));
+					temp = Integer.parseInt(response.substring(1));
 					// if the temperature changed then will generate an event
-					if (lastKnownTemp != null && lastKnownTemp != i) {
+					if (lastKnownTemp != null && lastKnownTemp != temp) {
 						TempChangedEvent e = new TempChangedEvent(System.currentTimeMillis(), this,
-								lastKnownTemp, i);
+								lastKnownTemp, temp);
 						Coordinator.receiveEvent(this, e);
 					}
-					updateTemp(System.currentTimeMillis(), i);
-					isTempUpdated = true;
+					updateTemp(System.currentTimeMillis(), temp);
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received a malformed temperature reading, discarding");
 				}
@@ -85,65 +161,53 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 				receiveCommand(response);
 			}
 		}
-		return isTempUpdated;
+		return temp;
+	}
+
+	private void getBestReading() {
+		// try to get an updated temperature reading
+		Integer curTemp = readRemoteTemp();
+		if (curTemp != null) {
+			buildWidgetXml(String.valueOf(curTemp), String.valueOf(System.currentTimeMillis()));
+		} else {
+			Map<String, String> lastTemp = getLastReading();
+			if (lastTemp.get("temp") == null || lastTemp.get("time") == null) {
+				// no current reading, and no historical reading
+				buildWidgetXml(null, null);
+			} else {
+				// display the temperature
+				buildWidgetXml(lastTemp.get("temp"), lastTemp.get("time"));
+			}
+		}
 	}
 
 	public TempMonitor() {
 		this.name = "TempMonitr";
 		intro.setHtml("<p>Downstairs temperature reading</p>");
-		temp.setValue("unknown");
-		refreshButton.setAction("r");
-		refreshButton.setInputType("none");
-		// temp.setIcon(icon)
-		lastUpdated.setText("Last updated: unknown");
-		widgetXml.addElement(intro);
-		widgetXml.addElement(temp);
-		widgetXml.addElement(lastUpdated);
-		widgetXml.addElement(refreshButton);
+		temp.setValue("?");
+		lastUpdated.setText("unknown");
 
-		fullPageXml.addElement(intro);
-		fullPageXml.addElement(temp);
-		fullPageXml.addElement(lastUpdated);
-		fullPageXml.addElement(refreshButton);
+		location = Coordinator.readTextData(this.name, "location");
+		String r = Coordinator.readTextData(this.name, "refresh");
+		try {
+			refreshRate = Integer.parseInt(r);
+		} catch (NumberFormatException e) {
+			// if the stored value was bad we just use the default
+		}
+
+		buildWidgetXml(null, null);
+		buildFullPageXml();
 
 	}
 
 	@Override
 	public void run() {
-		// try to get an updated temperature reading
-		if (readRemoteTemp()) {
-		} else {
-			// if we got no response from the remote module then we can try looking at the database.
-			// If the last temperature record is too old then we will leave the temp Sensor value as
-			// "unknown"
-			Log.d(this.name, "could not get current reading during setup, reading from database");
-			Map<String, String> m = getLastReading();
-			if (m.get("time") != null && m.get("temp") != null) {
-				try {
-					Long l = Long.parseLong(m.get("time"));
-					Integer i = Integer.parseInt(m.get("temp"));
-					// if the last reading was longer than 4 hours ago then it will not be used
-					if (l >= (System.currentTimeMillis() - (1000 * 60 * 60 * 4))) {
-						lastUpdated.setText("Last update: "
-								+ DateFormat.getDateTimeInstance().format(new Date(l)));
-						temp.setValue(m.get("temp"));
-					} else {
-						Log.w(this.name,
-								"last known reading was longer than 4 hours ago, discarding");
-					}
-				} catch (NumberFormatException e) {
-					Log.w(this.name, "Database has a bad value for last recorded reading"
-							+ " timestamp, or last stored temperature was invalid");
-				}
-			} else {
-				Log.w(this.name, "database had no recorded temperatures");
-			}
-		}
 
 		while (isRunning) {
+			getBestReading();
+
 			// wake every 15 minutes to record temperature data
-			this.sleep(1000 * 60 * 15);
-			readRemoteTemp();
+			this.sleep(((refreshRate == null) ? DEFAULT_REFRESH_RATE : refreshRate) * 1000);
 		}
 
 		Log.d(this.name, "terminating");
@@ -158,18 +222,6 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 	}
 
 	@Override
-	public ArrayList<String> getSensorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getSensorData(String sensorName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void receiveCommand(String command) {
 		if (command != null) {
 			if (command.startsWith("t")) {
@@ -181,7 +233,33 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 				}
 			} else if ("r".equals(command)) {
 				// received request to update temperature reading
-				readRemoteTemp();
+				getBestReading();
+			} else if (command.startsWith("rr")) {
+				// received request to set new refresh rate
+				String rate = "";
+				try {
+					Integer i = Integer.parseInt(command.substring(2)) * 60;
+					rate = String.valueOf(i);
+				} catch (NumberFormatException e) {
+
+				}
+
+				Log.d(this.name, "received request to set new refresh rate");
+				try {
+					refreshRate = Integer.parseInt(rate);
+				} catch (NumberFormatException e) {
+					// use the default value
+				}
+				Coordinator.storeTextData(this.name, "refresh", rate);
+				buildFullPageXml();
+				getBestReading();
+			} else if (command.startsWith("name")) {
+				Log.d(this.name, "received request to set new location name");
+				location = command.substring(4);
+
+				Coordinator.storeTextData(this.name, "location", command.substring(4));
+				buildFullPageXml();
+				getBestReading();
 			} else {
 				Log.w(this.name, "received command in unknown format");
 			}
@@ -196,6 +274,7 @@ public class TempMonitor extends SensorModule implements EventGenerator {
 
 	@Override
 	public String getWidgetXML() {
+		getBestReading();
 		return widgetXml.generateXml();
 	}
 

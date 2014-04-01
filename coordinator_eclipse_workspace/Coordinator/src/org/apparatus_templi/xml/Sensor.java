@@ -38,8 +38,9 @@ public final class Sensor implements ElementInterface {
 	 * 
 	 * @param icon
 	 */
-	public void setIcon(String icon) {
+	public Sensor setIcon(String icon) {
 		this.icon = icon;
+		return this;
 	}
 
 	/**
@@ -47,8 +48,9 @@ public final class Sensor implements ElementInterface {
 	 * 
 	 * @param value
 	 */
-	public void setValue(String value) {
+	public Sensor setValue(String value) {
 		this.value = value;
+		return this;
 	}
 
 	/**
