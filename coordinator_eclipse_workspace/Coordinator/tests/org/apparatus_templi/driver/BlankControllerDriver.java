@@ -54,15 +54,17 @@ public class BlankControllerDriver extends Driver {
 	 * valid before operating on them.
 	 */
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
 		// If the command was valid
 		// Coordinator.sendCommand(this, command);
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		// If the data was valid
 		// Coordinator.sendBinary(this, data);
+		return true;
 	}
 
 	/*

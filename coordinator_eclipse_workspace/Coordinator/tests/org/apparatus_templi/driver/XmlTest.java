@@ -99,15 +99,15 @@ public class XmlTest extends Driver {
 	}
 
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
 		Log.d(this.name, "received command '" + command + "'");
-
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override

@@ -41,16 +41,16 @@ public class StatefulLed extends Driver {
 	}
 
 	@Override
-	public void receiveCommand(String message) {
+	public boolean receiveCommand(String message) {
 		// throw away the message for now
 		// Log.d(this.name, "received message '"+ message + "', ignoring");
-
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		Log.d(this.name, "received binary, ignoring");
-
+		return true;
 	}
 
 	@Override

@@ -93,30 +93,35 @@ public class Local extends Driver {
 	}
 
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
+		boolean goodCommand = false;
 		if (command != null) {
 			if (command.startsWith("OK")) {
 				Log.d(this.name, "received confirmation from remote module: " + command);
+				goodCommand = true;
 			} else {
 				Integer i = null;
 				try {
 					i = Integer.parseInt(command);
 					if (i < 0 || i > 2) {
-						throw new NumberFormatException("Led number out of range");
+						// throw new NumberFormatException("Led number out of range");
+						Log.w(this.name, "not a valid number");
+					} else {
+						toggleLED(i);
+						goodCommand = true;
 					}
-					// Coordinator.wakeSelf(this);
-					toggleLED(i);
 				} catch (NumberFormatException e) {
-					Log.w(this.name, "not a valid number");
+
 				}
 			}
 		}
+		return goodCommand;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override

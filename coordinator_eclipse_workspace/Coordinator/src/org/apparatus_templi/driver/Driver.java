@@ -52,8 +52,9 @@ public abstract class Driver implements Runnable {
 	 * 
 	 * @param command
 	 *            the command to send to the remote module.
+	 * @return TODO
 	 */
-	public abstract void receiveCommand(String command);
+	public abstract boolean receiveCommand(String command);
 
 	/**
 	 * Sends binary data to this drivers remote module. This is the interface that the front-ends
@@ -62,8 +63,9 @@ public abstract class Driver implements Runnable {
 	 * 
 	 * @param data
 	 *            the command to send to the remote module.
+	 * @return TODO
 	 */
-	public abstract void receiveBinary(byte[] data);
+	public abstract boolean receiveBinary(byte[] data);
 
 	/**
 	 * Returns a String of XML data representing a widget view of this driver. The widget data

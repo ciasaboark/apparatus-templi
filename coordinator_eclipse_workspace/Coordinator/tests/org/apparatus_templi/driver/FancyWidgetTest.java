@@ -43,14 +43,15 @@ public class FancyWidgetTest extends Driver {
 	}
 
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
+		return true;
 
 	}
 

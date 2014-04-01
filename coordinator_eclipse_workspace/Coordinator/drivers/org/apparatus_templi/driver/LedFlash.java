@@ -77,14 +77,15 @@ public class LedFlash extends Driver {
 	 * We don't care about any response messages.
 	 */
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
 		Log.d(name, "received command, ignoring");
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		Log.d(name, "received binary, ignoring");
-
+		return true;
 	}
 
 	/*

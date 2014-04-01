@@ -874,6 +874,8 @@ public class Coordinator {
 	 *            null, this command originated from the Coordinator
 	 * @param command
 	 *            the command to pass
+	 * @return a boolean value indicating whether or not the command was received and parsed
+	 *         correctly.
 	 */
 	public static synchronized boolean passCommand(String source, String destination, String command) {
 		Log.d(TAG, "passCommand() given dest:" + destination + " cmd: " + command);
@@ -883,8 +885,7 @@ public class Coordinator {
 		if (loadedDrivers.containsKey(destination)) {
 			Driver destDriver = loadedDrivers.get(destination);
 			if (driverThreads.get(destDriver).getState() != Thread.State.TERMINATED) {
-				loadedDrivers.get(destination).receiveCommand(command);
-				messagePassed = true;
+				messagePassed = loadedDrivers.get(destination).receiveCommand(command);
 			}
 		}
 		return messagePassed;

@@ -98,7 +98,7 @@ public class DbTester extends Driver {
 	}
 
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
 		if ("s".equals(command)) {
 			Log.d(this.name, "received restart command, waking self");
 			widgetXml.setName("Database Tester");
@@ -117,11 +117,13 @@ public class DbTester extends Driver {
 			this.pauseTest = false;
 			Coordinator.wakeSelf(this);
 		}
+		return true;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		// TODO Auto-generated method stub
+		return true;
 
 	}
 

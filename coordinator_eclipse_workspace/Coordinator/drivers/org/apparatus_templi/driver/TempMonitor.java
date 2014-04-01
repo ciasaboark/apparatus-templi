@@ -208,6 +208,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 			// wake every 15 minutes to record temperature data
 			this.sleep(((refreshRate == null) ? DEFAULT_REFRESH_RATE : refreshRate) * 1000);
+			Log.d(this.name, "waking...");
 		}
 
 		Log.d(this.name, "terminating");
@@ -222,17 +223,20 @@ public class TempMonitor extends Driver implements EventGenerator {
 	}
 
 	@Override
-	public void receiveCommand(String command) {
+	public boolean receiveCommand(String command) {
+		boolean goodCommand = false;
 		if (command != null) {
 			if (command.startsWith("t")) {
 				try {
 					Integer i = Integer.parseInt(command.substring(1));
 					updateTemp(System.currentTimeMillis(), i);
+					goodCommand = true;
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received malformed temperature reading, discarding");
 				}
 			} else if ("r".equals(command)) {
 				// received request to update temperature reading
+				goodCommand = true;
 				getBestReading();
 			} else if (command.startsWith("rr")) {
 				// received request to set new refresh rate
@@ -240,19 +244,20 @@ public class TempMonitor extends Driver implements EventGenerator {
 				try {
 					Integer i = Integer.parseInt(command.substring(2)) * 60;
 					rate = String.valueOf(i);
+					Log.d(this.name, "received request to set new refresh rate");
+					try {
+						refreshRate = Integer.parseInt(rate);
+						goodCommand = true;
+					} catch (NumberFormatException e) {
+						// use the default value
+					}
+					Coordinator.storeTextData(this.name, "refresh", rate);
+					Coordinator.wakeSelf(this);
+					buildFullPageXml();
+					// getBestReading();
 				} catch (NumberFormatException e) {
 
 				}
-
-				Log.d(this.name, "received request to set new refresh rate");
-				try {
-					refreshRate = Integer.parseInt(rate);
-				} catch (NumberFormatException e) {
-					// use the default value
-				}
-				Coordinator.storeTextData(this.name, "refresh", rate);
-				buildFullPageXml();
-				getBestReading();
 			} else if (command.startsWith("name")) {
 				Log.d(this.name, "received request to set new location name");
 				location = command.substring(4);
@@ -260,21 +265,23 @@ public class TempMonitor extends Driver implements EventGenerator {
 				Coordinator.storeTextData(this.name, "location", command.substring(4));
 				buildFullPageXml();
 				getBestReading();
+				goodCommand = true;
 			} else {
 				Log.w(this.name, "received command in unknown format");
 			}
 		}
-
+		return goodCommand;
 	}
 
 	@Override
-	public void receiveBinary(byte[] data) {
+	public boolean receiveBinary(byte[] data) {
 		Log.w(this.name, "received binary data, discarding");
+		return true;
 	}
 
 	@Override
 	public String getWidgetXML() {
-		getBestReading();
+		// getBestReading();
 		return widgetXml.generateXml();
 	}
 
