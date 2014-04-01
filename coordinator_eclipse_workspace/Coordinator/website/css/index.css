@@ -3,8 +3,8 @@
 body
 {
 /*    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;*/
-    background-color: black;
-    background: url("/resource?file=images/denim.png") repeat;
+/*    background-color: black;*/
+    background: #3d434a url("/resource?file=images/denim.png") repeat;
 /*    background-size: cover;*/
   color:#4D4D4D;
   min-width:740px;
@@ -407,6 +407,12 @@ margin-right: 10px;
     width: 100%;
 }
 
+.button-status {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
 .clear,#settings_buttons_div
 {
   clear:both;
@@ -537,8 +543,8 @@ margin-right: 10px;
 /*    background-color: rgba(255, 255, 255, 0.96);*/
     background-color: #f0f0f0;
 /*    overflow: hidden;*/
-    white-space: nowrap;
-    text-overflow: ellipsis;
+/*    white-space: nowrap;*/
+/*    text-overflow: ellipsis;*/
 /*
     background: linear-gradient(135deg, rgb(244, 244, 244) 25%,
         rgb(222, 222, 222) 25%, rgb(222, 222, 222) 50%, 
@@ -954,13 +960,11 @@ custom CSS animations
 }
 */
 
-/*
 @-webkit-keyframes WIDGET-TITLE {
     0% { background-color: #f0f0f0 }
     50% { background-color: #b9f7a2 }
     100% { background-color: #f0f0f0 }
 }
-*/
 
 @keyframes WIDGET-TITLE {
     0% { background-color: #f0f0f0 }

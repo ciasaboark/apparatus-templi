@@ -170,7 +170,12 @@ function renderWidgets() {
                         var $module = $(this);
                         var $name = $module.attr('name');
                         document.getElementById('widgets_box').innerHTML += "<span style='visibility:hidden' id='widget-" + $name + "'></span>";
-                        updateWidget($name);
+                        //try to render all the widgets async,
+                        //+ if the server is single threaded then this will not work
+                        window.setTimeout(function() {
+                            console.log("building widget " + $name);
+                            updateWidget($name);
+                        },1);
                         $progress += $step;
                         $('#widgets_progress').val($progress);
                     });
@@ -215,7 +220,7 @@ function updateWidget(driverName) {
             url: "/widget.xml?driver=" + driverName,
             dataType: "xml",
             async: true,
-            timeout: 6000,
+            timeout: 30000,
             contentType: "application/xml; charset=\"utf-8\"",
             success: function (xml) {
                 //clear any previous intervals
@@ -324,6 +329,9 @@ function updateWidget(driverName) {
                     }
                 } else {
                 }
+//                //set a short refresh interval
+//                $intervalNum = setInterval(function() { updateWidget(driverName); }, 3000);
+//                refreshIntervals[driverName] = $intervalNum;
             }
         });
     } else {
@@ -341,7 +349,7 @@ function renderControllerElement(name, status) {
 }
     
 function renderButtonElement(driver, title, action, input, inputval, icon) {
-    title = title.split(' ').join('_');
+    title_id = title.split(' ').join('_');
     console.log("renderButtonElement()" + "driver '" + driver + "' title '" +  title + "' action '" +  action + "' input '" + input + "' inputval '" +  inputval + "' icon '" +  icon + "'");
     
     if (inputval === null || inputval === undefined) {
@@ -352,8 +360,8 @@ function renderButtonElement(driver, title, action, input, inputval, icon) {
     }
     
     var $markup = "<div class='button'><a ";
-    var $buttonID =  "widget-input-" + driver + "-" + title;
-    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + $buttonID + "','" + action + "')\"><span class=' btn btn-default'>";
+    var $buttonID =  "widget-input-" + driver + "-" + title_id;
+    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class=' btn btn-default'>";
     if (icon !== "") {
         $markup += "<i class='icon " + icon + "'></i>";
     }
@@ -371,6 +379,10 @@ function renderButtonElement(driver, title, action, input, inputval, icon) {
         $markup += "value='" + inputval + "' ";
         $markup += "></input>";
     }
+    //every button has a area set aside to display status info
+    //this area should be used to indicate whether the action was received
+    //correctly
+    $markup += "<span class='button-status' id=\"button-status-" + driver + "-" + title_id + "\"></span>";
     $markup += "</div>";
     return $markup;
 }
@@ -391,10 +403,22 @@ function slideDownSettingsButtons() {
     }
 }
 
-function widgetButtonOnClick(driver, button, action) {
+function widgetButtonOnClick(driver, button_id, action) {
+    console.log("widgetButtonOnClick() " + driver + " " + button_id + " " + action);
     var $id = '#widget-' + driver;
-    $($id).find('.fa-refresh').addClass('fa-spin');
-    var $buttonInput = $("#" + button).val();
+    var inputAreaId = '#widget-input-' + driver + "-" + button_id;
+    console.log("input area id: " + inputAreaId);
+    var buttonStatusArea = 'button-status-' + driver + "-" + button_id;
+    console.log("button-status id: " + buttonStatusArea);
+    
+    //show a spinner beside the button
+    document.getElementById(buttonStatusArea).innerHTML = "<i class='fa fa-spinner fa-spin'></i>";
+    
+    //$($id).find('.title').find('.fa-refresh').addClass('fa-spin');
+    
+    var $buttonInput = $(inputAreaId).val();
+    console.log("input area val " + $buttonInput);
+    
     var $actionCommand;
     if ($buttonInput !== null || $buttonInput !== "" || $buttonInput !== undefined) {
         $actionCommand = action.replace("$input", $buttonInput);
@@ -414,9 +438,12 @@ function widgetButtonOnClick(driver, button, action) {
                     updateWidget(driver);
                 },600
             );
+            //show that commmand was received
+            document.getElementById(buttonStatusArea).innerHTML = "<i class='fa fa-check-circle' style='color:#57ff57'></i>";
         },
         error: function() {
             console.log("command '" + $actionCommand + "' could not be sent");
+            document.getElementById(buttonStatusArea).innerHTML = "<i class='fa fa-exclamation-circle' style='color:#f84c4c'></i>";
         }
     });
     
