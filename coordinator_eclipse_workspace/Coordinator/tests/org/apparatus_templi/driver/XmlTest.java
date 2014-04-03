@@ -37,8 +37,10 @@ public class XmlTest extends Driver {
 	TextArea sensDesc = new TextArea("sensor description",
 			"Temperature data is provided via a DHT11 "
 					+ "sensor.  Readings are only accurate to +/- 1C.");
-	Pre sensLink = new Pre("sensor link", "<p>More information on the sensor can be found at the "
-			+ "<a href='http://www.adafruit.com/products/386' >AdaFruit</a> website.");
+	Pre sensLink = new Pre(
+			"sensor link",
+			"<p>More information on the sensor can be found at the "
+					+ "<a href='http://www.adafruit.com/products/386' title='Check out the Adafruit shop for more cool stuff' >AdaFruit</a> website.");
 
 	public XmlTest() {
 		this.name = "XmlTest";
@@ -76,6 +78,9 @@ public class XmlTest extends Driver {
 		fullXml.addElement(pre1);
 		fullXml.addElement(b64Pre);
 		fullXml.addElement(longPre);
+		// add an embedded infobox
+		fullXml.addElement(new Pre("infobox",
+				"<div class='info-box'><span class='title'>foo</span><span class='content'>bar</span></div>"));
 
 	}
 

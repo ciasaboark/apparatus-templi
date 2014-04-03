@@ -1,3 +1,5 @@
+/*jslint browser:true */
+/*global $ */
 var refreshIntervals = {};
 var firstRefresh = {};
 var widgetCache = {};
@@ -5,8 +7,22 @@ var widgetsToRestore = [];
 var inFullScreenMode = false;
 
 
+$(window).load(function() {
+    //preload the background image
+    preload([
+        '/resource?file=images/stardust.png'
+    ]);
+    getRunningDrivers();
+    updateLog();
+    formSubmitHandler();
+    slideDownSettingsButtons();
+    setInterval(getRunningDrivers, 30000);
+    setInterval(updateLog, 5000);
+    renderWidgets();
+});
+
 function preload(arrayOfImages) {
-    $(arrayOfImages).each(function(){
+    $(arrayOfImages).each(function () {
         $('<img/>')[0].src = this;
         // Alternatively you could use:
         // (new Image()).src = this;
@@ -17,8 +33,8 @@ function preload(arrayOfImages) {
  * Ajax request to update the running driver list
  */
 function getRunningDrivers() {
-    if (document.getElementById('driver_names') != null) {
-        console.log("requesting dr  iver list");
+    if (document.getElementById('driver_names') !== null) {
+        console.log("requesting driver list");
         document.getElementById("driver_refresh_button").onclick = "";
         document.getElementById("drivers_refresh_spinner").style.visibility = "visible";
         document.getElementById("driver_names").style.color = "#ccc";
@@ -36,11 +52,11 @@ function getRunningDrivers() {
                     var $name = $module.attr('name');
                     console.log("found driver " + $name);
                     $driverList += "<li><a href='widget.xml?driver=" + $name + "'>" + $name + "</a></li>";
-                })
+                });
                 document.getElementById("driver_names").style.textAlign = "left";
                 document.getElementById("driver_names").innerHTML = $driverList;
                 document.getElementById("drivers_refresh_spinner").style.visibility = "hidden";
-                document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
+                document.getElementById("driver_refresh_button").onclick = function onclick() {getRunningDrivers();};
             },
             error: function(xhr, status, error) {
                 if (xhr.status != 404) {
@@ -48,13 +64,13 @@ function getRunningDrivers() {
                     document.getElementById("driver_names").innerHTML = "";
                     document.getElementById("drivers_refresh_spinner").classList = "";
                     document.getElementById("drivers_refresh_spinner").classList = "fa fa-warning fa-2x";
-                    document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
+                    document.getElementById("driver_refresh_button").onclick = function onclick() {getRunningDrivers();};
                 } 
                 else {
                     document.getElementById("driver_names").innerHTML = "";
                     document.getElementById("drivers_refresh_spinner").classList = "";
                     document.getElementById("drivers_refresh_spinner").classList = "fa fa-warning fa-2x";
-                    document.getElementById("driver_refresh_button").onclick = function onclick(event) {getRunningDrivers()};
+                    document.getElementById("driver_refresh_button").onclick = function onclick() {getRunningDrivers();};
                 }
                 console.log(error);
             }
@@ -63,34 +79,25 @@ function getRunningDrivers() {
 }
 
 $("#driver_refresh_button").click(function() {
-  $( "#driver_names" ).fadeOut( "slow", function() {
-    // Animation complete.
-  });
+    $( "#driver_names" ).fadeOut( "slow", function() {
+        // Animation complete.
+    });
 });
     
+/*jshint unused: true */
+/*exported showCommandBox */
 function showCommandBox() {
     $("#send_command").slideToggle("slow");
 }
 
-$(window).load(function() {
-    //preload the background image
-    preload([
-        '/resource?file=images/stardust.png'
-    ]);
-    getRunningDrivers();
-    updateLog();
-    formSubmitHandler();
-    slideDownSettingsButtons();
-    setInterval(getRunningDrivers, 30000);
-    setInterval(updateLog, 5000);
-    renderWidgets();
-});
 
+/*jshint unused: true */
+/*exported updateConfigFile */
 function updateConfigFile() {
     var $newConfig = document.getElementById('f_config_file').value;
     
-    if ($newConfig == "coordinator.conf" || $newConfig == "") {
-        if ($newConfig == "") {
+    if ($newConfig == "coordinator.conf" || $newConfig === "") {
+        if ($newConfig === "") {
             $newConfig = "<empty>";
         }
         document.getElementById('btn_conf_file').innerHTML = $newConfig;
@@ -100,13 +107,13 @@ function updateConfigFile() {
     } else {
         document.getElementById('btn_conf_file').innerHTML = $newConfig;
         console.log("new config file name not default config");
-        document.getElementById('form_submit').onclick = function onclick(event) {document.getElementById('prefs').submit()};
+        document.getElementById('form_submit').onclick = function onclick() {document.getElementById('prefs').submit();};
         document.getElementById('form_submit').classList.remove("disabled");
     }
 }
 
 function updateLog() {
-    if (document.getElementById('log') != null) {
+    if (document.getElementById('log') !== null) {
         console.log("updating log");
         document.getElementById("log_refresh_spinner").style.visibility = "visible";
         document.getElementById("log_refresh_button").onclick = "";
@@ -122,12 +129,12 @@ function updateLog() {
                 $logDiv.innerHTML = txt;
                 $logDiv.scrollTop = $logDiv.scrollHeight;
                 document.getElementById("log_refresh_spinner").style.visibility = "hidden";
-                document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog();};
+                document.getElementById("log_refresh_button").onclick = function onclick() {updateLog();};
             },
             error: function(xhr, status, error) {
                 document.getElementById("log_refresh_spinner").style.visibility = "hidden";
                 $logDiv.innerHTML = "Error getting log";
-                document.getElementById("log_refresh_button").onclick = function onclick(event) {updateLog();};
+                document.getElementById("log_refresh_button").onclick = function onclick() {updateLog();};
                 console.log(error);
             }
         });
@@ -146,10 +153,9 @@ function renderWidgets() {
                 clearInterval(refreshIntervals[$key]);
                 delete refreshIntervals[$key];
             }
+			
+			document.getElementById('widgets_box').innerHTML = "";
 
-            var $widgetsHtml = "";
-
-            var $widgets_div_html = "";
             $.ajax({
                 type: "GET",
                 url: "/drivers.xml",
@@ -158,8 +164,6 @@ function renderWidgets() {
                 timeout: 10000,
                 contentType: "application/xml; charset=\"utf-8\"",
                 success: function(xml) {
-                    var $widgets_div = document.getElementById('widgets_box').innerHTML = "";
-                    var $driverList = "";
                     var $numDrivers = $(xml).find('Module').length;
                     var $step = 100 / $numDrivers;
                     var $progress = 0;
@@ -349,7 +353,7 @@ function renderControllerElement(name, status) {
 }
     
 function renderButtonElement(driver, title, action, input, inputval, icon) {
-    title_id = title.split(' ').join('_');
+    var title_id = title.split(' ').join('_');
     console.log("renderButtonElement()" + "driver '" + driver + "' title '" +  title + "' action '" +  action + "' input '" + input + "' inputval '" +  inputval + "' icon '" +  icon + "'");
     
     if (inputval === null || inputval === undefined) {
@@ -363,7 +367,7 @@ function renderButtonElement(driver, title, action, input, inputval, icon) {
     var $buttonID =  "widget-input-" + driver + "-" + title_id;
     $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class=' btn btn-default'>";
     if (icon !== "") {
-        $markup += "<i class='icon " + icon + "'></i>";
+        $markup += "<i class='icon " + icon + "'>&nbsp;&nbsp;</i>";
     }
     $markup += title + "</span></a>";
     if (input !== null && input !== "none") {
@@ -403,9 +407,11 @@ function slideDownSettingsButtons() {
     }
 }
 
+/*jshint unused: true */
+/*exported widgetButtonOnClick */
 function widgetButtonOnClick(driver, button_id, action) {
     console.log("widgetButtonOnClick() " + driver + " " + button_id + " " + action);
-    var $id = '#widget-' + driver;
+//    var $id = '#widget-' + driver;
     var inputAreaId = '#widget-input-' + driver + "-" + button_id;
     console.log("input area id: " + inputAreaId);
     var buttonStatusArea = 'button-status-' + driver + "-" + button_id;
@@ -460,6 +466,8 @@ function formSubmitHandler() {
     }
 }
 
+/*jshint unused: true */
+/*exported expandWidget */
 function expandWidget(driver) {
     inFullScreenMode = true;
     //clear any widgets ids to restore
@@ -470,7 +478,7 @@ function expandWidget(driver) {
         if (this.id !== "widget-" + driver) {
             var $id = this.id;
             widgetsToRestore.push($id);
-            var $widget = $($id).find('.widget');
+//            var $widget = $($id).find('.widget');
             $(this).removeClass().addClass('animated fadeOutUpBig');
             window.setTimeout(
                 function() {
@@ -507,7 +515,7 @@ function expandWidget(driver) {
             $("#widget-" + driver).find('.info-box').addClass('fullscreenWidget');
             $("#widget-" + driver).find('.info-box').removeClass('info-box');
             $("#widget-" + driver).find('.title').hide();
-            $("#widget-" + driver).find('.fullscreenWidget').addClass('animated slideInDown');
+            $("#widget-" + driver).find('.fullscreenWidget').addClass('animated bounceIn');
             $("#widget-" + driver).find('.content').removeClass('grayscale');
             $("#widget-" + driver).find(".content").html("");
             $("#widget-" + driver).find('.expand-btn').find('i').removeClass('fa-expand');
@@ -519,8 +527,8 @@ function expandWidget(driver) {
             window.setTimeout(
                 function() {
                     $("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
-                    $("#widget-" + driver).find('.expand-btn').find("a").attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
-                    $("#widget-" + driver).find('.refresh-btn').find("a").attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
+                    $("#widget-" + driver).find('.expand-btn').attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
+                    $("#widget-" + driver).find('.refresh-btn').attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
                     $("#widget-" + driver).find('.title').addClass('animated fadeInDownBig');
                     $("#widget-" + driver).find('.title').show();
                     
@@ -546,7 +554,7 @@ function expandWidget(driver) {
                                     $refreshInterval = 60;
                                 }
 
-                                widgetHtml = "";
+                                var widgetHtml = "";
                                 $(this).children().each(function() {
                                     var $elementType = this.nodeName;
                                     if ($elementType == "sensor") {
@@ -585,6 +593,8 @@ function expandWidget(driver) {
     );
 }
 
+/*jshint unused: true */
+/*exported collapseFullScreenWidget */
 function collapseFullScreenWidget(driver) {
     console.log("collapseFullscreenWidget()" + driver);
     var $id = $("#widget-" + driver);
@@ -610,6 +620,8 @@ function collapseFullScreenWidget(driver) {
     
 }
 
+/*jshint unused: true */
+/*exported refreshFullScreenWidget */
 function refreshFullScreenWidget(driver) {
     console.log("refreshFullScreenWidget() unimlemented");
 }

@@ -87,7 +87,8 @@ public class TempMonitor extends Driver implements EventGenerator {
 		fullPageXml.addElement(new TextArea("refresh descr",
 				"How often the temperature should be checked (in minutes)"));
 		fullPageXml.addElement(new Button("Set Refresh Rate").setAction("rr$input")
-				.setInputType(InputType.NUM).setInputVal(String.valueOf(refRate)));
+				.setInputType(InputType.NUM).setInputVal(String.valueOf(refRate))
+				.setIcon("fa fa-clock-o"));
 		// spacer
 		fullPageXml.addElement(new Pre("spacer", "&nbsp;"));
 
@@ -95,7 +96,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 		fullPageXml.addElement(new TextArea("loc descr",
 				"What area of the house is the reading coming from"));
 		fullPageXml.addElement(new Button("Set Location").setAction("name$input")
-				.setInputType(InputType.TEXT).setInputVal(loc));
+				.setInputType(InputType.TEXT).setInputVal(loc).setIcon("fa fa-location-arrow"));
 
 	}
 

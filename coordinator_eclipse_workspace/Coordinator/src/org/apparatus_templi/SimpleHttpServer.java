@@ -811,7 +811,7 @@ public class SimpleHttpServer implements Runnable {
 					if (key.equals(Prefs.Keys.serialPort) && value == null) {
 						value = "";
 					}
-					html.append("<div class=\"pref_input\"><span class=\"pref_key \" title='test'>"
+					html.append("<div class=\"pref_input\"><span class=\"pref_key \">"
 							+ "<i class=\"fa fa-question-circle\" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
