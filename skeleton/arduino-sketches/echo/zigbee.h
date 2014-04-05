@@ -8,7 +8,12 @@
 #define COORDINATOR_ADDRESS 0x00000000
 #define XBEE_PIN 12
 
-payload_t* assemblePayload(message_t message);
-void sendMessage(message_t *message);
+class Zigbee {
+	private:
+		Xbee xbee;
+	
+	public:
+		sendCommand(Message message);
+};
 
 #endif
