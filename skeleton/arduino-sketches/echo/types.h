@@ -10,18 +10,12 @@
 typedef enum {BINARY, TEXT} MESSAGE_FORMAT;
 
 typedef struct {
-	uint8_t start_byte;
-	uint8_t  options;
-	uint8_t  data_length;
-	uint16_t   fragment_number;
-	uint8_t *destinaion;
-	uint8_t  *payload;
+	uint8_t  start_byte;	//0x0D signature byte for the message
+	uint8_t  options;	//upper bit is transmission type (e.g text = 1. binary = 1). 
+	uint8_t  data_length;	
+	uint16_t fragment_number;
+	char	 destination[10] = {NULL};
+	uint8_t  *payload;	//command to send to the driver
 } message_t;		    //or if the xbee library will handle it by just having a pointer
 
 #endif
-
-/*
-sendBinary(uint8_t* command, int length);
-sendCommand(String command);
-sendFragment(message_t);
-*/
