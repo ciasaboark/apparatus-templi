@@ -63,6 +63,21 @@ public class Prefs {
 		DEF_PREFS.put(Keys.twtrAccessKey, "");
 		PREF_DESC.put(Keys.twtrAccessKey, "The secret key of the Twitter user that the Twitter "
 				+ "service will use");
+		DEF_PREFS.put(Keys.emailServer, "");
+		PREF_DESC.put(Keys.emailServer, "The host/server name of the email account that the Email "
+				+ "service will use");
+		DEF_PREFS.put(Keys.emailPort, "");
+		PREF_DESC.put(Keys.emailPort, "The port number of the email account that the Email "
+				+ "service will use");
+		DEF_PREFS.put(Keys.emailUsername, "");
+		PREF_DESC.put(Keys.emailUsername, "The username of the email account that the Email "
+				+ "service will use");
+		DEF_PREFS.put(Keys.emailAddress, "");
+		PREF_DESC.put(Keys.emailAddress, "The address of the email account that the Email "
+				+ "service will use");
+		DEF_PREFS.put(Keys.emailPassword, "");
+		PREF_DESC.put(Keys.emailPassword, "The password name of the email account that the Email "
+				+ "service will use");
 		DEF_PREFS.put(Keys.logFile, "coordinator.log");
 		PREF_DESC.put(Keys.logFile, "The log file that all debugging messages, warnings, errors, "
 				+ "and terminal failures will be written to.");
@@ -158,6 +173,32 @@ public class Prefs {
 					props.getProperty(Keys.twtrAccessKey, DEF_PREFS.get(Keys.twtrAccessKey)));
 			Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
 					+ getPreference(Keys.twtrAccessKey) + "'");
+			
+			preferences.put(Keys.emailServer,
+					props.getProperty(Keys.emailServer, DEF_PREFS.get(Keys.emailServer)));
+			Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
+					+ getPreference(Keys.emailServer) + "'");
+			
+			preferences.put(Keys.emailPort,
+					props.getProperty(Keys.emailPort, DEF_PREFS.get(Keys.emailPort)));
+			Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
+					+ getPreference(Keys.emailPort) + "'");
+			
+			preferences.put(Keys.emailUsername,
+					props.getProperty(Keys.emailUsername, DEF_PREFS.get(Keys.emailUsername)));
+			Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
+					+ getPreference(Keys.emailUsername) + "'");
+			
+			preferences.put(Keys.emailAddress,
+					props.getProperty(Keys.emailAddress, DEF_PREFS.get(Keys.emailAddress)));
+			Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
+					+ getPreference(Keys.emailAddress) + "'");
+			
+			preferences.put(Keys.emailPassword,
+					props.getProperty(Keys.emailPassword, DEF_PREFS.get(Keys.emailPassword)));
+			Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
+					+ getPreference(Keys.emailPassword) + "'");
+			
 		} catch (IOException | NullPointerException e) {
 			Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 
@@ -278,6 +319,11 @@ public class Prefs {
 		public static final String serverBindLocalhost = "serverBindLocalhost";
 		public static final String twtrAccess = "twtr_access";
 		public static final String twtrAccessKey = "twtr_access_key";
+		public static final String emailServer = "email_server";
+		public static final String emailPort = "email_port";
+		public static final String emailUsername = "email_username";
+		public static final String emailAddress = "email_address";
+		public static final String emailPassword = "email_password";
 		public static final String logFile = "logFile";
 		public static final String autoIncPort = "autoIncPort";
 	}
