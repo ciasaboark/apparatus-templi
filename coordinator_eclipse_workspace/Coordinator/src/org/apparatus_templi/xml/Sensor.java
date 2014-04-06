@@ -11,6 +11,7 @@ public final class Sensor implements ElementInterface {
 	private final String name;
 	private String icon = null;
 	private String value = null;
+	private String description = "";
 
 	/**
 	 * Initialize the Sensor with the given name.
@@ -67,11 +68,22 @@ public final class Sensor implements ElementInterface {
 		if (this.icon != null) {
 			sb.append("icon=\"" + this.icon + "\" ");
 		}
+		sb.append("description='" + description + "' ");
 		sb.append(">");
 
 		sb.append("<value>" + this.value + "</value>");
 		sb.append("</sensor>");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public Sensor setDescription(String description) {
+		this.description = description;
+		return this;
 	}
 }

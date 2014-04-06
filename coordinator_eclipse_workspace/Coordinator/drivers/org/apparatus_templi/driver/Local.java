@@ -15,12 +15,12 @@ public class Local extends Driver {
 	private final Controller led1 = new Controller("0: Purple");
 	private final Controller led2 = new Controller("1: Green");
 	private final Controller led3 = new Controller("2: White");
-	private final Button toggleButton = new Button("ToggleLED");
+	private final Button toggleButton = new Button("Toggle LED");
 	private final Pre description = new Pre(
 			"desc",
 			"<h3>Stateful LED controller</h3>"
 					+ "<p>Controll an array of LED elements.  Input the number of the LED to toggle"
-					+ ", then click the \"ToggleLED\" button</p>"
+					+ ", then click the \"Toggle LED\" button</p>"
 					+ "<img src=\"http://icons.iconarchive.com/icons/double-j-design/electronics/256/LED-icon.png\" />");
 
 	public Local() {

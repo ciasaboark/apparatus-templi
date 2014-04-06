@@ -15,6 +15,7 @@ public final class Button implements ElementInterface {
 	private String inputType = null;
 	private String inputVal = null;
 	private String icon = null;
+	private String description = "";
 
 	/**
 	 * Initialize the Button with the given name
@@ -139,11 +140,22 @@ public final class Button implements ElementInterface {
 		if (this.inputVal != null) {
 			sb.append("inputVal=\"" + this.inputVal + "\" ");
 		}
+		sb.append("description='" + description + "' ");
 		if (this.icon != null) {
 			sb.append("icon=\"" + this.icon + "\" ");
 		}
 		sb.append(" />");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public Button setDescription(String description) {
+		this.description = description;
+		return this;
 	}
 }

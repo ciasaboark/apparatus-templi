@@ -9,6 +9,7 @@ package org.apparatus_templi.xml;
 public final class Pre implements ElementInterface {
 	private String name;
 	private String html;
+	private String description = "";
 
 	// public Pre(String name) {
 	// this(name, null);
@@ -41,9 +42,20 @@ public final class Pre implements ElementInterface {
 	@Override
 	public String getXml() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<pre name=\"" + name + "\">");
+		sb.append("<pre name=\"" + name + "\" ");
+		sb.append("description='" + description + "' >");
 		sb.append("<![CDATA[" + html + "]]>");
 		sb.append("</pre>");
 		return sb.toString();
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public Pre setDescription(String description) {
+		this.description = description;
+		return this;
 	}
 }

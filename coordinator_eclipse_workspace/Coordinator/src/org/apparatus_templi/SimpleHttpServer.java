@@ -753,7 +753,7 @@ public class SimpleHttpServer implements Runnable {
 						+ "<ul class=\"dropdown-menu\">"
 						+ "<li><a href=\"/restart_module?module=drivers\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
 						+ "<li><a href=\"/restart_module?module=web\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
-						+ "<li><a href=\"/restart_module?module=foobar\"><i class=\"fa fa-refresh fa-fw\"></i> Anything else?</a></li>"
+						+ "<li><a href=\"/restart_module?module=serial\"><i class=\"fa fa-refresh fa-fw\"></i> Serial Connection</a></li>"
 						+ "</ul> </span>");
 
 				// Save preferences button

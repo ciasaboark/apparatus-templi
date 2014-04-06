@@ -27,9 +27,9 @@ public class SysTray implements ActionListener {
 	private TrayIcon trayIcon;
 	private MenuItem webInterface;
 	private final AboutDialog aboutDialog = new AboutDialog();
-	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("waiting20x20.png");
-	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icon20x20.png");
-	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("term20x20.png");
+	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("waiting32x32.png");
+	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icon32x32.png");
+	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("term32x32.png");
 
 	public SysTray() {
 		aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

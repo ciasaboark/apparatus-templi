@@ -1,9 +1,7 @@
 package org.apparatus_templi.driver;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,29 +13,30 @@ import org.apparatus_templi.event.TempChangedEvent;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.InputType;
 import org.apparatus_templi.xml.Pre;
-import org.apparatus_templi.xml.Sensor;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
 public class TempMonitor extends Driver implements EventGenerator {
 	private XmlFormatter widgetXml = new XmlFormatter(this, "Temperature Monitor");
 	private XmlFormatter fullPageXml = new XmlFormatter(this, "Temperature Monitor");
-	private final Sensor temp = new Sensor("Downstairs Temperature");
-	private final Pre intro = new Pre("description", "");
-	private final TextArea lastUpdated = new TextArea("lastUpdated", "");
+	// private final Sensor temp = new Sensor("Downstairs Temperature");
+	// private final Pre intro = new Pre("description", "");
+	// private final TextArea lastUpdated = new TextArea("lastUpdated", "");
 	private final String DB_KEY_LASTUPDATE = "last";
 	private final int DEFAULT_REFRESH_RATE = 15 * 60;
 	private final String DEFAULT_LOCATION = "";
 	private Integer refreshRate = null;
 	private String location = null;
-
-	private final Pre widgetPre = new Pre("fancy", "");
+	// private final Pre widgetPre = new Pre("fancy", "");
 	private Integer lastKnownTemp = null;
-	private final String noContact = "<div style='text-align: right;'><span style=' font-size: 100px'>"
-			+ "?"
-			+ "&deg;</span></div>"
-			+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
-			+ "could not contact module</span></div>";
+
+	// private final String noContact =
+	// "<div style='text-align: right;'><span style=' font-size: 100px'>"
+	// + "?"
+	// + "&deg;</span></div>"
+	// +
+	// "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+	// + "could not contact module</span></div>";
 
 	private void buildWidgetXml(String temp, String time) {
 		String loc = (location == null) ? DEFAULT_LOCATION : location;
@@ -82,13 +81,14 @@ public class TempMonitor extends Driver implements EventGenerator {
 		String loc = ((location == null) ? DEFAULT_LOCATION : location);
 
 		fullPageXml = new XmlFormatter(this, loc + " Temperature");
-		fullPageXml.addElement(intro);
+		fullPageXml.addElement(new TextArea("intro", loc + " Temperature"));
 		// add button to set refresh rate
 		fullPageXml.addElement(new TextArea("refresh descr",
 				"How often the temperature should be checked (in minutes)"));
 		fullPageXml.addElement(new Button("Set Refresh Rate").setAction("rr$input")
 				.setInputType(InputType.NUM).setInputVal(String.valueOf(refRate))
-				.setIcon("fa fa-clock-o"));
+				.setIcon("fa fa-clock-o")
+				.setDescription("How often the temperature should be checked (in minutes)"));
 		// spacer
 		fullPageXml.addElement(new Pre("spacer", "&nbsp;"));
 
@@ -118,18 +118,26 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 	private void updateTemp(long time, int temp) {
 		Log.d(this.name, "updateTemp()");
+		// if the temperature changed then will generate an event
+		if (lastKnownTemp != null && lastKnownTemp != temp) {
+			TempChangedEvent e = new TempChangedEvent(System.currentTimeMillis(), this,
+					lastKnownTemp, temp);
+			Coordinator.receiveEvent(this, e);
+		}
+
 		// store the values in memory and to the widget
 		this.lastKnownTemp = temp;
 
-		this.lastUpdated.setText("Last update: "
-				+ DateFormat.getDateTimeInstance().format(new Date(time)));
-		this.temp.setValue(String.valueOf(temp));
-		this.widgetPre
-				.setHtml("<div style='text-align: right;'><span style=' font-size: 100px'>"
-						+ this.temp.getValue()
-						+ "&deg;</span></div>"
-						+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
-						+ lastUpdated.getText() + "</span></div>");
+		// this.lastUpdated.setText("Last update: "
+		// + DateFormat.getDateTimeInstance().format(new Date(time)));
+		// this.temp.setValue(String.valueOf(temp));
+		// this.widgetPre
+		// .setHtml("<div style='text-align: right;'><span style=' font-size: 100px'>"
+		// + this.temp.getValue()
+		// + "&deg;</span></div>"
+		// +
+		// "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
+		// + lastUpdated.getText() + "</span></div>");
 
 		// write the new temp data to the database
 		Coordinator.storeTextData(this.name, String.valueOf(time), String.valueOf(temp));
@@ -146,12 +154,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 			if (response.startsWith("t")) {
 				try {
 					temp = Integer.parseInt(response.substring(1));
-					// if the temperature changed then will generate an event
-					if (lastKnownTemp != null && lastKnownTemp != temp) {
-						TempChangedEvent e = new TempChangedEvent(System.currentTimeMillis(), this,
-								lastKnownTemp, temp);
-						Coordinator.receiveEvent(this, e);
-					}
+
 					updateTemp(System.currentTimeMillis(), temp);
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received a malformed temperature reading, discarding");
@@ -169,6 +172,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 		// try to get an updated temperature reading
 		Integer curTemp = readRemoteTemp();
 		if (curTemp != null) {
+			updateTemp(System.currentTimeMillis(), curTemp);
 			buildWidgetXml(String.valueOf(curTemp), String.valueOf(System.currentTimeMillis()));
 		} else {
 			Map<String, String> lastTemp = getLastReading();
@@ -176,6 +180,12 @@ public class TempMonitor extends Driver implements EventGenerator {
 				// no current reading, and no historical reading
 				buildWidgetXml(null, null);
 			} else {
+				try {
+					lastKnownTemp = Integer.valueOf(lastTemp.get("temp"));
+				} catch (NumberFormatException e) {
+					// just leave the current temp as null (or whatever it currently is)
+				}
+
 				// display the temperature
 				buildWidgetXml(lastTemp.get("temp"), lastTemp.get("time"));
 			}
@@ -184,9 +194,9 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 	public TempMonitor() {
 		this.name = "TempMonitr";
-		intro.setHtml("<p>Downstairs temperature reading</p>");
-		temp.setValue("?");
-		lastUpdated.setText("unknown");
+		// intro.setHtml("<p>Downstairs temperature reading</p>");
+		// temp.setValue("?");
+		// lastUpdated.setText("unknown");
 
 		location = Coordinator.readTextData(this.name, "location");
 		String r = Coordinator.readTextData(this.name, "refresh");
@@ -244,6 +254,9 @@ public class TempMonitor extends Driver implements EventGenerator {
 				String rate = "";
 				try {
 					Integer i = Integer.parseInt(command.substring(2)) * 60;
+					if (i <= 0) {
+						throw new NumberFormatException("negative values not allowed");
+					}
 					rate = String.valueOf(i);
 					Log.d(this.name, "received request to set new refresh rate");
 					try {
@@ -265,7 +278,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 				Coordinator.storeTextData(this.name, "location", command.substring(4));
 				buildFullPageXml();
-				getBestReading();
+				// getBestReading();
 				goodCommand = true;
 			} else {
 				Log.w(this.name, "received command in unknown format");

@@ -9,6 +9,7 @@ package org.apparatus_templi.xml;
 public final class TextArea implements ElementInterface {
 	private String text;
 	private String name;
+	private String description = "";
 
 	// public TextArea(String name) {
 	// this(name, null);
@@ -41,9 +42,20 @@ public final class TextArea implements ElementInterface {
 	@Override
 	public String getXml() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<textarea name=\"" + name + "\">");
+		sb.append("<textarea name='" + name + "' ");
+		sb.append("description='" + description + "' >");
 		sb.append(text);
 		sb.append("</textarea>");
 		return sb.toString();
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public TextArea setDescription(String description) {
+		this.description = description;
+		return this;
 	}
 }

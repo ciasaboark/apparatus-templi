@@ -11,6 +11,7 @@ public final class Controller implements ElementInterface {
 	private final String name;
 	private String icon = null;
 	private String status = null;
+	private String description = "";
 
 	/**
 	 * Initialize a new Controller element with the given name
@@ -71,11 +72,22 @@ public final class Controller implements ElementInterface {
 		if (this.icon != null) {
 			sb.append("icon=\"" + this.icon + "\" ");
 		}
+		sb.append("description='" + description + "' ");
 		sb.append(">");
 
 		sb.append("<status>" + status + "</status>");
 		sb.append("</controller>");
 
 		return sb.toString();
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	public Controller setDescription(String description) {
+		this.description = description;
+		return this;
 	}
 }

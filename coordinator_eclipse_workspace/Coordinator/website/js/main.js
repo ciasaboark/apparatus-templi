@@ -21,6 +21,10 @@ $(window).load(function() {
     renderWidgets();
 });
 
+$(document).ready(function () {
+	buildTooltips();
+});
+
 function preload(arrayOfImages) {
     $(arrayOfImages).each(function () {
         $('<img/>')[0].src = this;
@@ -260,16 +264,16 @@ function updateWidget(driverName) {
                         var $elementType = this.nodeName;
                         if ($elementType == "sensor") {
                             var $value = $(this).find('value').text();
-                            widgetHtml += renderSensorElement($(this).attr('name'), $value);
+                            widgetHtml += renderSensorElement($(this).attr('name'), $value, $(this).attr('description'));
                         } else if ($elementType == "controller") {
                             var $status = $(this).find('status').text();
-                            widgetHtml += renderControllerElement($(this).attr('name'), $status);
+                            widgetHtml += renderControllerElement($(this).attr('name'), $status, $(this).attr('description'));
                         } else if ($elementType == "button") {
-                            widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'));
+                            widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'), $(this).attr('description'));
                         } else if ($elementType == "textarea") {
-                            widgetHtml += renderTextAreaElement($(this).text());
+                            widgetHtml += renderTextAreaElement($(this).text(), $(this).attr('description'));
                         } else if ($elementType == "pre") {
-                            widgetHtml += renderPreElement($.trim( $(this).text()));
+                            widgetHtml += renderPreElement($.trim( $(this).text()), $(this).attr('description'));
                         } else {
                             console.error("unknown element type: " + $elementType);
                         }
@@ -280,8 +284,9 @@ function updateWidget(driverName) {
                         $($id).css("visibility","visible");
                         //if this was the first time the widget was refresh then do a fancy dropdown animation
                         //+ otherwise flash the background
-                        $($id).html(widgetHtml);
+                        
                         if (typeof firstRefresh[$id] == 'undefined') {
+							$($id).html(widgetHtml);
                             $($id).removeClass();
                             window.setTimeout(
                                 function(){
@@ -291,20 +296,26 @@ function updateWidget(driverName) {
                             firstRefresh[$id] = "false";
                         } else if ($prevXml !== $curXml) {
                             $($id).removeClass();
-                            $($id).find('.widget').addClass('bounce');
+							$($id).html(widgetHtml);
+                            $($id).find('.widget').find('.content').addClass('bounce-custom');
                             $($id).find('.widget').addClass('flash-border');
-                            $($id).find('.title').addClass('flash-title');
+                            $($id).find('.widget .title').addClass('flash-title');
+							
                             window.setTimeout(
                                 function(){
-                                    $($id).find('.widget').removeClass("bounce");
+									
+                                    $($id).find('.widget').find('.content').removeClass("bounce-custom");
                                     $($id).find('.widget').removeClass("flash-border");
-                                    $($id).find('.title').removeClass('flash-title');
-                                },2000
+                                    $($id).find('.widget .title').removeClass('flash-title');
+                                },1200
                             );
                         }
                     } else {
                         console.error("unable to find id widget-" + driverName);
                     }
+					
+					//rebuild tooltips
+					buildTooltips();
 
                     //set a new refresh interval
                     $intervalNum = setInterval(function() { updateWidget(driverName); }, $refreshInterval * 1000);
@@ -342,19 +353,28 @@ function updateWidget(driverName) {
     }
 }
 
-function renderSensorElement(name, value) {
-    var $markup = "<div class='sensor'><span class='name'>" + name + "</span><span class='value'>" + value + "</span></div>";
+function renderSensorElement(name, value, desc) {
+	if (desc === undefined) {
+		desc = "";
+	}
+    var $markup = "<div class='sensor'><span class='name'>" + name + "</span><span class='value' title='" + desc + "' >" + value + "</span></div>";
     return $markup;
 }
 
-function renderControllerElement(name, status) {
-    var $markup = "<div class='controller'><span class='name'>" + name + "</span><span class='status'>" + status + "</span></div>";
+function renderControllerElement(name, status, desc) {
+	if (desc === undefined) {
+		desc = "";
+	}
+    var $markup = "<div class='controller'><span class='name' title='" + desc + "' >" + name + "</span><span class='status'>" + status + "</span></div>";
     return $markup;
 }
     
-function renderButtonElement(driver, title, action, input, inputval, icon) {
+function renderButtonElement(driver, title, action, input, inputval, icon, desc) {
+//	if (desc === undefined) {
+//		desc = "";
+//	}
     var title_id = title.split(' ').join('_');
-    console.log("renderButtonElement()" + "driver '" + driver + "' title '" +  title + "' action '" +  action + "' input '" + input + "' inputval '" +  inputval + "' icon '" +  icon + "'");
+    console.log("renderButtonElement()" + "driver '" + driver + "' title '" +  title + "' action '" +  action + "' input '" + input + "' inputval '" +  inputval + "' icon '" +  icon + "' desc '" + desc + "'");
     
     if (inputval === null || inputval === undefined) {
         inputval = "";
@@ -365,7 +385,7 @@ function renderButtonElement(driver, title, action, input, inputval, icon) {
     
     var $markup = "<div class='button'><a ";
     var $buttonID =  "widget-input-" + driver + "-" + title_id;
-    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class=' btn btn-default'>";
+    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class='btn btn-default' title='" + desc + "' >";
     if (icon !== "") {
         $markup += "<i class='icon " + icon + "'>&nbsp;&nbsp;</i>";
     }
@@ -391,12 +411,18 @@ function renderButtonElement(driver, title, action, input, inputval, icon) {
     return $markup;
 }
 
-function renderTextAreaElement(content) {
-    return "<p>" + content + "</p>";
+function renderTextAreaElement(content, desc) {
+	if (desc === undefined) {
+		desc = "";
+	}
+    return "<p title='" + desc + "' >" + content + "</p>";
 }
 
-function renderPreElement(content) {
-    return content;
+function renderPreElement(content, desc) {
+	if (desc === undefined) {
+		desc = "";
+	}
+    return "<span title='" + desc + "' >" + content + "</span>";
 }
 
 function slideDownSettingsButtons() {
@@ -527,8 +553,8 @@ function expandWidget(driver) {
             window.setTimeout(
                 function() {
                     $("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
-                    $("#widget-" + driver).find('.expand-btn').attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
-                    $("#widget-" + driver).find('.refresh-btn').attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
+                    $("#widget-" + driver).find('.expand-btn').find("a").attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
+                    $("#widget-" + driver).find('.refresh-btn').find("a").attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
                     $("#widget-" + driver).find('.title').addClass('animated fadeInDownBig');
                     $("#widget-" + driver).find('.title').show();
                     
@@ -559,16 +585,16 @@ function expandWidget(driver) {
                                     var $elementType = this.nodeName;
                                     if ($elementType == "sensor") {
                                         var $value = $(this).find('value').text();
-                                        widgetHtml += renderSensorElement($(this).attr('name'), $value);
+                                        widgetHtml += renderSensorElement($(this).attr('name'), $value, $(this).attr('description'));
                                     } else if ($elementType == "controller") {
                                         var $status = $(this).find('status').text();
-                                        widgetHtml += renderControllerElement($(this).attr('name'), $status);
+                                        widgetHtml += renderControllerElement($(this).attr('name'), $status, $(this).attr('description'));
                                     } else if ($elementType == "button") {
-                                        widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'));
+                                        widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'), $(this).attr('description'));
                                     } else if ($elementType == "textarea") {
-                                        widgetHtml += renderTextAreaElement($(this).text());
+                                        widgetHtml += renderTextAreaElement($(this).text(), $(this).attr('description'));
                                     } else if ($elementType == "pre") {
-                                        widgetHtml += renderPreElement($.trim( $(this).text()));
+                                        widgetHtml += renderPreElement($.trim( $(this).text()), $(this).attr('description'));
                                     } else {
                                         console.error("unknown element type: " + $elementType);
                                     }
@@ -576,17 +602,18 @@ function expandWidget(driver) {
                                 $("#widget-" + driver).find(".content").hide();
                                 $("#widget-" + driver).find(".content").html(widgetHtml);
                                 $("#widget-" + driver).find(".content").addClass('animated fadeIn');
+								$("#widget-" + driver).find(".content").translate('latin');
                                 $("#widget-" + driver).find(".content").show();
                             });
+							
+							//rebuild tooltips
+							buildTooltips();
                         },
                         error: function(xhr, status, error) {
                             console.log(error);
                             $("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
                         }
-                    });
-                    
-                    //***********************************************************
-                    
+                    });                    
                 }, 1000
             );
         }, 1500
@@ -618,6 +645,19 @@ function collapseFullScreenWidget(driver) {
     }, 1000);
     
     
+}
+
+//convert element title attribute to tooptips 
+function buildTooltips() {
+	console.log("replacing tooltips with javascript tooltips");
+	$('[title]').qtip({
+		position: {
+			viewport: $(window)
+		},
+		style: {
+			classes: "qtip-rounded qtip-light tooltip-custom"	
+		}
+	});
 }
 
 /*jshint unused: true */

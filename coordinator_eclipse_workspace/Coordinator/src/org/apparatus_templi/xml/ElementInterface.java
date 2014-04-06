@@ -18,4 +18,6 @@ public interface ElementInterface {
 	 * wrapped into a container by an {@link XmlFormatter} instance;
 	 */
 	public String getXml();
+
+	public String getDescription();
 }

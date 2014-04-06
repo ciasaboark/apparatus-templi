@@ -541,6 +541,14 @@ public class Coordinator {
 		startDrivers();
 	}
 
+	private static void restartSerialConnection() {
+		messageCenter.stopReadingMessges();
+		messageCenter.flushMessages();
+		serialConnection.close();
+		openSerialConnection();
+		messageCenter.beginReadingMessages();
+	}
+
 	/**
 	 * Scans all classes accessible from the context class loader which belong to the given package
 	 * and subpackages.
@@ -629,15 +637,21 @@ public class Coordinator {
 			Log.d(TAG, "restarting all modules");
 			restartModule("main");
 			restartModule("web");
+			restartModule("serial");
 			break;
 		case "main":
 			// TODO this should eventually restart the serial connection and message center as well.
 			Log.d(TAG, "restarting main");
 			restartModule("drivers");
+			restartModule("serial");
 			break;
 		case "drivers":
 			Log.d(TAG, "restarting drivers");
 			restartDrivers();
+			break;
+		case "serial":
+			Log.d(TAG, "restarting serial connection");
+			restartSerialConnection();
 			break;
 		case "web":
 			Log.d(TAG, "restarting web server");

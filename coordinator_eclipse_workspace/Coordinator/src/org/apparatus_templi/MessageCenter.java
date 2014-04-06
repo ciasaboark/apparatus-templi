@@ -224,14 +224,14 @@ public class MessageCenter implements Runnable {
 			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
 			byte[] fragmentNum = { fragmentNumberBytes[2], fragmentNumberBytes[3] };
 			byte[] destinationBytes = new byte[10];
-	
+
 			try {
 				destinationBytes = moduleName.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				Log.d(TAG, "unable to translate destination '" + moduleName + "' into UTF-8 byte[]");
 				sendMessage = false;
 			}
-	
+
 			// build the outgoing message byte[]
 			if (sendMessage) {
 				messageSent = true;
@@ -249,24 +249,37 @@ public class MessageCenter implements Runnable {
 				for (int i = 5, j = 0; j < destinationBytes.length; i++, j++) {
 					message[i] = destinationBytes[j];
 				}
-	
+
 				// copy the data bytes
 				for (int i = 15, j = 0; j < data.length; i++, j++) {
 					message[i] = data[j];
 				}
-	
+
 				messageSent = serialConnection.writeData(message);
 			}
 		}
-	
+
 		try {
 			Thread.sleep(20);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 		return messageSent;
+	}
+
+	/**
+	 * Clears all messages and message fragments
+	 */
+	void flushMessages() {
+		if (readMessages) {
+			Log.e(TAG, "can not flush message queue while still reading from serial line");
+		} else {
+			messageQueue.clear();
+			incomingBytes.clear();
+			fragmentedMessages.clear();
+		}
 	}
 
 	/**
@@ -373,6 +386,13 @@ public class MessageCenter implements Runnable {
 	 */
 	void beginReadingMessages() {
 		readMessages = true;
+	}
+
+	/**
+	 * Notify the MessageCenter that it should stop reading messages on its serial connection.
+	 */
+	void stopReadingMessges() {
+		readMessages = false;
 	}
 
 	/**
