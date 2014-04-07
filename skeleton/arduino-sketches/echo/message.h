@@ -13,7 +13,7 @@ class Message {
 	public:
 		Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, String destination_address, uint8_t* payld);
 		~Message();
-		Message(const obj);
+		Message(const Message obj);
 
 		void setSignatureByte(uint8_t sigByte);
 		uint8_t getSignatureByte();

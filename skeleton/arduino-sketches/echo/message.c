@@ -8,7 +8,7 @@ Message::~Message() {
 	delete payload; 
 }
 
-Message(const obj) {
+Message(const Message obj) {
 
 }
 
