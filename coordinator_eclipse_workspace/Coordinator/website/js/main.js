@@ -151,7 +151,7 @@ function renderWidgets() {
         console.log("renderWidgets()");
         //get a list of all drivers the iterate through the list rendering the widgets
         if (document.getElementById('widgets_box') !== null) {
-            //clear any previous intervals (including widget updates
+            //clear any previous intervals (including widget updates)
             for (var $key in refreshIntervals) {
                 console.log("refresh intervals: " + refreshIntervals[$key]);
                 clearInterval(refreshIntervals[$key]);
@@ -385,7 +385,7 @@ function renderButtonElement(driver, title, action, input, inputval, icon, desc)
     
     var $markup = "<div class='button'><a ";
     var $buttonID =  "widget-input-" + driver + "-" + title_id;
-    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class='btn btn-default' title='" + desc + "' >";
+    $markup += "onclick=\"widgetButtonOnClick('" + driver + "','" + title_id + "','" + action + "')\"><span class='btn btn-default'" + ((input === 'none') ? ("title='" + desc + "'") : ("")) + ">";
     if (icon !== "") {
         $markup += "<i class='icon " + icon + "'>&nbsp;&nbsp;</i>";
     }
@@ -393,13 +393,13 @@ function renderButtonElement(driver, title, action, input, inputval, icon, desc)
     if (input !== null && input !== "none") {
         $markup += "<input type='";
         if (input === "text") {
-            $markup += "text";
+            $markup += "text' title='" + desc + "' ";
         } else if (input == "numeric") {
-            $markup += "number";
+            $markup += "number' title='" + desc + "' ";
         }
-        $markup += "' ";
+//        $markup += "' ";
         $markup += "id='" + $buttonID + "' ";
-        console.log("button value '" + inputval + "'");
+        console.log("button value '" + inputval + "' ");
         $markup += "value='" + inputval + "' ";
         $markup += "></input>";
     }
@@ -634,6 +634,7 @@ function collapseFullScreenWidget(driver) {
         $("#widgets_box").empty();
         $("#widgets_box").hide();
         inFullScreenMode = false;
+		widgetCache = {};
         renderWidgets();
         window.setTimeout(function() {
             $("#widgets_box").addClass('animated fadeIn');
@@ -658,10 +659,86 @@ function buildTooltips() {
 			classes: "qtip-rounded qtip-light tooltip-custom"	
 		}
 	});
+	$('input[title]').qtip({
+        position: {
+			viewport: $(window)
+		},
+		style: {
+			classes: "qtip-rounded qtip-light tooltip-custom"	
+		},
+        show: {
+            event: 'focus'
+        },
+        hide: {
+			event: 'blur'
+        }
+    });
+	
 }
 
 /*jshint unused: true */
 /*exported refreshFullScreenWidget */
 function refreshFullScreenWidget(driver) {
-    console.log("refreshFullScreenWidget() unimlemented");
+	if (inFullScreenMode) {
+		$("#widget-" + driver).find(".title").find(".fa-refresh").addClass("fa-spin");
+		$("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
+		$.ajax({
+			type: "GET",
+			url: "/full.xml?driver=" + driver,
+			dataType: "xml",
+			async: true,
+			timeout: 15000,
+			contentType: "application/xml; charset=\"utf-8\"",
+			success: function (xml) {
+				//var to hold html
+				$(xml).find('module').each(function() {
+					var $module = $(this);
+					var $driver = $module.attr('driver');
+					var $refreshInterval = $module.attr('refresh');
+					console.log($driver + " refresh: " + $refreshInterval);
+					if ($refreshInterval === undefined) {
+						$refreshInterval = 60;
+					} else if ($refreshInterval < 3) {
+						$refreshInterval = 3;
+					} else if ($refreshInterval > 60) {
+						$refreshInterval = 60;
+					}
+
+					var widgetHtml = "";
+					$(this).children().each(function() {
+						var $elementType = this.nodeName;
+						if ($elementType == "sensor") {
+							var $value = $(this).find('value').text();
+							widgetHtml += renderSensorElement($(this).attr('name'), $value, $(this).attr('description'));
+						} else if ($elementType == "controller") {
+							var $status = $(this).find('status').text();
+							widgetHtml += renderControllerElement($(this).attr('name'), $status, $(this).attr('description'));
+						} else if ($elementType == "button") {
+							widgetHtml += renderButtonElement($driver, $(this).attr('title'), $(this).attr('action'),$(this).attr('input'), $(this).attr('inputVal'), $(this).attr('icon'), $(this).attr('description'));
+						} else if ($elementType == "textarea") {
+							widgetHtml += renderTextAreaElement($(this).text(), $(this).attr('description'));
+						} else if ($elementType == "pre") {
+							widgetHtml += renderPreElement($.trim( $(this).text()), $(this).attr('description'));
+						} else {
+							console.error("unknown element type: " + $elementType);
+						}
+					});
+					$("#widget-" + driver).find(".content").hide();
+					$("#widget-" + driver).find(".content").html(widgetHtml);
+					$("#widget-" + driver).find(".content").addClass('animated fadeIn');
+					$("#widget-" + driver).find(".content").translate('latin');
+					$("#widget-" + driver).find(".content").show();
+				});
+
+				//rebuild tooltips
+				buildTooltips();
+				$("#widget-" + driver).find(".title").find(".fa-refresh").removeClass("fa-spin");
+			},
+			error: function(xhr, status, error) {
+				console.log(error);
+				$("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
+				$("#widget-" + driver).find(".title").find(".fa-refresh").removeClass("fa-spin");
+			}
+		}); 
+	}
 }

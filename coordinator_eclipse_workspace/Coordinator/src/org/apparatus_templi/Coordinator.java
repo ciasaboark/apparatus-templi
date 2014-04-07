@@ -1053,17 +1053,16 @@ public class Coordinator {
 			Log.d(TAG,
 					"incoming event '" + e.getClass().getSimpleName() + "' from driver '"
 							+ d.getName() + "'");
+			ArrayList<EventWatcher> list = eventWatchers.get(e.getClass());
+			if (list != null) {
+				for (EventWatcher dvr : list) {
+					Log.d(TAG, "notifying driver " + ((Driver) dvr).getName() + " of event "
+							+ e.getClass().getSimpleName() + ".");
+					dvr.receiveEvent(e);
+				}
+			}
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
-		}
-
-		ArrayList<EventWatcher> list = eventWatchers.get(e.getClass());
-		if (list != null) {
-			for (EventWatcher dvr : list) {
-				Log.d(TAG, "notifying driver " + ((Driver) dvr).getName() + " of event "
-						+ e.getClass().getSimpleName() + ".");
-				dvr.receiveEvent(e);
-			}
 		}
 	}
 

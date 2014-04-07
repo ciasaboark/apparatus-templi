@@ -1,13 +1,15 @@
 package org.apparatus_templi.driver;
 
+import java.util.ArrayList;
+
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
-import org.apparatus_templi.EventWatcher;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.service.EmailService;
 
-public final class EmailTester extends Driver implements EventWatcher {
+public final class EmailTester extends Driver implements org.apparatus_templi.EventGenerator,
+		org.apparatus_templi.EventWatcher {
 	EmailService emailService = EmailService.getInstance();
 
 	public EmailTester() {
@@ -17,7 +19,7 @@ public final class EmailTester extends Driver implements EventWatcher {
 	@Override
 	public void run() {
 		Coordinator.registerEventWatch(this, new MotionEvent());
-		
+
 		while (isRunning) {
 			MotionEvent e = new MotionEvent(System.currentTimeMillis(), this);
 			Coordinator.receiveEvent(this, e);
@@ -52,8 +54,8 @@ public final class EmailTester extends Driver implements EventWatcher {
 	@Override
 	public void receiveEvent(Event e) {
 		if (e instanceof MotionEvent) {
-			boolean emailSent = emailService.sendEmailMessage("Notification from Driver: " + this.name,"Motion Event: "
-					+ ((MotionEvent) e).getTimestamp());
+			boolean emailSent = emailService.sendEmailMessage("Notification from Driver: "
+					+ this.name, "Motion Event: " + ((MotionEvent) e).getTimestamp());
 			if (emailSent) {
 				Log.d(this.name, "email sent");
 			} else {
@@ -61,6 +63,11 @@ public final class EmailTester extends Driver implements EventWatcher {
 			}
 		}
 
+	}
+
+	@Override
+	public ArrayList<Event> getEventTypes() {
+		return null;
 	}
 
 }

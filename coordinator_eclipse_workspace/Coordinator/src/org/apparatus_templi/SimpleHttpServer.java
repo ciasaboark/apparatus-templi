@@ -746,14 +746,14 @@ public class SimpleHttpServer implements Runnable {
 				// Buttons
 				html.append("<div id='settings-buttons'>");
 				// TODO what modules can be restarted?
-				html.append("<span id=\"restart_all_button\" class=\"btn-group closed\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server'>"
-						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\"><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
+				html.append("<span id=\"restart_all_button\" class=\"btn-group closed\" >"
+						+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server and the serial connection.'><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
 						+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
 						+ "<span class=\"fa fa-caret-down\"></span></a>"
 						+ "<ul class=\"dropdown-menu\">"
-						+ "<li><a href=\"/restart_module?module=drivers\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
-						+ "<li><a href=\"/restart_module?module=web\"><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
-						+ "<li><a href=\"/restart_module?module=serial\"><i class=\"fa fa-refresh fa-fw\"></i> Serial Connection</a></li>"
+						+ "<li><a href=\"/restart_module?module=drivers\" title='Ask all drivers to terminate, then re-initialize all drivers.  Only drivers specified in the driver list will be started.'><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
+						+ "<li><a href=\"/restart_module?module=web\" title='Restart the web server. This will bind the web server to a new address and port number if those settings have been changed.'><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
+						+ "<li><a href=\"/restart_module?module=serial\" title='Re-initialize the serial connection, discarding all partial messages'><i class=\"fa fa-refresh fa-fw\"></i> Serial Connection</a></li>"
 						+ "</ul> </span>");
 
 				// Save preferences button
@@ -789,6 +789,7 @@ public class SimpleHttpServer implements Runnable {
 				// Preferences for the main section
 				html.append("<div id='prefs_section_main' class='prefs_section info-box'><div class='title'>"
 						+ "<i  class=\"fa fa-code-fork\"></i>&nbsp;Main" + "</div>");
+				html.append("<div class='content'>");
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 						+ "<i class=\"fa fa-question-circle\" "
 						+ "title=\""
@@ -822,11 +823,12 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div>");
+				html.append("</div></div>");
 
 				// Preferences for web server
 				html.append("<div id='prefs_section_webserver'  class='prefs_section info-box'><div class='title'>"
 						+ "<i class=\"fa fa-cloud\"></i>&nbsp;Web Server" + "</div>");
+				html.append("<div class='content'>");
 				for (String key : new String[] { Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost }) {
 					String value = prefs.get(key);
 					// TODO this is an ugly hack. If the user specified no port number in the config
@@ -850,11 +852,12 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div>");
+				html.append("</div></div>");
 
 				// Preferences for web frontend
 				html.append("<div id='prefs_section_frontend' class='prefs_section info-box'><div class='title'>"
 						+ "<i  class=\"fa fa-globe\"></i>&nbsp;Web Frontend" + "</div>");
+				html.append("<div class='content'>");
 				for (String key : new String[] { Prefs.Keys.webResourceFolder }) {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
@@ -867,11 +870,12 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("</div>");
+				html.append("</div></div>");
 
 				// Preferences for the Twitter service
 				html.append("<div id='prefs_section_twitter' class='prefs_section info-box'><div class='title'>"
 						+ "<i  class=\"fa fa-twitter\"></i>&nbsp;Twitter Service" + "</div>");
+				html.append("<div class='content'>");
 				for (String key : new String[] { Prefs.Keys.twtrAccess, Prefs.Keys.twtrAccessKey }) {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
@@ -884,14 +888,38 @@ public class SimpleHttpServer implements Runnable {
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
-				html.append("<p class='warning'>" + ENC_WARNING
-						+ "All passwords are stored in plaintext.");
+				html.append("</div>");
+				html.append("<div class='warning'><p class=''>" + ENC_WARNING
+						+ "All passwords are stored in plaintext.</div>");
+				html.append("</div>");
+
+				// Preferences for the email service
+				html.append("<div id='prefs_section_email' class='info-box prefs_section'><div class='title'>"
+						+ "<i  class=\"fa fa-envelope\"></i>&nbsp;Email Service" + "</div>");
+				html.append("<div class='content'>");
+				for (String key : new String[] { Prefs.Keys.emailAddress, Prefs.Keys.emailUsername,
+						Prefs.Keys.emailPassword, Prefs.Keys.emailServer, Prefs.Keys.emailPort }) {
+					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
+							+ "<i class=\"fa fa-question-circle \" "
+							+ "title=\""
+							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+									key)) + "\"></i>&nbsp;" + key + "</span><span "
+							+ "class=\"pref_value\"><input "
+							+ (usingDefaultConfig ? "disabled='disabled'" : "")
+							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ "\" /></span></div><br />\n");
+					prefs.remove(key);
+				}
+				html.append("</div>");
+				html.append("<div class='warning'><p class=''>" + ENC_WARNING
+						+ "All passwords are stored in plaintext.</div>");
 				html.append("</div>");
 
 				// Any remaining unclassified preferences
 				if (!prefs.isEmpty()) {
-					html.append("<div id='prefs_section_unknown' class='prefs_section info-box'><div class='title'>"
+					html.append("<div id='prefs_section_unknown' class='info-box prefs_section'><div class='title'>"
 							+ "<i  class=\"fa fa-question\"></i>&nbsp;Uncategorized" + "</div>");
+					html.append("<div class='content'>");
 					for (String key : prefs.keySet()) {
 						html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 								+ "<i class=\"fa fa-question-circle \" "
@@ -902,9 +930,8 @@ public class SimpleHttpServer implements Runnable {
 								+ (usingDefaultConfig ? "disabled='disabled'" : "")
 								+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
 								+ "\" /></span></div><br />\n");
-						prefs.remove(key);
 					}
-					html.append("</div>");
+					html.append("</div></div>");
 				}
 				// end settings boxes div
 				html.append("</div>");
