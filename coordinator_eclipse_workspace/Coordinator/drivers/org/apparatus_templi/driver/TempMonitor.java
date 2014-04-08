@@ -55,6 +55,28 @@ public class TempMonitor extends Driver implements EventGenerator {
 									+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
 									+ "no reading</span></div>"));
 		} else {
+			// Gradually decrease the opacity of the temperature and increase the red of the
+			// timestamp as the temperature reading ages
+
+			String opacity = "1.0";
+			String dateColor = "";
+			float ageRatio = Long.parseLong(time) / System.currentTimeMillis();
+			if (ageRatio <= 0.7) {
+				opacity = "0.7";
+				dateColor = "rgb(251, 216, 216)";
+			}
+			if (ageRatio <= 0.5) {
+				opacity = "0.5";
+				dateColor = "rgb(247, 191, 191)";
+			}
+			if (ageRatio <= 0.2) {
+				opacity = "0.3";
+				dateColor = "rgb(247, 152, 152)";
+			}
+			if (ageRatio <= 0.1) {
+				opacity = "0.2";
+				dateColor = "rgb(247, 122, 122)";
+			}
 			widgetXml.setRefresh(ref);
 			String date = "";
 			try {
@@ -64,14 +86,12 @@ public class TempMonitor extends Driver implements EventGenerator {
 			} catch (IllegalArgumentException e) {
 				date = "unknown";
 			}
-			widgetXml
-					.addElement(new Pre(
-							"status",
-							"<div style='text-align: right;'><span style=' font-size: 100px'>"
-									+ temp
-									+ "&deg;</span></div>"
-									+ "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
-									+ "Last Updated: " + date + "</span></div>"));
+			widgetXml.addElement(new Pre("status",
+					"<div style='text-align: right;'><span style='opacity: " + opacity
+							+ "; font-size: 100px'>" + temp + "&deg;</span></div>"
+							+ "<div style='text-align: center;'><span style='color: " + dateColor
+							+ ";float: right;padding-right: 50px; font-size: 15px'>"
+							+ "Last Updated: " + date + "</span></div>"));
 		}
 	}
 

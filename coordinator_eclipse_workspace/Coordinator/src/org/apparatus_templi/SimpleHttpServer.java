@@ -884,7 +884,7 @@ public class SimpleHttpServer implements Runnable {
 									key)) + "\"></i>&nbsp;" + key + "</span><span "
 							+ "class=\"pref_value\"><input "
 							+ (usingDefaultConfig ? "disabled='disabled'" : "")
-							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
+							+ " type=\"password\" name=\"" + key + "\" value=\"" + prefs.get(key)
 							+ "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}

@@ -29,7 +29,7 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 		Coordinator.registerEventWatch(this, new MotionEvent());
 
 		while (isRunning) {
-			this.sleep(30000);
+
 			boolean emailSent = emailService
 					.sendEmailMessage(recipients, "Notification from Driver: " + this.name,
 							"Time: " + System.currentTimeMillis());
@@ -38,6 +38,7 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 			} else {
 				Log.w(this.name, "email not sent");
 			}
+			this.sleep(1000 * 60 * 5);
 		}
 	}
 
@@ -46,6 +47,8 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 		if (command != null) {
 			if (command.startsWith("recip")) {
 				Log.d(this.name, "got new recipt list: " + command);
+				Coordinator.storeTextData(this.name, "recipt", command.substring(5));
+				recipients = command.substring(5);
 			}
 		}
 		return true;
@@ -60,10 +63,10 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 	@Override
 	public String getWidgetXML() {
 		XmlFormatter xml = new XmlFormatter(this, "Email Tester");
-		xml.addElement(new Button("recip").setAction("recip$input").setInputType(InputType.TEXT)
-				.setIcon("fa fa-group")
+		xml.addElement(new Button("Save Recipient List").setAction("recip$input")
+				.setInputType(InputType.TEXT).setIcon("fa fa-group")
 				.setDescription("A comma separated list of recipients to email every 30 minutes")
-				.setInputVal("foo"));
+				.setInputVal(recipients));
 		return xml.generateXml();
 	}
 
