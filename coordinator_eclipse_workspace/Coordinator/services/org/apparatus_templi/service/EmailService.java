@@ -79,12 +79,12 @@ public final class EmailService implements ServiceInterface {
 	 *            the message body of the email. This message should conform to all rules
 	 * @return true if the email was sent, false otherwise.
 	 */
-	public synchronized boolean sendEmailMessage(String subject, String message) {
+	public synchronized boolean sendEmailMessage(String recipients, String subject, String message) {
 		boolean messageSent = false;
         MimeMessage emailMessage = new MimeMessage(mailSession);
 		if (message != null) {
 			try {
-				emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(smtpAddress));
+				emailMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
 				emailMessage.setFrom( new InternetAddress(smtpAddress)); 
 				emailMessage.setSubject(subject);
 				emailMessage.setContent(message, "text/plain");

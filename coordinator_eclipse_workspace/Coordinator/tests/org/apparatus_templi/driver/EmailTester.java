@@ -2,6 +2,8 @@ package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.Log;
@@ -11,9 +13,11 @@ import org.apparatus_templi.service.EmailService;
 public final class EmailTester extends Driver implements org.apparatus_templi.EventGenerator,
 		org.apparatus_templi.EventWatcher {
 	EmailService emailService = EmailService.getInstance();
+	String recipients;
 
 	public EmailTester() {
 		this.name = "EmailTest";
+		recipients = "KimberlyLRiley@gmail.com, riley_kimberly@columbusstate.edu, snowie92@yahoo.com";
 	}
 
 	@Override
@@ -54,7 +58,7 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 	@Override
 	public void receiveEvent(Event e) {
 		if (e instanceof MotionEvent) {
-			boolean emailSent = emailService.sendEmailMessage("Notification from Driver: "
+			boolean emailSent = emailService.sendEmailMessage(recipients,"Notification from Driver: "
 					+ this.name, "Motion Event: " + ((MotionEvent) e).getTimestamp());
 			if (emailSent) {
 				Log.d(this.name, "email sent");
