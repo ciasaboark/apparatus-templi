@@ -903,11 +903,15 @@ public class SimpleHttpServer implements Runnable {
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
 							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span "
+									key))
+							+ "\"></i>&nbsp;"
+							+ key
+							+ "</span><span "
 							+ "class=\"pref_value\"><input "
 							+ (usingDefaultConfig ? "disabled='disabled'" : "")
-							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
-							+ "\" /></span></div><br />\n");
+							+ ((key == Prefs.Keys.emailPassword) ? "type = 'password' "
+									: " type=\"text\"") + " name=\"" + key + "\" value=\""
+							+ prefs.get(key) + "\" /></span></div><br />\n");
 					prefs.remove(key);
 				}
 				html.append("</div>");

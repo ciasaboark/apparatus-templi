@@ -2,13 +2,14 @@ package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
 
-import javax.mail.internet.InternetAddress;
-
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.service.EmailService;
+import org.apparatus_templi.xml.Button;
+import org.apparatus_templi.xml.InputType;
+import org.apparatus_templi.xml.XmlFormatter;
 
 public final class EmailTester extends Driver implements org.apparatus_templi.EventGenerator,
 		org.apparatus_templi.EventWatcher {
@@ -17,7 +18,10 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 	public EmailTester() {
 		this.name = "EmailTest";
-		recipients = "KimberlyLRiley@gmail.com, riley_kimberly@columbusstate.edu, snowie92@yahoo.com";
+		recipients = Coordinator.readTextData(this.name, "recipt");
+		if (recipients == null) {
+			recipients = "";
+		}
 	}
 
 	@Override
@@ -25,15 +29,25 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 		Coordinator.registerEventWatch(this, new MotionEvent());
 
 		while (isRunning) {
-			MotionEvent e = new MotionEvent(System.currentTimeMillis(), this);
-			Coordinator.receiveEvent(this, e);
 			this.sleep(30000);
+			boolean emailSent = emailService
+					.sendEmailMessage(recipients, "Notification from Driver: " + this.name,
+							"Time: " + System.currentTimeMillis());
+			if (emailSent) {
+				Log.d(this.name, "email sent");
+			} else {
+				Log.w(this.name, "email not sent");
+			}
 		}
 	}
 
 	@Override
 	public boolean receiveCommand(String command) {
-		// TODO Auto-generated method stub
+		if (command != null) {
+			if (command.startsWith("recip")) {
+				Log.d(this.name, "got new recipt list: " + command);
+			}
+		}
 		return true;
 	}
 
@@ -45,8 +59,12 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 	@Override
 	public String getWidgetXML() {
-		// TODO Auto-generated method stub
-		return null;
+		XmlFormatter xml = new XmlFormatter(this, "Email Tester");
+		xml.addElement(new Button("recip").setAction("recip$input").setInputType(InputType.TEXT)
+				.setIcon("fa fa-group")
+				.setDescription("A comma separated list of recipients to email every 30 minutes")
+				.setInputVal("foo"));
+		return xml.generateXml();
 	}
 
 	@Override
@@ -57,16 +75,6 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 	@Override
 	public void receiveEvent(Event e) {
-		if (e instanceof MotionEvent) {
-			boolean emailSent = emailService.sendEmailMessage(recipients,"Notification from Driver: "
-					+ this.name, "Motion Event: " + ((MotionEvent) e).getTimestamp());
-			if (emailSent) {
-				Log.d(this.name, "email sent");
-			} else {
-				Log.w(this.name, "email not sent");
-			}
-		}
-
 	}
 
 	@Override

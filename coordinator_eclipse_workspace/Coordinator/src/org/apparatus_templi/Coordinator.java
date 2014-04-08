@@ -53,7 +53,7 @@ public class Coordinator {
 
 	// version information
 	public static final int VERSION_NUMBER = 0;
-	public static final String RELEASE_NUMBER = "20140326";
+	public static final String RELEASE_NUMBER = "20140407";
 
 	/**
 	 * Sends the given message to the correct driver specified by {@link Message#getDestination()}.
