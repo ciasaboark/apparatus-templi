@@ -88,7 +88,7 @@ public final class EmailService implements ServiceInterface {
 						InternetAddress.parse(recipients));
 				emailMessage.setFrom(new InternetAddress(smtpAddress));
 				emailMessage.setSubject(subject);
-				emailMessage.setContent(message, "text/plain");
+				emailMessage.setContent(message, "text/html");
 
 				Transport transport = mailSession.getTransport("smtp");
 				transport.connect(smtpServer, smtpUsername, smtpPassword);

@@ -45,7 +45,7 @@ public class SysTray implements ActionListener {
 		trayIcon.setImageAutoSize(true);
 		final SystemTray tray = SystemTray.getSystemTray();
 
-		// Create a pop-up menu components
+		// Create a pop-up menu
 		MenuItem aboutItem = new MenuItem("About Apparatus Templi");
 		aboutItem.setActionCommand("about");
 		aboutItem.addActionListener(this);

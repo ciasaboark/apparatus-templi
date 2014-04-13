@@ -215,7 +215,7 @@ function renderWidgets() {
 function updateWidget(driverName) {
     if (!inFullScreenMode) {
         var $id = '#widget-' + driverName;
-        $($id).find('.fa-refresh').addClass('fa-spin');
+        $($id).find('.title').find('.fa-refresh').addClass('fa-spin');
         window.setTimeout(
             function(){
                 $($id).find('.fa-refresh').removeClass('fa-spin');
@@ -555,7 +555,8 @@ function expandWidget(driver) {
                     $("#widget-" + driver).find(".content").html("<i class=\"fa fa-spinner fa-spin fa-2x busy\"></i>");
                     $("#widget-" + driver).find('.expand-btn').find("a").attr('onClick', 'collapseFullScreenWidget(\"' + driver + '\")');
                     $("#widget-" + driver).find('.refresh-btn').find("a").attr('onClick', 'refreshFullScreenWidget(\"' + driver + '\")');
-                    $("#widget-" + driver).find('.title').addClass('animated fadeInDownBig');
+                    $("#widget-" + driver).find('.title').addClass('animated fadeInDown');
+					$("#widget-" + driver).find('.content').addClass('animated fadeInDownBig');					
                     $("#widget-" + driver).find('.title').show();
                     
                     $.ajax({
@@ -609,9 +610,16 @@ function expandWidget(driver) {
 							//rebuild tooltips
 							buildTooltips();
                         },
+						statusCode: {
+							//the server is up, but the widget did not provide any full screen widget xml
+							404: function() {
+								$("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>This driver does not provide a full screen widget.</small></div></div></div>");
+							}
+						},
                         error: function(xhr, status, error) {
+							//either the server is not up or we received an unknown error code
                             console.log(error);
-                            $("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
+							$("#widget-" + driver).find(".content").html("<div class=\"info-box\" style\"width: 80%\"><div style=\"text-align: center\"><h1>Error Loading Widget</h1><i class=\"fa fa-warning fa-2x\"></i><div><small>Please check your internet connection</small></div></div></div>");
                         }
                     });                    
                 }, 1000

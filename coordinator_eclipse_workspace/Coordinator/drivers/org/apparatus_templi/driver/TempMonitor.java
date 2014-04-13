@@ -10,6 +10,7 @@ import org.apparatus_templi.Event;
 import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.TempChangedEvent;
+import org.apparatus_templi.service.EmailService;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.InputType;
 import org.apparatus_templi.xml.Pre;
@@ -29,6 +30,11 @@ public class TempMonitor extends Driver implements EventGenerator {
 	private String location = null;
 	// private final Pre widgetPre = new Pre("fancy", "");
 	private Integer lastKnownTemp = null;
+	private Integer percentChangeRequired = null;
+	private Integer maxTemp = null;
+	private Integer minTemp = null;
+
+	private String emailList;
 
 	// private final String noContact =
 	// "<div style='text-align: right;'><span style=' font-size: 100px'>"
@@ -60,20 +66,20 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 			String opacity = "1.0";
 			String dateColor = "";
-			float ageRatio = Long.parseLong(time) / System.currentTimeMillis();
-			if (ageRatio <= 0.7) {
+			float age = System.currentTimeMillis() - Float.parseFloat(time);
+			if (age >= 1000 * 60 * 30) { // last reading was more than 30 min ago
 				opacity = "0.7";
 				dateColor = "rgb(251, 216, 216)";
 			}
-			if (ageRatio <= 0.5) {
+			if (age >= 1000 * 60 * 60 * 2) { // last reading was more than 2 hrs ago
 				opacity = "0.5";
 				dateColor = "rgb(247, 191, 191)";
 			}
-			if (ageRatio <= 0.2) {
+			if (age >= 1000 * 60 * 60 * 6) { // last reading was more than 6 hrs ago
 				opacity = "0.3";
 				dateColor = "rgb(247, 152, 152)";
 			}
-			if (ageRatio <= 0.1) {
+			if (age >= 1000 * 60 * 60 * 12) { // last reading was more than 12 hrs ago
 				opacity = "0.2";
 				dateColor = "rgb(247, 122, 122)";
 			}
@@ -110,7 +116,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 				.setIcon("fa fa-clock-o")
 				.setDescription("How often the temperature should be checked (in minutes)"));
 		// spacer
-		fullPageXml.addElement(new Pre("spacer", "&nbsp;"));
+		fullPageXml.addElement(new Pre("spacer", "<p>&nbsp;</p>"));
 
 		// add button to set location name
 		fullPageXml.addElement(new TextArea("loc descr",
@@ -118,6 +124,50 @@ public class TempMonitor extends Driver implements EventGenerator {
 		fullPageXml.addElement(new Button("Set Location").setAction("name$input")
 				.setInputType(InputType.TEXT).setInputVal(loc).setIcon("fa fa-location-arrow"));
 
+		// spacer
+		fullPageXml.addElement(new Pre("spacer", "<p>&nbsp;</p>"));
+		fullPageXml
+				.addElement(new Pre(
+						"notifications",
+						"<h3>Notifications</h3><p>If you wish to be notified of temperature change "
+								+ "events add your email to the list below, and choose which criteria should "
+								+ "be matched before a notification is sent.</p>"));
+
+		fullPageXml.addElement(new Pre("email list descr",
+				"<p>A comma separated list of email addresses to send notifications to.</p>"));
+		fullPageXml
+				.addElement(new Button("Update Email List")
+						.setAction("email$input")
+						.setIcon("fa fa-envelope")
+						.setDescription(
+								"A comma separated list of email addresses to notify when the temperature changes")
+						.setInputType(InputType.TEXT).setInputVal(emailList));
+		// percent change
+		fullPageXml
+				.addElement(new Pre(
+						"Percent change descr",
+						"<p>Send a notification if the temperature change exceeds this percent (i.e. a change of temperature "
+								+ "from 72  to 75 is a 4% change)</p>"));
+		fullPageXml.addElement(new Button("Set required percent change").setAction("pc$input")
+				.setIcon("fa fa-tachometer")
+				.setDescription("The percent change required before an email is sent.")
+				.setInputType(InputType.NUM).setInputVal(String.valueOf(percentChangeRequired)));
+
+		// max temperature exceeded
+		fullPageXml.addElement(new Pre("max temp descr",
+				"<p>Send a notification if the temperature exceeds this value (in &deg;F).</p>"));
+		fullPageXml.addElement(new Button("Set maximum temperature").setAction("max$input")
+				.setIcon("fa fa-toggle-up").setDescription("The maximum temperature allowed.")
+				.setInputType(InputType.NUM)
+				.setInputVal((maxTemp == 9999) ? "" : String.valueOf(maxTemp)));
+
+		// min temperature exceeded
+		fullPageXml.addElement(new TextArea("min temp descr",
+				"Send a notification if the temperature falls below this value (in F)."));
+		fullPageXml.addElement(new Button("Set minimum temperature").setAction("min$input")
+				.setIcon("fa fa-toggle-down").setDescription("The minimum temperature allowed.")
+				.setInputType(InputType.NUM)
+				.setInputVal((minTemp == -9999) ? "" : String.valueOf(minTemp)));
 	}
 
 	private Map<String, String> getLastReading() {
@@ -138,30 +188,63 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 	private void updateTemp(long time, int temp) {
 		Log.d(this.name, "updateTemp()");
-		// if the temperature changed then will generate an event
+		// if the temperature changed then will generate an event, and optionally send an email if
+		// the percent change is great enough
 		if (lastKnownTemp != null && lastKnownTemp != temp) {
 			TempChangedEvent e = new TempChangedEvent(System.currentTimeMillis(), this,
 					lastKnownTemp, temp);
 			Coordinator.receiveEvent(this, e);
+			double pc = ((((double) temp / (double) lastKnownTemp) * 100) - 100);
+			if (emailList != null && !emailList.equals("")) {
+				if (percentChangeRequired != null && Math.abs(pc) >= percentChangeRequired) {
+					// TODO generate a unique link for every address in the email list for auto
+					// unsubscribe
+					sendEmail(temp, time);
+				}
+			}
+		}
+		if (temp > maxTemp || temp < minTemp) {
+			sendEmail(temp, time);
 		}
 
 		// store the values in memory and to the widget
 		this.lastKnownTemp = temp;
 
-		// this.lastUpdated.setText("Last update: "
-		// + DateFormat.getDateTimeInstance().format(new Date(time)));
-		// this.temp.setValue(String.valueOf(temp));
-		// this.widgetPre
-		// .setHtml("<div style='text-align: right;'><span style=' font-size: 100px'>"
-		// + this.temp.getValue()
-		// + "&deg;</span></div>"
-		// +
-		// "<div style='text-align: center;'><span style='float: right;padding-right: 50px; font-size: 15px'>"
-		// + lastUpdated.getText() + "</span></div>");
-
 		// write the new temp data to the database
 		Coordinator.storeTextData(this.name, String.valueOf(time), String.valueOf(temp));
 		Coordinator.storeTextData(this.name, DB_KEY_LASTUPDATE, String.valueOf(time));
+	}
+
+	private void sendEmail(int temp, long time) {
+		if (lastKnownTemp != null) {
+			StringBuilder reason = new StringBuilder();
+			reason.append("<p>This is an automated message from the Apparatus Templi home "
+					+ "automation system.</p>");
+			reason.append("<p>This email was sent because a user at this email address requested "
+					+ "to be notified of a temperature change event.</p>");
+			reason.append("<p>Current temperature is " + temp
+					+ " &deg;F, the last known temperature was " + lastKnownTemp + " &deg;F.</p>");
+			reason.append("<p>This email was generated because of one of the following reasons:</p><ul>");
+			double pc = ((((double) temp / (double) lastKnownTemp) * 100) - 100);
+			if (Math.abs(pc) >= percentChangeRequired) {
+				reason.append("<li>Percent change exceeded:  a change of " + pc + "%.</li>");
+			}
+			if (temp > maxTemp) {
+				reason.append("<li>Maximum temperature of (" + maxTemp + ") exceeded.</li>");
+			}
+			if (temp < minTemp) {
+				reason.append("<li>Minimum temperature of (" + minTemp + ") exceeded.</li>");
+			}
+			reason.append("</ul>");
+			reason.append("<p>If you no longer want to be notified of these events please change your "
+					+ "settings by visiting: <a href=\""
+					+ Coordinator.getServerAddress()
+					+ "\">"
+					+ Coordinator.getServerAddress() + "</a>.");
+
+			EmailService.getInstance().sendEmailMessage(emailList, "Temperature Change",
+					reason.toString());
+		}
 	}
 
 	private Integer readRemoteTemp() {
@@ -175,7 +258,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 				try {
 					temp = Integer.parseInt(response.substring(1));
 
-					updateTemp(System.currentTimeMillis(), temp);
+					// updateTemp(System.currentTimeMillis(), temp);
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received a malformed temperature reading, discarding");
 				}
@@ -218,6 +301,33 @@ public class TempMonitor extends Driver implements EventGenerator {
 		// temp.setValue("?");
 		// lastUpdated.setText("unknown");
 
+		try {
+			percentChangeRequired = Integer.parseInt(Coordinator.readTextData(this.name,
+					"changeRequired"));
+		} catch (NumberFormatException e) {
+			Log.w(this.name, "error reading percent change required from database");
+			percentChangeRequired = 1001;
+		}
+
+		try {
+			maxTemp = Integer.parseInt(Coordinator.readTextData(this.name, "maxTemp"));
+		} catch (NumberFormatException e) {
+			Log.w(this.name, "error reading max temp from database");
+			maxTemp = 9999; // a default value that will (hopefully) never be reached
+		}
+
+		try {
+			minTemp = Integer.parseInt(Coordinator.readTextData(this.name, "minTemp"));
+		} catch (NumberFormatException e) {
+			Log.w(this.name, "error reading min temp from database");
+			minTemp = -9999; // a default value that will (hopefully) never be reached
+		}
+
+		emailList = Coordinator.readTextData(this.name, "emailList");
+		if (emailList == null) {
+			emailList = "";
+		}
+
 		location = Coordinator.readTextData(this.name, "location");
 		String r = Coordinator.readTextData(this.name, "refresh");
 		try {
@@ -237,7 +347,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 		while (isRunning) {
 			getBestReading();
 
-			// wake every 15 minutes to record temperature data
+			// sleep until its time to refresh the temperature data again
 			this.sleep(((refreshRate == null) ? DEFAULT_REFRESH_RATE : refreshRate) * 1000);
 			Log.d(this.name, "waking...");
 		}
@@ -297,9 +407,44 @@ public class TempMonitor extends Driver implements EventGenerator {
 				location = command.substring(4);
 
 				Coordinator.storeTextData(this.name, "location", command.substring(4));
+				// buildWidgetXml();
 				buildFullPageXml();
 				// getBestReading();
 				goodCommand = true;
+			} else if (command.startsWith("email")) {
+				emailList = command.substring(5);
+				Log.d(this.name, "received new email list: " + emailList);
+				Coordinator.storeTextData(this.name, "emailList", emailList);
+				buildFullPageXml();
+				goodCommand = true;
+			} else if (command.startsWith("pc")) {
+				try {
+					percentChangeRequired = Integer.parseInt(command.substring(2));
+					Coordinator.storeTextData(this.name, "changeRequired",
+							String.valueOf(percentChangeRequired));
+					buildFullPageXml();
+					goodCommand = true;
+				} catch (NumberFormatException e) {
+					Log.w(this.name, "received malformatted percent change request, ignoring");
+				}
+			} else if (command.startsWith("max")) {
+				try {
+					maxTemp = Integer.parseInt(command.substring(3));
+					Coordinator.storeTextData(this.name, "maxTemp", String.valueOf(maxTemp));
+					buildFullPageXml();
+					goodCommand = true;
+				} catch (NumberFormatException e) {
+					Log.w(this.name, "received malformatted max temp request, ignoring");
+				}
+			} else if (command.startsWith("min")) {
+				try {
+					minTemp = Integer.parseInt(command.substring(3));
+					Coordinator.storeTextData(this.name, "minTemp", String.valueOf(maxTemp));
+					buildFullPageXml();
+					goodCommand = true;
+				} catch (NumberFormatException e) {
+					Log.w(this.name, "received malformatted min temp request, ignoring");
+				}
 			} else {
 				Log.w(this.name, "received command in unknown format");
 			}

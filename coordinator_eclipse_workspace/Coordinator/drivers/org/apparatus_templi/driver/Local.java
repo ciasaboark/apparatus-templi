@@ -12,6 +12,7 @@ public class Local extends Driver {
 	private final boolean[] ledsState = { false, false, false };
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Local Controller");
 	private final XmlFormatter fullFormatter = new XmlFormatter(this, "Local Controller");
+
 	private final Controller led1 = new Controller("0: Purple");
 	private final Controller led2 = new Controller("1: Green");
 	private final Controller led3 = new Controller("2: White");
@@ -27,6 +28,7 @@ public class Local extends Driver {
 		this.name = "LOCAL";
 		toggleButton.setAction("$input");
 		toggleButton.setInputType("numeric");
+		toggleButton.setInputVal("0");
 		widgetXml.setRefresh(6000);
 		widgetXml.addElement(led1);
 		widgetXml.addElement(led2);
@@ -107,6 +109,7 @@ public class Local extends Driver {
 						// throw new NumberFormatException("Led number out of range");
 						Log.w(this.name, "not a valid number");
 					} else {
+						toggleButton.setInputVal(String.valueOf(i));
 						toggleLED(i);
 						goodCommand = true;
 					}

@@ -30,9 +30,9 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 		while (isRunning) {
 
-			boolean emailSent = emailService
-					.sendEmailMessage(recipients, "Notification from Driver: " + this.name,
-							"Time: " + System.currentTimeMillis());
+			boolean emailSent = emailService.sendEmailMessage(recipients,
+					"Notification from Driver: " + this.name,
+					"Time: <pre>" + System.currentTimeMillis() + "</pre>&deg;");
 			if (emailSent) {
 				Log.d(this.name, "email sent");
 			} else {

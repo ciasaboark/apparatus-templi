@@ -1308,7 +1308,7 @@ public class SimpleHttpServer implements Runnable {
 				exchange.getResponseBody().write(response);
 			} else {
 				byte[] response = "FAIL".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, response.length);
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, response.length);
 				exchange.getResponseBody().write(response);
 			}
 			exchange.close();
