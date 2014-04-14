@@ -24,24 +24,26 @@ uint8_t Zigbee::sendCommand(String command) {
     XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
     if(command.length() <= MAX_DATA_SIZE) {
         Message message((uint8_t)0x0D, uint8_t option, (uint8_t)command.length(), 0, String destination_address, command.toCharArray());
-        ZBTxRequest zbTx = ZBTxRequest(addr64, message.getPayload(), sizeof(message)); //dont think this sizeof is going to work correctly
+	/* Im not really sure about the message.getPayload() because the data is not in the form of an uint8_t pointer. casting may not work
+	   either because the data is not incremental by bytes, so I need to look more into the method. Maybe the ZBTxRequest just send a byte of 	     data at a time? */
+        ZBTxRequest zbTx = ZBTxRequest(addr64, (uint8_t *)&message, sizeof(message)); //dont think this sizeof is going to work correctly
         xbee.send(zbTx);
     }
     else {
         int total_fragments = message.length() / MAX_DATA_SIZE;
         Message message[total_fragments];
         
+	int count = 1;
         for(int i = 0; i <= message.length() - 1; i = i + 69) {
-            for(int j = 1; j <= total_fragemnts; j++) {
                 
-                /* this is an issue if the command is of odd size because of casting. 
-                 * If message.length is 104 bytes then int total_fragments = message.length() / MAX_DATA_SIZE 
-                 * will be 1. So, it will disccard the rest of the message */				   
-                String message_fragment = message.substring(i, MAX_DATA_SIZE * j); 
-                message[j-1] = Message message((uint8_t)0x0D, uint8_t option, message_fragment.length(), j, String destination_address, message_fragment.toCharArray());
-            }
+            /* this is an issue if the command is of odd size because of casting. 
+             * If message.length is 104 bytes then int total_fragments = message.length() / MAX_DATA_SIZE 
+             * will be 1. So, it will disccard the rest of the message */				   
+            String message_fragment = message.substring(i, MAX_DATA_SIZE * count); 
+            message[count-1] = Message message((uint8_t)0x0D, uint8_t option, message_fragment.length(), count-1, String destination_address, message_fragment.toCharArray());
+            count++;
         }
-	ZBTxRequest zbTx = ZBTxRequest(addr64, message.getPayload(), sizeof(message)); //dont think this sizeof is going to work correctly
+	ZBTxRequest zbTx = ZBTxRequest(addr64, (uint8_t *)&message, sizeof(message)); //dont think this sizeof is going to work correctly
 	xbee.send(zbTx);
     }	
 }
