@@ -16,14 +16,16 @@ class Zigbee {
         XBeeResponse response;
         ZBRxResponse rx;
         ModemStatusResponse msr;
+	String name;
 
     public:
-        Zigbee()
+        Zigbee(String name)
 	~Zigbee();
-        void start(int serial_port, int softSerial_port);
+        void start(int serial_port, int rx_pin, int tx_pin);
         
-        uint8_t sendCommand(String command);
-        uint8_t sendBinary(uint8_t data, int data_length);
+        void sendCommand(String command);
+        void sendBinary(uint8_t data, int data_length);
+	void sendMessageFragment(Message *obj);
 };
 
 #endif

@@ -4,10 +4,10 @@
 class Message {
 	private:
 		uint8_t  signature;
-		uint8_t  format;
+		uint8_t  optionByte;
 		uint8_t  data_length;
 		uint16_t fragment_number;
-		String   destination;	
+		String   name;	//needs to be 10 bytes and be null padded	
 		uint8_t  *payload;
 	
 	public:
@@ -18,8 +18,8 @@ class Message {
 		void setSignatureByte(uint8_t sigByte);
 		uint8_t getSignatureByte();
 
-		void setFormat(uint8_t option);
-		uint8_t getFormat();
+		void setOptionByte(uint8_t option);
+		uint8_t getOptionByte();
 
 		void setDestination(String module);
 		String getDestination();
