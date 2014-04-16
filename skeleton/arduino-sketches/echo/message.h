@@ -7,7 +7,7 @@ class Message {
 		uint8_t  optionByte;
 		uint8_t  data_length;
 		uint16_t fragment_number;
-		String   name;	//needs to be 10 bytes and be null padded	
+		char     destination_name[10];		
 		uint8_t  *payload;
 	
 	public:
@@ -21,8 +21,8 @@ class Message {
 		void setOptionByte(uint8_t option);
 		uint8_t getOptionByte();
 
-		void setDestination(String module);
-		String getDestination();
+		void setDestinationName(String module);
+		String getDestinationName();
 
 		void setDataLength(uint8_t length);
 		uint8_t getDataLength();
