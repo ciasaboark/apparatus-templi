@@ -16,15 +16,16 @@ class Zigbee {
         XBeeResponse response;
         ZBRxResponse rx;
         ModemStatusResponse msr;
-	String name;
+        char name[10];
 
     public:
-        Zigbee(String name)
+	/* newName can only have a max character limit of 10. */
+        Zigbee(String newNname, int rx_pin, int tx_pin)
 	~Zigbee();
-        void start(int serial_port, int rx_pin, int tx_pin);
-        
+
+        void start(int serial_port);
         void sendCommand(String command);
-        void sendBinary(uint8_t data, int data_length);
+        void sendBinary(uint8_t *data, int data_length);
 	void sendMessageFragment(Message *obj);
 };
 
