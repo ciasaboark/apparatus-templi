@@ -1,19 +1,21 @@
 #include "zigbee.h"
 
 Zigbee::Zigbee(String newName, int rx_pin, int tx_pin ) : name(newName) {
-    xbee = XBee();
-    softSerial = SoftwareSerial(rx_pin, tx_pin);
-    msr = ModemStatusResponse();
-    response = XBeeResponse();
-    rx = ZBRxResponse();
-    //name needs to be 10 bytes
+    xbee();
+    softSerial(rx_pin, tx_pin);
+    msr();
+    response();
+    rx();
+    name = newName.toCharArray();
+    start(); //start the xbee and the serial connection
 }
 
 Zigbee::~Zigbee() {
+    delete(name); 
 }
 
 void Zigbee::start(int serial_port) {
-    softSerial.begin(serial_port);
+    softSerial.begin(serial_port); //not sure what value is supposed to be here
     xbee.begin(soft_serial);
 }
 
@@ -21,7 +23,7 @@ void Zigbee::sendCommand(String command) {
     sendBinary((uint8_t *)command.toCharArray(), command.getLength());
 }
 
-void Zigbee::sendBinary(uint8_t array, int length) {
+void Zigbee::sendBinary(uint8_t *array, int length) {
     XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
 
     if(command.length() <= MAX_DATA_SIZE) {
