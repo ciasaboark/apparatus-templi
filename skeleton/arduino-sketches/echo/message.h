@@ -1,19 +1,13 @@
-#ifndef LIBRARY_H
-#define LIBRARY_H
+#ifndef MESSAGE_H
+#define MESSAGE_H
 
-class Message {
-	private:
-		uint8_t  signature;
-		uint8_t  optionByte;
-		uint8_t  data_length;
-		uint16_t fragment_number;
-		char     destination_name[10];		
-		uint8_t  *payload;
-	
+#include <String.h>
+
+class Message {	
 	public:
-		Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, String destination_address, uint8_t* payld);
+		Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, char *destination_address, uint8_t* payld);
 		~Message();
-		Message(const Message obj);
+		Message(const Message *obj);
 
 		void setSignatureByte(uint8_t sigByte);
 		uint8_t getSignatureByte();
@@ -21,8 +15,8 @@ class Message {
 		void setOptionByte(uint8_t option);
 		uint8_t getOptionByte();
 
-		void setDestinationName(String module);
-		String getDestinationName();
+		void setDestinationName(char *module);
+		char* getDestinationName();
 
 		void setDataLength(uint8_t length);
 		uint8_t getDataLength();
@@ -32,6 +26,14 @@ class Message {
 
 		void setPayload(uint8_t *buffer);
 		uint8_t* getPayload();
+		
+	private:
+		uint8_t  signature;
+		uint8_t  optionByte;
+		uint8_t  data_length;
+		uint16_t fragment_number;
+		char     destination_name[10];		
+		uint8_t  *payload;
 		
 };
 
