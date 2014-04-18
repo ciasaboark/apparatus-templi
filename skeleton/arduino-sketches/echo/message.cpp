@@ -1,19 +1,15 @@
-#include "message.h"
+#include "Message.h"
 
-Message::Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, String destination_address, uint8_t* payld) : signature(sigByte), optionByte(option), data_length(length), fragment_number(frag_number) {
+Message::Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, char *destination_address, uint8_t* payld) {
+	signature = sigByte;
+	optionByte = option;
+	data_length = length;
+	fragment_number = frag_number;
+	destination_name = destination_address; //this probably will not work
 	payload = payld;
-
-	/* may have to dynamically allocate space for name because destination_address nay dissappear */
-	destination_name = destination_address.toCharArray(); 
 }
 
-Message::~Message() {
-	//may have to deallocate destination_name
-}
-
-Message(const Message obj) {
-
-}
+Message::~Message() { }
 
 void Message::setSignatureByte(uint8_t sigByte) {
 	signature = sigByte;
@@ -35,7 +31,7 @@ void Message::setDestinationName(String module) {
 	destination_name = module.toCharArray();
 }
 
-String Message::getDestination() {
+char* Message::getDestination() {
 	return destination_name;
 }
 
