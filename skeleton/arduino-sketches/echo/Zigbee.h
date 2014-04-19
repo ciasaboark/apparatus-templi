@@ -6,15 +6,16 @@
 #define XBEE_PIN 12
 #define MAX_DATA_SIZE = 32
 
-#include <XBee.h>
-#include <SoftwareSerial.h>
+#include <Arduino.h>
+#include "SoftwareSerial.h"
+#include "XBee.h"
 #include "Message.h"
 
 class Zigbee {
     public:
 	/* newName can only have a max character limit of 10. */
         Zigbee(char *name, int rx_pin, int tx_pin);
-	~Zigbee();
+		~Zigbee();
 
         void start(int buad_rate = 9600); //start the serial communication with the default data transmission rate
         void sendCommand(char *command);
@@ -22,10 +23,10 @@ class Zigbee {
         void sendMessageFragment(Message *obj);
 		
 	private:
-        Xbee 		    *xbee;
-        SoftwareSerial 	    *softSerial;
-        XBeeResponse 	    *response;
-        ZBRxResponse 	    *rx;
+        XBee 			*xbee;
+        SoftwareSerial 		*softSerial;
+        XBeeResponse 		*response;
+        ZBRxResponse 		*rx;
         ModemStatusResponse *msr;
         char name[10];
 };

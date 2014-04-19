@@ -27,8 +27,14 @@ uint8_t Message::getOptionByte() {
 	return optionByte;
 }
 
-void Message::setDestinationName(String module) {
-	destination_name = module.toCharArray();
+void Message::setDestinationName(char *module) {
+	if(destination_name != NULL) {
+		delete (destination_name);
+	}
+	destination_name = (char*)malloc(sizeof(char) * 10);
+	if(destination_name != NULL) {
+		memcpy(destination_name, module, 10);
+	}
 }
 
 char* Message::getDestination() {

@@ -11,10 +11,10 @@ Zigbee::Zigbee(char *newName, int rx_pin, int tx_pin ) {
 
 Zigbee::~Zigbee() {
     delete(xbee);
-    delete(softserail);
-    delete(msr);
-    delete(response);
-    delete(rx);
+	delete(softserail);
+	delete(msr);
+	delete(response);
+	delete(rx);
 	
 }
 
@@ -24,7 +24,7 @@ void Zigbee::start(int buad_rate = 9600) {
 }
 
 void Zigbee::sendCommand(char *command) {
-    int length = strlen(command);
+	int length = strlen(command);
     sendBinary((uint8_t *)command, length);
 }
 
@@ -39,8 +39,8 @@ void Zigbee::sendBinary(uint8_t *array, int length) {
     }
     else {
         int total_fragments = command.length() / MAX_DATA_SIZE;
-        int count = 1;
         
+		int count = 1;
         for(int i = 0; i <= message.length() - 1; i = i + 69) {
                 
             //build the message then send it instead of storing it in an array				   

@@ -1,18 +1,27 @@
 #include <Servo.h> 
+#include "Zigbee.h"
  
-Servo servo;    // create servo object to control a servo 
-                // a maximum of eight servo objects can be created 
- 
-int pos = 0;    // variable to store the servo position 
-int light_on_pin = 7;
-int light_off_pin = 2;
+Servo servo;  
+
 
 int illuminate = 0;
+int pos = 0;  
+  
+int light_on_pin = 7;
+int light_off_pin = 6;
+char name[] = "A Name   "; 
+char name1[] = "AnotherOn";
+
+ Zigbee zigbee1(name, 10, 11);
+ Zigbee zigbee2(name1, 0, 1);
  
 void setup() { 
+  
   Serial.begin(9600);
+  
   servo.attach(4); 
   servo.write(pos);  
+  
   pinMode(light_on_pin, OUTPUT);
   digitalWrite(light_off_pin, HIGH);
   pinMode(light_off_pin, OUTPUT);
@@ -23,7 +32,6 @@ void loop() {
  if (Serial.available() > 0) {
    illuminate = Serial.read();
  }
- 
  if(illuminate == 49 && pos != 180) {
    for(pos = 0; pos <= 180; pos++) {
      servo.write(pos);

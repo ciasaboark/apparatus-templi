@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include <String.h>
+#include <Arduino.h>
 
 class Message {	
 	public:
@@ -16,7 +17,7 @@ class Message {
 		uint8_t getOptionByte();
 
 		void setDestinationName(char *module);
-		char* getDestinationName();
+		char* getDestination();
 
 		void setDataLength(uint8_t length);
 		uint8_t getDataLength();
@@ -32,7 +33,7 @@ class Message {
 		uint8_t  optionByte;
 		uint8_t  data_length;
 		uint16_t fragment_number;
-		char     destination_name[10];		
+		char     *destination_name;		
 		uint8_t  *payload;
 		
 };
