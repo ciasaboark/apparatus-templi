@@ -15,12 +15,14 @@ int light_off_pin = 6;
 char name[]  = {"123456789"};
 char name1[] = {"987654321"};
 
- Zigbee zigbee1(name, 10, 11);
- Zigbee zigbee2(name1, 0, 1);
+Zigbee zigbee1(name, 11, 10);
+Zigbee zigbee2(name1, 2, 3);
  
 void setup() { 
   
   Serial.begin(115200);
+  zigbee1.start(); //defaults to 9600
+  zigbee2.start();
   
   servo.attach(4); 
   servo.write(pos);  
