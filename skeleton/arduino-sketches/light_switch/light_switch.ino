@@ -1,6 +1,8 @@
+#include <SoftwareSerial.h>
+#include <XBee.h>
+#include <Zigbee.h>
 #include <Servo.h> 
-#include "Zigbee.h"
- 
+
 Servo servo;  
 
 
@@ -9,15 +11,16 @@ int pos = 0;
   
 int light_on_pin = 7;
 int light_off_pin = 6;
-char name[] = "A Name   "; 
-char name1[] = "AnotherOn";
+
+char name[]  = {"123456789"};
+char name1[] = {"987654321"};
 
  Zigbee zigbee1(name, 10, 11);
  Zigbee zigbee2(name1, 0, 1);
  
 void setup() { 
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   
   servo.attach(4); 
   servo.write(pos);  
