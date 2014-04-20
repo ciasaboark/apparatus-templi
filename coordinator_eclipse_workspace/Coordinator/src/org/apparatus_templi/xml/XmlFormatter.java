@@ -58,6 +58,12 @@ public class XmlFormatter {
 	 *            the Element to add.
 	 */
 	public void addElement(ElementInterface e) {
+		if (e == null) {
+			throw new IllegalArgumentException("can not add null element");
+		}
+		if (!(ElementInterface.class.isInstance(e))) {
+			throw new IllegalArgumentException("object must implement ElementInterface");
+		}
 		elementInterfaces.add(e);
 	}
 

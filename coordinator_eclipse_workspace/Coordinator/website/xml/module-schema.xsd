@@ -9,6 +9,7 @@
 						</xs:sequence>
 						<xs:attribute type="xs:string" name="name" use="required"/>
 						<xs:attribute type="xs:string" name="icon" use="optional"  />
+						<xs:attribute type="xs:string" name="description" use="optional"  />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="textarea">
@@ -16,6 +17,7 @@
 						<xs:simpleContent>
 							<xs:extension base="xs:string">
 								<xs:attribute type="xs:string" name="name" use="required"/>
+								<xs:attribute type="xs:string" name="description" use="optional"  />
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>
@@ -25,6 +27,7 @@
 						<xs:simpleContent>
 							<xs:extension base="xs:string">
 								<xs:attribute type="xs:string" name="name" use="required"/>
+								<xs:attribute type="xs:string" name="description" use="optional"  />
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>
@@ -44,6 +47,7 @@
 								</xs:attribute>
 				                <xs:attribute type="xs:string" name="inputVal" use="optional" />
 				                <xs:attribute type="xs:string" name="icon"     use="optional" />
+				                <xs:attribute type="xs:string" name="description" use="optional"  />
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>
@@ -55,6 +59,7 @@
 						</xs:sequence>
 						<xs:attribute type="xs:string" name="name" use="required"/>
 						<xs:attribute type="xs:string" name="icon" use="optional"  />
+						<xs:attribute type="xs:string" name="description" use="optional"  />
 					</xs:complexType>
 				</xs:element>
 			</xs:choice>

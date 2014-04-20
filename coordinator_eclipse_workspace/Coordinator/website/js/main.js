@@ -702,7 +702,9 @@ function refreshFullScreenWidget(driver) {
 				$(xml).find('module').each(function() {
 					var $module = $(this);
 					var $driver = $module.attr('driver');
+					var $longName = $module.attr('name');
 					var $refreshInterval = $module.attr('refresh');
+					
 					console.log($driver + " refresh: " + $refreshInterval);
 					if ($refreshInterval === undefined) {
 						$refreshInterval = 60;
@@ -732,7 +734,12 @@ function refreshFullScreenWidget(driver) {
 						}
 					});
 					$("#widget-" + driver).find(".content").hide();
+					//apply the new title and body content
+					console.log("new title: " + $longName);
+					console.log("new body: " + widgetHtml);
+					$("#widget-" + driver).find(".title").html($longName);
 					$("#widget-" + driver).find(".content").html(widgetHtml);
+					
 					$("#widget-" + driver).find(".content").addClass('animated fadeIn');
 					$("#widget-" + driver).find(".content").translate('latin');
 					$("#widget-" + driver).find(".content").show();
@@ -741,6 +748,7 @@ function refreshFullScreenWidget(driver) {
 				//rebuild tooltips
 				buildTooltips();
 				$("#widget-" + driver).find(".title").find(".fa-refresh").removeClass("fa-spin");
+				
 			},
 			error: function(xhr, status, error) {
 				console.log(error);

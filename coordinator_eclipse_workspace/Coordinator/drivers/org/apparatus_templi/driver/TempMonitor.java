@@ -30,6 +30,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 	private String location = null;
 	// private final Pre widgetPre = new Pre("fancy", "");
 	private Integer lastKnownTemp = null;
+	private Long lastKnownTime = null;
 	private Integer percentChangeRequired = null;
 	private Integer maxTemp = null;
 	private Integer minTemp = null;
@@ -209,6 +210,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 
 		// store the values in memory and to the widget
 		this.lastKnownTemp = temp;
+		this.lastKnownTime = time;
 
 		// write the new temp data to the database
 		Coordinator.storeTextData(this.name, String.valueOf(time), String.valueOf(temp));
@@ -397,8 +399,6 @@ public class TempMonitor extends Driver implements EventGenerator {
 					}
 					Coordinator.storeTextData(this.name, "refresh", rate);
 					Coordinator.wakeSelf(this);
-					buildFullPageXml();
-					// getBestReading();
 				} catch (NumberFormatException e) {
 
 				}
@@ -407,22 +407,17 @@ public class TempMonitor extends Driver implements EventGenerator {
 				location = command.substring(4);
 
 				Coordinator.storeTextData(this.name, "location", command.substring(4));
-				// buildWidgetXml();
-				buildFullPageXml();
-				// getBestReading();
 				goodCommand = true;
 			} else if (command.startsWith("email")) {
 				emailList = command.substring(5);
 				Log.d(this.name, "received new email list: " + emailList);
 				Coordinator.storeTextData(this.name, "emailList", emailList);
-				buildFullPageXml();
 				goodCommand = true;
 			} else if (command.startsWith("pc")) {
 				try {
 					percentChangeRequired = Integer.parseInt(command.substring(2));
 					Coordinator.storeTextData(this.name, "changeRequired",
 							String.valueOf(percentChangeRequired));
-					buildFullPageXml();
 					goodCommand = true;
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received malformatted percent change request, ignoring");
@@ -431,7 +426,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 				try {
 					maxTemp = Integer.parseInt(command.substring(3));
 					Coordinator.storeTextData(this.name, "maxTemp", String.valueOf(maxTemp));
-					buildFullPageXml();
+					// buildFullPageXml();
 					goodCommand = true;
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received malformatted max temp request, ignoring");
@@ -440,7 +435,7 @@ public class TempMonitor extends Driver implements EventGenerator {
 				try {
 					minTemp = Integer.parseInt(command.substring(3));
 					Coordinator.storeTextData(this.name, "minTemp", String.valueOf(maxTemp));
-					buildFullPageXml();
+					// buildFullPageXml();
 					goodCommand = true;
 				} catch (NumberFormatException e) {
 					Log.w(this.name, "received malformatted min temp request, ignoring");
@@ -448,6 +443,12 @@ public class TempMonitor extends Driver implements EventGenerator {
 			} else {
 				Log.w(this.name, "received command in unknown format");
 			}
+		}
+
+		if (goodCommand) {
+			buildWidgetXml(lastKnownTemp == null ? null : String.valueOf(lastKnownTemp),
+					lastKnownTime == null ? null : String.valueOf(lastKnownTime));
+			buildFullPageXml();
 		}
 		return goodCommand;
 	}

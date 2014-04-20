@@ -110,7 +110,7 @@ void setup() {
         pinMode(5, OUTPUT);
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
-        delay(20000);    //wait for 20 seconds so the xbee can have time to finish its setup
+//        delay(20000);    //wait for 20 seconds so the xbee can have time to finish its setup
 	Serial.println("Setup done: " + MODULE_NAME);
 }
 
@@ -120,7 +120,7 @@ void loop() {
                 //check for any motion events
                 
                 
-		xbee.readPacket(300);
+		xbee.readPacket(100);
 		
 		if (xbee.getResponse().isAvailable()) {
 			debug("--------\nzigbee packet available");
@@ -164,12 +164,13 @@ void loop() {
                 int pirVal = digitalRead(pirPin);
 
                 if(pirVal == LOW){ //was motion detected
+                  delay(3000);
                   Serial.println("Motion Detected");
                   sendCommand("mot");
-                  delay(3000); 
+                   
                 } else {
-                  Serial.println("No Motion");
-                  delay(100);
+                  Serial.print("No Motion");
+//                  delay(100);
                 }
 }
 

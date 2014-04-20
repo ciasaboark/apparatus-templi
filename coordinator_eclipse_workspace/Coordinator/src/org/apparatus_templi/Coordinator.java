@@ -45,7 +45,7 @@ public class Coordinator {
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
 	private static SimpleHttpServer webServer = null;
 	private static Thread webServerThread = null;
-	private static Prefs prefs = Prefs.getInstance();
+	private static Prefs prefs = new Prefs();
 	private static boolean connectionReady = false;
 	private static final long startTime = System.currentTimeMillis();
 
@@ -70,7 +70,7 @@ public class Coordinator {
 	private static synchronized void routeIncomingMessage(Message m) {
 		assert m != null : "we should always have a valid message to work with";
 
-		// Log.d(TAG, "routeIncomingMessage()");
+		Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
 		assert destination != null : "messge can not have null destination";
 
@@ -203,12 +203,6 @@ public class Coordinator {
 	 *            if true the driver's thread will be started, otherwise the thread will have to be
 	 *            started manually.
 	 * @return a reference to the newly woken Driver.
-	 * @throws SecurityException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
 	 */
 
 	/**
@@ -409,11 +403,15 @@ public class Coordinator {
 		webServerThread = new Thread(webServer);
 
 		webServerThread.start();
-		sysTray.setStatus(SysTray.Status.RUNNING);
+		if (sysTray != null) {
+			sysTray.setStatus(SysTray.Status.RUNNING);
+		}
 	}
 
 	private static void restartWebServer() throws UnknownHostException, InterruptedException {
-		sysTray.setStatus(SysTray.Status.WAITING);
+		if (sysTray != null) {
+			sysTray.setStatus(SysTray.Status.WAITING);
+		}
 		assert webServer != null : "attempting to restart web server when one is already active";
 		Log.w(TAG, "restarting web server");
 
@@ -1029,7 +1027,13 @@ public class Coordinator {
 	}
 
 	public static synchronized void wakeSelf(Driver d) {
-		wakeDriver(d.getName(), false, false);
+		if (d == null) {
+			throw new IllegalArgumentException("Can not wake null driver");
+		} else if (!loadedDrivers.containsKey(d)) {
+			throw new IllegalArgumentException("Can not wake driver that has not been loaded");
+		} else {
+			wakeDriver(d.getName(), false, false);
+		}
 	}
 
 	/**
@@ -1063,6 +1067,8 @@ public class Coordinator {
 			}
 		} else {
 			Log.d(TAG, "driver '" + d.getName() + "' not allowed to generate events");
+			throw new IllegalArgumentException("Driver '" + d.getName()
+					+ "' must implement EventGenerator to generate Events");
 		}
 	}
 
@@ -1133,7 +1139,7 @@ public class Coordinator {
 	 */
 	public static long getDriverThreadId(Driver d) {
 		long threadId = -1;
-		if (driverThreads.containsKey(d)) {
+		if (d != null && driverThreads.containsKey(d)) {
 			threadId = driverThreads.get(d).getId();
 		}
 		return threadId;
@@ -1157,6 +1163,10 @@ public class Coordinator {
 		return (System.currentTimeMillis() - startTime) / 1000;
 	}
 
+	public static Prefs getPrefs() {
+		return prefs;
+	}
+
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		// disable dock icon in MacOS
 		System.setProperty("apple.awt.UIElement", "true");
@@ -1173,7 +1183,6 @@ public class Coordinator {
 		sysTray = new SysTray();
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-		Log.d(TAG, "thread: " + threadId + " current thread: " + Thread.currentThread().getId());
 		// turn off debug messages
 		// Log.setLogLevel(Log.LEVEL_WARN);
 		Log.d(TAG, "SERVICE STARTING");

@@ -10,6 +10,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.Prefs;
 
@@ -35,11 +36,11 @@ public final class EmailService implements ServiceInterface {
 	}
 
 	private void start() {
-		smtpServer = Prefs.getInstance().getPreference(Prefs.Keys.emailServer);
-		smtpPort = Prefs.getInstance().getPreference(Prefs.Keys.emailPort);
-		smtpUsername = Prefs.getInstance().getPreference(Prefs.Keys.emailUsername);
-		smtpAddress = Prefs.getInstance().getPreference(Prefs.Keys.emailAddress);
-		smtpPassword = Prefs.getInstance().getPreference(Prefs.Keys.emailPassword);
+		smtpServer = Coordinator.getPrefs().getPreference(Prefs.Keys.emailServer);
+		smtpPort = Coordinator.getPrefs().getPreference(Prefs.Keys.emailPort);
+		smtpUsername = Coordinator.getPrefs().getPreference(Prefs.Keys.emailUsername);
+		smtpAddress = Coordinator.getPrefs().getPreference(Prefs.Keys.emailAddress);
+		smtpPassword = Coordinator.getPrefs().getPreference(Prefs.Keys.emailPassword);
 
 		Properties emailProperties = new Properties();
 		emailProperties.setProperty("mail.transport.protocol", "smtps");

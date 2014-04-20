@@ -205,7 +205,7 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 				Log.e(TAG, "connection: " + myConn);
 				Log.e(TAG, "statement: " + sql);
 				Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
-				e.printStackTrace();
+				// e.printStackTrace();
 				returnCode = 0;
 			} finally {
 				SharedConnection.closeConnection();

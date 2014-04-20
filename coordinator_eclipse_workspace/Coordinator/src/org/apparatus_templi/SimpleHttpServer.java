@@ -41,6 +41,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 
+//import java.io.FileInputStream;
+
 /**
  * A simple web server that acts as both a middle man between the Coordinator and any front ends, as
  * well as a host for the bundled web front end. The web server is implemented as a
@@ -58,6 +60,7 @@ public class SimpleHttpServer implements Runnable {
 	private String protocol;
 	private String serverLocation;
 	private int portNum;
+	private final Prefs prefs = Coordinator.getPrefs();
 
 	/**
 	 * Generates a 404 error page for the given resourceName.
@@ -104,6 +107,7 @@ public class SimpleHttpServer implements Runnable {
 		byte[] returnBytes = null;
 		try {
 			InputStream is = new FileInputStream(fileName);
+			// InputStream is = this.getClass().getResourceAsStream(fileName);
 			int streamLength = is.available();
 			if (streamLength <= Integer.MAX_VALUE) {
 				byte[] fileBytes = new byte[streamLength];
@@ -315,7 +319,8 @@ public class SimpleHttpServer implements Runnable {
 				// initialise the keystore
 				char[] password = "simulator".toCharArray();
 				KeyStore ks = KeyStore.getInstance("JKS");
-				FileInputStream fis = new FileInputStream("lig.keystore");
+				// FileInputStream fis = new FileInputStream("lig.keystore");
+				InputStream fis = this.getClass().getResourceAsStream("lig.keystore");
 				ks.load(fis, password);
 
 				// setup the key manager factory
@@ -656,8 +661,6 @@ public class SimpleHttpServer implements Runnable {
 	 * 
 	 */
 	private class JsHandler implements HttpHandler {
-		private final Prefs prefs = Prefs.getInstance();
-
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
 			Log.d(TAG,
@@ -714,7 +717,7 @@ public class SimpleHttpServer implements Runnable {
 				String template = new String(templateBytes);
 
 				StringBuilder html = new StringBuilder();
-				HashMap<String, String> prefs = Prefs.getInstance().getPreferencesMap();
+				HashMap<String, String> prefs = Coordinator.getPrefs().getPreferencesMap();
 				// remove any preferences that should be hidden from the frontend
 				prefs.remove(Prefs.Keys.autoIncPort);
 
@@ -793,7 +796,7 @@ public class SimpleHttpServer implements Runnable {
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 						+ "<i class=\"fa fa-question-circle\" "
 						+ "title=\""
-						+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
+						+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs().getPreferenceDesc(
 								Prefs.Keys.configFile))
 						+ "\"></i>&nbsp;"
 						+ Prefs.Keys.configFile
@@ -815,9 +818,9 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key \">"
 							+ "<i class=\"fa fa-question-circle\" "
 							+ "title=\""
-							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input "
+							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
+									.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
+							+ "</span><span " + "class=\"pref_value\"><input "
 							+ (usingDefaultConfig ? "disabled='disabled'" : "")
 							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
 							+ "\" /></span></div><br />\n");
@@ -836,16 +839,16 @@ public class SimpleHttpServer implements Runnable {
 					// number would have been read from the default preferences. We need to simulate
 					// this here by blanking the port entry if the auto increment flag was set.
 					if (key.equals(Prefs.Keys.portNum)
-							&& Prefs.getInstance().getPreference(Prefs.Keys.autoIncPort)
+							&& Coordinator.getPrefs().getPreference(Prefs.Keys.autoIncPort)
 									.equals("true")) {
 						value = "";
 					}
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
-							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input "
+							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
+									.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
+							+ "</span><span " + "class=\"pref_value\"><input "
 							+ (key.equals((Prefs.Keys.portNum)) ? " type='number' " : "")
 							+ (usingDefaultConfig ? " disabled='disabled' " : "")
 							+ " type=\"text\" name=\"" + key + "\" value=\"" + value
@@ -862,9 +865,9 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
-							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input "
+							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
+									.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
+							+ "</span><span " + "class=\"pref_value\"><input "
 							+ (usingDefaultConfig ? "disabled='disabled'" : "")
 							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
 							+ "\" /></span></div><br />\n");
@@ -880,9 +883,9 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
-							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key)) + "\"></i>&nbsp;" + key + "</span><span "
-							+ "class=\"pref_value\"><input "
+							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
+									.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
+							+ "</span><span " + "class=\"pref_value\"><input "
 							+ (usingDefaultConfig ? "disabled='disabled'" : "")
 							+ " type=\"password\" name=\"" + key + "\" value=\"" + prefs.get(key)
 							+ "\" /></span></div><br />\n");
@@ -902,8 +905,8 @@ public class SimpleHttpServer implements Runnable {
 					html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 							+ "<i class=\"fa fa-question-circle \" "
 							+ "title=\""
-							+ StringEscapeUtils.escapeHtml4(Prefs.getInstance().getPreferenceDesc(
-									key))
+							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
+									.getPreferenceDesc(key))
 							+ "\"></i>&nbsp;"
 							+ key
 							+ "</span><span "
@@ -928,7 +931,7 @@ public class SimpleHttpServer implements Runnable {
 						html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 								+ "<i class=\"fa fa-question-circle \" "
 								+ "title=\""
-								+ StringEscapeUtils.escapeHtml4(Prefs.getInstance()
+								+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
 										.getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
 								+ "</span><span " + "class=\"pref_value\"><input "
 								+ (usingDefaultConfig ? "disabled='disabled'" : "")
@@ -980,8 +983,8 @@ public class SimpleHttpServer implements Runnable {
 					// the file was found and read correctly
 					byte[] response = getResponse(resourceName);
 					// get the MIME type of the file
-					String file = Prefs.getInstance().getPreference(Prefs.Keys.webResourceFolder)
-							+ resourceName;
+					String file = Coordinator.getPrefs()
+							.getPreference(Prefs.Keys.webResourceFolder) + resourceName;
 					String mime = null;
 					try (InputStream is = new FileInputStream(file);
 							BufferedInputStream bis = new BufferedInputStream(is)) {
@@ -1122,7 +1125,7 @@ public class SimpleHttpServer implements Runnable {
 	 * 
 	 */
 	private class UpdateSettingsHandler implements HttpHandler {
-		private final Prefs prefs = Prefs.getInstance();
+		private final Prefs prefs = Coordinator.getPrefs();
 
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
@@ -1232,7 +1235,7 @@ public class SimpleHttpServer implements Runnable {
 				if ((module != null) && (module.equals("web") || module.equals("all"))) {
 					// The address the new server will be listening on may have changed
 					String newAddress = null;
-					if (Prefs.getInstance().getPreference(Prefs.Keys.serverBindLocalhost)
+					if (Coordinator.getPrefs().getPreference(Prefs.Keys.serverBindLocalhost)
 							.equals("true")) {
 						newAddress = bestAddress();
 					} else {
@@ -1240,7 +1243,7 @@ public class SimpleHttpServer implements Runnable {
 					}
 
 					templateHtml = templateHtml.replace("!LOCATION!", getProtocol() + newAddress
-							+ ":" + Prefs.getInstance().getPreference(Prefs.Keys.portNum)
+							+ ":" + Coordinator.getPrefs().getPreference(Prefs.Keys.portNum)
 							+ "/settings.html");
 				} else {
 					templateHtml = templateHtml.replace("!LOCATION!", getProtocol()

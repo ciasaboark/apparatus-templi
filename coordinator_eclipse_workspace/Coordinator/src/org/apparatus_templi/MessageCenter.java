@@ -34,7 +34,7 @@ public class MessageCenter implements Runnable {
 
 	private static MessageCenter instance;
 	private SerialConnection serialConnection;
-	private final boolean serialConnectionReady = false;
+	private boolean serialConnectionReady = false;
 
 	private MessageCenter() {
 		// Singleton pattern
@@ -220,7 +220,7 @@ public class MessageCenter implements Runnable {
 		// TODO add support for more options
 		boolean sendMessage = true;
 		boolean messageSent = false;
-		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0) {
+		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0 && serialConnectionReady) {
 			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
 			byte[] fragmentNum = { fragmentNumberBytes[2], fragmentNumberBytes[3] };
 			byte[] destinationBytes = new byte[10];
@@ -235,10 +235,9 @@ public class MessageCenter implements Runnable {
 			// build the outgoing message byte[]
 			if (sendMessage) {
 				messageSent = true;
-				// Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '" +
-				// moduleName
-				// + "', fragment num: " + fragmentNumber + " of type "
-				// + ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
+				Log.d(TAG, "sendMessageFragment() sending '" + data.length + "' bytes to '"
+						+ moduleName + "', fragment num: " + fragmentNumber + " of type "
+						+ ((optionsByte == Message.OPTION_TYPE_TEXT) ? "text" : "bin"));
 				byte[] message = new byte[15 + data.length];
 				message[0] = Message.START_BYTE;
 				message[1] = optionsByte;
@@ -351,9 +350,17 @@ public class MessageCenter implements Runnable {
 		boolean sendMessage = true;
 		boolean messageSent = false;
 		byte[] commandBytes = {};
+		if (command == null || moduleName == null) {
+			throw new IllegalArgumentException("module name and data must not be null");
+		}
 
 		try {
 			commandBytes = command.getBytes("UTF-8");
+			if (commandBytes.length > (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
+				throw new IllegalArgumentException(
+						"Command is too large for a single message: length of "
+								+ commandBytes.length);
+			}
 		} catch (UnsupportedEncodingException e) {
 			sendMessage = false;
 		}
@@ -378,6 +385,13 @@ public class MessageCenter implements Runnable {
 	 * @return true if the message was sent, false otherwise.
 	 */
 	synchronized boolean sendBinary(String moduleName, byte[] data) {
+		if (data == null || moduleName == null) {
+			throw new IllegalArgumentException("module name and data must not be null");
+		}
+		if (data.length > (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
+			throw new IllegalArgumentException("Data is too large for a single message: length of "
+					+ data.length);
+		}
 		return sendMessage(moduleName, data, Message.OPTION_TYPE_BIN);
 	}
 
@@ -440,7 +454,15 @@ public class MessageCenter implements Runnable {
 	 * @param serialConnection
 	 */
 	void setSerialConnection(SerialConnection serialConnection) {
+		if (serialConnection != null) {
+			serialConnection.close();
+		}
+		this.stopReadingMessges();
+		this.serialConnectionReady = false;
 		this.serialConnection = serialConnection;
+		if (serialConnection != null && serialConnection.isConnected()) {
+			this.serialConnectionReady = true;
+		}
 
 	}
 
@@ -479,7 +501,7 @@ public class MessageCenter implements Runnable {
 	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 * 
 	 */
-	class MessageFragment {
+	private class MessageFragment {
 		private final byte options;
 		private final int dataLength;
 		private final int fragmentNo;
@@ -522,7 +544,7 @@ public class MessageCenter implements Runnable {
 	 * @author Jonathan Nelson <ciasaboark@gmail.com>
 	 * 
 	 */
-	class FragmentedMessage {
+	private class FragmentedMessage {
 		static final String TAG = "FragmentedMessage";
 		private final SortedMap<Integer, MessageFragment> fragments = new TreeMap<Integer, MessageFragment>();
 

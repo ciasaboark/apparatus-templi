@@ -31,7 +31,7 @@ public class Log {
 	private synchronized static void writeLogMessage(String logMessage) {
 		prevLines.add(logMessage);
 		PrintWriter out = null;
-		String logFile = Prefs.getInstance().getPreference(Prefs.Keys.logFile);
+		String logFile = Coordinator.getPrefs().getPreference(Prefs.Keys.logFile);
 		if (logFile == null) {
 			bufferedLines.add(logMessage);
 		} else {

@@ -75,21 +75,23 @@ public class SysTray implements ActionListener {
 	}
 
 	void setStatus(int status) {
-		switch (status) {
-		case Status.WAITING:
-			trayIcon.setImage(imgWaiting);
-			trayIcon.setToolTip("Apparatus Templi - waiting");
-			webInterface.setEnabled(false);
-			break;
-		case Status.RUNNING:
-			trayIcon.setImage(imgRunning);
-			trayIcon.setToolTip("Apparatus Templi - running");
-			webInterface.setEnabled(true);
-			break;
-		case Status.TERM:
-			trayIcon.setImage(imgTerm);
-			trayIcon.setToolTip("Apparatus Templi - terminating");
-			break;
+		if (trayIcon != null && webInterface != null) {
+			switch (status) {
+			case Status.WAITING:
+				trayIcon.setImage(imgWaiting);
+				trayIcon.setToolTip("Apparatus Templi - waiting");
+				webInterface.setEnabled(false);
+				break;
+			case Status.RUNNING:
+				trayIcon.setImage(imgRunning);
+				trayIcon.setToolTip("Apparatus Templi - running");
+				webInterface.setEnabled(true);
+				break;
+			case Status.TERM:
+				trayIcon.setImage(imgTerm);
+				trayIcon.setToolTip("Apparatus Templi - terminating");
+				break;
+			}
 		}
 	}
 

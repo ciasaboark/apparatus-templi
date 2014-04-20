@@ -1,7 +1,12 @@
 package org.apparatus_templi.driver;
 
+import java.util.ArrayList;
+
 import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Event;
+import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.XmlFormatter;
 
@@ -19,7 +24,7 @@ import org.apparatus_templi.xml.XmlFormatter;
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
-public class StatefulLed extends Driver {
+public class StatefulLed extends Driver implements EventGenerator {
 
 	// our remote module has three LEDs attached
 	private final int[] leds = { 5, 6, 7 };
@@ -42,8 +47,16 @@ public class StatefulLed extends Driver {
 
 	@Override
 	public boolean receiveCommand(String message) {
-		// throw away the message for now
-		// Log.d(this.name, "received message '"+ message + "', ignoring");
+		if (message != null) {
+			Log.d(this.name, "got message: " + message);
+			if (message.equals("mot")) {
+				Event e = new MotionEvent(System.currentTimeMillis(), this);
+				Coordinator.receiveEvent(this, e);
+			}
+		} else {
+			// throw away the message for now
+			Log.d(this.name, "received message '" + message + "', ignoring");
+		}
 		return true;
 	}
 
@@ -85,7 +98,7 @@ public class StatefulLed extends Driver {
 			int ledNum = 0 + (int) (Math.random() * ((2 - 0) + 1));
 			Log.d(this.name, "toggling LED " + ledNum);
 			toggleLED(ledNum);
-			this.sleep(3000);
+			this.sleep(10000);
 		}
 
 		// thread is terminating, do whatever cleanup is needed
@@ -115,6 +128,13 @@ public class StatefulLed extends Driver {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public ArrayList<Event> getEventTypes() {
+		ArrayList<Event> events = new ArrayList<Event>();
+		events.add(new MotionEvent());
+		return events;
 	}
 
 }

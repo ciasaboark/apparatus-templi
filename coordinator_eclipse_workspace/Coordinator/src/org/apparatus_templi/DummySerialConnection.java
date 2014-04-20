@@ -1,6 +1,5 @@
 package org.apparatus_templi;
 
-import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 
 /**
@@ -13,8 +12,6 @@ import gnu.io.SerialPortEvent;
  */
 public class DummySerialConnection extends SerialConnection {
 	private static final String TAG = "DummySerialConnection";
-
-	SerialPort serialPort;
 
 	private boolean connected = false;
 
@@ -37,6 +34,7 @@ public class DummySerialConnection extends SerialConnection {
 
 	@Override
 	public synchronized void close() {
+		this.connected = false;
 	}
 
 	@Override
@@ -55,6 +53,9 @@ public class DummySerialConnection extends SerialConnection {
 
 	@Override
 	synchronized boolean writeData(byte[] data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Can not write null data to serial line");
+		}
 		return true;
 	}
 

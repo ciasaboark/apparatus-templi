@@ -23,9 +23,8 @@ public class Prefs {
 	// contains a long form description of the preference
 	private static final HashMap<String, String> PREF_DESC = new HashMap<String, String>();
 	public static final HashMap<String, String> preferences = new HashMap<String, String>();
-	private static Prefs instance = null;
 
-	private Prefs() {
+	public Prefs() {
 		// Singleton pattern
 		DEF_PREFS.put(Keys.configFile, "coordinator.conf");
 		PREF_DESC.put(Keys.configFile, "The configuration file to read preferences from. "
@@ -92,12 +91,12 @@ public class Prefs {
 	/**
 	 * Return a reference to the Prefs singleton.
 	 */
-	public static Prefs getInstance() {
-		if (instance == null) {
-			instance = new Prefs();
-		}
-		return instance;
-	}
+	// public static Prefs getInstance() {
+	// if (instance == null) {
+	// instance = new Prefs();
+	// }
+	// return instance;
+	// }
 
 	/**
 	 * Reads all preferences from the given configFile. If the given file can not be read then the
@@ -173,32 +172,32 @@ public class Prefs {
 					props.getProperty(Keys.twtrAccessKey, DEF_PREFS.get(Keys.twtrAccessKey)));
 			Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
 					+ getPreference(Keys.twtrAccessKey) + "'");
-			
+
 			preferences.put(Keys.emailServer,
 					props.getProperty(Keys.emailServer, DEF_PREFS.get(Keys.emailServer)));
 			Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
 					+ getPreference(Keys.emailServer) + "'");
-			
+
 			preferences.put(Keys.emailPort,
 					props.getProperty(Keys.emailPort, DEF_PREFS.get(Keys.emailPort)));
 			Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
 					+ getPreference(Keys.emailPort) + "'");
-			
+
 			preferences.put(Keys.emailUsername,
 					props.getProperty(Keys.emailUsername, DEF_PREFS.get(Keys.emailUsername)));
 			Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
 					+ getPreference(Keys.emailUsername) + "'");
-			
+
 			preferences.put(Keys.emailAddress,
 					props.getProperty(Keys.emailAddress, DEF_PREFS.get(Keys.emailAddress)));
 			Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
 					+ getPreference(Keys.emailAddress) + "'");
-			
+
 			preferences.put(Keys.emailPassword,
 					props.getProperty(Keys.emailPassword, DEF_PREFS.get(Keys.emailPassword)));
 			Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
 					+ getPreference(Keys.emailPassword) + "'");
-			
+
 		} catch (IOException | NullPointerException e) {
 			Log.w(TAG, "unable to read configuration file '" + configFile + "'");
 

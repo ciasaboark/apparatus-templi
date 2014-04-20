@@ -1,5 +1,6 @@
 package org.apparatus_templi.service;
 
+import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.Prefs;
 
@@ -30,8 +31,8 @@ public final class TwitterService implements ServiceInterface {
 	}
 
 	private void start() {
-		accessToken = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccess);
-		accessTokenKey = Prefs.getInstance().getPreference(Prefs.Keys.twtrAccessKey);
+		accessToken = Coordinator.getPrefs().getPreference(Prefs.Keys.twtrAccess);
+		accessTokenKey = Coordinator.getPrefs().getPreference(Prefs.Keys.twtrAccessKey);
 		if (accessToken != null && accessTokenKey != null) {
 			ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true).setOAuthConsumerKey(CONSUMER_KEY)
