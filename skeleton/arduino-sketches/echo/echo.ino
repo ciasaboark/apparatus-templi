@@ -23,26 +23,18 @@
 
 
 const String BROADCAST_TAG = "ALL";
-const String MODULE_NAME = "ECHO";
+char MODULE_NAME[] = "ECHO";
 const int MAX_DATA_SIZE = 69;
 const int XBEE_5V = 12;	//pin number that powers the attached Xbee
 uint8_t serialNumber [8];
 
-// const byte START_BYTE = 0b00001101;
-
-SoftwareSerial softSerial = SoftwareSerial(10, 11);
-XBee xbee = XBee();
-XBeeResponse response = XBeeResponse();
-ZBRxResponse rx = ZBRxResponse();
-ModemStatusResponse msr = ModemStatusResponse();
+Zigbee zigbee(MODULE_NAME, 10, 11);
 
 void setup() {  
 	// start serial
 	Serial.begin(115200);
-	softSerial.begin(9600);
-	
-	xbee.begin(softSerial);  //xbee is connected to pins 10 & 11
-	
+	zigbee.start();
+		
 	//set pins 4 - 9 to output mode
 	for (int i = 4; i < 10; i++) {
 		pinMode(i, OUTPUT);
