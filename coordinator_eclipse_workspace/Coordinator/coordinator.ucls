@@ -28,8 +28,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </interface>  
-  <class id="4" language="java" name="org.apparatus_templi.SimpleHttpServer.ResourceHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="4" language="java" name="org.apparatus_templi.web.SimpleHttpServer.ResourceHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2505" y="1099"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -37,8 +37,9 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="org.apparatus_templi.SimpleHttpServer.RunningDriversHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="org.apparatus_templi.web.SimpleHttpServer.RunningDriversHandler" 
+    project="Coordinator" file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2642" y="1205"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -64,8 +65,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="org.apparatus_templi.SimpleHttpServer.SettingsHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="8" language="java" name="org.apparatus_templi.web.SimpleHttpServer.SettingsHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2636" y="1317"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -127,8 +128,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="15" language="java" name="org.apparatus_templi.SimpleHttpServer.FullXmlHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="15" language="java" name="org.apparatus_templi.web.SimpleHttpServer.FullXmlHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2639" y="1431"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -136,8 +137,9 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="16" language="java" name="org.apparatus_templi.SimpleHttpServer.RestartModuleHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="16" language="java" name="org.apparatus_templi.web.SimpleHttpServer.RestartModuleHandler" 
+    project="Coordinator" file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2639" y="1537"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -145,8 +147,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="17" language="java" name="org.apparatus_templi.SimpleHttpServer.WidgetXmlHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="17" language="java" name="org.apparatus_templi.web.SimpleHttpServer.WidgetXmlHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2956" y="1052"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -200,8 +202,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="23" language="java" name="org.apparatus_templi.SimpleHttpServer.InfoHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="23" language="java" name="org.apparatus_templi.web.SimpleHttpServer.InfoHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2958" y="1178"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -236,8 +238,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="27" language="java" name="org.apparatus_templi.SimpleHttpServer.AboutHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="27" language="java" name="org.apparatus_templi.web.SimpleHttpServer.AboutHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2959" y="1287"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -308,8 +310,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="35" language="java" name="org.apparatus_templi.SimpleHttpServer.LogHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="35" language="java" name="org.apparatus_templi.web.SimpleHttpServer.LogHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2961" y="1406"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -326,8 +328,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="37" language="java" name="org.apparatus_templi.SimpleHttpServer.UpdateSettingsHandler" 
-    project="Coordinator" file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" 
+  <class id="37" language="java" name="org.apparatus_templi.web.SimpleHttpServer.UpdateSettingsHandler" 
+    project="Coordinator" file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2122" y="1099"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
@@ -382,8 +384,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="43" language="java" name="org.apparatus_templi.SimpleHttpServer" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="43" language="java" name="org.apparatus_templi.web.SimpleHttpServer" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2967" y="735"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -400,8 +402,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="45" language="java" name="org.apparatus_templi.SimpleHttpServer.JsHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="45" language="java" name="org.apparatus_templi.web.SimpleHttpServer.JsHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2318" y="1099"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -418,8 +420,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="47" language="java" name="org.apparatus_templi.SimpleHttpServer.IndexHandler" project="Coordinator" 
-    file="/Coordinator/src/org/apparatus_templi/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="47" language="java" name="org.apparatus_templi.web.SimpleHttpServer.IndexHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/SimpleHttpServer.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="2959" y="1515"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      

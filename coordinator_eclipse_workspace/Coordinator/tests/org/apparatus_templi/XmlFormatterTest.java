@@ -22,6 +22,7 @@ import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.Sensor;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -32,7 +33,13 @@ public class XmlFormatterTest {
 
 	@Before
 	public void before() {
+		System.out.println("#################     BEGIN     #################");
 		xml = new XmlFormatter(new BlankControllerDriver(), "long name");
+	}
+
+	@After
+	public void after() {
+		System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	@Test(expected = IllegalArgumentException.class)

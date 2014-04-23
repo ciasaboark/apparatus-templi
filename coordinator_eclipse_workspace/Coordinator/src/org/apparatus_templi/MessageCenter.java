@@ -453,13 +453,13 @@ public class MessageCenter implements Runnable {
 	 * 
 	 * @param serialConnection
 	 */
-	void setSerialConnection(SerialConnection serialConnection) {
-		if (serialConnection != null) {
-			serialConnection.close();
+	void setSerialConnection(SerialConnection newSerialConnection) {
+		if (this.serialConnection != null) {
+			this.serialConnection.close();
 		}
 		this.stopReadingMessges();
 		this.serialConnectionReady = false;
-		this.serialConnection = serialConnection;
+		this.serialConnection = newSerialConnection;
 		if (serialConnection != null && serialConnection.isConnected()) {
 			this.serialConnectionReady = true;
 		}
