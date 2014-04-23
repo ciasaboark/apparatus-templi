@@ -353,6 +353,9 @@ public class Prefs {
 	 *            file.
 	 */
 	public synchronized boolean savePreferences(HashMap<String, String> prefs) {
+		// TODO make sure the null and blank values are not being saved (unless appropriate for that
+		// preference)
+
 		// only save the preferences if the config file is not the default
 		boolean fileUpdated = false;
 		String newPrefsFile = prefs.get(Keys.configFile);
@@ -383,19 +386,24 @@ public class Prefs {
 			// store the user/pass to the database then remove it from the map so they are not
 			// written to the config file
 			if (newPrefs.containsKey(Keys.userName)) {
-				Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
-				newPrefs.remove(Keys.userName);
+				String userName = newPrefs.get(Keys.userName);
+				if (userName != null && "".equals(userName)) {
+					Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
+					newPrefs.remove(Keys.userName);
+				}
 			}
 
 			if (newPrefs.containsKey(Keys.userPass)) {
 				String password = newPrefs.get(Keys.userPass);
 				newPrefs.remove(Keys.userPass);
-				String hash;
-				try {
-					hash = org.apparatus_templi.web.PasswordHash.createHash(password);
-					Coordinator.storeTextData("SYSTEM", "PASSWORD", hash);
-				} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-					Log.e(TAG, "could not create has of password");
+				if (password != null && !"".equals(password)) {
+					String hash;
+					try {
+						hash = org.apparatus_templi.web.PasswordHash.createHash(password);
+						Coordinator.storeTextData("SYSTEM", "PASSWORD", hash);
+					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+						Log.e(TAG, "could not create has of password");
+					}
 				}
 			}
 

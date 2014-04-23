@@ -1125,7 +1125,7 @@ public class Coordinator {
 	public static synchronized void wakeSelf(Driver d) {
 		if (d == null) {
 			throw new IllegalArgumentException("Can not wake null driver");
-		} else if (!loadedDrivers.containsKey(d)) {
+		} else if (!loadedDrivers.containsKey(d.getName())) {
 			throw new IllegalArgumentException("Can not wake driver that has not been loaded");
 		} else {
 			wakeDriver(d.getName(), false, false);

@@ -76,20 +76,22 @@ public class Local extends Driver {
 			Log.e(this.name, "toggleLED() given invalid led number");
 		} else {
 			boolean newState = !ledsState[ledNum];
-			Coordinator.sendCommand(this, String.valueOf(leds[ledNum])
-					+ (ledsState[ledNum] ? "0" : "1"));
-			ledsState[ledNum] = newState;
+			String response = Coordinator.sendCommandAndWait(this, String.valueOf(leds[ledNum])
+					+ (ledsState[ledNum] ? "0" : "1"), 6);
+			if (response != null && response.startsWith("OK")) {
+				ledsState[ledNum] = newState;
 
-			switch (ledNum) {
-			case 0:
-				led1.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-				break;
-			case 1:
-				led2.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-				break;
-			case 2:
-				led3.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-				break;
+				switch (ledNum) {
+				case 0:
+					led1.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
+					break;
+				case 1:
+					led2.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
+					break;
+				case 2:
+					led3.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
+					break;
+				}
 			}
 		}
 	}
