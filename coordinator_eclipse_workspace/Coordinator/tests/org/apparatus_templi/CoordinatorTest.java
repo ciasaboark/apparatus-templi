@@ -2,9 +2,13 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apparatus_templi.driver.BlankControllerDriver;
 import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.event.ProximityEvent;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,8 +17,14 @@ public class CoordinatorTest {
 	private Coordinator coordinator = null;
 
 	@Before
-	public void createCoordinator() {
+	public void before() {
+		System.out.println("#################     BEGIN     #################");
 		coordinator = new Coordinator();
+	}
+
+	@After
+	public void after() {
+		System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	/*
@@ -48,7 +58,10 @@ public class CoordinatorTest {
 	 * Test sending messages from unloaded drivers
 	 */
 	@Test
-	public void testSendNullCommandFromDriver() throws NoSuchMethodException, SecurityException {
+	public void testSendNullCommandFromDriver() {
+		// TODO expose method to set coordinator message center, load dummy serial connection
+		// This test is succeeding only because the serial link is not ready, not because driver is
+		// not loaded
 		System.out.println("Sending null command from unloaded BlankControllerDriver");
 		assertTrue(Coordinator.sendCommand(new BlankControllerDriver(), null) == false);
 		assertTrue(Coordinator.sendBinary(new BlankControllerDriver(), null) == false);
@@ -66,6 +79,23 @@ public class CoordinatorTest {
 		System.out.println("Sending null command from null driver");
 		assertTrue(Coordinator.sendCommand(null, null) == false);
 		assertTrue(Coordinator.sendBinary(null, null) == false);
+	}
+
+	/*
+	 * Test private methods
+	 */
+
+	@Test(expected = IllegalArgumentException.class)
+	public void routeNullMessage() throws NoSuchMethodException, SecurityException,
+			IllegalAccessException, InvocationTargetException {
+		Method method;
+		method = Coordinator.class.getDeclaredMethod("routeIncomingMessage", Message.class);
+		method.setAccessible(true);
+		try {
+			method.invoke(Coordinator.class, new Object[] { null });
+		} catch (IllegalArgumentException e) {
+
+		}
 	}
 
 	/*

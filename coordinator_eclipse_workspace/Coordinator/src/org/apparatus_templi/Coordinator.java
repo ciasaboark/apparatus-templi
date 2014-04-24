@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class Coordinator {
 	private static ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>> eventWatchers = new ConcurrentHashMap<Class<? extends Event>, ArrayList<EventWatcher>>();
 	private static SerialConnection serialConnection = null;
 	private static MessageCenter messageCenter = MessageCenter.getInstance();
-	private static SimpleHttpServer webServer = null;
-	private static Thread webServerThread = null;
+	private static org.apparatus_templi.web.AbstractWebServer webServer = null;
+	// private static Thread webServerThread = null;
 	private static Prefs prefs = new Prefs();
 	private static boolean connectionReady = false;
 	private static final long startTime = System.currentTimeMillis();
@@ -68,7 +68,9 @@ public class Coordinator {
 	 *            the {@link Message} to route
 	 */
 	private static synchronized void routeIncomingMessage(Message m) {
-		assert m != null : "we should always have a valid message to work with";
+		if (m == null) {
+			throw new IllegalArgumentException("we should always have a valid message to work with");
+		}
 
 		Log.d(TAG, "routeIncomingMessage()");
 		String destination = m.getDestination();
@@ -261,15 +263,17 @@ public class Coordinator {
 	 *            the command line arguments to be parsed
 	 */
 	private static void parseCommandLineOptions(String[] argv) {
+		assert argv != null : "command line arguments should never be null";
+
 		// Using apache commons cli to parse the command line options
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
 
-		@SuppressWarnings("static-access")
-		Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum).hasArg()
-				.withDescription("Bind the server to the given port number")
-				.create(Prefs.Keys.portNum);
-		options.addOption(portOption);
+		// @SuppressWarnings("static-access")
+		// Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum).hasArg()
+		// .withDescription("Bind the server to the given port number")
+		// .create(Prefs.Keys.portNum);
+		// options.addOption(portOption);
 
 		@SuppressWarnings("static-access")
 		Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort).hasArg()
@@ -282,11 +286,11 @@ public class Coordinator {
 				.withDescription("Path to the configuration file").create(Prefs.Keys.configFile);
 		options.addOption(configOption);
 
-		@SuppressWarnings("static-access")
-		Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder).hasArg()
-				.withDescription("Web frontend will use resources in the specified folder")
-				.create(Prefs.Keys.webResourceFolder);
-		options.addOption(resourcesOption);
+		// @SuppressWarnings("static-access")
+		// Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder).hasArg()
+		// .withDescription("Web frontend will use resources in the specified folder")
+		// .create(Prefs.Keys.webResourceFolder);
+		// options.addOption(resourcesOption);
 
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
 		try {
@@ -309,7 +313,7 @@ public class Coordinator {
 					configFile = System.getProperty("user.home") + configFile.substring(1);
 				}
 			} else {
-				configFile = Prefs.DEF_PREFS.get(Prefs.Keys.configFile);
+				configFile = prefs.getDefPreferences(Prefs.Keys.configFile);
 			}
 			prefs.putPreference(Prefs.Keys.configFile, configFile);
 
@@ -376,53 +380,118 @@ public class Coordinator {
 	 * @throws UnknownHostException
 	 *             if the address could not be bound to.
 	 */
-	private static void startWebServer() throws UnknownHostException {
-		int portNum;
-		boolean autoIncPort = prefs.getPreference(Prefs.Keys.autoIncPort).equals("true") ? true
-				: false;
-		boolean bindLocalhost = prefs.getPreference(Prefs.Keys.serverBindLocalhost).equals("true") ? true
-				: false;
+	private static void startWebServer(InetSocketAddress socket) throws UnknownHostException {
+		assert webServer == null : "Can not start web server with one already running";
+
+		if (socket != null) {
+			Log.d(TAG, "starting web server at " + socket.getAddress().getHostAddress() + ":"
+					+ socket.getPort());
+		} else {
+			Log.d(TAG, "starting web server");
+		}
 
 		try {
-			portNum = Integer.valueOf(prefs.getPreference(Prefs.Keys.portNum));
-		} catch (NumberFormatException e) {
-			portNum = Integer.parseInt(Prefs.DEF_PREFS.get(Prefs.Keys.portNum));
-		}
-		if (bindLocalhost) {
-			Log.c(TAG, "Starting web server on "
-					+ (autoIncPort ? "random port " : "port " + portNum)
-					+ " bound to localhost address " + InetAddress.getLocalHost().getHostAddress());
-		} else {
-			Log.c(TAG, "Starting web server on "
-					+ (autoIncPort ? "random port " : "port " + portNum)
-					+ " bound to loopback address");
+			if ("true".equals(prefs.getPreference(Prefs.Keys.encryptServer))) {
+				webServer = new org.apparatus_templi.web.EncryptedMultiThreadedHttpServer(socket);
+			} else {
+				webServer = new org.apparatus_templi.web.MultiThreadedHttpServer(socket);
+			}
+		} catch (Exception e) {
+			// there are a number of exceptions that can be thrown, all are
+			// terminal errors
+			Log.t(TAG, e.getMessage());
+			Coordinator.exitWithReason(e.getMessage());
 		}
 
-		webServer = new SimpleHttpServer(portNum, autoIncPort, bindLocalhost);
-		webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
-		webServerThread = new Thread(webServer);
+		try {
+			webServer.setResourceFolder(prefs.getPreference(Prefs.Keys.webResourceFolder));
+		} catch (IllegalArgumentException e) {
+			Coordinator
+					.exitWithReason("Unable to set web server resource folder " + e.getMessage());
+		}
 
-		webServerThread.start();
+		webServer.start();
 		if (sysTray != null) {
 			sysTray.setStatus(SysTray.Status.RUNNING);
 		}
 	}
 
-	private static void restartWebServer() throws UnknownHostException, InterruptedException {
+	private static void restartWebServer() throws UnknownHostException {
 		if (sysTray != null) {
 			sysTray.setStatus(SysTray.Status.WAITING);
 		}
-		assert webServer != null : "attempting to restart web server when one is already active";
+		assert webServer != null : "attempting to restart web server without one available";
 		Log.w(TAG, "restarting web server");
-
+		InetSocketAddress socket = webServer.getSocket();
 		webServer.terminate();
-		Thread.sleep(3000);
-		while (webServerThread.getState() != Thread.State.TERMINATED) {
-			Log.d(TAG, "waiting on web server to terminate");
-			Thread.sleep(200);
+		// give the server a bit of time to finish serving any ongoing connections
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
 		}
+
 		webServer = null;
-		startWebServer();
+		// find out if we can reuse the same socket as before. If either the host or port can not be
+		// reused, then the socket will have to be discarded and a new one created by the web
+		// server. Note that this could trigger a bug in Windows if the user changes the host but
+		// keeps the port number the same.
+		// TODO check that keeping port same and changing host will trigger the windows bug
+
+		// can the host part be reused?
+		boolean reuseSocket = true;
+
+		if ("true".equals(prefs.getPreference(Prefs.Keys.serverBindLocalhost))
+				&& socket.getAddress().isLoopbackAddress()) {
+			// server was loopback and we will now be using localhost
+			reuseSocket = false;
+		} else if (!"true".equals(prefs.getPreference(Prefs.Keys.serverBindLocalhost))
+				&& !socket.getAddress().isLoopbackAddress()) {
+			// server was localhost and we will now be using loopback
+			reuseSocket = false;
+		}
+
+		/*-
+		 * check that the port number should be reused. This provides five possibilities:
+		 * specified port   -> different specified port (don't reuse)
+		 * specified port   -> same specified port (reuse)
+		 * specified port   -> unspecified port (reuse)
+		 * unspecified port -> unspecified port (reuse)
+		 * unspecified port -> specified port (reuse if port numbers match)
+		 */
+		if (prefs.getPreference(Prefs.Keys.portNum) != null) {
+			// a port number has been set, is it the same port we are already using?
+			try {
+				int portNum = Integer.parseInt(prefs.getPreference(Prefs.Keys.portNum));
+				if (portNum != socket.getPort()) {
+					reuseSocket = false;
+				}
+			} catch (NumberFormatException e) {
+				// if the new port is not a valid integer then it will be caught when starting the
+				// web server
+				reuseSocket = false;
+			}
+
+		} else {
+			// if the port number is unspecified then we don't need to check for anything, all cases
+			// lead to reuse
+
+		}
+
+		// if the socket should be reused pass it to the new web server, otherwise tell it to
+		// generate a new one
+		if (reuseSocket) {
+			Log.d(TAG, "reusing socket in new web server");
+			startWebServer(socket);
+		} else {
+			Log.d(TAG, "requesting web server generate new socket");
+			startWebServer(null);
+		}
+		String newLocation = webServer.getProtocol() + webServer.getServerLocation() + ":"
+				+ webServer.getPort() + "/index.html";
+		StringBuilder newAddress = new StringBuilder();
+		newAddress.append("Web server restarted, available at: <a href='" + newLocation + "'>"
+				+ newLocation + "</a>");
+		sendNotificationEmail(newAddress.toString());
 	}
 
 	private static void startDrivers() {
@@ -614,7 +683,37 @@ public class Coordinator {
 	 */
 	static synchronized void exitWithReason(String reason) {
 		Log.t(TAG, reason);
+		// sendNotificationEmail(reason);
 		System.exit(1);
+	}
+
+	// TODO there should be some sort of rate throttling here
+	public static synchronized void sendNotificationEmail(String message) {
+		sendNotificationEmail(new String[] { message });
+	}
+
+	public static synchronized void sendNotificationEmail(String[] messages) {
+		try {
+			Class.forName("org.apparatus_templi.service.EmailService");
+			Log.d(TAG, "sending notification email");
+			String recipients = prefs.getPreference(Prefs.Keys.emailList);
+			String subject = "Apparatus Templi Notification";
+			StringBuilder reason = new StringBuilder();
+			reason.append("<p>This is an automated message from the Apparatus Templi home "
+					+ "automation system.</p>");
+			reason.append("<p>This email was sent because a user at this email address requested "
+					+ "to be notified of changes to the service status.</p>");
+			reason.append("<p>This email was generated because of one of the following reasons:</p><ul>");
+			for (String line : messages) {
+				reason.append("<li>" + line + "</li>");
+			}
+			reason.append("</ul>");
+
+			org.apparatus_templi.service.EmailService.getInstance().sendEmailMessage(recipients,
+					subject, reason.toString());
+		} catch (ClassNotFoundException e) {
+			Log.e(TAG, "could not send notification email, service is unavailable");
+		}
 	}
 
 	/**
@@ -624,7 +723,7 @@ public class Coordinator {
 	 *            the name of the module to restart. This module should be one of "main" (restart
 	 *            drivers) or "web" (restart the web server).
 	 */
-	static synchronized void restartModule(String module) {
+	public static synchronized void restartModule(String module) {
 		// TODO the chain should be better:
 		/*
 		 * all ->main ->web main ->drivers ->config read ->serial interface ->message center? web
@@ -658,9 +757,6 @@ public class Coordinator {
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				exitWithReason("Error restarting web server");
-			} catch (InterruptedException e) {
-				// TODO should this be a terminal error?
-				e.printStackTrace();
 			}
 			break;
 		default:
@@ -1029,7 +1125,7 @@ public class Coordinator {
 	public static synchronized void wakeSelf(Driver d) {
 		if (d == null) {
 			throw new IllegalArgumentException("Can not wake null driver");
-		} else if (!loadedDrivers.containsKey(d)) {
+		} else if (!loadedDrivers.containsKey(d.getName())) {
 			throw new IllegalArgumentException("Can not wake driver that has not been loaded");
 		} else {
 			wakeDriver(d.getName(), false, false);
@@ -1254,6 +1350,7 @@ public class Coordinator {
 			public void run() {
 				sysTray.setStatus(SysTray.Status.TERM);
 				Thread.currentThread().setName("Shutdown Hook");
+				Coordinator.sendNotificationEmail("Shutdown Hook triggered");
 				Log.d(TAG, "system is going down. Notifying all drivers.");
 				// cancel any pending driver restarts
 				scheduledWakeUps.clear();
@@ -1271,7 +1368,16 @@ public class Coordinator {
 		});
 
 		// start the web interface
-		startWebServer();
+		startWebServer(null);
+
+		// the service should be up and running, send a notification email
+		String serverUp = "Service has started normally.";
+		String newLocation = webServer.getProtocol() + webServer.getServerLocation() + ":"
+				+ webServer.getPort() + "/index.html";
+		StringBuilder newAddress = new StringBuilder();
+		newAddress.append("Web server restarted, available at: <a href='" + newLocation + "'>"
+				+ newLocation + "</a>");
+		sendNotificationEmail(new String[] { serverUp, newAddress.toString() });
 
 		// enter main loop
 		while (true) {

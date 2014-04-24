@@ -74,7 +74,7 @@ public class SysTray implements ActionListener {
 
 	}
 
-	void setStatus(int status) {
+	void setStatus(int status) throws IllegalArgumentException {
 		if (trayIcon != null && webInterface != null) {
 			switch (status) {
 			case Status.WAITING:
@@ -91,6 +91,8 @@ public class SysTray implements ActionListener {
 				trayIcon.setImage(imgTerm);
 				trayIcon.setToolTip("Apparatus Templi - terminating");
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown status");
 			}
 		}
 	}

@@ -112,6 +112,7 @@ void setup() {
 	pinMode(7, OUTPUT);
 //        delay(20000);    //wait for 20 seconds so the xbee can have time to finish its setup
 	Serial.println("Setup done: " + MODULE_NAME);
+        flashLED(7, 4);
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
@@ -164,18 +165,20 @@ void loop() {
                 int pirVal = digitalRead(pirPin);
 
                 if(pirVal == LOW){ //was motion detected
-                  delay(3000);
+                  flashLED(7, 2);
+//                  delay(3000);
                   Serial.println("Motion Detected");
                   sendCommand("mot");
                    
                 } else {
-                  Serial.print("No Motion");
+                  Serial.print(".");
 //                  delay(100);
                 }
 }
 
 void flashLED(int pinNum, int flashes) {
-	for (int i = 0; i < flashes; i++) {
+        pinMode(pinNum, OUTPUT);
+       	for (int i = 0; i < flashes; i++) {
 		digitalWrite(pinNum, HIGH);
 		delay(100);
 		digitalWrite(pinNum, LOW);

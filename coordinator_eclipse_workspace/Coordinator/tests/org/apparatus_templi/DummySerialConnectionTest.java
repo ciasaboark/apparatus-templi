@@ -2,6 +2,7 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +12,13 @@ public class DummySerialConnectionTest {
 
 	@Before
 	public void before() {
+		System.out.println("#################     BEGIN     #################");
 		dc = new DummySerialConnection();
+	}
+
+	@After
+	public void after() {
+		System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	@Test

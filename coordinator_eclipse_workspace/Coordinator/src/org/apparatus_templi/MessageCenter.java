@@ -179,6 +179,10 @@ public class MessageCenter implements Runnable {
 	 * @return true if the message was sent, false otherwise.
 	 */
 	private boolean sendMessage(String moduleName, byte[] data, byte options) {
+		assert moduleName != null : "module name can not be null";
+		assert !moduleName.equals("") : "module name must be at least 1 ASCII character";
+		assert data != null : "command byte array must not be null";
+
 		boolean messageSent = false;
 		// If the data block will fit within a single fragment, then send it
 		if (data.length <= Message.MAX_DATA_SIZE) {
@@ -217,11 +221,15 @@ public class MessageCenter implements Runnable {
 	 */
 	private boolean sendMessageFragment(String moduleName, byte[] data, int fragmentNumber,
 			byte optionsByte) {
+		assert moduleName != null : "module name can not be null";
+		assert data != null : "command data can not be null (but may be empty)";
+
 		// TODO add support for more options
 		boolean sendMessage = true;
 		boolean messageSent = false;
 		if (data.length <= Message.MAX_DATA_SIZE && fragmentNumber >= 0 && serialConnectionReady) {
 			byte[] fragmentNumberBytes = ByteBuffer.allocate(4).putInt(fragmentNumber).array();
+			assert fragmentNumberBytes[0] == 0 && fragmentNumberBytes[1] == 0 : "fragment number is only two bytes, upper two bits should have been 0";
 			byte[] fragmentNum = { fragmentNumberBytes[2], fragmentNumberBytes[3] };
 			byte[] destinationBytes = new byte[10];
 
@@ -453,13 +461,13 @@ public class MessageCenter implements Runnable {
 	 * 
 	 * @param serialConnection
 	 */
-	void setSerialConnection(SerialConnection serialConnection) {
-		if (serialConnection != null) {
-			serialConnection.close();
+	void setSerialConnection(SerialConnection newSerialConnection) {
+		if (this.serialConnection != null) {
+			this.serialConnection.close();
 		}
 		this.stopReadingMessges();
 		this.serialConnectionReady = false;
-		this.serialConnection = serialConnection;
+		this.serialConnection = newSerialConnection;
 		if (serialConnection != null && serialConnection.isConnected()) {
 			this.serialConnectionReady = true;
 		}
