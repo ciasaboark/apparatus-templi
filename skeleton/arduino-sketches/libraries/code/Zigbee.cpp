@@ -91,6 +91,8 @@ void Zigbee::sendMessageFragment(Message *obj) {
 }
 
 Message* Zigbee::receiveMessage() {
+	Message *message;
+
 	xbee.readPacket(300);
 		
 		if (xbee.getResponse().isAvailable()) {
@@ -112,7 +114,19 @@ Message* Zigbee::receiveMessage() {
 				}
 				debug("incoming zigbee packet");
 				// debug("processing message");
-				processMessage(rx.getData(), rx.getDataLength());
+				uint8_t *data = rx.getData();
+				char *message_destination_name[10] = coyp(data, 10, 10);
+				int compare = strcmp(data[10], compare);
+				int *number = data[2]; //force number to be data[2], data
+
+				if(compare == 0 && data[0] == (uint8_t)0x0D) {
+					if( (15 + data[2]) == rx.getDataLength() ) {
+						message = new Message(data[0], data[1], data[2], *number, data message_destination_name, 
+					}
+					else {
+						message = NULL;
+					}	
+				}
 					
 			} else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 				xbee.getResponse().getModemStatusResponse(msr);

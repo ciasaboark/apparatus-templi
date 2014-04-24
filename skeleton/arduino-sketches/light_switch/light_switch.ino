@@ -1,5 +1,6 @@
-#include <SoftwareSerial.h>
 #include <XBee.h>
+
+#include <SoftwareSerial.h>
 #include <Zigbee.h>
 #include <Servo.h> 
 

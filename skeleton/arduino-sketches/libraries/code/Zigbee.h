@@ -26,7 +26,7 @@ class Zigbee {
 	Xbee* getXbee();
 		
 	private:
-        XBee 		    *xbee;
+        XBee 		    	*xbee;
         SoftwareSerial 	    *softSerial;
         XBeeResponse 	    *response;
         ZBRxResponse        *rx;
