@@ -5,10 +5,7 @@
 
 Servo servo;  
 
-
-int illuminate = 0;
-int pos = 0;  
-  
+int pos = 0;  //pos should either be 0 or 180, never any value in between
 int light_on_pin = 7;
 int light_off_pin = 6;
 
@@ -35,7 +32,7 @@ void loop() {
   if(data != NULL && data[0] == 1 && pos != 180) {
     pos = 180;
     servo.write(pos);
-    delay(1000);
+    delay(2000);
     pinMode(light_on_pin, HIGH);
     pinMode(light_off_pin, LOW);
     Serial.print("turning on the light");
@@ -43,7 +40,7 @@ void loop() {
   else if(data != NULL && data[0] == 0 && pos != 0) {
     pos = 0;
     servo.write(pos);
-    delay(1000);
+    delay(2000);
     pinMode(light_on_pin, LOW);
     pinMode(light_off_pin, HIGH);
     Serial.print("turning off the light");
