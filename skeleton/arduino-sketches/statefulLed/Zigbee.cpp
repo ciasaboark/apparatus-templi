@@ -152,6 +152,7 @@ Message* Zigbee::receiveMessage() {
 				int sameName = strcmp(remoteName,name);
 				Serial.print("samename: ");
 				Serial.println(sameName);
+
 				int broadcastID = strcmp((char*)data[10], "ALL");
 				Serial.print("broadcastID: ");
 				Serial.println(broadcastID);

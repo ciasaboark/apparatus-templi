@@ -22,7 +22,7 @@ class Zigbee {
         void sendBinary(uint8_t *command, int data_length);
         void sendMessage(uint8_t *command, int data_length, uint8_t type);
         void sendMessageFragment(Message *obj);
-	Message* receiveMessage();
+		Message* receiveMessage();
 
 
 		
