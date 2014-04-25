@@ -1,15 +1,17 @@
 package org.apparatus_templi.driver;
 
 import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Event;
+import org.apparatus_templi.EventWatcher;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.InputType;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
-import org.apparatus_templi.event.MotionEvent;
 
-public class LightSwitch extends Driver {
+public class LightSwitch extends Driver implements EventWatcher {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Light Switch");
 	private final XmlFormatter fullXml = new XmlFormatter(this, "Light Switch");
 	private final TextArea description = new TextArea("descr", "Long description");
@@ -28,6 +30,9 @@ public class LightSwitch extends Driver {
 		button.setAction("toggle").setDescription("toggle the light switch")
 				.setInputType(InputType.NONE);
 		light_switch.setStatus("off");
+
+		// register to watch for motion events
+		Coordinator.registerEventWatch(this, new MotionEvent());
 	}
 
 	@Override
@@ -72,6 +77,16 @@ public class LightSwitch extends Driver {
 	@Override
 	public String getFullPageXML() {
 		return fullXml.generateXml();
+	}
+
+	@Override
+	public void receiveEvent(Event e) {
+		if (e != null) {
+			if (e instanceof MotionEvent) {
+				// do stuff here
+			}
+		}
+
 	}
 
 }
