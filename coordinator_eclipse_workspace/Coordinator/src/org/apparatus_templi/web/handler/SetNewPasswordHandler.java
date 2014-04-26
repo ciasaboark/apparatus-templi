@@ -31,6 +31,7 @@ public class SetNewPasswordHandler implements HttpHandler {
 						+ exchange.getRequestMethod() + ": '" + exchange.getRequestURI() + "'");
 		com.sun.net.httpserver.Headers headers = exchange.getResponseHeaders();
 		headers.add("Content-Type", "text/html");
+		boolean credentialsSetBegin = Prefs.isCredentialsSet();
 
 		InputStream in = exchange.getRequestBody();
 		ByteArrayOutputStream bao = new ByteArrayOutputStream();
@@ -148,6 +149,19 @@ public class SetNewPasswordHandler implements HttpHandler {
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
 		exchange.getResponseBody().write(response);
 		exchange.close();
+
+		// if a password was removed or added then the web server needs to be restarted so that the
+		// authenticators can be removed or added as needed. If the user changed an already set
+		// password then nothing needs to be done.
+		boolean credentialsSetEnd = Prefs.isCredentialsSet();
+		if (credentialsSetBegin != credentialsSetEnd) {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				//
+			}
+			Coordinator.restartModule("web");
+		}
 	}
 
 	private byte[] getResponse(boolean pass) {

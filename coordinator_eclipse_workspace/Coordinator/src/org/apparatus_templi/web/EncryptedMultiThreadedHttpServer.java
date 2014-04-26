@@ -228,9 +228,7 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 		// httpsServer.createContext("/", new IndexHandler(this));
 
 		// if the user has specified a user/pass then restrict access based on those values
-		final String u = Coordinator.readTextData("SYSTEM", "USERNAME");
-		final String p = Coordinator.readTextData("SYSTEM", "PASSWORD");
-		if (u != null && p != null) {
+		if (Prefs.isCredentialsSet()) {
 			for (HttpContext context : contexts) {
 				context.setAuthenticator(new BasicAuthenticator("apparatus_templi") {
 					@Override
