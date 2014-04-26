@@ -20,10 +20,13 @@ class Zigbee {
         void start(int buad_rate = 9600); //start the serial communication with the default data transmission rate 9600
         void sendCommand(String command);
         void sendBinary(uint8_t *command, int data_length);
+        void sendMessage(uint8_t *command, int data_length, uint8_t type);
         void sendMessageFragment(Message *obj);
+		
+	/* This method mallocs and returns a message array. It should be freed by the caller */
 	Message* receiveMessage();
 
-	Xbee* getXbee();
+
 		
 	private:
         XBee 		    	*xbee;
