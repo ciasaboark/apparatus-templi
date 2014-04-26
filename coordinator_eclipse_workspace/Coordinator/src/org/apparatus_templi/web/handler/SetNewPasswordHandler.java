@@ -160,15 +160,15 @@ public class SetNewPasswordHandler implements HttpHandler {
 			templateBytes = HttpHelper.getFileBytes(webserver.getResourceFolder()
 					+ "inc/updatepass.html");
 			String templateHtml = new String(templateBytes);
-			String oldUser = Coordinator.readTextData("SYSTEM", "USERNAME");
-			String oldPass = Coordinator.readTextData("SYSTEM", "PASSWORD");
-			if ((oldUser == null || oldUser.equals("")) || (oldPass == null || oldPass.equals(""))) {
+			if (Prefs.isCredentialsSet()) {
 				templateHtml = templateHtml
 						.replace(
 								"!OLDPASS!",
 								"<div>Current Username <input id=\"olduser\" "
 										+ "type=\"text\" name=\"olduser\"></div><div>Current Password <input id=\"oldpass\" "
 										+ "type=\"password\" name=\"oldpass\"></div><hr />");
+			} else {
+				templateHtml = templateHtml.replace("!OLDPASS!", "");
 			}
 			templateHtml = templateHtml
 					.replace(

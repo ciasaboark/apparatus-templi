@@ -8,6 +8,7 @@ import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.InputType;
+import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
@@ -17,11 +18,13 @@ public class LightSwitch extends Driver implements EventWatcher {
 	private final TextArea description = new TextArea("descr", "Long description");
 	private final Button button = new Button("switch");
 	private final Controller light_switch = new Controller("switch");
+	private final Pre lightBulbHtml = new Pre("light bulb", "");
 
 	private boolean switch_status; // ture = light on, false = light off
 
 	public LightSwitch() {
 		this.name = "lightswtch";
+		widgetXml.addElement(lightBulbHtml);
 		widgetXml.addElement(description);
 		widgetXml.addElement(light_switch);
 		widgetXml.addElement(button);
@@ -30,8 +33,9 @@ public class LightSwitch extends Driver implements EventWatcher {
 		fullXml.addElement(button);
 
 		button.setAction("toggle").setDescription("toggle the light switch")
-				.setInputType(InputType.NONE);
+				.setInputType(InputType.NONE).setIcon("fa fa-lightbulb-o");
 		light_switch.setStatus("off");
+		lightBulbHtml.setHtml("<i style='color: black' class='fa fa-5x fa-lightbulb-o'></i>");
 
 		// register to watch for motion events
 		Coordinator.registerEventWatch(this, new MotionEvent());
@@ -62,11 +66,15 @@ public class LightSwitch extends Driver implements EventWatcher {
 				if (!switch_status) {
 					Coordinator.sendCommand(this, "1");
 					light_switch.setStatus("ON");
+					lightBulbHtml
+							.setHtml("<i style='color: yellow' class='fa fa-5x fa-lightbulb-o'></i>");
 					goodCommand = true;
 					switch_status = true;
 				} else {
 					Coordinator.sendCommand(this, "0");
 					light_switch.setStatus("OFF");
+					lightBulbHtml
+							.setHtml("<i style='color: black' class='fa fa-5x fa-lightbulb-o'></i>");
 					goodCommand = true;
 					switch_status = false;
 				}
