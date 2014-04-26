@@ -6,8 +6,8 @@
 class Message {	
 	public:
 		Message(uint8_t sigByte, uint8_t option, uint8_t length, uint16_t frag_number, char *destination_address, uint8_t* payld);
-		~Message();
 		Message(const Message *obj);
+		~Message();
 
 		void setSignatureByte(uint8_t sigByte);
 		uint8_t getSignatureByte();
@@ -15,6 +15,8 @@ class Message {
 		void setOptionByte(uint8_t option);
 		uint8_t getOptionByte();
 
+		/* This function mallocs and retains its own internal copy of destination name
+		   if the pointer you pass in is malloced, you are responsible for freeing it*/
 		void setDestinationName(char *module);
 		char* getDestination();
 
@@ -24,7 +26,9 @@ class Message {
 		void setFragmentNumber(uint16_t fragment_number);
 		uint16_t getFragmentNumber();
 
-		void setPayload(uint8_t *buffer);
+		/* This function mallocs and retains its own internal copy of destination name
+		   if the pointer you pass in is malloced, you are responsible for freeing it*/
+		void setPayload(uint8_t *buffer, int length);
 		uint8_t* getPayload();
 		
 	private:
