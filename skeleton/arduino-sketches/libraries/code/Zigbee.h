@@ -23,13 +23,12 @@ class Zigbee {
         void sendMessage(uint8_t *command, int data_length, uint8_t type);
         void sendMessageFragment(Message *obj);
 		
-		/* This method mallocs and returns a message array. It should be freed by the caller */
+		/* This method mallocs and returns a message object. It should be freed by the caller */
 		Message* receiveMessage();
 
-
 		
-	private:
-        XBee 		    	*xbee;
+     private:
+        XBee 	       	    *xbee;
         SoftwareSerial 	    *softSerial;
         XBeeResponse 	    *response;
         ZBRxResponse        *rx;

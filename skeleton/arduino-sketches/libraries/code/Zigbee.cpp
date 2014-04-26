@@ -155,6 +155,7 @@ Message* Zigbee::receiveMessage() {
 				int broadcastID = strcmp((char*)data[10], "ALL");
 				Serial.print("broadcastID: ");
 				Serial.println(broadcastID);
+
 				uint16_t *number = ((uint16_t*)&data[3]); //fragment number
 				//uint8_t *command = (uint8_t*)data[15];
 

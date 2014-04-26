@@ -1,7 +1,7 @@
 body {
-	/*    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;*/
+	    background: url("/resource?file=images/background.jpg") no-repeat center center fixed;
 	/*    background-color: black;*/
-	background: #3d434a url("/resource?file=images/denim.png") repeat;
+/*	background: #3d434a url("/resource?file=images/denim.png") repeat;*/
 	/*    background-size: cover;*/
 	color: #4D4D4D;
 	min-width: 740px;
@@ -186,7 +186,7 @@ html {
 */
 
 #prefs {
-	padding-top: 65px;
+/*	padding-top: 65px;*/
 }
 #prefs_form {
 	font-size: 12pt;
@@ -245,7 +245,7 @@ html {
 	float: right;
 }
 #settings_boxes {
-	margin-top: 65px;
+/*	margin-top: 65px;*/
 	display: table;
 	height: 100%;
 	/*  max-width:1040px;*/
@@ -415,6 +415,11 @@ html {
 #prefs_section_main .restart_module i {
 	color: #C54343;
 }
+
+#settings_padder {
+	margin-top: 130px;
+}
+
 .info-box {
 	border: 1px solid #f0f0f0;
 	border-radius: 4px;

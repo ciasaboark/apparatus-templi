@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
@@ -40,5 +41,4 @@ class Message {
 		uint8_t  *payload;
 		
 };
-
 #endif

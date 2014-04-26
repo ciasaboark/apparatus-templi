@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -142,6 +140,16 @@ public class Prefs {
 		PREF_DESC
 				.put(Keys.userPass,
 						"The password required to access the web site.  If left blank then no username/password will be required");
+	}
+
+	public static boolean isCredentialsSet() {
+		boolean credentialsSet = false;
+		String username = Coordinator.readTextData("SYSTEM", "USERNAME");
+		String password = Coordinator.readTextData("SYSTEM", "PASSWORD");
+		if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
+			credentialsSet = true;
+		}
+		return credentialsSet;
 	}
 
 	/**
@@ -383,29 +391,21 @@ public class Prefs {
 			// insert the user preferences
 			newPrefs.putAll(prefs); // store the updated preferences
 
-			// store the user/pass to the database then remove it from the map so they are not
-			// written to the config file
-			if (newPrefs.containsKey(Keys.userName)) {
-				String userName = newPrefs.get(Keys.userName);
-				if (userName != null && "".equals(userName)) {
-					Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
-					newPrefs.remove(Keys.userName);
-				}
-			}
-
-			if (newPrefs.containsKey(Keys.userPass)) {
-				String password = newPrefs.get(Keys.userPass);
-				newPrefs.remove(Keys.userPass);
-				if (password != null && !"".equals(password)) {
-					String hash;
-					try {
-						hash = org.apparatus_templi.web.PasswordHash.createHash(password);
-						Coordinator.storeTextData("SYSTEM", "PASSWORD", hash);
-					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-						Log.e(TAG, "could not create has of password");
-					}
-				}
-			}
+			/*
+			 * // store the user/pass to the database then remove it from the map so they are not //
+			 * written to the config file if (newPrefs.containsKey(Keys.userName)) { String userName
+			 * = newPrefs.get(Keys.userName); if (userName != null && "".equals(userName)) {
+			 * Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
+			 * newPrefs.remove(Keys.userName); } }
+			 * 
+			 * if (newPrefs.containsKey(Keys.userPass)) { String password =
+			 * newPrefs.get(Keys.userPass); newPrefs.remove(Keys.userPass); if (password != null &&
+			 * !"".equals(password)) { String hash; try { hash =
+			 * org.apparatus_templi.web.PasswordHash.createHash(password);
+			 * Coordinator.storeTextData("SYSTEM", "PASSWORD", hash); } catch
+			 * (NoSuchAlgorithmException | InvalidKeySpecException e) { Log.e(TAG,
+			 * "could not create has of password"); } } }
+			 */
 
 			String configFile = newPrefs.remove(Keys.configFile);
 			// for (String key : newPrefs.keySet()) {

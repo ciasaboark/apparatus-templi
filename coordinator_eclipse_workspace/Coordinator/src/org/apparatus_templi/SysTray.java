@@ -5,12 +5,14 @@ import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.MenuItem;
+import java.awt.MenuShortcut;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,9 +29,9 @@ public class SysTray implements ActionListener {
 	private TrayIcon trayIcon;
 	private MenuItem webInterface;
 	private final AboutDialog aboutDialog = new AboutDialog();
-	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("waiting32x32.png");
-	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icon32x32.png");
-	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("term32x32.png");
+	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("icons/waiting32x32.png");
+	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icons/icon32x32.png");
+	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("icons/term32x32.png");
 
 	public SysTray() {
 		aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -46,14 +48,15 @@ public class SysTray implements ActionListener {
 		final SystemTray tray = SystemTray.getSystemTray();
 
 		// Create a pop-up menu
-		MenuItem aboutItem = new MenuItem("About Apparatus Templi");
+		MenuItem aboutItem = new MenuItem("About Apparatus Templi", new MenuShortcut(KeyEvent.VK_A,
+				false));
 		aboutItem.setActionCommand("about");
 		aboutItem.addActionListener(this);
-		webInterface = new MenuItem("Open Web Interface");
+		webInterface = new MenuItem("Open Web Interface", new MenuShortcut(KeyEvent.VK_W, false));
 		webInterface.setActionCommand("web");
 		webInterface.addActionListener(this);
 		webInterface.setEnabled(false);
-		MenuItem exitItem = new MenuItem("Shutdown Service");
+		MenuItem exitItem = new MenuItem("Shutdown Service", new MenuShortcut(KeyEvent.VK_Q, false));
 		exitItem.setActionCommand("exit");
 		exitItem.addActionListener(this);
 
