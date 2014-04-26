@@ -358,6 +358,7 @@ public class MessageCenter implements Runnable {
 		boolean sendMessage = true;
 		boolean messageSent = false;
 		byte[] commandBytes = {};
+		command = command + '\0';
 		if (command == null || moduleName == null) {
 			throw new IllegalArgumentException("module name and data must not be null");
 		}

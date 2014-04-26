@@ -737,11 +737,14 @@ function refreshFullScreenWidget(driver) {
 					//apply the new title and body content
 					console.log("new title: " + $longName);
 					console.log("new body: " + widgetHtml);
-					$("#widget-" + driver).find(".title").html($longName);
+					var $titlebar = "<span class='refresh-btn'><a onclick='" + refreshFullScreenWidget( "$driver" ) + "'></a></span>";
+					$titlebar += $longName;
+					$titlebar += "<span class='expand-btn'><a onclick='" + collapseFullScreenWidget( "$driver" ) + "'></a></span>";
+					
+					$("#widget-" + driver).find(".title").find("span").html($titlebar);
 					$("#widget-" + driver).find(".content").html(widgetHtml);
 					
 					$("#widget-" + driver).find(".content").addClass('animated fadeIn');
-					$("#widget-" + driver).find(".content").translate('latin');
 					$("#widget-" + driver).find(".content").show();
 				});
 

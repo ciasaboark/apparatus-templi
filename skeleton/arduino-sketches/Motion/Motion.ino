@@ -23,7 +23,7 @@
 
 
 const String BROADCAST_TAG = "ALL";
-const String MODULE_NAME = "State_LED";
+const String MODULE_NAME = "MotionDet";
 const int MAX_DATA_SIZE = 69;
 const int XBEE_5V = 12;	//pin number that powers the attached Xbee
 const int pirPin = 2; //motion detector alarm pin
@@ -111,8 +111,12 @@ void setup() {
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
 //        delay(20000);    //wait for 20 seconds so the xbee can have time to finish its setup
-	Serial.println("Setup done: " + MODULE_NAME);
+	
+        //pause for a bit to let the motion detector stablalize and for the xbee to finish joining the network
+        Serial.println("Sleeping for 15 seconds so the xbee can join the network");
+        delay(15000);
         flashLED(7, 4);
+        Serial.println("Setup done: " + MODULE_NAME);
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
@@ -165,14 +169,18 @@ void loop() {
                 int pirVal = digitalRead(pirPin);
 
                 if(pirVal == LOW){ //was motion detected
-                  flashLED(7, 2);
+                  digitalWrite(7,  HIGH);
 //                  delay(3000);
                   Serial.println("Motion Detected");
                   sendCommand("mot");
+                  delay(3000);
+                  digitalWrite(7, LOW);
                    
                 } else {
+                  //I have no idea what the hell is going on here.  The pin will never
+                  //+  read low without this else block and a print.  The print has to output
+                  //+ something to the serial line.
                   Serial.print(".");
-//                  delay(100);
                 }
 }
 
@@ -325,7 +333,7 @@ void sendCommandFragment(String commandFragment, int fragmentNo) {
 	}
 
 	payload[0] = (byte)0x0D;
-	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);  //coordinator address
+	XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x0000ffff);  //coordinator address
 	ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 	xbee.send(zbTx);
 

@@ -148,14 +148,22 @@ public class Coordinator {
 
 		boolean isDriverLoaded = false;
 		if (d.getModuleName() != null) {
-			if (!loadedDrivers.containsKey(d.getModuleName()) && d.getName().length() <= 10) {
-				loadedDrivers.put(d.getModuleName(), d);
-				Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName()
-						+ " initialized");
-				isDriverLoaded = true;
+			if (!loadedDrivers.containsKey(d.getModuleName())) {
+				if (d.getName().length() <= 10) {
+					loadedDrivers.put(d.getModuleName(), d);
+					Log.d(TAG, "driver " + d.getModuleName() + " of type " + d.getClass().getName()
+							+ " initialized");
+					isDriverLoaded = true;
+				} else {
+					Log.e(TAG, "can not load driver '" + d.getName()
+							+ "' name can not be > 10 characters");
+				}
 			} else {
-				Log.e(TAG, "error loading driver " + d.getClass().getName());
+				Log.e(TAG, "error loading driver " + d.getClass().getName()
+						+ " a driver with the same name is already loaded");
 			}
+		} else {
+			Log.e(TAG, "can not load driver '" + d + "' name can not be null");
 		}
 
 		return isDriverLoaded;

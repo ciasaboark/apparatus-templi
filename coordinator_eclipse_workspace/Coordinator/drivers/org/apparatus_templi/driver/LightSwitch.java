@@ -17,11 +17,11 @@ public class LightSwitch extends Driver implements EventWatcher {
 	private final TextArea description = new TextArea("descr", "Long description");
 	private final Button button = new Button("switch");
 	private final Controller light_switch = new Controller("switch");
-	
-	private boolean switch_status; //ture = light on, false = light off
+
+	private boolean switch_status; // ture = light on, false = light off
 
 	public LightSwitch() {
-		this.name = "light switch";
+		this.name = "lightswtch";
 		widgetXml.addElement(description);
 		widgetXml.addElement(light_switch);
 		widgetXml.addElement(button);
@@ -58,14 +58,13 @@ public class LightSwitch extends Driver implements EventWatcher {
 		if (command != null) {
 			if (command.equals("toggle")) {
 				Log.d(this.name, "toggle command received");
-				
-				if(!switch_status) {
+
+				if (!switch_status) {
 					Coordinator.sendCommand(this, "1");
 					light_switch.setStatus("ON");
 					goodCommand = true;
 					switch_status = true;
-				}
-				else {
+				} else {
 					Coordinator.sendCommand(this, "0");
 					light_switch.setStatus("OFF");
 					goodCommand = true;

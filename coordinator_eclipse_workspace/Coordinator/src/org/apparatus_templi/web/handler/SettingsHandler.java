@@ -10,6 +10,7 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.Prefs;
 import org.apparatus_templi.web.AbstractWebServer;
+import org.apparatus_templi.web.EncryptedMultiThreadedHttpServer;
 import org.apparatus_templi.web.HttpHelper;
 import org.apparatus_templi.web.generator.PageGenerator;
 
@@ -64,6 +65,8 @@ public class SettingsHandler implements HttpHandler {
 			HashMap<String, String> prefs = Coordinator.getPrefs().getPreferencesMap();
 			// remove any preferences that should be hidden from the frontend
 			prefs.remove(Prefs.Keys.autoIncPort);
+			prefs.remove(Prefs.Keys.userName);
+			prefs.remove(Prefs.Keys.userPass);
 
 			String configFile = prefs.get(Prefs.Keys.configFile);
 
@@ -76,15 +79,26 @@ public class SettingsHandler implements HttpHandler {
 
 			// if the user is still using the default config file then show a warning
 			boolean usingDefaultConfig = false;
+			html.append("<div id='settings_padder'></div>");
 			if (prefs.get(Prefs.Keys.configFile).equals(
 					Coordinator.getPrefs().getDefPreferences(Prefs.Keys.configFile))) {
 				usingDefaultConfig = true;
 			}
+
+			// TODO this should be removed when we remove the overwrite settings check
 			if (usingDefaultConfig) {
 				html.append("<span class='warning_text'>The default config file can not be overwritten.  If you want to save your "
 						+ "preferences, then set a new location below and click save preferences.  To use the "
 						+ "new configuration file restart the service with the command line argument: "
 						+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
+			}
+
+			if (webserver instanceof EncryptedMultiThreadedHttpServer) {
+				if (Prefs.isCredentialsSet()) {
+
+				} else {
+					html.append("<div class='info-box' style='width:600px; display: block; margin-right: auto; margin-left: auto; cursor: pointer; font-size: smaller; text-align: center; padding: 10px'><p>No password has been set. Access will be unrestricted until you <a onclick='window.open(\"/set_new_password\", \"password_change\", \"toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>set a password</a>.</p></div>");
+				}
 			}
 
 			// TODO update to a form so that the settings can be sent back in a POST request
@@ -152,8 +166,7 @@ public class SettingsHandler implements HttpHandler {
 					+ "\" onChange='updateConfigFile()' onkeypress='updateConfigFile()' onkeyup='updateConfigFile()' onBlur='updateConfigFile()' /></span></div><br />\n");
 			prefs.remove(Prefs.Keys.configFile);
 			for (String key : new String[] { Prefs.Keys.serialPort, Prefs.Keys.driverList,
-					Prefs.Keys.logFile, Prefs.Keys.emailList, Prefs.Keys.userName,
-					Prefs.Keys.userPass }) {
+					Prefs.Keys.logFile, Prefs.Keys.emailList }) {
 				String value = prefs.get(key);
 				// the serial port name can be a null value, but writing a null string
 				// + will print "null" (a non-existent serial port). Write "" instead.
@@ -171,6 +184,9 @@ public class SettingsHandler implements HttpHandler {
 						+ ((key == Prefs.Keys.userPass) ? " type='password' " : " type='text'")
 						+ " name=\"" + key + "\" value=\"" + value + "\" /></span></div><br />\n");
 				prefs.remove(key);
+			}
+			if (Prefs.isCredentialsSet() && webserver instanceof EncryptedMultiThreadedHttpServer) {
+				html.append("<div style='margin-right: auto; margin-left: auto; cursor: pointer; text-align: center'><p><a onclick='window.open(\"/set_new_password\", \"password_change\", \"toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>Change password</a></p></div>");
 			}
 			html.append("</div></div>");
 

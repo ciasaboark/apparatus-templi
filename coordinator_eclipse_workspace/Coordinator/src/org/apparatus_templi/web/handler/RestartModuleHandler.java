@@ -52,6 +52,14 @@ public class RestartModuleHandler implements HttpHandler {
 
 		if (queryTags != null) {
 			if (queryTags.containsKey("module")) {
+				try {
+					// sleep for a bit so the user agent can load resources references in the
+					// response html before the server restarts
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Coordinator.restartModule(queryTags.get("module"));
 			}
 		}

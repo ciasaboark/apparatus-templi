@@ -28,6 +28,10 @@ else
 fi
 
 time for i in `seq 1 $CYCLES`; do
-	wget -q http://192.168.0.102:8000/$TYPE.xml?driver=$1 -O - > /dev/null &&
-	echo ".\c"
+	wget --no-check-certificate -q https://localhost:8000/$TYPE.xml?driver=$1 -O - > /dev/null ;
+	if [[ $? == 0 ]] ; then
+  		echo ".\c"
+	else
+		echo "x\c"	
+	fi
 done
