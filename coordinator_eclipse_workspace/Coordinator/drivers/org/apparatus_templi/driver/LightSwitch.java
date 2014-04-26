@@ -17,6 +17,8 @@ public class LightSwitch extends Driver implements EventWatcher {
 	private final TextArea description = new TextArea("descr", "Long description");
 	private final Button button = new Button("switch");
 	private final Controller light_switch = new Controller("switch");
+	
+	private boolean switch_status; //ture = light on, false = light off
 
 	public LightSwitch() {
 		this.name = "light switch";
@@ -33,6 +35,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 
 		// register to watch for motion events
 		Coordinator.registerEventWatch(this, new MotionEvent());
+		switch_status = false;
 	}
 
 	@Override
@@ -55,9 +58,19 @@ public class LightSwitch extends Driver implements EventWatcher {
 		if (command != null) {
 			if (command.equals("toggle")) {
 				Log.d(this.name, "toggle command received");
-				Coordinator.sendCommand(this, "1");
-				light_switch.setStatus("ON");
-				goodCommand = true;
+				
+				if(!switch_status) {
+					Coordinator.sendCommand(this, "1");
+					light_switch.setStatus("ON");
+					goodCommand = true;
+					switch_status = true;
+				}
+				else {
+					Coordinator.sendCommand(this, "0");
+					light_switch.setStatus("OFF");
+					goodCommand = true;
+					switch_status = false;
+				}
 			}
 		}
 		return goodCommand;
@@ -83,7 +96,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 	public void receiveEvent(Event e) {
 		if (e != null) {
 			if (e instanceof MotionEvent) {
-				// do stuff here
+				receiveCommand("toggle");
 			}
 		}
 
