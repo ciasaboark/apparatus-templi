@@ -73,7 +73,7 @@ public class UpdateSettingsHandler implements HttpHandler {
 		byte[] returnBytes = null;
 
 		byte[] templateBytes = HttpHelper.getFileBytes(webserver.getResourceFolder()
-				+ "redirect.html");
+				+ "inc/redirect.html");
 
 		if (templateBytes != null) {
 			String templateHtml = new String(templateBytes);

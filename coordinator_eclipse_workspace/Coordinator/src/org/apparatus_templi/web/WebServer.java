@@ -37,7 +37,7 @@ import com.sun.net.httpserver.HttpServer;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * @author Christopher Hagler <haglerchristopher@gmail.com>
  */
-public class MultiThreadedHttpServer extends org.apparatus_templi.web.AbstractWebServer {
+public class WebServer extends org.apparatus_templi.web.AbstractWebServer {
 	private static final String TAG = "SimpleHttpServer";
 	private HttpServer httpServer = null;
 	private String resourceFolder = "./website/";
@@ -72,7 +72,7 @@ public class MultiThreadedHttpServer extends org.apparatus_templi.web.AbstractWe
 	 * 
 	 * @throws Exception
 	 */
-	public MultiThreadedHttpServer() throws Exception {
+	public WebServer() throws Exception {
 		this(null);
 	}
 
@@ -84,7 +84,7 @@ public class MultiThreadedHttpServer extends org.apparatus_templi.web.AbstractWe
 	 *            constructed based off the users preferences
 	 * @throws Exception
 	 */
-	public MultiThreadedHttpServer(InetSocketAddress socket) throws Exception {
+	public WebServer(InetSocketAddress socket) throws Exception {
 		if (socket == null) {
 			// create the connection based off of preferences
 			boolean bindLocalhost = "true".equals(Coordinator.getPrefs().getPreference(

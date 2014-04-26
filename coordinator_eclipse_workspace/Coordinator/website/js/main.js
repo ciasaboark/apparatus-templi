@@ -13,10 +13,12 @@ $(window).load(function() {
         '/resource?file=images/stardust.png'
     ]);
     getRunningDrivers();
+	getSysStatus();
     updateLog();
     formSubmitHandler();
     slideDownSettingsButtons();
     setInterval(getRunningDrivers, 30000);
+	setInterval(getSysStatus, 3000);
     setInterval(updateLog, 5000);
     renderWidgets();
 });
@@ -31,6 +33,99 @@ function preload(arrayOfImages) {
         // Alternatively you could use:
         // (new Image()).src = this;
     });
+}
+
+function getSysStatus() {
+	if (document.getElementById('sys_status') !== null) {
+		console.log("requesting system status");
+		
+		//get the service uptime
+		$.ajax({
+			type: "GET",
+            url: "/sys_status?status=uptime",
+            dataType: "text",
+            async: true,
+            timeout: 10000,
+            contentType: "text/plain; charset=\"utf-8\"",
+            success: function(text) {
+				uptime = "<p>Uptime: " + text + " seconds</p>";
+				console.log(uptime);
+				document.getElementById('sys_status_uptime').innerHTML = uptime;
+			},
+			error: function(xhr, status, error) {
+				console.log("unable to read uptime: " + error);
+				uptime = "<p>Uptime: unknown</p>";
+				console.log(uptime);
+				document.getElementById('sys_status_uptime').innerHTML = uptime;
+			}	
+		});
+		
+		//get free disk space
+		$.ajax({
+			type: "GET",
+            url: "/sys_status?status=freedisk",
+            dataType: "text",
+            async: true,
+            timeout: 10000,
+            contentType: "text/plain; charset=\"utf-8\"",
+            success: function(text) {
+				disk = "<p>Free space: " + text + " MB</p>";
+				console.log(disk);
+				document.getElementById('sys_status_disk').innerHTML = disk;
+			},
+			error: function(xhr, status, error) {
+				console.log("unable to read free disk space: " + error);
+				disk = "<p>Free space: unknown MB</p>";
+				console.log(disk);
+				document.getElementById('sys_status_disk').innerHTML = disk;
+			}	
+		});
+		
+		//get load avgerage
+		$.ajax({
+			type: "GET",
+            url: "/sys_status?status=loadavg",
+            dataType: "text",
+            async: true,
+            timeout: 10000,
+            contentType: "text/plain; charset=\"utf-8\"",
+            success: function(text) {
+				load = "<p>Load average: " + parseFloat(text * 100).toFixed(2) + " %</p>";
+				console.log(load);
+				document.getElementById('sys_status_load').innerHTML = load;
+			},
+			error: function(xhr, status, error) {
+				console.log("unable to read load avg: " + error);
+				load = "<p>Load average: unknown</p>";
+				console.log(load);
+				document.getElementById('sys_status_load').innerHTML = load;
+			}	
+		});
+		
+		//get remote modules list
+		$.ajax({
+			type: "GET",
+            url: "/sys_status?status=modules",
+            dataType: "text",
+            async: true,
+            timeout: 10000,
+            contentType: "text/plain; charset=\"utf-8\"",
+            success: function(text) {
+				if (text === "") {
+					text = "<p>No remote modules</p>";
+				}
+				console.log(text);
+				document.getElementById('known_modules').innerHTML = text;
+			},
+			error: function(xhr, status, error) {
+				console.log("unable to read module list: " + error);
+				text = "<p>No remote modules</p>";
+				console.log(load);
+				document.getElementById('known_modules').innerHTML = text;
+			}	
+		});
+		
+	}
 }
 
 /*
@@ -252,8 +347,8 @@ function updateWidget(driverName) {
                         $refreshInterval = 60;
                     } else if ($refreshInterval < 3) {      //refresh at most once every 3 seconds
                         $refreshInterval = 3;
-                    } else if ($refreshInterval >60 * 30) { //refresh at least once every 30 minutes
-                        $refreshInterval = 60 * 30;
+                    } else if ($refreshInterval >60) { //refresh at least once every minute
+                        $refreshInterval = 60;
                     }
                     var $refreshOnClick = "updateWidget('" + $driver + "')";
                     var $expandWidgetOnClick = "expandWidget('" + $driver + "')";

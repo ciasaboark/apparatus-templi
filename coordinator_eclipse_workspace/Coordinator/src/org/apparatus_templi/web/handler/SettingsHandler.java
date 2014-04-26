@@ -10,7 +10,7 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.Prefs;
 import org.apparatus_templi.web.AbstractWebServer;
-import org.apparatus_templi.web.EncryptedMultiThreadedHttpServer;
+import org.apparatus_templi.web.EncryptedWebServer;
 import org.apparatus_templi.web.HttpHelper;
 import org.apparatus_templi.web.generator.PageGenerator;
 
@@ -93,11 +93,13 @@ public class SettingsHandler implements HttpHandler {
 						+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
 			}
 
-			if (webserver instanceof EncryptedMultiThreadedHttpServer) {
-				if (Prefs.isCredentialsSet()) {
-
-				} else {
-					html.append("<div class='info-box' style='width:600px; display: block; margin-right: auto; margin-left: auto; cursor: pointer; font-size: smaller; text-align: center; padding: 10px'><p>No password has been set. Access will be unrestricted until you <a onclick='window.open(\"/set_new_password\", \"password_change\", \"toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>set a password</a>.</p></div>");
+			if (webserver instanceof EncryptedWebServer) {
+				if (!Prefs.isCredentialsSet()) {
+					html.append("<div class='info-box' style='width:600px; display: block; margin-right: auto; margin-left: auto; "
+							+ "cursor: pointer; font-size: smaller; text-align: center; padding: 10px'><p>No password has been set. "
+							+ "Access will be unrestricted until you <a onclick='window.open(\"/set_password\", \"password_change\", "
+							+ "\"toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>"
+							+ "set a password</a>.</p></div>");
 				}
 			}
 
@@ -108,14 +110,19 @@ public class SettingsHandler implements HttpHandler {
 			html.append("<div id='settings-buttons'>");
 			// TODO what modules can be restarted?
 			html.append("<span id=\"restart_all_button\" class=\"btn-group closed\" >"
-					+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\" title='Restarting the service will re-read preferences from config file, restart all driver, and re-initialize the web server and the serial connection.'><i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
+					+ "<a class=\"btn btn-danger\" href=\"/restart_module?module=all\" title='Restarting the service will re-read "
+					+ "preferences from config file, restart all driver, and re-initialize the web server and the serial connection.'>"
+					+ "<i class=\"fa fa-refresh fa-fw\"></i> &nbsp;&nbsp;Restart Service</a>"
 					+ "<a class=\"btn btn-danger dropdown-toggle\" data-toggle=\"dropdown\" href=\"#\">"
 					+ "<span class=\"fa fa-caret-down\"></span></a>"
 					+ "<ul class=\"dropdown-menu\">"
-					+ "<li><a href=\"/restart_module?module=drivers\" title='Ask all drivers to terminate, then re-initialize all drivers.  Only drivers specified in the driver list will be started.'><i class=\"fa fa-refresh fa-fw\"></i> Restart Drivers</a></li>"
-					+ "<li><a href=\"/restart_module?module=web\" title='Restart the web server. This will bind the web server to a new address and port number if those settings have been changed.'><i class=\"fa fa-refresh fa-fw\"></i> Restart Web Server</a></li>"
-					+ "<li><a href=\"/restart_module?module=serial\" title='Re-initialize the serial connection, discarding all partial messages'><i class=\"fa fa-refresh fa-fw\"></i> Serial Connection</a></li>"
-					+ "</ul> </span>");
+					+ "<li><a href=\"/restart_module?module=drivers\" title='Ask all drivers to terminate, then re-initialize all "
+					+ "drivers.  Only drivers specified in the driver list will be started.'><i class=\"fa fa-refresh fa-fw\"></i> "
+					+ "Restart Drivers</a></li><li><a href=\"/restart_module?module=web\" title='Restart the web server. This will "
+					+ "bind the web server to a new address and port number if those settings have been changed.'><i class=\"fa "
+					+ "fa-refresh fa-fw\"></i> Restart Web Server</a></li><li><a href=\"/restart_module?module=serial\" "
+					+ "title='Re-initialize the serial connection, discarding all partial messages'><i class=\"fa fa-refresh "
+					+ "fa-fw\"></i> Serial Connection</a></li></ul> </span>");
 
 			// Save preferences button
 			// if the config file is the default then we want the save preferences button to be
@@ -163,7 +170,8 @@ public class SettingsHandler implements HttpHandler {
 					+ Prefs.Keys.configFile
 					+ "\" value=\""
 					+ prefs.get(Prefs.Keys.configFile)
-					+ "\" onChange='updateConfigFile()' onkeypress='updateConfigFile()' onkeyup='updateConfigFile()' onBlur='updateConfigFile()' /></span></div><br />\n");
+					+ "\" onChange='updateConfigFile()' onkeypress='updateConfigFile()' onkeyup='updateConfigFile()' "
+					+ "onBlur='updateConfigFile()' /></span></div><br />\n");
 			prefs.remove(Prefs.Keys.configFile);
 			for (String key : new String[] { Prefs.Keys.serialPort, Prefs.Keys.driverList,
 					Prefs.Keys.logFile, Prefs.Keys.emailList }) {
@@ -185,8 +193,10 @@ public class SettingsHandler implements HttpHandler {
 						+ " name=\"" + key + "\" value=\"" + value + "\" /></span></div><br />\n");
 				prefs.remove(key);
 			}
-			if (Prefs.isCredentialsSet() && webserver instanceof EncryptedMultiThreadedHttpServer) {
-				html.append("<div style='margin-right: auto; margin-left: auto; cursor: pointer; text-align: center'><p><a onclick='window.open(\"/set_new_password\", \"password_change\", \"toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>Change password</a></p></div>");
+			if (Prefs.isCredentialsSet() && webserver instanceof EncryptedWebServer) {
+				html.append("<div style='margin-right: auto; margin-left: auto; cursor: pointer; text-align: center'><p><a "
+						+ "onclick='window.open(\"/set_password\", \"password_change\", \"toolbar=no,location=no,status=no,"
+						+ "menubar=no,scrollbars=yes,resizable=yes,width=750,height=550\");'>Change password</a></p></div>");
 			}
 			html.append("</div></div>");
 
@@ -220,24 +230,6 @@ public class SettingsHandler implements HttpHandler {
 				prefs.remove(key);
 			}
 			html.append("</div></div>");
-
-			// // Preferences for web frontend
-			// html.append("<div id='prefs_section_frontend' class='prefs_section info-box'><div class='title'>"
-			// + "<i  class=\"fa fa-globe\"></i>&nbsp;Web Frontend" + "</div>");
-			// html.append("<div class='content'>");
-			// for (String key : new String[] { Prefs.Keys.webResourceFolder }) {
-			// html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
-			// + "<i class=\"fa fa-question-circle \" "
-			// + "title=\""
-			// + StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
-			// .getPreferenceDesc(key)) + "\"></i>&nbsp;" + key
-			// + "</span><span " + "class=\"pref_value\"><input "
-			// + (usingDefaultConfig ? "disabled='disabled'" : "")
-			// + " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
-			// + "\" /></span></div><br />\n");
-			// prefs.remove(key);
-			// }
-			// html.append("</div></div>");
 
 			// Preferences for the Twitter service
 			html.append("<div id='prefs_section_twitter' class='prefs_section info-box'><div class='title'>"

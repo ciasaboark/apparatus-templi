@@ -17,11 +17,11 @@ import org.apparatus_templi.xml.XmlFormatter;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public class MotionWatcher extends Driver implements EventWatcher {
+public class MotionWatcherTest extends Driver implements EventWatcher {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Motion Watcher");
 	private final Sensor motion = new Sensor("Last motion event");
 
-	public MotionWatcher() {
+	public MotionWatcherTest() {
 		this.name = "MOT_WATCH";
 		widgetXml.addElement(motion);
 		widgetXml.setRefresh(5);

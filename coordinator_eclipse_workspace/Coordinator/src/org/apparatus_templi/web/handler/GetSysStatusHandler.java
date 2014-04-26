@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apparatus_templi.Coordinator;
@@ -71,6 +72,14 @@ public class GetSysStatusHandler implements HttpHandler {
 			OperatingSystemMXBean osBean = ManagementFactory
 					.getPlatformMXBean(OperatingSystemMXBean.class);
 			response = String.valueOf(osBean.getSystemCpuLoad()).getBytes();
+			break;
+		case "modules":
+			ArrayList<String> moduleList = Coordinator.getKnownModules();
+			StringBuilder sb = new StringBuilder();
+			for (String module : moduleList) {
+				sb.append("<p>" + module + "</p>");
+			}
+			response = sb.toString().getBytes();
 			break;
 		}
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);

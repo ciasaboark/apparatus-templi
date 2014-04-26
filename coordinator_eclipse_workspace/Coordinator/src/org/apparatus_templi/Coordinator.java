@@ -400,9 +400,9 @@ public class Coordinator {
 
 		try {
 			if ("true".equals(prefs.getPreference(Prefs.Keys.encryptServer))) {
-				webServer = new org.apparatus_templi.web.EncryptedMultiThreadedHttpServer(socket);
+				webServer = new org.apparatus_templi.web.EncryptedWebServer(socket);
 			} else {
-				webServer = new org.apparatus_templi.web.MultiThreadedHttpServer(socket);
+				webServer = new org.apparatus_templi.web.WebServer(socket);
 			}
 		} catch (Exception e) {
 			// there are a number of exceptions that can be thrown, all are
@@ -1108,6 +1108,15 @@ public class Coordinator {
 		}
 
 		return driverList;
+	}
+
+	public static synchronized ArrayList<String> getKnownModules() {
+		Log.d(TAG, "getKnownModules()");
+		ArrayList<String> moduleList = new ArrayList<String>();
+		for (String key : remoteModules.keySet()) {
+			moduleList.add(key);
+		}
+		return moduleList;
 	}
 
 	/**

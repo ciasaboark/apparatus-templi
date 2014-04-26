@@ -32,8 +32,8 @@ import org.apparatus_templi.web.handler.ResourceHandler;
 import org.apparatus_templi.web.handler.RestartModuleHandler;
 import org.apparatus_templi.web.handler.RunningDriversHandler;
 import org.apparatus_templi.web.handler.SendCommandHandler;
-import org.apparatus_templi.web.handler.SetNewPasswordHandler;
 import org.apparatus_templi.web.handler.SettingsHandler;
+import org.apparatus_templi.web.handler.UpdatePasswordHandler;
 import org.apparatus_templi.web.handler.UpdateSettingsHandler;
 import org.apparatus_templi.web.handler.WidgetXmlHandler;
 
@@ -54,7 +54,7 @@ import com.sun.net.httpserver.HttpsServer;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * @author Christopher Hagler <haglerchristopher@gmail.com>
  */
-public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.AbstractWebServer {
+public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServer {
 	private static final String TAG = "EncryptedHttpServer";
 	private HttpsServer httpsServer = null;
 	private String resourceFolder = "./website/";
@@ -89,7 +89,7 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 	 * 
 	 * @throws Exception
 	 */
-	public EncryptedMultiThreadedHttpServer() throws Exception {
+	public EncryptedWebServer() throws Exception {
 		this(null);
 	}
 
@@ -101,7 +101,7 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 	 *            constructed based off the users preferences
 	 * @throws Exception
 	 */
-	public EncryptedMultiThreadedHttpServer(InetSocketAddress socket) throws Exception {
+	public EncryptedWebServer(InetSocketAddress socket) throws Exception {
 		if (socket == null) {
 			// create the connection based off of preferences
 			boolean bindLocalhost = "true".equals(Coordinator.getPrefs().getPreference(
@@ -199,16 +199,13 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 		}
 
 		ArrayList<HttpContext> contexts = new ArrayList<HttpContext>();
+		contexts.add(httpsServer.createContext("/", new IndexHandler(this)));
 		contexts.add(httpsServer.createContext("/index.html", new IndexHandler(this)));
-
 		contexts.add(httpsServer.createContext("/about.html", new AboutHandler(this)));
 		contexts.add(httpsServer.createContext("/info.html", new InfoHandler(this)));
-		// contexts.add(httpsServer.createContext("/", new IndexHandler(this)));
 		contexts.add(httpsServer.createContext("/drivers.xml", new RunningDriversHandler(this)));
 		contexts.add(httpsServer.createContext("/full.xml", new FullXmlHandler(this)));
 		contexts.add(httpsServer.createContext("/widget.xml", new WidgetXmlHandler(this)));
-		httpsServer.createContext("/resource", new ResourceHandler(this));
-		httpsServer.createContext("/js/default.js", new JsHandler(this));
 		contexts.add(httpsServer.createContext("/settings.html", new SettingsHandler(this)));
 		contexts.add(httpsServer.createContext("/update_settings", new UpdateSettingsHandler(this)));
 		contexts.add(httpsServer.createContext("/restart_module", new RestartModuleHandler(this)));
@@ -216,16 +213,16 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 		contexts.add(httpsServer.createContext("/send_command", new SendCommandHandler(this)));
 		contexts.add(httpsServer.createContext("/sys_status", new GetSysStatusHandler(this)));
 
-		// provides a form to update the current password. This uses a different authenticator than
-		// the other contexts since it should only be accessible if both the username and password
-		// have been set
-		// httpsServer.createContext("/update_password", new UpdatePasswordHandler(this));
-		// writes the new username and password to the database and restarts the web server. Like
-		// UpdatePasswordHandler this context should only be accessible if a previous username and
-		// password hash have been stored.
-		httpsServer.createContext("/set_new_password", new SetNewPasswordHandler(this));
+		// for the sake of simplicity these handlers do not use any authenticator. This was done to
+		// make sure that the redirect and password change pages can load resources. This should be
+		// changed later
+		// TODO replace with an authenticator
+		httpsServer.createContext("/resource", new ResourceHandler(this));
+		httpsServer.createContext("/js/default.js", new JsHandler(this));
 
-		// httpsServer.createContext("/", new IndexHandler(this));
+		// Provides a form for setting a username/password pair. This handler uses no authenticator,
+		// since authentication is done internally
+		httpsServer.createContext("/set_password", new UpdatePasswordHandler(this));
 
 		// if the user has specified a user/pass then restrict access based on those values
 		if (Prefs.isCredentialsSet()) {
@@ -234,10 +231,9 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 					@Override
 					public boolean checkCredentials(String user, String pwd) {
 						boolean allowed = false;
-						final String username = Coordinator.readTextData("SYSTEM", "USERNAME");
-						final String passHash = Coordinator.readTextData("SYSTEM", "PASSWORD");
-
 						if (Prefs.isCredentialsSet()) {
+							final String username = Coordinator.readTextData("SYSTEM", "USERNAME");
+							final String passHash = Coordinator.readTextData("SYSTEM", "PASSWORD");
 							boolean goodUser = username.equals(user);
 							boolean goodPass = false;
 							try {
@@ -254,6 +250,8 @@ public class EncryptedMultiThreadedHttpServer extends org.apparatus_templi.web.A
 				});
 			}
 		}
+
+		// TODO there should probably be a limit on the number of posible threads
 		httpsServer.setExecutor(java.util.concurrent.Executors.newCachedThreadPool());
 		Log.d(TAG, "waiting on port " + this.portNum);
 	}

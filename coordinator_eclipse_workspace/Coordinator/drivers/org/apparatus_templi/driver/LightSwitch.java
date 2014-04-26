@@ -24,6 +24,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 
 	public LightSwitch() {
 		this.name = "lightswtch";
+		widgetXml.setRefresh(2);
 		widgetXml.addElement(lightBulbHtml);
 		widgetXml.addElement(description);
 		widgetXml.addElement(light_switch);
