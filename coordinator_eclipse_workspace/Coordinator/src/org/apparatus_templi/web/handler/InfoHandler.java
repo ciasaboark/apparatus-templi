@@ -11,6 +11,12 @@ import org.apparatus_templi.web.generator.PageGenerator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+/**
+ * Handles request to "/info.html"
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class InfoHandler implements HttpHandler {
 	private static final String TAG = "InfoHandler";
 	private final AbstractWebServer webserver;

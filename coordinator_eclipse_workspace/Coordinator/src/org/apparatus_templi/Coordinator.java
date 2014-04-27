@@ -695,11 +695,26 @@ public class Coordinator {
 		System.exit(1);
 	}
 
+	/**
+	 * Send an email to the email addresses listed in {@link Prefs.Keys#emailList}.
+	 * 
+	 * @param message
+	 *            a String representing the body of the message. This String will be wrapped with a
+	 *            header and footer, and should only include notification text.
+	 */
 	// TODO there should be some sort of rate throttling here
 	public static synchronized void sendNotificationEmail(String message) {
 		sendNotificationEmail(new String[] { message });
 	}
 
+	/**
+	 * Send an email to the email addresses listed in {@link Prefs.Keys#emailList}
+	 * 
+	 * @param messages
+	 *            an array of Strings representing the notifications that should be sent. This
+	 *            method provides a convenient way to send multiple notifications in a single email
+	 *            message.
+	 */
 	public static synchronized void sendNotificationEmail(String[] messages) {
 		try {
 			Class.forName("org.apparatus_templi.service.EmailService");
@@ -1054,46 +1069,6 @@ public class Coordinator {
 	}
 
 	/**
-	 * Returns a list of sensors that the given driver monitors.
-	 * 
-	 * @param driverName
-	 *            the unique name of the driver to query
-	 * @return an ArrayList of Strings representing all sensors monitored by the driver. If the
-	 *         given driver is not of type {@link SensorModule} or if the driver is not loaded then
-	 *         returns null.
-	 */
-	// public static synchronized ArrayList<String> getSensorList(String driverName) {
-	// ArrayList<String> results = null;
-	// if (loadedDrivers.containsKey(driverName)) {
-	// Driver d = loadedDrivers.get(driverName);
-	// if (d instanceof org.apparatus_templi.driver.SensorModule) {
-	// results = ((SensorModule) d).getSensorList();
-	// }
-	// }
-	// return results;
-	// }
-
-	/**
-	 * Returns a list of controllers that the given driver interacts with.
-	 * 
-	 * @param driverName
-	 *            the unique name of the driver to query
-	 * @return an ArrayList of Strings representing all controllers this driver interacts with. If
-	 *         the given driver is not of type {@link ControllerModule} or if the driver is not
-	 *         loaded then returns null.
-	 */
-	// public static synchronized ArrayList<String> getControllerList(String driverName) {
-	// ArrayList<String> results = new ArrayList<String>();
-	// if (loadedDrivers.containsKey(driverName)) {
-	// Driver d = loadedDrivers.get(driverName);
-	// if (d instanceof org.apparatus_templi.driver.ControllerModule) {
-	// results = ((ControllerModule) d).getControllerList();
-	// }
-	// }
-	// return results;
-	// }
-
-	/**
 	 * Returns a list of all loaded drivers.
 	 * 
 	 * @return an ArrayList of Strings of driver names. If no drivers are loaded then returns an
@@ -1110,6 +1085,14 @@ public class Coordinator {
 		return driverList;
 	}
 
+	/**
+	 * Returns a list of all known remote modules.
+	 * 
+	 * @return an ArrayList of Strings of remote module names. If no remote modules have been
+	 *         detected the list returned will be empty. This list can not be trusted to be an
+	 *         exhaustive list of all modules. Only modules that have broadcast since the service
+	 *         started will be listed.
+	 */
 	public static synchronized ArrayList<String> getKnownModules() {
 		Log.d(TAG, "getKnownModules()");
 		ArrayList<String> moduleList = new ArrayList<String>();
@@ -1139,6 +1122,14 @@ public class Coordinator {
 		return list;
 	}
 
+	/**
+	 * A convenience method to allow a driver to wake themselves. This allows drivers to wake
+	 * themselves from outside their {@link Driver#run()} method. This method is safe to use even if
+	 * the driver is not sleeping.
+	 * 
+	 * @param d
+	 *            the Driver to wake.
+	 */
 	public static synchronized void wakeSelf(Driver d) {
 		if (d == null) {
 			throw new IllegalArgumentException("Can not wake null driver");
@@ -1258,13 +1249,21 @@ public class Coordinator {
 		return threadId;
 	}
 
+	/**
+	 * Returns a string representing a URL that the web server can be reached at.
+	 * 
+	 * @return a String URL that the web server can be reached at. This method may return an empty
+	 *         String if the web server is in the process of restarting.
+	 */
 	public static String getServerAddress() {
 		StringBuilder address = new StringBuilder();
-		address.append(webServer.getProtocol());
-		address.append(webServer.getServerLocation());
-		address.append(":");
-		address.append(webServer.getPort());
-		address.append("/index.html");
+		if (webServer != null) {
+			address.append(webServer.getProtocol());
+			address.append(webServer.getServerLocation());
+			address.append(":");
+			address.append(webServer.getPort());
+			address.append("/index.html");
+		}
 		Log.d(TAG, "server address: " + address.toString());
 		return address.toString();
 	}
@@ -1276,11 +1275,17 @@ public class Coordinator {
 		return (System.currentTimeMillis() - startTime) / 1000;
 	}
 
+	/**
+	 * Returns a references to the current preferences map.
+	 */
 	public static Prefs getPrefs() {
 		return prefs;
 	}
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
+		Log.setLogLevel(Log.LEVEL_DEBUG);
+		Log.setLogToConsole(false);
+
 		// disable dock icon in MacOS
 		System.setProperty("apple.awt.UIElement", "true");
 

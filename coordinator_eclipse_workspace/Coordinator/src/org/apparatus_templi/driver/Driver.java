@@ -7,9 +7,7 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
 
 /**
- * An abstract class for a basic driver. This driver should not be sub-classed directly. Each driver
- * should subclass either SensorModule or ControllerModule. Drivers directly sub-classing Driver
- * might not be loaded. for execution.
+ * An abstract class for a basic driver.
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */
@@ -23,25 +21,25 @@ public abstract class Driver implements Runnable {
 	/**
 	 * Indicates whether or not this driver should continue running, or begin its termination
 	 * process. If the driver executes in a continuous loop after loading, then it should check the
-	 * status of this flag after every loop.
+	 * status of this flag before every loop.
 	 */
 	protected volatile boolean isRunning = true;
 
 	/**
-	 * A queue of commands that were sent to this driver while it was inactive. The status of each
+	 * A queue of commands that were sent to this driver while it was TERMINATED. The status of each
 	 * driver is determined by its Thread.State. If a driver is terminated then any incoming
 	 * messages will be placed in this queue before the driver is restarted. Each driver should
 	 * check (or clear) this queue within its run() method. If the driver runs continuously then
-	 * this queue should be checked during each loop.
+	 * this queue will not be used.
 	 */
 	protected volatile Deque<String> queuedCommands = new ArrayDeque<String>();
 
 	/**
-	 * A queue of data that was sent to this driver while it was inactive. The status of each driver
-	 * is determined by its Thread.State. If a driver is terminated then any incoming messages will
-	 * be placed in this queue before the driver is restarted. Each driver should check (or clear)
-	 * this queue within its run() method. If the driver runs continuously then this queue should be
-	 * checked during each loop.
+	 * A queue of data that was sent to this driver while it was TERMINATED. The status of each
+	 * driver is determined by its Thread.State. If a driver is terminated then any incoming
+	 * messages will be placed in this queue before the driver is restarted. Each driver should
+	 * check (or clear) this queue within its run() method. If the driver runs continuously then
+	 * this queue will not be used.
 	 */
 	protected volatile Deque<byte[]> queuedBinary = new ArrayDeque<byte[]>();
 
@@ -52,7 +50,9 @@ public abstract class Driver implements Runnable {
 	 * 
 	 * @param command
 	 *            the command to send to the remote module.
-	 * @return TODO
+	 * @return a boolean value indicating whether the command was received and not malformed. The
+	 *         return value will be used by the web server to determine whether to return HTTP_OK or
+	 *         an error status in the connection headers.
 	 */
 	public abstract boolean receiveCommand(String command);
 
@@ -63,7 +63,9 @@ public abstract class Driver implements Runnable {
 	 * 
 	 * @param data
 	 *            the command to send to the remote module.
-	 * @return TODO
+	 * @return a boolean value indicating whether the command was received and not malformed. The
+	 *         return value will be used by the web server to determine whether to return HTTP_OK or
+	 *         an error status in the connection headers.
 	 */
 	public abstract boolean receiveBinary(byte[] data);
 
@@ -154,6 +156,20 @@ public abstract class Driver implements Runnable {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Sets the drivers name to the given name
+	 * 
+	 * @param newName
+	 *            the new name to assign to this driver.
+	 * @throws IllegalArgumentException
+	 *             if the given name is null or is longer than 10 characters.
+	 */
+	protected final void setName(String newName) throws IllegalArgumentException {
+		if (name != null && name.length() <= 10) {
+			this.name = newName;
+		}
 	}
 
 	/**

@@ -13,6 +13,12 @@ import java.util.HashMap;
 
 import org.apparatus_templi.Log;
 
+/**
+ * Provides a number of convenience methods for the web server and http handlers to use.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class HttpHelper {
 	private static final String TAG = "HttpHelper";
 
@@ -83,6 +89,14 @@ public class HttpHelper {
 		return queryTags;
 	}
 
+	/**
+	 * Returns a string representation of the best IP address that can be found for this host. The
+	 * IP address will either be null or the first IPV4 address on the first non-loopback interface.
+	 * 
+	 * @deprecated this method should still work, but should no longer be used. This will be
+	 *             replaced with binding to a specified IP address or hostname in a future release
+	 */
+	@Deprecated
 	public static String bestAddress() {
 		String bestAddress = null;
 		System.setProperty("java.net.preferIPv4Stack", "true");

@@ -2,4 +2,7 @@ org.apparatus_templi
 org.apparatus_templi.driver
 org.apparatus_templi.event
 org.apparatus_templi.service
+org.apparatus_templi.web
+org.apparatus_templi.web.generator
+org.apparatus_templi.web.handler
 org.apparatus_templi.xml

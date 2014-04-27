@@ -6,6 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tes public methods for the DummySerialConnection
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class DummySerialConnectionTest {
 
 	private DummySerialConnection dc;

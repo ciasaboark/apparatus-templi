@@ -16,6 +16,13 @@ import org.apparatus_templi.web.PasswordHash;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+/**
+ * A handler to write a username/password pair to the database. This handler manages authentication
+ * on its own, and does not need an authenticator to manage access.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class UpdatePasswordHandler implements HttpHandler {
 	private static final String TAG = "SetFirstPasswordHandler";
 	AbstractWebServer webserver;

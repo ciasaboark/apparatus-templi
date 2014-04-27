@@ -35,6 +35,9 @@ import com.sun.net.httpserver.HttpHandler;
  * loadavg: retuns a floating point representation of the current load average of the system. A
  * value of 0.0 is 0% CPU usage, while a value of 1.0 represents 100% CPU usage.
  * </p>
+ * <p>
+ * modules: returns a list of known remote modules. Each module is wrapped in a paragraph tag.
+ * </p>
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  */

@@ -22,6 +22,7 @@ public class Log {
 	static final int LEVEL_WARN = 2;
 	static final int LEVEL_ERR = 1;
 	static final int LEVEL_TERM = 0;
+	private static boolean logToConsole = false;
 	private static int logLevel = LEVEL_DEBUG;
 	// a buffer to hold the last 30 log messages.
 	private static EvictingQueue<String> prevLines = EvictingQueue.create(30);
@@ -68,11 +69,15 @@ public class Log {
 	 * Writes a message to the console as {@link System#out}. This message is not duplicated in the
 	 * log.
 	 * 
+	 * @deprecated Once the service becomes stable enough it should only be ran as a service, and
+	 *             all log messages should be written to the log only
+	 * 
 	 * @param tag
 	 *            a String to identify the source of this message.
 	 * @param message
 	 *            the message to print to the console.
 	 */
+	@Deprecated
 	public static void c(String tag, String message) {
 		System.out.println(tag + ":" + message);
 	}
@@ -88,9 +93,10 @@ public class Log {
 	public static void d(String tag, String message) {
 		String logMessage = System.currentTimeMillis() + ": " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_DEBUG) {
-			System.out.println(logMessage);
-			writeLogMessage(logMessage);
+			if (logToConsole)
+				System.out.println(logMessage);
 		}
+		writeLogMessage(logMessage);
 
 	}
 
@@ -105,9 +111,10 @@ public class Log {
 	public static void w(String tag, String message) {
 		String logMessage = System.currentTimeMillis() + ": Warning: " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_WARN) {
-			System.out.println(logMessage);
-			writeLogMessage(logMessage);
+			if (logToConsole)
+				System.out.println(logMessage);
 		}
+		writeLogMessage(logMessage);
 
 	}
 
@@ -123,8 +130,8 @@ public class Log {
 		String logMessage = System.currentTimeMillis() + ": Error: " + tag + ":" + message;
 		if (logLevel >= Log.LEVEL_ERR) {
 			System.err.println(logMessage);
-			writeLogMessage(logMessage);
 		}
+		writeLogMessage(logMessage);
 
 	}
 
@@ -153,5 +160,22 @@ public class Log {
 	 */
 	public static void setLogLevel(int newLogLevel) {
 		logLevel = Math.abs(newLogLevel);
+	}
+
+	/**
+	 * By default logging methods will not write to STDOUT, if this is set to true then
+	 * {@link Log#d(String, String)} and {@link Log#w(String, String)} will both write to the
+	 * console as well as to the log file. {@link Log#e(String, String)} and
+	 * {@link Log#t(String, String)} always write to STDERR as well as the log file.
+	 * 
+	 * @param writeToConsole
+	 *            if true then non error messages will also be written to STDOUT as well as the log
+	 *            file.
+	 * @deprecated Once the service becomes stable enough it should only be ran as a service, and
+	 *             all log messages should be written to the log only
+	 */
+	@Deprecated
+	public static void setLogToConsole(boolean writeToConsole) {
+		logToConsole = writeToConsole;
 	}
 }

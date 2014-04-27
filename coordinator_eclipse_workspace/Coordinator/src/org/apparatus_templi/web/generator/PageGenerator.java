@@ -2,6 +2,12 @@ package org.apparatus_templi.web.generator;
 
 import java.net.URI;
 
+/**
+ * Provides convenience methods to generate error pages.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class PageGenerator {
 	/**
 	 * Generates a 404 error page for the given resourceName.

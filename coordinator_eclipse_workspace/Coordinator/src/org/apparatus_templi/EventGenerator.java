@@ -15,7 +15,9 @@ public interface EventGenerator {
 	 * generate.
 	 * 
 	 * @return an ArrayList of Events that this Driver can generate.
+	 * @deprecated this method will be removed in a future release. It has no particular use.
 	 */
+	@Deprecated
 	abstract public ArrayList<Event> getEventTypes();
 
 }

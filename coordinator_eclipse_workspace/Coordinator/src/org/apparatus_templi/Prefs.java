@@ -19,13 +19,13 @@ import java.util.Properties;
 public class Prefs {
 	private static final String TAG = "Preferences";
 	// contains the default preferences
-	public final HashMap<String, String> DEF_PREFS = new HashMap<String, String>();
+	private final HashMap<String, String> DEF_PREFS = new HashMap<String, String>();
 	// contains a long form description of the preference
 	private final HashMap<String, String> PREF_DESC = new HashMap<String, String>();
 	// contains a short descriptive name of the preferences
 	private final HashMap<String, String> PREF_NAME = new HashMap<String, String>();
 
-	public static final HashMap<String, String> preferences = new HashMap<String, String>();
+	private static final HashMap<String, String> preferences = new HashMap<String, String>();
 
 	public Prefs() {
 		DEF_PREFS.put(Keys.configFile, "coordinator.conf");
@@ -142,6 +142,12 @@ public class Prefs {
 						"The password required to access the web site.  If left blank then no username/password will be required");
 	}
 
+	/**
+	 * Checks that the web service has a username and password set.
+	 * 
+	 * @return true if both a username and password have been set (not null and not empty), false
+	 *         otherwise
+	 */
 	public static boolean isCredentialsSet() {
 		boolean credentialsSet = false;
 		String username = Coordinator.readTextData("SYSTEM", "USERNAME");
@@ -151,16 +157,6 @@ public class Prefs {
 		}
 		return credentialsSet;
 	}
-
-	/**
-	 * Return a reference to the Prefs singleton.
-	 */
-	// public static Prefs getInstance() {
-	// if (instance == null) {
-	// instance = new Prefs();
-	// }
-	// return instance;
-	// }
 
 	/**
 	 * Reads all preferences from the given configFile. If the given file can not be read then the
@@ -306,6 +302,15 @@ public class Prefs {
 		return value;
 	}
 
+	/**
+	 * Returns a long description for the given preference.
+	 * 
+	 * @param key
+	 *            the preference value to return a description for. Valid keys are listed in
+	 *            {@link Prefs.Keys}
+	 * @return a long String description of the requested preference, or null if the preference has
+	 *         no description or is unknown.
+	 */
 	public synchronized String getPreferenceDesc(String key) {
 		String value = null;
 		if (PREF_DESC.containsKey(key)) {
@@ -314,6 +319,15 @@ public class Prefs {
 		return value;
 	}
 
+	/**
+	 * Returns a human readable name for the given preference.
+	 * 
+	 * @param key
+	 *            the preference value to return a short name for. Valid keys are listed in
+	 *            {@link Prefs.Keys}
+	 * @return a short name (one to three words) of the requested preference, or null if the
+	 *         preference has no name or is unknown.
+	 */
 	public synchronized String getPreferenceName(String key) {
 		String value = null;
 		if (PREF_NAME.containsKey(key)) {
@@ -322,6 +336,15 @@ public class Prefs {
 		return value;
 	}
 
+	/**
+	 * Returns the default value for the requested preference.
+	 * 
+	 * @param key
+	 *            the preference value to return a default value for. Valid keys are listed in
+	 *            {@link Prefs.Keys}
+	 * @return the default value for the requested preference, or null if the preference has no
+	 *         default value or is unknown.
+	 */
 	public synchronized String getDefPreferences(String key) {
 		String value = null;
 		if (DEF_PREFS.containsKey(key)) {
@@ -345,6 +368,10 @@ public class Prefs {
 		preferences.put(key, value);
 	}
 
+	/**
+	 * Returns a copy of the current preferences map. Since the returned map is a copy changes will
+	 * not be reflected in the saved preferences.
+	 */
 	@SuppressWarnings("unchecked")
 	public synchronized HashMap<String, String> getPreferencesMap() {
 		// make sure that the caller can not modify the preferences we hold

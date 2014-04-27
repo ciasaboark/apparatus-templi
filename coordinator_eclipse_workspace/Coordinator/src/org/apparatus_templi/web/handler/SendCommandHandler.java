@@ -12,6 +12,15 @@ import org.apparatus_templi.web.HttpHelper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+/**
+ * A handler to send commands from the web frontend to a driver. Expects a query string in the form
+ * of ?driver=<some driver>&command=<some command>. Responds with "OK" and an HTTP_OK header if the
+ * {@link Driver#receiveCommand(String command)} returns true, otherwise responds with "FAIL" and an
+ * HTTP_BAD_REQUEST header.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class SendCommandHandler implements HttpHandler {
 	private static final String TAG = "SendCommandHandler";
 	private final AbstractWebServer webserver;

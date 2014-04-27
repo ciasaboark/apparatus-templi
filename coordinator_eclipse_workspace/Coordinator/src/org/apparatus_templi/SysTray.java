@@ -77,6 +77,14 @@ public class SysTray implements ActionListener {
 
 	}
 
+	/**
+	 * Sets the status of the system tray. Valid status are listed in {@link SysTray.Status}
+	 * 
+	 * @param status
+	 *            The status to set the system tray to.
+	 * @throws IllegalArgumentException
+	 *             if the given status is unknown.
+	 */
 	void setStatus(int status) throws IllegalArgumentException {
 		if (trayIcon != null && webInterface != null) {
 			switch (status) {
@@ -112,16 +120,6 @@ public class SysTray implements ActionListener {
 			aboutDialog.setLocationRelativeTo(null);
 			aboutDialog.setVisible(true);
 			aboutDialog.show();
-
-			// final ImageIcon icon = new ImageIcon("/icon.png");
-			// new Runnable() {
-			// @Override
-			// public void run() {
-			// JOptionPane.showMessageDialog(null, "Apparatus Templi\nVersion: "
-			// + Coordinator.RELEASE_NUMBER + "\nHome automation", "About",
-			// JOptionPane.INFORMATION_MESSAGE, icon);
-			// }
-			// }.run();
 			break;
 		case "web":
 			if (Desktop.isDesktopSupported()) {
@@ -142,30 +140,10 @@ public class SysTray implements ActionListener {
 		public static final int TERM = 2;
 	}
 
-	public class AboutDialog extends JDialog {
-
-		/**
-		 * 
-		 */
+	private class AboutDialog extends JDialog {
 		private static final long serialVersionUID = 1L;
 		private final JPanel contentPanel = new JPanel();
 
-		// /**
-		// * Launch the application.
-		// */
-		// public static void main(String[] args) {
-		// try {
-		// AboutDialog dialog = new AboutDialog();
-		// dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		// dialog.setVisible(true);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// }
-
-		/**
-		 * Create the dialog.
-		 */
 		public AboutDialog() {
 			setResizable(false);
 			setBounds(100, 100, 345, 211);

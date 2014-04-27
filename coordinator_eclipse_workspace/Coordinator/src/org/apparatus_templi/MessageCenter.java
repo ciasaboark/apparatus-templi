@@ -460,7 +460,7 @@ public class MessageCenter implements Runnable {
 	/**
 	 * Sets the serial connection of MessageCenter to the given serialConnection.
 	 * 
-	 * @param serialConnection
+	 * @param newSerialConnection
 	 */
 	void setSerialConnection(SerialConnection newSerialConnection) {
 		if (this.serialConnection != null) {

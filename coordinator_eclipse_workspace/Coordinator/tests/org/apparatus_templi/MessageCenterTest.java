@@ -8,6 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests public methods in MessageCenter
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class MessageCenterTest {
 	private MessageCenter mc;
 

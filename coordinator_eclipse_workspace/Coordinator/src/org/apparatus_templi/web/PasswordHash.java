@@ -36,10 +36,14 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-/*
- * PBKDF2 salted password hashing.
- * Author: havoc AT defuse.ca
- * www: http://crackstation.net/hashing-security.htm
+/**
+ * PBKDF2 salted password hashing. This class was provided as is from
+ * http://crackstation.net/hashing-security.htm.
+ * 
+ * @see <a
+ *      href="http://crackstation.net/hashing-security.htm">http://crackstation.net/hashing-security.htm</a>
+ * @author <havoc AT defuse.ca>
+ * 
  */
 public class PasswordHash {
 	public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";

@@ -11,6 +11,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests public methods in WebServer
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class WebServerTest {
 
 	@Before
@@ -51,8 +57,7 @@ public class WebServerTest {
 	@Test
 	public void startLocalHostServerWithIncPort() throws Exception {
 		System.out.println("Starting localhost server on port 8000 or next available port");
-		WebServer s = new WebServer(new InetSocketAddress(
-				InetAddress.getLocalHost(), 0));
+		WebServer s = new WebServer(new InetSocketAddress(InetAddress.getLocalHost(), 0));
 		assertTrue(s.getServerLocation() != null);
 		assertTrue(s.getSocket().getAddress().isSiteLocalAddress());
 		s.terminate();
@@ -85,9 +90,7 @@ public class WebServerTest {
 	@Test(expected = SocketException.class)
 	public void startServerOnOccupiedPort() throws Exception {
 		System.out.println("Starting two servers on same port number and interface");
-		WebServer s1 = new WebServer(new InetSocketAddress(
-				InetAddress.getLoopbackAddress(), 9999));
-		WebServer s2 = new WebServer(new InetSocketAddress(
-				InetAddress.getLoopbackAddress(), 9999));
+		WebServer s1 = new WebServer(new InetSocketAddress(InetAddress.getLoopbackAddress(), 9999));
+		WebServer s2 = new WebServer(new InetSocketAddress(InetAddress.getLoopbackAddress(), 9999));
 	}
 }

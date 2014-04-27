@@ -12,6 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test public methods for the Coordinator.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class CoordinatorTest {
 
 	private Coordinator coordinator = null;

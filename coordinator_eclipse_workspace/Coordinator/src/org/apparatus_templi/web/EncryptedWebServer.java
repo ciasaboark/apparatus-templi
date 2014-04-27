@@ -49,7 +49,9 @@ import com.sun.net.httpserver.HttpsServer;
  * A simple web server that acts as both a middle man between the Coordinator and any front ends, as
  * well as a host for the bundled web front end. The web server is implemented as a
  * {@link com.sun.net.httpserver.HttpsServer} and defines a series of
- * {@link com.sun.net.httpserver.HttpHandler}s that handle requests for virtual documents.
+ * {@link com.sun.net.httpserver.HttpHandler}s that handle requests for virtual documents. A simple
+ * {@link com.sun.net.httpserver.Authenticator} is attached to most of the handlers if a username
+ * and password has been set.
  * 
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * @author Christopher Hagler <haglerchristopher@gmail.com>

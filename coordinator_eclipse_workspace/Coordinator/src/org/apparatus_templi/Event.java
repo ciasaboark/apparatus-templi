@@ -19,10 +19,20 @@ public abstract class Event {
 	protected long timestamp;
 	protected Driver origin;
 
+	/**
+	 * Every event has an attached references to the Driver that generated the event.
+	 * 
+	 * @return a reference to the Driver that created this event.
+	 */
 	final public Driver getOrigin() {
 		return origin;
 	}
 
+	/**
+	 * Every event has an attached timestamp to indicate its creation time.
+	 * 
+	 * @return the Unix epoch timestamp of this Events creation.
+	 */
 	final public long getTimestamp() {
 		return timestamp;
 	}

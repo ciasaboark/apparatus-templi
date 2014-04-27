@@ -27,6 +27,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+/**
+ * Tests public methods in XmlFormatter
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class XmlFormatterTest {
 
 	private XmlFormatter xml;

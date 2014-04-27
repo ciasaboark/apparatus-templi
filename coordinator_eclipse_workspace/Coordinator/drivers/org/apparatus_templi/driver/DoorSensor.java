@@ -2,21 +2,20 @@ package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
 
-import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.xml.Controller;
-import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;
 
-public class DoorSensor extends Driver implements EventGenerator{
+public class DoorSensor extends Driver implements EventGenerator {
 	private final XmlFormatter widgetXml = new XmlFormatter(this, "Door Sensor");
 	private final XmlFormatter fullXml = new XmlFormatter(this, "Door Sensor");
-		private final Controller sensor = new Controller("Door");
+	private final Controller sensor = new Controller("Door");
 
 	public DoorSensor() {
 		this.name = "DoorSensor";
+		widgetXml.setRefresh(2);
 		widgetXml.addElement(sensor);
 		fullXml.addElement(sensor);
 		sensor.setStatus("");
@@ -40,10 +39,13 @@ public class DoorSensor extends Driver implements EventGenerator{
 	public boolean receiveCommand(String command) {
 		boolean goodCommand = false;
 		if (command != null) {
-			if (command.equals("toggle")) {
-				Log.d(this.name, "toggle command received");
-				Coordinator.sendCommand(this, "1");
+			if (command.equals("O")) {
+				Log.d(this.name, "door is opened");
 				sensor.setStatus("opened");
+				goodCommand = true;
+			} else if (command.equals("C")) {
+				Log.d(this.name, "door is closed");
+				sensor.setStatus("closed");
 				goodCommand = true;
 			}
 		}

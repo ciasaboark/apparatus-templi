@@ -4,6 +4,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests public methods in the SysTray. Methods that might fail due to running in a headless
+ * environment are tested in HeadLessTest.
+ * 
+ * @author Jonathan Nelson <ciasaboark@gmail.com>
+ * 
+ */
 public class SysTrayTest {
 	private SysTray sysTray;
 
