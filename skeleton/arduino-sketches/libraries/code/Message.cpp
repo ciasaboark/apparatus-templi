@@ -81,7 +81,7 @@ uint16_t Message::getFragmentNumber() {
 }
 
 void Message::setPayload(uint8_t *buffer, int length) {
-	if(payload != NULL) {
+	if(payload != NULL) { //free the memory that was previously occupied by payload
 		delete payload;
 	}
 	payload = (uint8_t*)malloc(sizeof(length));

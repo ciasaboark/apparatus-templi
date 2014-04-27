@@ -73,7 +73,7 @@ void Zigbee::sendMessage(uint8_t *command, int length, uint8_t type) {
 			memset(message_fragment, NULL, 69); //NULL out the array
     
 			message_fragment[0] = (uint8_t)0x0D;
-			message_fragment[1] = 0;
+			message_fragment[1] = type << 7;
 			message_fragment[2] = length / total_fragments; //the length of the data fragment
 
 			for(int y = 5; y < 15; y++) {
@@ -121,11 +121,7 @@ Message* Zigbee::receiveMessage() {
 						
 				if (rx->getOption() == ZB_PACKET_ACKNOWLEDGED) {
 						// the sender got an ACK
-				} else {
-						// we got it (obviously) but sender didn't get an ACK
-				}
-
-			
+				} 			
 
 				Serial.println("incoming zigbee packet");
 				Serial.println("processing message");
@@ -137,7 +133,6 @@ Message* Zigbee::receiveMessage() {
 				Serial.print("data length: " );
 				Serial.println(data[2]);
 				
-				//TODO strcmp wont know where to stop if name is all 10 bytes
 				Serial.print("my name from the Zigbee class is: ");
 				Serial.println(name);				
 
@@ -146,6 +141,7 @@ Message* Zigbee::receiveMessage() {
 				for (int i = 5; i < 15; i++) {
 					Serial.print((char*)data[i]); //this will be the Ascii values if Serial.print does not interpret it as chars
 				}
+
 				Serial.println("***");
 
 				int sameName = strcmp((char *)data + 5, name);
@@ -164,17 +160,20 @@ Message* Zigbee::receiveMessage() {
 					if( (data[2] + 15) == rx->getDataLength() ) {
 						Serial.println("message  was correct length");
 						message = new Message(data[0], data[1], data[2], *number,  (char*)data[5], (uint8_t*)data[15]);
-						delete data; //we no longer need data because the message has a copy of it now
 					}	
-				} else if (broadcastID == 0 && data[0] == (uint8_t)0x0D) {
+				} 
+
+				else if (broadcastID == 0 && data[0] == (uint8_t)0x0D) {
 					Serial.println("message addressed to ALL");
 					digitalWrite(7, HIGH);
 					delay(100);
 					digitalWrite(7, LOW);
 					sendCommand(name);
 				}
-					
-			} else if (xbee->getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
+				delete data; //we no longer need data because the message has a copy of it now				
+			} 
+
+			else if (xbee->getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
 				xbee->getResponse().getModemStatusResponse(*msr);
 				// the local XBee sends this response on certain events, like association/dissociation
 				
@@ -188,7 +187,9 @@ Message* Zigbee::receiveMessage() {
 			} else {
 				// not something we were expecting   
 			}
-		} else if (xbee->getResponse().isError()) {
+		} 
+		
+		else if (xbee->getResponse().isError()) {
 			Serial.print("Error reading packet.  Error code: ");  
 			Serial.println(xbee->getResponse().getErrorCode());
 		}

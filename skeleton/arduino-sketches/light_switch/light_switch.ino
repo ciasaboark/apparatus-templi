@@ -29,7 +29,7 @@ void loop() {
   Message *message = zigbee.receiveMessage();
   uint8_t *data = message->getPayload();
   
-  if(data != NULL && data[0] == 1 && pos != 180) {
+  if( (data != NULL) && (data[0] == 1) && (pos != 180) ) { //turn the light on
     pos = 180;
     servo.write(pos);
     delay(2000);
@@ -37,7 +37,7 @@ void loop() {
     pinMode(light_off_pin, LOW);
     Serial.print("turning on the light");
   }
-  else if(data != NULL && data[0] == 0 && pos != 0) {
+  else if( (data != NULL) && (data[0] == 0) && (pos != 0) ) { //turn the light off
     pos = 0;
     servo.write(pos);
     delay(2000);
@@ -49,6 +49,6 @@ void loop() {
     Serial.print("bad command");
     //bad command
   }
-  delete message; //free the memory occupied by message
+  delete message; //free the memory occupied by message. It is OK to delete a null pointer
   Serial.print("freeing the memory held by message");
 }

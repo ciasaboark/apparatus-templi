@@ -23,7 +23,9 @@ class Zigbee {
         void sendMessage(uint8_t *command, int data_length, uint8_t type);
         void sendMessageFragment(Message *obj);
 		
-		/* This method mallocs and returns a message object. It should be freed by the caller */
+		/* This method mallocs and returns a message object. If you plan to use the 
+		   message, you should check it against null because if the xbee does not have a 
+		   message, this will return the message as a NULL pointer. It should be freed by the caller. */
 		Message* receiveMessage();
 
 		
