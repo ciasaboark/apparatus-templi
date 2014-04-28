@@ -1284,7 +1284,7 @@ public class Coordinator {
 
 	public static void main(String argv[]) throws InterruptedException, IOException {
 		Log.setLogLevel(Log.LEVEL_DEBUG);
-		Log.setLogToConsole(false);
+		Log.setLogToConsole(true);
 
 		// disable dock icon in MacOS
 		System.setProperty("apple.awt.UIElement", "true");

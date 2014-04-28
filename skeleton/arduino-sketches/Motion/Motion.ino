@@ -21,6 +21,10 @@
  */
  
 
+#define GREEN 3
+#define BLUE 4
+#define RED 5
+#define RGBPIN 13
 
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "MotionDet";
@@ -38,7 +42,22 @@ XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
 ModemStatusResponse msr = ModemStatusResponse();
 
-void setup() {  
+void setup() {
+        //start the RGB LED but keep everything off
+        pinMode(GREEN, OUTPUT);
+        pinMode(BLUE, OUTPUT);
+        pinMode(RED, OUTPUT);
+        digitalWrite(GREEN, HIGH);
+        digitalWrite(BLUE, HIGH);
+        digitalWrite(RED, HIGH);
+        analogWrite(RED, 0);
+        analogWrite(BLUE, 0);
+        analogWrite(GREEN, 0);
+        
+        //turn on the red power LED
+        pinMode(7, OUTPUT);
+        digitalWrite(7, HIGH);
+        
 	// start serial
 	Serial.begin(115200);
 	softSerial.begin(9600);
@@ -106,17 +125,23 @@ void setup() {
 		Serial.print(serialNumber[i]);
 		Serial.print(" ");
 	}
-	Serial.println(".");
-        pinMode(5, OUTPUT);
-	pinMode(6, OUTPUT);
-	pinMode(7, OUTPUT);
-//        delay(20000);    //wait for 20 seconds so the xbee can have time to finish its setup
+	Serial.println(" ");
+
 	
         //pause for a bit to let the motion detector stablalize and for the xbee to finish joining the network
         Serial.println("Sleeping for 15 seconds so the xbee can join the network");
         delay(15000);
         flashLED(7, 4);
+        pinMode(RGBPIN, OUTPUT);
+        digitalWrite(RGBPIN, HIGH);
+        setIndicator(100, 100, 100);
         Serial.println("Setup done: " + MODULE_NAME);
+}
+
+void setIndicator(int red, int green, int blue) {
+      analogWrite(RED, red);
+      analogWrite(GREEN, green);
+      analogWrite(BLUE, blue); 
 }
 
 // continuously reads packets, looking for ZB Receive or Modem Status
