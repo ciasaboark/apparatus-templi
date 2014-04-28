@@ -16,7 +16,7 @@ public class DoorLock extends Driver {
 	private final Controller lock = new Controller("lock");
 
 	public DoorLock() {
-		setName("LOCAL");
+		this.name = "LOCAL";
 		widgetXml.addElement(description);
 		widgetXml.addElement(lock);
 		widgetXml.addElement(button);
@@ -39,7 +39,7 @@ public class DoorLock extends Driver {
 
 		while (this.isRunning) {
 			this.sleep();
-			Log.d(this.getName(), "waking");
+			Log.d(this.name, "waking");
 		}
 
 	}
@@ -49,9 +49,17 @@ public class DoorLock extends Driver {
 		boolean goodCommand = false;
 		if (command != null) {
 			if (command.equals("toggle")) {
-				Log.d(this.getName(), "toggle command received");
-				Coordinator.sendCommand(this, "1");
-				lock.setStatus("unlocked");
+				Log.d(this.name, "toggle command received");
+				if(lock.getStatus() == "unlocked")
+				{	
+					Coordinator.sendCommand(this, "1");
+					lock.setStatus("locked");
+				}
+				else
+				{
+					Coordinator.sendCommand(this, "0");
+					lock.setStatus("unlocked");
+				}
 				goodCommand = true;
 			}
 		}
