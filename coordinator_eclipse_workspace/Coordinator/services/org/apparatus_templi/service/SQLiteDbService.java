@@ -250,7 +250,6 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	@Override
 	public byte[] readBinData(String driverName, String dataTag) {
 		// Log.d(TAG, "reading binary data");
-
 		Statement stmt = null;
 		byte[] data = null;
 		Connection myConn = null;
@@ -298,14 +297,63 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 
 	@Override
 	public ArrayList<String> getTextTags() {
-		// TODO Auto-generated method stub
-		return null;
+		// Log.d(TAG, "getting text tags");
+		Connection myConn = null;
+		Statement stmt = null;
+		ArrayList<String> data = new ArrayList<>();
+		String sql = null;
+		try {
+			myConn = SharedConnection.openConnection();
+			// myConn.setAutoCommit(false);
+			stmt = myConn.createStatement();
+			sql = "SELECT * FROM DRIVERTEXT;";
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				data.add(rs.getString("DATA"));
+			}
+			rs.close();
+			stmt.close();
+			} catch (Exception e) {
+				Log.e(TAG, "getTextTags()" + e.getClass().getName() + ": " + e.getMessage());
+				Log.e(TAG, "connection: " + myConn);
+				Log.e(TAG, "statement: " + sql);
+				Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
+				e.printStackTrace();
+			} finally {
+				SharedConnection.closeConnection();
+			}
+			return data;
 	}
 
 	@Override
-	public ArrayList<String> getBinTags() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<byte[]> getBinTags() {
+		// Log.d(TAG, "getting binary tage");
+		Statement stmt = null;
+		ArrayList<byte[]> data = new ArrayList<>();
+		Connection myConn = null;
+		String sql = null;
+		try {
+			myConn = SharedConnection.openConnection();
+			// myConn.setAutoCommit(false);
+			stmt = myConn.createStatement();
+			sql = "SELECT * FROM DRIVERBIN;";
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				data.add(rs.getBytes("DATA"));
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException | ClassNotFoundException e) {
+			Log.e(TAG, "readBinData()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "connection: " + myConn);
+			Log.e(TAG, "statement: " + sql);
+			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
+			e.printStackTrace();
+		} finally {
+			SharedConnection.closeConnection();
+		}
+
+		return data;
 	}
 
 	private static class SharedConnection {

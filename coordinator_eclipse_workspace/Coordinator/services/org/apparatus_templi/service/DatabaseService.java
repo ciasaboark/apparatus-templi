@@ -84,5 +84,5 @@ public abstract class DatabaseService implements ServiceInterface {
 	 * @return an ArrayList of String tags. If no binary data has been stored then returns an empty
 	 *         list.
 	 */
-	abstract public ArrayList<String> getBinTags();
+	abstract public ArrayList<byte[]> getBinTags();
 }

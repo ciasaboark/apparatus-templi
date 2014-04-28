@@ -29,28 +29,15 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 		Coordinator.registerEventWatch(this, new MotionEvent());
 
 		while (isRunning) {
-
-			boolean emailSent = emailService.sendEmailMessage(recipients,
-					"Notification from Driver: " + this.name,
-					"Time: <pre>" + System.currentTimeMillis() + "</pre>&deg;");
-			if (emailSent) {
-				Log.d(this.name, "email sent");
-			} else {
-				Log.w(this.name, "email not sent");
-			}
-			this.sleep(1000 * 60 * 5);
+			MotionEvent e = new MotionEvent(System.currentTimeMillis(), this);
+			Coordinator.receiveEvent(this, e);
+			this.sleep(30000);
 		}
 	}
 
 	@Override
 	public boolean receiveCommand(String command) {
-		if (command != null) {
-			if (command.startsWith("recip")) {
-				Log.d(this.name, "got new recipt list: " + command);
-				Coordinator.storeTextData(this.name, "recipt", command.substring(5));
-				recipients = command.substring(5);
-			}
-		}
+		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -62,12 +49,8 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 	@Override
 	public String getWidgetXML() {
-		XmlFormatter xml = new XmlFormatter(this, "Email Tester");
-		xml.addElement(new Button("Save Recipient List").setAction("recip$input")
-				.setInputType(InputType.TEXT).setIcon("fa fa-group")
-				.setDescription("A comma separated list of recipients to email every 30 minutes")
-				.setInputVal(recipients));
-		return xml.generateXml();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -78,6 +61,16 @@ public final class EmailTester extends Driver implements org.apparatus_templi.Ev
 
 	@Override
 	public void receiveEvent(Event e) {
+		if (e instanceof MotionEvent) {
+			boolean emailSent = emailService.sendEmailMessage(recipients,"Notification from Driver: "
+					+ this.name, "Motion Event: " + ((MotionEvent) e).getTimestamp());
+			if (emailSent) {
+				Log.d(this.name, "email sent");
+			} else {
+				Log.w(this.name, "email not sent");
+			}
+		}
+
 	}
 
 	@Override
