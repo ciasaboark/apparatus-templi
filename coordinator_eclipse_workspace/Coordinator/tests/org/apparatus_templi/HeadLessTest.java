@@ -2,6 +2,7 @@ package org.apparatus_templi;
 
 import java.awt.HeadlessException;
 
+import org.apparatus_templi.SysTray;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

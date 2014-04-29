@@ -1,6 +1,7 @@
-package org.apparatus_templi.driver;
+package org.apparatus_templi;
 
 import org.apparatus_templi.Log;
+import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.InputType;

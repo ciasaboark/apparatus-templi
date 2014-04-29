@@ -1,5 +1,7 @@
 package org.apparatus_templi;
 
+import org.apparatus_templi.SysTray;
+import org.apparatus_templi.SysTray.Status;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

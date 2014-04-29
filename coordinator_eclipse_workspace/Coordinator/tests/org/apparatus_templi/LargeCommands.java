@@ -1,7 +1,8 @@
-package org.apparatus_templi.driver;
+package org.apparatus_templi;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.driver.Driver;
 
 /**
  * A debugging driver used to test message fragmentation.

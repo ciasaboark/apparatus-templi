@@ -2,6 +2,8 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
+import org.apparatus_templi.Prefs;
+import org.apparatus_templi.Prefs.Keys;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

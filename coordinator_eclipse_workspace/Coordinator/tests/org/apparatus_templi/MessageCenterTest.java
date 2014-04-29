@@ -4,6 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.apparatus_templi.DummySerialConnection;
+import org.apparatus_templi.Log;
+import org.apparatus_templi.Message;
+import org.apparatus_templi.MessageCenter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

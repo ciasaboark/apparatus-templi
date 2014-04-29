@@ -2,6 +2,7 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
+import org.apparatus_templi.DummySerialConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,16 +41,20 @@ public class DummySerialConnectionTest {
 		assertTrue(!dc.isConnected());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sendNullData() {
-		System.out.println("Sending null data");
-		dc.writeData(null);
-	}
+	/*
+	 * Test private methods
+	 */
 
-	@Test
-	public void sendByteData() {
-		System.out.println("Sending data bytes");
-		assertTrue(dc.writeData(new byte[] { 0x0d }));
-	}
+	// @Test(expected = IllegalArgumentException.class)
+	// public void sendNullData() {
+	// System.out.println("Sending null data");
+	// dc.writeData(null);
+	// }
+	//
+	// @Test
+	// public void sendByteData() {
+	// System.out.println("Sending data bytes");
+	// assertTrue(dc.writeData(new byte[] { 0x0d }));
+	// }
 
 }

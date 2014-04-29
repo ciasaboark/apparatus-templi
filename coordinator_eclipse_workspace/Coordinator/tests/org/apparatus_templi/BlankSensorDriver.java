@@ -1,6 +1,7 @@
-package org.apparatus_templi.driver;
+package org.apparatus_templi;
 
 import org.apparatus_templi.Log;
+import org.apparatus_templi.driver.Driver;
 
 /**
  * A blank driver to be used as a template for a sensor module.

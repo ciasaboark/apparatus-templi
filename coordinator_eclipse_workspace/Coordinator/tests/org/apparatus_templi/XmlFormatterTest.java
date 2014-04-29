@@ -14,7 +14,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apparatus_templi.driver.BlankControllerDriver;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Controller;
 import org.apparatus_templi.xml.InputType;
@@ -71,7 +70,7 @@ public class XmlFormatterTest {
 
 	@Test
 	public void validateXmlWithNoElements() {
-		Source schemaFile = new StreamSource(new File("website/xml/module-schema.xsd"));
+		Source schemaFile = new StreamSource(new File("../../website/xml/module-schema.xsd"));
 		Source xmlFile = new StreamSource(new StringReader(xml.generateXml()));
 		// Source xmlFile = new StreamSource(new File("test_xml.xml"));
 
@@ -109,7 +108,7 @@ public class XmlFormatterTest {
 		xml.addElement(new Sensor("sensor1"));
 		xml.addElement(new TextArea("area1", "Some text"));
 
-		Source schemaFile = new StreamSource(new File("website/xml/module-schema.xsd"));
+		Source schemaFile = new StreamSource(new File("../../website/xml/module-schema.xsd"));
 		Source xmlFile = new StreamSource(new StringReader(xml.generateXml()));
 		// Source xmlFile = new StreamSource(new File("test_xml.xml"));
 

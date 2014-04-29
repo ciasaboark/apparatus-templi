@@ -1,4 +1,4 @@
-package org.apparatus_templi.driver;
+package org.apparatus_templi;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -7,6 +7,7 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.EventWatcher;
 import org.apparatus_templi.Log;
+import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.xml.Sensor;
 import org.apparatus_templi.xml.XmlFormatter;
