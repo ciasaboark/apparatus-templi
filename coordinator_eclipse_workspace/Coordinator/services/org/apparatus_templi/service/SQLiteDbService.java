@@ -296,8 +296,8 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 	}
 
 	@Override
-	public ArrayList<String> getTextTags() {
-		// Log.d(TAG, "getting text tags");
+	public ArrayList<String> getTextTags(String driverName) {
+		Log.d(TAG, "getting text tags for driver " + driverName);
 		Connection myConn = null;
 		Statement stmt = null;
 		ArrayList<String> data = new ArrayList<>();
@@ -306,40 +306,40 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 			myConn = SharedConnection.openConnection();
 			// myConn.setAutoCommit(false);
 			stmt = myConn.createStatement();
-			sql = "SELECT * FROM DRIVERTEXT;";
+			sql = "SELECT * FROM DRIVERTEXT WHERE NAME = '" + driverName + "';";
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				data.add(rs.getString("DATA"));
+				data.add(rs.getString("TAG"));
 			}
 			rs.close();
 			stmt.close();
-			} catch (Exception e) {
-				Log.e(TAG, "getTextTags()" + e.getClass().getName() + ": " + e.getMessage());
-				Log.e(TAG, "connection: " + myConn);
-				Log.e(TAG, "statement: " + sql);
-				Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
-				e.printStackTrace();
-			} finally {
-				SharedConnection.closeConnection();
-			}
-			return data;
+		} catch (Exception e) {
+			Log.e(TAG, "getTextTags()" + e.getClass().getName() + ": " + e.getMessage());
+			Log.e(TAG, "connection: " + myConn);
+			Log.e(TAG, "statement: " + sql);
+			Log.e(TAG, "open connections: " + SharedConnection.getOpenConnections());
+			e.printStackTrace();
+		} finally {
+			SharedConnection.closeConnection();
+		}
+		return data;
 	}
 
 	@Override
-	public ArrayList<byte[]> getBinTags() {
-		// Log.d(TAG, "getting binary tage");
+	public ArrayList<String> getBinTags(String driverName) {
+		Log.d(TAG, "getting binary tags for driver " + driverName);
 		Statement stmt = null;
-		ArrayList<byte[]> data = new ArrayList<>();
+		ArrayList<String> data = new ArrayList<>();
 		Connection myConn = null;
 		String sql = null;
 		try {
 			myConn = SharedConnection.openConnection();
 			// myConn.setAutoCommit(false);
 			stmt = myConn.createStatement();
-			sql = "SELECT * FROM DRIVERBIN;";
+			sql = "SELECT * FROM DRIVERBIN WHERE NAME = '" + driverName + "';";
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				data.add(rs.getBytes("DATA"));
+				data.add(rs.getString("TAG"));
 			}
 			rs.close();
 			stmt.close();
@@ -356,8 +356,17 @@ public class SQLiteDbService extends DatabaseService implements ServiceInterface
 		return data;
 	}
 
+	/**
+	 * During testing we ran into some problems with the SQLite driver failing to read from or write
+	 * to the database if a large number of connections were opened and closed simultaneously. This
+	 * inner class provides access to a shared connection in the form of a semaphore. The SQLite
+	 * connection will remain open until all shared connections are closed.
+	 * 
+	 * @author Jonathan Nelson <ciasaboark@gmail.com>
+	 * 
+	 */
 	private static class SharedConnection {
-		// shared connection
+		// shared SQL connection
 		private static Connection conn = null;
 		// semaphore to keep track of the number of open connections
 		private static int openConnections = 0;

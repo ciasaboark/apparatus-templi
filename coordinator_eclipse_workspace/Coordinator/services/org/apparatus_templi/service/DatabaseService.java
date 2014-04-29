@@ -75,7 +75,7 @@ public abstract class DatabaseService implements ServiceInterface {
 	 * @return an ArrayList of String tags. If no text data has been stored then returns an empty
 	 *         list.
 	 */
-	abstract public ArrayList<String> getTextTags();
+	abstract public ArrayList<String> getTextTags(String driverName);
 
 	/**
 	 * Returns an ArrayList of Strings representing the dataTags that have been used to store binary
@@ -84,5 +84,5 @@ public abstract class DatabaseService implements ServiceInterface {
 	 * @return an ArrayList of String tags. If no binary data has been stored then returns an empty
 	 *         list.
 	 */
-	abstract public ArrayList<byte[]> getBinTags();
+	abstract public ArrayList<String> getBinTags(String driverName);
 }
