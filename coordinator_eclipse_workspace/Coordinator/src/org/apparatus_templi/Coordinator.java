@@ -1,5 +1,6 @@
 package org.apparatus_templi;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -511,7 +512,7 @@ public class Coordinator {
 		String driverList = prefs.getPreference(Prefs.Keys.driverList);
 		assert driverList != null : "driver list should not be null";
 
-		if (driverList.equals("")) {
+		if (driverList == null || driverList.equals("")) {
 			Log.w(TAG,
 					"No drivers were specified in the configuration " + "file: '"
 							+ prefs.getPreference(Prefs.Keys.configFile)
@@ -1298,7 +1299,10 @@ public class Coordinator {
 		}
 
 		// start the system tray icon listener
-		sysTray = new SysTray();
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		if (!ge.isHeadless()) {
+			sysTray = new SysTray();
+		}
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		// turn off debug messages
@@ -1370,10 +1374,11 @@ public class Coordinator {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				Log.d(TAG, "system is going down. Notifying all drivers.");
 				sysTray.setStatus(SysTray.Status.TERM);
 				Thread.currentThread().setName("Shutdown Hook");
 				Coordinator.sendNotificationEmail("Shutdown Hook triggered");
-				Log.d(TAG, "system is going down. Notifying all drivers.");
+
 				// cancel any pending driver restarts
 				scheduledWakeUps.clear();
 				for (String driverName : loadedDrivers.keySet()) {

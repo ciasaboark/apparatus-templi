@@ -10,7 +10,7 @@ import org.apparatus_templi.event.MotionEvent;
 public class MotionWatcher extends Driver implements EventGenerator {
 
 	public MotionWatcher() {
-		this.name = "LOCAL";
+		this.name = "motion";
 	}
 
 	@Override

@@ -118,7 +118,8 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 			}
 
 			if (bindLocalhost) {
-				socket = new InetSocketAddress(InetAddress.getLocalHost(), portNum);
+				socket = new InetSocketAddress(InetAddress.getByName(HttpHelper.bestAddress()),
+						portNum);
 			} else {
 				socket = new InetSocketAddress(InetAddress.getLoopbackAddress(), portNum);
 			}

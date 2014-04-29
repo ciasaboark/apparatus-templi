@@ -188,7 +188,8 @@ public final class UsbSerialConnection extends SerialConnection {
 	synchronized boolean writeData(byte[] data) {
 		boolean dataWritten = false;
 		try {
-			// Log.d(TAG, "writing byte[] data to output: " + new String(data));
+			Log.d(TAG, "writing byte[] data to output (string value): " + new String(data));
+			Log.d(TAG, "writing byte[] data to output (integer value): " + data);
 			output.write(data);
 			output.flush();
 			dataWritten = true;

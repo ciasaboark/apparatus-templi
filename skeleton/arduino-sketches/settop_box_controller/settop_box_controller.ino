@@ -1,46 +1,21 @@
 /**
- * Copyright (c) 2009 Andrew Rapp. All rights reserved.
- *
- * This file is part of XBee-Arduino.
- *
- * XBee-Arduino is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * XBee-Arduino is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
-* SAMPLE MESSAGES
-* all:READY
-* 0D 00 06 00 00 41 4c 4c 00 00 00 00 00 00 00 52 45 41 44 59 3f
-*
-* LOCAL:5
-* 0D 00 02 00 00 4c 4f 43 41 4c 00 00 00 00 00 35 30
-*
-* LOCAL:RESET
-* 0D 00 05 00 00 4c 4f 43 41 4c 00 00 00 00 00 52 45 53 45 54
-*
-* LED_FLASH:5
-* 0D 00 01 00 00 4c 45 44 5f 46 4c 41 53 48 00 35
-
-0D 00 05 00 00 4c 45 44 5f 46 4c 41 53 48 00 
 **/
  
 #include <XBee.h>
 #include <SoftwareSerial.h>
 
 #define GREEN 3
-#define BLUE 4
-#define RED 5
+#define BLUE 5
+#define RED 6
 #define RGBPIN 13
+
+int redval = 50;
+int greenval = 200;
+int blueval = 240;
+boolean indicatorOn = false;
+
+
+const int BRIGHTLED = 9;
 
 const String BROADCAST_TAG = "ALL";
 const String MODULE_NAME = "LOCAL";
@@ -66,8 +41,9 @@ void setup() {
         analogWrite(GREEN, 0);
         
         //turn on the red power LED
-        pinMode(7, OUTPUT);
-        digitalWrite(7, HIGH);
+        pinMode(BRIGHTLED, OUTPUT);
+
+        digitalWrite(BRIGHTLED, HIGH);
   
 	// start serial
 	Serial.begin(9600);
@@ -77,11 +53,19 @@ void setup() {
 	
         //pause for a bit to let the motion detector stablalize and for the xbee to finish joining the network
 //        delay(15000);
-        flashLED(7, 4);
-        digitalWrite(7, HIGH);
+        flashLED(BRIGHTLED, 4);
+        digitalWrite(BRIGHTLED, HIGH);
         pinMode(RGBPIN, OUTPUT);
+        
+        setIndicator(redval, greenval, blueval);
+        
+        //artificial delay
+//        delay(3000);
+        flashLED(BRIGHTLED, 3);
+        analogWrite(BRIGHTLED, 30);
         digitalWrite(RGBPIN, HIGH);
-        setIndicator(100, 100, 100);
+        indicatorOn = true;
+        setIndicator(redval, greenval, blueval);
         
 	Serial.print("!!!!!READYREADY\n");
 }
@@ -210,10 +194,12 @@ void loop() {
         int pirVal = digitalRead(MOTDECPIN);
         //check for motion on the motion detector
         if(pirVal == LOW){ //was motion detected
-                flashLED(RGBPIN, 2);
-                digitalWrite(RGBPIN, HIGH);
                 sendCommand("mot");
-                delay(1000);
+                flashLED(RGBPIN, 2);
+                if (indicatorOn) {
+                  digitalWrite(RGBPIN, HIGH);
+                }
+                delay(3000);
          
         } else {
                 //I have no idea what the hell is going on here.  The pin will never
@@ -221,6 +207,9 @@ void loop() {
                 //+ something to the serial line.
                 
         }
+        
+        
+        
 }
 
 void broadcastMessage(byte startByte, byte optionsByte, byte dataLengthByte, byte fragmentNoBytes[], byte destinationBytes[], byte dataBytes[]) {
@@ -327,7 +316,39 @@ void processMessage(byte optionsByte, byte fragmentNoBytes[], String destination
 * Module specific code to handle incomming commands from the controller
 */
 void executeCommand(String command) {
+        if (command.compareTo("toggle") == 0) {
+                if (indicatorOn) {
+                        digitalWrite(RGBPIN, LOW);
+                        return;
+                } else {
+                        digitalWrite(RGBPIN, HIGH);
+                        return;
+                }
+        }
         
+        //led change
+        char color = command[0];
+        //shift the command down
+        String intString = command.substring(1);
+        //if the conversion fails toInt() returns 0, so we are still good
+        int value = intString.toInt();
+        
+        //debugging
+        if (value == 0) {
+          flashLED(BRIGHTLED, 3);
+          digitalWrite(BRIGHTLED, HIGH);
+        }
+        if (color == 'r') {
+          //set new red color
+          redval = value;
+        } else if (color == 'g') {
+          //set new green color
+          greenval = value;
+        } else if (color == 'b') {
+          //set new blue color
+          blueval = value;
+        }
+        setIndicator(redval, greenval, blueval);
 }
 
 

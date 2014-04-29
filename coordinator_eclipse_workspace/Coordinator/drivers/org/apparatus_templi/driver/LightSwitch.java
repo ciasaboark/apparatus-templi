@@ -23,7 +23,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 	private boolean switch_status; // ture = light on, false = light off
 
 	public LightSwitch() {
-		this.name = "lightswtch";
+		this.name = "light";
 		widgetXml.setRefresh(2);
 		widgetXml.addElement(lightBulbHtml);
 		widgetXml.addElement(description);
@@ -59,6 +59,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 
 	@Override
 	public boolean receiveCommand(String command) {
+		Log.d(this.name, "received command (length of: " + command.length() + ") : " + command);
 		boolean goodCommand = false;
 		if (command != null) {
 			if (command.equals("toggle")) {
@@ -70,7 +71,7 @@ public class LightSwitch extends Driver implements EventWatcher {
 					lightBulbHtml
 							.setHtml("<i style='color: yellow' class='fa fa-5x fa-lightbulb-o'></i>");
 					goodCommand = true;
-					switch_status = true;
+					this.switch_status = true;
 				} else {
 					Coordinator.sendCommand(this, "0");
 					light_switch.setStatus("OFF");

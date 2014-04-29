@@ -99,7 +99,9 @@ public class WebServer extends org.apparatus_templi.web.AbstractWebServer {
 			}
 
 			if (bindLocalhost) {
-				socket = new InetSocketAddress(InetAddress.getLocalHost(), portNum);
+				@SuppressWarnings("deprecation")
+				String bestAddress = HttpHelper.bestAddress();
+				socket = new InetSocketAddress(InetAddress.getByName(bestAddress), portNum);
 			} else {
 				socket = new InetSocketAddress(InetAddress.getLoopbackAddress(), portNum);
 			}

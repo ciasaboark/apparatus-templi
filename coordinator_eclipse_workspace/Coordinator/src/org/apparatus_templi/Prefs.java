@@ -408,58 +408,56 @@ public class Prefs {
 			e1.printStackTrace();
 		}
 
-		if (!sameFiles) {
-			HashMap<String, String> newPrefs = new HashMap<String, String>();
-			newPrefs.putAll(DEF_PREFS); // store the default preferences
-			// remove the default user/pass so they aren't stored to the DB
-			newPrefs.remove(Keys.userPass);
-			newPrefs.remove(Keys.userName);
+		// if (!sameFiles) {
+		HashMap<String, String> newPrefs = new HashMap<String, String>();
+		newPrefs.putAll(DEF_PREFS); // store the default preferences
+		// remove the default user/pass so they aren't stored to the DB
+		newPrefs.remove(Keys.userPass);
+		newPrefs.remove(Keys.userName);
 
-			// insert the user preferences
-			newPrefs.putAll(prefs); // store the updated preferences
+		// insert the user preferences
+		newPrefs.putAll(prefs); // store the updated preferences
 
-			/*
-			 * // store the user/pass to the database then remove it from the map so they are not //
-			 * written to the config file if (newPrefs.containsKey(Keys.userName)) { String userName
-			 * = newPrefs.get(Keys.userName); if (userName != null && "".equals(userName)) {
-			 * Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
-			 * newPrefs.remove(Keys.userName); } }
-			 * 
-			 * if (newPrefs.containsKey(Keys.userPass)) { String password =
-			 * newPrefs.get(Keys.userPass); newPrefs.remove(Keys.userPass); if (password != null &&
-			 * !"".equals(password)) { String hash; try { hash =
-			 * org.apparatus_templi.web.PasswordHash.createHash(password);
-			 * Coordinator.storeTextData("SYSTEM", "PASSWORD", hash); } catch
-			 * (NoSuchAlgorithmException | InvalidKeySpecException e) { Log.e(TAG,
-			 * "could not create has of password"); } } }
-			 */
+		/*
+		 * // store the user/pass to the database then remove it from the map so they are not //
+		 * written to the config file if (newPrefs.containsKey(Keys.userName)) { String userName =
+		 * newPrefs.get(Keys.userName); if (userName != null && "".equals(userName)) {
+		 * Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
+		 * newPrefs.remove(Keys.userName); } }
+		 * 
+		 * if (newPrefs.containsKey(Keys.userPass)) { String password = newPrefs.get(Keys.userPass);
+		 * newPrefs.remove(Keys.userPass); if (password != null && !"".equals(password)) { String
+		 * hash; try { hash = org.apparatus_templi.web.PasswordHash.createHash(password);
+		 * Coordinator.storeTextData("SYSTEM", "PASSWORD", hash); } catch (NoSuchAlgorithmException
+		 * | InvalidKeySpecException e) { Log.e(TAG, "could not create has of password"); } } }
+		 */
 
-			String configFile = newPrefs.remove(Keys.configFile);
-			// for (String key : newPrefs.keySet()) {
-			// Log.d(TAG, "savePreferences key " + key + " = " + newPrefs.get(key));
-			// }
+		String configFile = newPrefs.remove(Keys.configFile);
+		// for (String key : newPrefs.keySet()) {
+		// Log.d(TAG, "savePreferences key " + key + " = " + newPrefs.get(key));
+		// }
 
-			Properties props = new Properties();
-			// if the value of a key is null then it should not appear in the saved config file
-			for (String key : newPrefs.keySet()) {
-				if (newPrefs.get(key) != null) {
-					props.setProperty(key, newPrefs.get(key));
-				}
+		Properties props = new Properties();
+		// if the value of a key is null then it should not appear in the saved config file
+		for (String key : newPrefs.keySet()) {
+			if (newPrefs.get(key) != null) {
+				props.setProperty(key, newPrefs.get(key));
 			}
-			try {
-				FileOutputStream fout = new FileOutputStream(configFile);
-				props.store(fout, "");
-				fout.close();
-				Log.d(TAG, "wrote preferences to file: '" + configFile);
-				readPreferences(configFile);
-				fileUpdated = true;
-			} catch (IOException e) {
-				Log.e(TAG, "could not save preferences to file: '" + newPrefs.get(Keys.configFile)
-						+ "'");
-			}
-		} else {
-			Log.e(TAG, "can not overwrite default config file");
 		}
+		try {
+			FileOutputStream fout = new FileOutputStream(configFile);
+			props.store(fout, "");
+			fout.close();
+			Log.d(TAG, "wrote preferences to file: '" + configFile);
+			readPreferences(configFile);
+			fileUpdated = true;
+		} catch (IOException e) {
+			Log.e(TAG, "could not save preferences to file: '" + newPrefs.get(Keys.configFile)
+					+ "'");
+		}
+		// } else {
+		// Log.e(TAG, "can not overwrite default config file");
+		// }
 		return fileUpdated;
 	}
 
