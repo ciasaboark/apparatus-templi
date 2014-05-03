@@ -44,6 +44,12 @@ public class Prefs {
 		PREF_DESC.put(Keys.driverList, "A comma seperated list of drivers to load. "
 				+ "The drivers should be referenced by short class name.");
 
+		DEF_PREFS.put(Keys.debugLevel, "warn");
+		PREF_NAME.put(Keys.debugLevel, "Debug level");
+		PREF_DESC.put(Keys.debugLevel, "The debug level determines what messages are written to "
+				+ "the log file.  Valid levels are 'debug', 'warn', and 'err'.  "
+				+ "Errors are always written to the log.");
+
 		DEF_PREFS.put(Keys.portNum, null);
 		PREF_NAME.put(Keys.portNum, "Port number");
 		PREF_DESC.put(Keys.portNum, "The port number that the web server will listen "
@@ -345,12 +351,22 @@ public class Prefs {
 	 * @return the default value for the requested preference, or null if the preference has no
 	 *         default value or is unknown.
 	 */
-	public synchronized String getDefPreferences(String key) {
+	public synchronized String getDefPreference(String key) {
 		String value = null;
 		if (DEF_PREFS.containsKey(key)) {
 			value = DEF_PREFS.get(key);
 		}
 		return value;
+	}
+
+	/**
+	 * Returns a deep copy of the default preferences map.
+	 */
+	HashMap<String, String> getDefPreferencesMap() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.putAll(DEF_PREFS);
+		assert !map.isEmpty();
+		return map;
 	}
 
 	/**
@@ -471,6 +487,7 @@ public class Prefs {
 		public static final String driverList = "driverList";
 		public static final String logFile = "logFile";
 		public static final String emailList = "emailList";
+		public static final String debugLevel = "debugLevel";
 
 		// Web server properties
 		public static final String portNum = "web.portNum";

@@ -271,6 +271,7 @@ public class Coordinator {
 	 * @param argv
 	 *            the command line arguments to be parsed
 	 */
+
 	private static void parseCommandLineOptions(String[] argv) {
 		assert argv != null : "command line arguments should never be null";
 
@@ -279,27 +280,26 @@ public class Coordinator {
 		options.addOption("help", false, "Display this help message.");
 
 		// @SuppressWarnings("static-access")
-		// Option portOption = OptionBuilder.withArgName(Prefs.Keys.portNum).hasArg()
-		// .withDescription("Bind the server to the given port number")
-		// .create(Prefs.Keys.portNum);
-		// options.addOption(portOption);
-
-		@SuppressWarnings("static-access")
-		Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort).hasArg()
-				.withDescription("Connect to the arduino on serial interface")
-				.create(Prefs.Keys.serialPort);
-		options.addOption(serialOption);
+		// Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort).hasArg()
+		// .withDescription(prefs.getPreferenceDesc(Prefs.Keys.serialPort))
+		// .create(Prefs.Keys.serialPort);
+		// options.addOption(serialOption);
 
 		@SuppressWarnings("static-access")
 		Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile).hasArg()
 				.withDescription("Path to the configuration file").create(Prefs.Keys.configFile);
 		options.addOption(configOption);
 
-		// @SuppressWarnings("static-access")
-		// Option resourcesOption = OptionBuilder.withArgName(Prefs.Keys.webResourceFolder).hasArg()
-		// .withDescription("Web frontend will use resources in the specified folder")
-		// .create(Prefs.Keys.webResourceFolder);
-		// options.addOption(resourcesOption);
+		for (String key : prefs.getDefPreferencesMap().keySet()) {
+			String optName;
+			if (key.contains(".")) {
+				optName = key.replaceAll("\\.", "_");
+			} else {
+				optName = key;
+			}
+			options.addOption(OptionBuilder.withArgName(optName).hasArg()
+					.withDescription(prefs.getPreferenceDesc(key)).create(optName));
+		}
 
 		CommandLineParser cliParser = new org.apache.commons.cli.PosixParser();
 		try {
@@ -322,7 +322,7 @@ public class Coordinator {
 					configFile = System.getProperty("user.home") + configFile.substring(1);
 				}
 			} else {
-				configFile = prefs.getDefPreferences(Prefs.Keys.configFile);
+				configFile = prefs.getDefPreference(Prefs.Keys.configFile);
 			}
 			prefs.putPreference(Prefs.Keys.configFile, configFile);
 
@@ -352,6 +352,12 @@ public class Coordinator {
 			if (cmd.hasOption(Prefs.Keys.serialPort)) {
 				prefs.putPreference(Prefs.Keys.serialPort,
 						cmd.getOptionValue(Prefs.Keys.serialPort));
+			}
+
+			// read debug level
+			if (cmd.hasOption(Prefs.Keys.debugLevel)) {
+				prefs.putPreference(Prefs.Keys.debugLevel,
+						cmd.getOptionValue(Prefs.Keys.debugLevel));
 			}
 
 		} catch (ParseException e) {
@@ -1299,17 +1305,27 @@ public class Coordinator {
 		}
 
 		// start the system tray icon listener
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		if (!ge.isHeadless()) {
+		if (!GraphicsEnvironment.isHeadless()) {
 			sysTray = new SysTray();
 		}
 
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-		// turn off debug messages
-		// Log.setLogLevel(Log.LEVEL_WARN);
+		// parse command line options
+		parseCommandLineOptions(argv);
+
+		// set debug level
+		switch (prefs.getPreference(Prefs.Keys.debugLevel)) {
+		case "err":
+			Log.setLogLevel(Log.LEVEL_ERR);
+			break;
+		case "warn":
+			Log.setLogLevel(Log.LEVEL_WARN);
+			break;
+		default:
+			Log.setLogLevel(Log.LEVEL_DEBUG);
+		}
+
 		Log.d(TAG, "SERVICE STARTING");
 		Log.c(TAG, "Starting");
-		parseCommandLineOptions(argv);
 
 		// open the serial connection
 		openSerialConnection();

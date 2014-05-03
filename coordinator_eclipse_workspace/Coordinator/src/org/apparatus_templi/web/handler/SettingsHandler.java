@@ -72,7 +72,7 @@ public class SettingsHandler implements HttpHandler {
 
 			// if the config file is not the default then we will show the full file path,
 			// otherwise only the short name
-			if (!configFile.equals(Coordinator.getPrefs().getDefPreferences(Prefs.Keys.configFile))) {
+			if (!configFile.equals(Coordinator.getPrefs().getDefPreference(Prefs.Keys.configFile))) {
 				File f = new File(configFile);
 				configFile = f.getAbsolutePath();
 			}
@@ -81,7 +81,7 @@ public class SettingsHandler implements HttpHandler {
 			boolean usingDefaultConfig = false;
 			html.append("<div id='settings_padder'></div>");
 			if (prefs.get(Prefs.Keys.configFile).equals(
-					Coordinator.getPrefs().getDefPreferences(Prefs.Keys.configFile))) {
+					Coordinator.getPrefs().getDefPreference(Prefs.Keys.configFile))) {
 				usingDefaultConfig = true;
 			}
 
@@ -128,7 +128,7 @@ public class SettingsHandler implements HttpHandler {
 			// if the config file is the default then we want the save preferences button to be
 			// disabled until updated via javascript
 			html.append("<span id='form_submit' ");
-			if (configFile.equals(Coordinator.getPrefs().getDefPreferences(Prefs.Keys.configFile))) {
+			if (configFile.equals(Coordinator.getPrefs().getDefPreference(Prefs.Keys.configFile))) {
 				html.append("class='btn btn-success disabled'>");
 			} else {
 				html.append("class ='btn btn-success' ");
