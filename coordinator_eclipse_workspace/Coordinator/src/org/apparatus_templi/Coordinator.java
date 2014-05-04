@@ -280,15 +280,9 @@ public class Coordinator {
 		options.addOption("help", false, "Display this help message.");
 
 		// @SuppressWarnings("static-access")
-		// Option serialOption = OptionBuilder.withArgName(Prefs.Keys.serialPort).hasArg()
-		// .withDescription(prefs.getPreferenceDesc(Prefs.Keys.serialPort))
-		// .create(Prefs.Keys.serialPort);
-		// options.addOption(serialOption);
-
-		@SuppressWarnings("static-access")
-		Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile).hasArg()
-				.withDescription("Path to the configuration file").create(Prefs.Keys.configFile);
-		options.addOption(configOption);
+		// Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile).hasArg()
+		// .withDescription("Path to the configuration file").create(Prefs.Keys.configFile);
+		// options.addOption(configOption);
 
 		for (String key : prefs.getDefPreferencesMap().keySet()) {
 			String optName;
@@ -314,9 +308,6 @@ public class Coordinator {
 				System.exit(0);
 			}
 
-			// TODO this should be simplified to auto read in all command line options in a loop,
-			// instead of reading them individually
-
 			// Load the configuration file URI
 			String configFile;
 			if (cmd.hasOption(Prefs.Keys.configFile)) {
@@ -332,34 +323,14 @@ public class Coordinator {
 			// Read in preferences from the config file
 			prefs.readPreferences(configFile);
 
-			// Read additional preferences from the command line options,
-			// + overwriting preferences in the config file.
-
-			// If the user specified a port number then we will only
-			// try binding to that port, else we try the default port number
-			if (cmd.hasOption("web_portNum")) {
-				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue("web_portNum"));
+			// Read in preferences from the command line options
+			for (Option opt : cmd.getOptions()) {
+				// Apache CLI parser does not allow '.' within option names, so we have to convert
+				// all '_' back to the '.' notation
+				String key = opt.getArgName().replace("_", ".");
+				String value = opt.getValue();
+				prefs.putPreference(key, value);
 			}
-
-			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
-				prefs.putPreference(Prefs.Keys.webResourceFolder,
-						cmd.getOptionValue(Prefs.Keys.webResourceFolder));
-			}
-
-			// if we were given a preferred port we will pass it to
-			// SerialConnection
-			// + when initialized
-			if (cmd.hasOption(Prefs.Keys.serialPort)) {
-				prefs.putPreference(Prefs.Keys.serialPort,
-						cmd.getOptionValue(Prefs.Keys.serialPort));
-			}
-
-			// read debug level
-			if (cmd.hasOption(Prefs.Keys.debugLevel)) {
-				prefs.putPreference(Prefs.Keys.debugLevel,
-						cmd.getOptionValue(Prefs.Keys.debugLevel));
-			}
-
 		} catch (ParseException e) {
 			System.out.println("Error processing options: " + e.getMessage());
 			new HelpFormatter().printHelp("Diff", options);

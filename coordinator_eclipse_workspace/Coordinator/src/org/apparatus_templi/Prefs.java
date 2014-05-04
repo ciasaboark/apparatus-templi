@@ -366,6 +366,10 @@ public class Prefs {
 	 *            the value of the preference.
 	 */
 	public synchronized void putPreference(String key, String value) {
+		if (key == null) {
+			throw new IllegalArgumentException("can not store preference with null key");
+		}
+		// TODO check that the key is valid (part of Keys)
 		preferences.put(key, value);
 	}
 
