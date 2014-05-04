@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.LinkedHashSet;
 
 /**
  * A serial connection to manage connection and data transfer to and from controller Arduino through
@@ -22,7 +21,7 @@ public final class UsbSerialConnection extends SerialConnection {
 	private static final String TAG = "SerialConnection";
 
 	SerialPort serialPort;
-	private static LinkedHashSet<String> portNames;
+	// private static LinkedHashSet<String> portNames;
 	private InputStream input;
 	private OutputStream output;
 
@@ -32,40 +31,25 @@ public final class UsbSerialConnection extends SerialConnection {
 
 	private boolean connected = false;
 
-	/**
-	 * Initialize the serial connection by attempting to automatically find a valid port.
-	 */
-	public UsbSerialConnection() {
-		this(null);
-	}
+	// /**
+	// * Initialize the serial connection by attempting to automatically find a valid port.
+	// */
+	// public UsbSerialConnection() {
+	// this(null);
+	// }
 
 	/**
-	 * Initialize the serial connection with the specified port. If the port name give is null then
-	 * will attempt to find a valid port from an internal list. If the given port name is not null
-	 * then will only attempt to bind to the named serial port.
+	 * Initialize the serial connection with the specified port. The given serial port name must not
+	 * be null or an empty string.
 	 * 
 	 * @param serialPortName
 	 *            the name of the serial port or null to auto-detect.
+	 * @throws IllegalArgumentException
+	 *             if serialPortName is null or an empty string.
 	 */
 	public UsbSerialConnection(String serialPortName) {
-		portNames = new LinkedHashSet<String>();
-		// the web front-end likes to mangle the serial port name from null to "null"
-		if (serialPortName == null || serialPortName.equals("") || serialPortName.equals("null")) {
-			serialPortName = null;
-			portNames.add("/dev/tty.usbmodemfd121"); // MacOS
-			portNames.add("/dev/tty.usbmodemfa131"); // MacOS
-			portNames.add("/dev/ttyUSB0"); // Linux
-			portNames.add("/dev/ttyUSB1"); // Linux
-			portNames.add("/dev/ttyUSB2"); // Linux
-			portNames.add("dev/ttyACM0"); // Linux
-			portNames.add("dev/ttyACM1"); // Linux
-			portNames.add("dev/ttyACM2"); // Linux
-			portNames.add("COM4"); // Windows
-			portNames.add("COM3"); // Windows
-			portNames.add("COM2"); // Windows
-			portNames.add("COM1"); // Windows
-		} else {
-			portNames.add(serialPortName);
+		if (serialPortName == null || serialPortName.equals("")) {
+			throw new IllegalArgumentException("Serial port name can not be null or empty");
 		}
 
 		this.initialize(serialPortName);
@@ -79,6 +63,9 @@ public final class UsbSerialConnection extends SerialConnection {
 	 */
 	@Override
 	protected void initialize(String serialPortName) {
+		if (serialPortName == null || serialPortName.isEmpty()) {
+			throw new IllegalArgumentException("Serial port name can not be null or empty string");
+		}
 		connected = false;
 
 		CommPortIdentifier portId = null;
@@ -90,28 +77,16 @@ public final class UsbSerialConnection extends SerialConnection {
 		// scan the defaults list
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-			for (String portName : portNames) {
-				if (currPortId.getName().equals(portName)) {
-					if (!currPortId.getName().equals(serialPortName) && serialPortName != null) {
-						Log.w(TAG, "could not connect using preferred port " + serialPortName
-								+ ", using " + currPortId.getName() + " instead");
-					} else {
-						Log.d(TAG, "connected to port " + currPortId.getName());
-					}
-					portId = currPortId;
-					break;
-				}
+			if (currPortId.getName().equals(serialPortName)) {
+				Log.d(TAG, "found port '" + serialPortName + "' attempting to connect");
+				portId = currPortId;
+				break;
 			}
 		}
 
 		if (portId == null) {
-			if (serialPortName != null) {
-				Log.t(TAG, "Could not connect to port '" + serialPortName + "'");
-				Coordinator.exitWithReason("Could not connect to port '" + serialPortName + "'");
-			} else {
-				Log.t(TAG, "Could not find COM port.");
-				Coordinator.exitWithReason("Could not find COM port.");
-			}
+			Log.t(TAG, "Could not connect to port '" + serialPortName + "'");
+			Coordinator.exitWithReason("Could not connect to port '" + serialPortName + "'");
 		}
 
 		try {
@@ -131,7 +106,8 @@ public final class UsbSerialConnection extends SerialConnection {
 			serialPort.notifyOnDataAvailable(true);
 			connected = true;
 		} catch (Exception e) {
-			System.err.println(e.toString());
+			System.err.println("unable to connect to port '" + serialPortName + "': "
+					+ e.getMessage());
 		}
 	}
 

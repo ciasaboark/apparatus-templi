@@ -2,8 +2,8 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apparatus_templi.Prefs;
-import org.apparatus_templi.Prefs.Keys;
+import java.util.HashMap;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +33,14 @@ public class PrefsTest {
 	public void testEmptyPreferences() {
 		System.out.println("Reading preferences value before reading from file");
 		assertTrue(prefs.getPreference(null) == null);
-		assertTrue(prefs.getPreference("configFile") == null);
+		System.out.println("null key has null value");
+		assertTrue(prefs.getPreference(Prefs.Keys.portNum) == null);
+		System.out.println("string key has null value");
 		assertTrue(prefs.getPreferencesMap() != null);
-		assertTrue(prefs.getPreferencesMap().isEmpty());
+		System.out.println("preferences map is not null");
+		HashMap<String, String> prefMap = prefs.getPreferencesMap();
+		assertTrue(prefMap.isEmpty());
+		System.out.println("preferences map is empty");
 	}
 
 	@Test

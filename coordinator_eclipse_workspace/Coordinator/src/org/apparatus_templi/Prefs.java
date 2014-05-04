@@ -25,7 +25,7 @@ public class Prefs {
 	// contains a short descriptive name of the preferences
 	private final HashMap<String, String> PREF_NAME = new HashMap<String, String>();
 
-	private static final HashMap<String, String> preferences = new HashMap<String, String>();
+	private final HashMap<String, String> preferences = new HashMap<String, String>();
 
 	public Prefs() {
 		DEF_PREFS.put(Keys.configFile, "coordinator.conf");
@@ -62,16 +62,14 @@ public class Prefs {
 				+ "be encrypted.  After enabling this option you may be prompted to accept "
 				+ "unsigned credentials.");
 
-		DEF_PREFS.put(Keys.serialPort, null);
+		DEF_PREFS.put(Keys.serialPort, "dummy");
 		PREF_NAME.put(Keys.serialPort, "Serial port");
-		PREF_DESC.put(Keys.serialPort, "The port name of the serial port the controller "
+		PREF_DESC.put(Keys.serialPort, "The port name the local "
 				+ "Arduino is connected to.  On a Windows system this will likely be COM3 or "
 				+ "COM4.  For a Mac this should be something like /dev/tty.usbmodemXXXX, where "
 				+ "XXXX is the specific serial device. On a Linux system this should be something "
 				+ "like /dev/tty.ACMn, where n is the specific serial number.  If the serial port "
-				+ "is null, or left blank, then the Coordinator will attempt to find the correct "
-				+ "serial port.  A value of \"dummy\" indicates that the Coordinator should use "
-				+ "the dummy serial connection, which does not require any hardware.");
+				+ "is null, or left blank, then a dummy serial connection will be used.");
 
 		DEF_PREFS.put(Keys.serverBindLocalhost, "false");
 		PREF_NAME.put(Keys.serverBindLocalhost, "Allow outside connections");
@@ -176,7 +174,7 @@ public class Prefs {
 		// Read the values from the configuration file. If any command line
 		// + parameters were passed, they should overwrite values read, so we
 		// + will continue processing them later.
-		Log.d(TAG, "reading from config file: '" + configFile + "'");
+		// Log.d(TAG, "reading from config file: '" + configFile + "'");
 		try {
 			Properties props = new Properties();
 			FileInputStream fin = new FileInputStream(configFile);
@@ -189,8 +187,9 @@ public class Prefs {
 					props.getProperty(Keys.logFile, DEF_PREFS.get(Keys.logFile)));
 
 			// TODO remove from dist, this places passwords etc in the log file
-			Log.d(TAG, "read preference '" + Keys.logFile + "' as '" + getPreference(Keys.logFile)
-					+ "'");
+			// Log.d(TAG, "read preference '" + Keys.logFile + "' as '" +
+			// getPreference(Keys.logFile)
+			// + "'");
 
 			// if no port number was specified then we will set the port number to the default port
 			// and auto increment if needed when creating the server socket.
@@ -202,8 +201,9 @@ public class Prefs {
 
 			preferences.put(Keys.portNum,
 					props.getProperty(Keys.portNum, DEF_PREFS.get(Keys.portNum)));
-			Log.d(TAG, "read preference '" + Keys.portNum + "' as '" + getPreference(Keys.portNum)
-					+ "'");
+			// Log.d(TAG, "read preference '" + Keys.portNum + "' as '" +
+			// getPreference(Keys.portNum)
+			// + "'");
 
 			// setting the serial port to null from the web interface is not possible, the best we
 			// can do is set it to a blank value or the word 'null'. These values should be
@@ -213,70 +213,70 @@ public class Prefs {
 				sp = null;
 			}
 			preferences.put(Keys.serialPort, sp);
-			Log.d(TAG, "read preference '" + Keys.serialPort + "' as '"
-					+ getPreference(Keys.serialPort) + "'");
+			// Log.d(TAG, "read preference '" + Keys.serialPort + "' as '"
+			// + getPreference(Keys.serialPort) + "'");
 
 			preferences.put(Keys.encryptServer,
 					props.getProperty(Keys.encryptServer, DEF_PREFS.get(Keys.encryptServer)));
-			Log.d(TAG, "read preferences '" + Keys.encryptServer + "' as '"
-					+ getPreference(Keys.encryptServer) + "'");
+			// Log.d(TAG, "read preferences '" + Keys.encryptServer + "' as '"
+			// + getPreference(Keys.encryptServer) + "'");
 
 			preferences.put(Keys.emailList,
 					props.getProperty(Keys.emailList, DEF_PREFS.get(Keys.emailList)));
-			Log.d(TAG, "read preferences '" + Keys.emailList + "' as '"
-					+ getPreference(Keys.emailList) + "'");
+			// Log.d(TAG, "read preferences '" + Keys.emailList + "' as '"
+			// + getPreference(Keys.emailList) + "'");
 
 			preferences.put(Keys.webResourceFolder, props.getProperty(Keys.webResourceFolder,
 					DEF_PREFS.get(Keys.webResourceFolder)));
-			Log.d(TAG, "read preference '" + Keys.webResourceFolder + "' as '"
-					+ getPreference(Keys.webResourceFolder) + "'");
+			// Log.d(TAG, "read preference '" + Keys.webResourceFolder + "' as '"
+			// + getPreference(Keys.webResourceFolder) + "'");
 
 			preferences.put(Keys.driverList,
 					props.getProperty(Keys.driverList, DEF_PREFS.get(Keys.driverList)));
-			Log.d(TAG, "read preference '" + Keys.driverList + "' as '"
-					+ getPreference(Keys.driverList) + "'");
+			// Log.d(TAG, "read preference '" + Keys.driverList + "' as '"
+			// + getPreference(Keys.driverList) + "'");
 
 			preferences.put(
 					Keys.serverBindLocalhost,
 					props.getProperty(Keys.serverBindLocalhost,
 							DEF_PREFS.get(Keys.serverBindLocalhost)));
-			Log.d(TAG, "read preference '" + Keys.serverBindLocalhost + "' as '"
-					+ getPreference(Keys.serverBindLocalhost) + "'");
+			// Log.d(TAG, "read preference '" + Keys.serverBindLocalhost + "' as '"
+			// + getPreference(Keys.serverBindLocalhost) + "'");
 
 			preferences.put(Keys.twtrAccess,
 					props.getProperty(Keys.twtrAccess, DEF_PREFS.get(Keys.twtrAccess)));
-			Log.d(TAG, "read preference '" + Keys.twtrAccess + "' as '"
-					+ getPreference(Keys.twtrAccess) + "'");
+			// Log.d(TAG, "read preference '" + Keys.twtrAccess + "' as '"
+			// + getPreference(Keys.twtrAccess) + "'");
 
 			preferences.put(Keys.twtrAccessKey,
 					props.getProperty(Keys.twtrAccessKey, DEF_PREFS.get(Keys.twtrAccessKey)));
-			Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
-					+ getPreference(Keys.twtrAccessKey) + "'");
+			// Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
+			// + getPreference(Keys.twtrAccessKey) + "'");
 
 			preferences.put(Keys.emailServer,
 					props.getProperty(Keys.emailServer, DEF_PREFS.get(Keys.emailServer)));
-			Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
-					+ getPreference(Keys.emailServer) + "'");
+			// Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
+			// + getPreference(Keys.emailServer) + "'");
 
 			preferences.put(Keys.emailPort,
 					props.getProperty(Keys.emailPort, DEF_PREFS.get(Keys.emailPort)));
-			Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
-					+ getPreference(Keys.emailPort) + "'");
+			// Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
+			// + getPreference(Keys.emailPort) + "'");
 
 			preferences.put(Keys.emailUsername,
 					props.getProperty(Keys.emailUsername, DEF_PREFS.get(Keys.emailUsername)));
-			Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
-					+ getPreference(Keys.emailUsername) + "'");
+			// Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
+			// + getPreference(Keys.emailUsername) + "'");
 
 			preferences.put(Keys.emailAddress,
 					props.getProperty(Keys.emailAddress, DEF_PREFS.get(Keys.emailAddress)));
-			Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
-					+ getPreference(Keys.emailAddress) + "'");
+			// Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
+			// + getPreference(Keys.emailAddress) + "'");
 
 			preferences.put(Keys.emailPassword,
 					props.getProperty(Keys.emailPassword, DEF_PREFS.get(Keys.emailPassword)));
-			Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
-					+ getPreference(Keys.emailPassword) + "'");
+			// Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
+			// + getPreference(Keys.emailPassword) + "'");
 
 			// read username and password from the database (if one exists)
 			String username = Coordinator.readTextData("SYSTEM", "USERNAME");
@@ -288,7 +288,8 @@ public class Prefs {
 			preferences.put(Keys.userPass, "");
 
 		} catch (IOException | NullPointerException e) {
-			Log.w(TAG, "unable to read configuration file '" + configFile + "'");
+			Log.e(TAG, "unable to read configuration file '" + configFile + "'");
+			Coordinator.exitWithReason("Unable to read config file '" + configFile + "'");
 
 		}
 	}
@@ -388,10 +389,13 @@ public class Prefs {
 	 * Returns a copy of the current preferences map. Since the returned map is a copy changes will
 	 * not be reflected in the saved preferences.
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized HashMap<String, String> getPreferencesMap() {
 		// make sure that the caller can not modify the preferences we hold
-		return (HashMap<String, String>) preferences.clone();
+		HashMap<String, String> copy = new HashMap<String, String>();
+		if (preferences != null) {
+			copy.putAll(preferences);
+		}
+		return copy;
 	}
 
 	/**

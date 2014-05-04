@@ -374,9 +374,11 @@ public class Coordinator {
 	 */
 	private static void openSerialConnection() {
 		String serialPortName = prefs.getPreference(Prefs.Keys.serialPort);
-		if (serialPortName == null) {
-			serialConnection = new UsbSerialConnection();
-		} else if (serialPortName.equals("dummy")) {
+		assert serialPortName != null;
+		assert !serialPortName.isEmpty();
+
+		if (serialPortName.equals("dummy")) {
+			Log.w(TAG, "Using dummy serial connection.  No messages will be sent.");
 			serialConnection = new DummySerialConnection();
 		} else {
 			serialConnection = new UsbSerialConnection(serialPortName);
