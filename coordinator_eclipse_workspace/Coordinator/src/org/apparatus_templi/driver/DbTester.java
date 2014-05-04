@@ -1,10 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.Arrays;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Log;
-import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.xml.Button;
 import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.TextArea;

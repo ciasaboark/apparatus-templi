@@ -1,7 +1,6 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import org.apparatus_templi.Log;
-import org.apparatus_templi.driver.Driver;
 
 /**
  * A blank driver to be used as a template for a controller module.

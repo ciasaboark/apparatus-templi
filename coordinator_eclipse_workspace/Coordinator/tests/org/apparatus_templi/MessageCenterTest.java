@@ -4,10 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.apparatus_templi.DummySerialConnection;
-import org.apparatus_templi.Log;
-import org.apparatus_templi.Message;
-import org.apparatus_templi.MessageCenter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +19,7 @@ public class MessageCenterTest {
 
 	@Before
 	public void begin() {
-		System.out.println("#################     BEGIN     #################");
+		// System.out.println("#################     BEGIN     #################");
 		mc = MessageCenter.getInstance();
 		Log.setLogLevel(Log.LEVEL_ERR);
 	}
@@ -33,7 +29,7 @@ public class MessageCenterTest {
 		mc.stopReadingMessges();
 		mc.flushMessages();
 		mc.setSerialConnection(null);
-		System.out.println("-----------------      END      -----------------\n\n");
+		// System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	/*

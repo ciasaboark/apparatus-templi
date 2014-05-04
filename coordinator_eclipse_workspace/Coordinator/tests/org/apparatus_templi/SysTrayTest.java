@@ -1,7 +1,5 @@
 package org.apparatus_templi;
 
-import org.apparatus_templi.SysTray;
-import org.apparatus_templi.SysTray.Status;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,13 +16,13 @@ public class SysTrayTest {
 
 	@Before
 	public void before() {
-		System.out.println("#################     BEGIN     #################");
+		// System.out.println("#################     BEGIN     #################");
 		sysTray = new SysTray();
 	}
 
 	@After
 	public void after() {
-		System.out.println("-----------------      END      -----------------\n\n");
+		// System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	@Test(expected = IllegalArgumentException.class)

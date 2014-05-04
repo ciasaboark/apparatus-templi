@@ -2,7 +2,7 @@ package org.apparatus_templi;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.driver.BlankControllerDriver;
 import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.event.ProximityEvent;
 import org.junit.After;
@@ -21,13 +21,13 @@ public class CoordinatorTest {
 
 	@Before
 	public void before() {
-		System.out.println("#################     BEGIN     #################");
+		// System.out.println("#################     BEGIN     #################");
 		coordinator = new Coordinator();
 	}
 
 	@After
 	public void after() {
-		System.out.println("-----------------      END      -----------------\n\n");
+		// System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	/*
@@ -220,13 +220,15 @@ public class CoordinatorTest {
 		assertTrue(Coordinator.getDriverThreadId(d) == -1);
 	}
 
-	@Test
-	public void getThreadIdLoadedRunningDriver() {
-		System.out.println("Getting thread id of loaded and running driver");
-		// TODO load and start driver
-		Driver d = new BlankControllerDriver();
-		assertTrue(Coordinator.getDriverThreadId(d) != -1);
-	}
+	// TODO, how to force Coordinator to load a driver?
+	// @Test
+	// public void getThreadIdLoadedRunningDriver() {
+	// System.out.println("Getting thread id of loaded and running driver");
+	// // TODO load and start driver
+	// Driver d = new BlankControllerDriver();
+	// long threadId = Coordinator.getDriverThreadId(d);
+	// assertTrue(threadId != -1);
+	// }
 
 	/**************************************************
 	 * Unfinished tests

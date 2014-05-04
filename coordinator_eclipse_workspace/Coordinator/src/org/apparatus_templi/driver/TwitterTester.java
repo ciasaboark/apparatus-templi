@@ -1,10 +1,9 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.EventWatcher;
 import org.apparatus_templi.Log;
-import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.event.TempChangedEvent;
 import org.apparatus_templi.service.TwitterService;
 

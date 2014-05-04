@@ -1,6 +1,5 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
-import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.xml.Pre;
 import org.apparatus_templi.xml.TextArea;
 import org.apparatus_templi.xml.XmlFormatter;

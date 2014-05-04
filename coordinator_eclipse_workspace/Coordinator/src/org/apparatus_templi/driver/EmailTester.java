@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
+import org.apparatus_templi.EventGenerator;
+import org.apparatus_templi.EventWatcher;
 import org.apparatus_templi.Log;
 import org.apparatus_templi.event.MotionEvent;
 import org.apparatus_templi.service.EmailService;

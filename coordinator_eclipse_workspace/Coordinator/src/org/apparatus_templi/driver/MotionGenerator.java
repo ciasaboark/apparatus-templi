@@ -1,4 +1,4 @@
-package org.apparatus_templi;
+package org.apparatus_templi.driver;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ import org.apparatus_templi.Coordinator;
 import org.apparatus_templi.Event;
 import org.apparatus_templi.EventGenerator;
 import org.apparatus_templi.Log;
-import org.apparatus_templi.driver.Driver;
 import org.apparatus_templi.event.MotionEvent;
 
 /**

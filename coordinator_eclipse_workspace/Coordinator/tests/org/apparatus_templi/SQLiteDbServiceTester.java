@@ -15,12 +15,12 @@ public class SQLiteDbServiceTester {
 
 	@Before
 	public void begin() {
-		System.out.println("#################     BEGIN     #################");
+		// System.out.println("#################     BEGIN     #################");
 	}
 
 	@After
 	public void after() {
-		System.out.println("-----------------      END      -----------------\n\n");
+		// System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	@Test

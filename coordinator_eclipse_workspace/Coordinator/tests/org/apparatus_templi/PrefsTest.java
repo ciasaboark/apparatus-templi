@@ -19,14 +19,14 @@ public class PrefsTest {
 
 	@Before
 	public void before() {
-		System.out.println("#################     BEGIN     #################");
+		// System.out.println("#################     BEGIN     #################");
 		prefs = new Prefs();
 
 	}
 
 	@After
 	public void after() {
-		System.out.println("-----------------      END      -----------------\n\n");
+		// System.out.println("-----------------      END      -----------------\n\n");
 	}
 
 	@Test
@@ -59,13 +59,17 @@ public class PrefsTest {
 		assertTrue(prefs.getPreference("foo") != null);
 		assertTrue(prefs.getPreference("foo").equals("bar"));
 
-		System.out.println("Storing preference with null key");
-		prefs.putPreference(null, "bar");
 		System.out.println("Storing null preference with key");
 		prefs.putPreference("foo", null);
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void storeNullPrefKey() {
 		System.out.println("Storing null preference with null key");
 		prefs.putPreference(null, null);
-
+		System.out.println("Storing preference with null key");
+		prefs.putPreference(null, "bar");
 	}
 
 	@Test(expected = NullPointerException.class)

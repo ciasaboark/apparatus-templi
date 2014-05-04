@@ -649,8 +649,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="72" language="java" name="org.apparatus_templi.DbTester2" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/DbTester2.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="72" language="java" name="org.apparatus_templi.driver.DbTester2" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/DbTester2.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="3074" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -658,8 +658,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="73" language="java" name="org.apparatus_templi.BlankControllerDriver" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/BlankControllerDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="73" language="java" name="org.apparatus_templi.driver.BlankControllerDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/BlankControllerDriver.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="4580" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -667,8 +667,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="74" language="java" name="org.apparatus_templi.LargeCommands" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/LargeCommands.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="74" language="java" name="org.apparatus_templi.driver.LargeCommands" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/LargeCommands.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="4831" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -685,8 +685,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="76" language="java" name="org.apparatus_templi.EmailTester" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/EmailTester.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="76" language="java" name="org.apparatus_templi.driver.EmailTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/EmailTester.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="224" width="211" x="5853" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -712,8 +712,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="79" language="java" name="org.apparatus_templi.LazyDriver" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/LazyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="79" language="java" name="org.apparatus_templi.driver.LazyDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/LazyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="543" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -721,8 +721,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="80" language="java" name="org.apparatus_templi.BlankSensorDriver" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/BlankSensorDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="80" language="java" name="org.apparatus_templi.driver.BlankSensorDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/BlankSensorDriver.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="794" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -730,8 +730,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="81" language="java" name="org.apparatus_templi.MotionGenerator" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/MotionGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="81" language="java" name="org.apparatus_templi.driver.MotionGenerator" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotionGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="188" width="211" x="1296" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -766,8 +766,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="85" language="java" name="org.apparatus_templi.FancyWidgetTest" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/FancyWidgetTest.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="85" language="java" name="org.apparatus_templi.driver.FancyWidgetTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/FancyWidgetTest.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="3325" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -775,8 +775,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="86" language="java" name="org.apparatus_templi.SleepyDriver" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/SleepyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="86" language="java" name="org.apparatus_templi.driver.SleepyDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/SleepyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="4329" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -784,8 +784,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="87" language="java" name="org.apparatus_templi.MotionWatcherTest" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/MotionWatcherTest.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="87" language="java" name="org.apparatus_templi.driver.MotionWatcherTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotionWatcherTest.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="188" width="211" x="3827" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -802,8 +802,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="89" language="java" name="org.apparatus_templi.MotorTester" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/MotorTester.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="89" language="java" name="org.apparatus_templi.driver.MotorTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotorTester.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="2823" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -811,8 +811,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="90" language="java" name="org.apparatus_templi.TwitterTester" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/TwitterTester.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="90" language="java" name="org.apparatus_templi.driver.TwitterTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/TwitterTester.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="188" width="211" x="6104" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -829,8 +829,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="92" language="java" name="org.apparatus_templi.XmlTest" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/XmlTest.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="92" language="java" name="org.apparatus_templi.driver.XmlTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/XmlTest.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="5351" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -838,8 +838,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="93" language="java" name="org.apparatus_templi.DbTester" project="Coordinator" 
-    file="/Coordinator/tests/org/apparatus_templi/DbTester.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="93" language="java" name="org.apparatus_templi.driver.DbTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/DbTester.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="170" width="211" x="5602" y="2395"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      

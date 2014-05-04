@@ -64,47 +64,16 @@ public class SetTopBox extends Driver implements EventGenerator {
 			receiveCommand(queuedCommands.pop());
 		}
 
-		// // If the remote module is not there then terminate
-		// if (!Coordinator.isModulePresent(this.name)) {
-		// Log.e(this.name, "remote module is not present, shutting down");
-		// terminate();
-		// }
-
 		while (isRunning) {
 			// all interaction with this module is done through the widget,
 			// just sleep until a message is received
 			this.sleep();
 		}
 
-		Coordinator.sendCommand(this, "RESET");
 		// thread is terminating, do whatever cleanup is needed
+		Coordinator.sendCommand(this, "RESET");
 		Log.d(this.name, "terminating");
 	}
-
-	// private void toggleLED(int ledNum) {
-	// if (ledNum < 0 || ledNum > 2) {
-	// Log.e(this.name, "toggleLED() given invalid led number");
-	// } else {
-	// boolean newState = !ledsState[ledNum];
-	// String response = Coordinator.sendCommandAndWait(this, String.valueOf(leds[ledNum])
-	// + (ledsState[ledNum] ? "0" : "1"), 6);
-	// if (response != null && response.startsWith("OK")) {
-	// ledsState[ledNum] = newState;
-	//
-	// switch (ledNum) {
-	// case 0:
-	// redLed.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-	// break;
-	// case 1:
-	// greenLed.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-	// break;
-	// case 2:
-	// blueLed.setStatus(String.valueOf(ledsState[ledNum] ? "on" : "off"));
-	// break;
-	// }
-	// }
-	// }
-	// }
 
 	@Override
 	public boolean receiveCommand(String command) {
