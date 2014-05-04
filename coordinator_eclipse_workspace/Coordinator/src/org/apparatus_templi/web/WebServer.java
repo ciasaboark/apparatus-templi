@@ -94,8 +94,11 @@ public class WebServer extends org.apparatus_templi.web.AbstractWebServer {
 			try {
 				portNum = Integer.parseInt(portNumName);
 			} catch (NumberFormatException e) {
-				// a port number of 0 will let the system pick up an ephemeral port
-				portNum = 0;
+				// The server should only bind to the port number chosen by the user (or the default
+				// port number). If the given port number is not a valid integer then the server
+				// should not be started.
+				throw new Exception("Error parsing port number '" + portNumName
+						+ "' into a valid integer");
 			}
 
 			if (bindLocalhost) {

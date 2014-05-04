@@ -50,11 +50,11 @@ public class Prefs {
 				+ "the log file.  Valid levels are 'debug', 'warn', and 'err'.  "
 				+ "Errors are always written to the log.");
 
-		DEF_PREFS.put(Keys.portNum, null);
+		DEF_PREFS.put(Keys.portNum, "8000");
 		PREF_NAME.put(Keys.portNum, "Port number");
 		PREF_DESC.put(Keys.portNum, "The port number that the web server will listen "
-				+ "on.  If this value is empty then the server will attempt to automatically "
-				+ "find an empty port");
+				+ "on.  If this value is empty then the web server will attempt to bind "
+				+ "to port 8000");
 
 		DEF_PREFS.put(Keys.encryptServer, "false");
 		PREF_NAME.put(Keys.encryptServer, "Enable Encryption");
@@ -125,14 +125,6 @@ public class Prefs {
 		PREF_DESC.put(Keys.logFile, "The log file that all debugging messages, warnings, errors, "
 				+ "and terminal failures will be written to.");
 
-		DEF_PREFS.put(Keys.autoIncPort, "true");
-		PREF_NAME.put(Keys.autoIncPort, "Auto increment port");
-		PREF_DESC.put(Keys.autoIncPort,
-				"If true then the web server will attempt to bind to the first available "
-						+ "port starting with the default port.  This setting has no effect if a "
-						+ "port number is specified in the config file or on the command line."
-						+ DEF_PREFS.get(Keys.portNum));
-
 		DEF_PREFS.put(Keys.userName, "");
 		PREF_NAME.put(Keys.userName, "User name");
 		PREF_DESC
@@ -190,14 +182,6 @@ public class Prefs {
 			// Log.d(TAG, "read preference '" + Keys.logFile + "' as '" +
 			// getPreference(Keys.logFile)
 			// + "'");
-
-			// if no port number was specified then we will set the port number to the default port
-			// and auto increment if needed when creating the server socket.
-			if (props.getProperty(Keys.portNum) == null) {
-				preferences.put(Keys.autoIncPort, "true");
-			} else {
-				preferences.put(Keys.autoIncPort, "false");
-			}
 
 			preferences.put(Keys.portNum,
 					props.getProperty(Keys.portNum, DEF_PREFS.get(Keys.portNum)));
@@ -502,8 +486,6 @@ public class Prefs {
 		@Deprecated
 		// this will be phased out in favor of specifying the host name to use
 		public static final String serverBindLocalhost = "web.bindLocalhost";
-		@Deprecated
-		public static final String autoIncPort = "web.autoIncPort";
 
 		// Twitter service properties
 		public static final String twtrAccess = "twtr.access";

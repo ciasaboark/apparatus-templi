@@ -64,7 +64,6 @@ public class SettingsHandler implements HttpHandler {
 			StringBuilder html = new StringBuilder();
 			HashMap<String, String> prefs = Coordinator.getPrefs().getPreferencesMap();
 			// remove any preferences that should be hidden from the frontend
-			prefs.remove(Prefs.Keys.autoIncPort);
 			prefs.remove(Prefs.Keys.userName);
 			prefs.remove(Prefs.Keys.userPass);
 
@@ -174,7 +173,7 @@ public class SettingsHandler implements HttpHandler {
 					+ "onBlur='updateConfigFile()' /></span></div><br />\n");
 			prefs.remove(Prefs.Keys.configFile);
 			for (String key : new String[] { Prefs.Keys.serialPort, Prefs.Keys.driverList,
-					Prefs.Keys.logFile, Prefs.Keys.emailList }) {
+					Prefs.Keys.logFile, Prefs.Keys.emailList, Prefs.Keys.debugLevel }) {
 				String value = prefs.get(key);
 				// the serial port name can be a null value, but writing a null string
 				// + will print "null" (a non-existent serial port). Write "" instead.
@@ -207,15 +206,6 @@ public class SettingsHandler implements HttpHandler {
 			for (String key : new String[] { Prefs.Keys.portNum, Prefs.Keys.serverBindLocalhost,
 					Prefs.Keys.encryptServer, Prefs.Keys.webResourceFolder }) {
 				String value = prefs.get(key);
-				// TODO this is an ugly hack. If the user specified no port number in the config
-				// file then a flag will be set to auto increment the port number, and the port
-				// number would have been read from the default preferences. We need to simulate
-				// this here by blanking the port entry if the auto increment flag was set.
-				if (key.equals(Prefs.Keys.portNum)
-						&& Coordinator.getPrefs().getPreference(Prefs.Keys.autoIncPort)
-								.equals("true")) {
-					value = "";
-				}
 				html.append("<div class=\"pref_input\"><span class=\"pref_key\">"
 						+ "<i class=\"fa fa-question-circle \" "
 						+ "title=\""

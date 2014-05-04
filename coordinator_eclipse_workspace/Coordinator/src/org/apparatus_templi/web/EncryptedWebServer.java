@@ -87,7 +87,7 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 	}
 
 	/**
-	 * Starts the web server bound to the loopback interface
+	 * Starts the web server with no pre-defined InetSocketAddress.
 	 * 
 	 * @throws Exception
 	 */
@@ -96,12 +96,14 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 	}
 
 	/**
-	 * Starts the web server bound to the first available port on the given InetSocketAddress
+	 * Starts the web server on the address and port specified by the given InetSocketAddress.
 	 * 
 	 * @param socket
 	 *            the socket to bind the server to. If null then a new InetSocketAddress will be
 	 *            constructed based off the users preferences
 	 * @throws Exception
+	 *             if a new InetSocketAddress can not be created, or if there is a problem
+	 *             initializing the https parameters.
 	 */
 	public EncryptedWebServer(InetSocketAddress socket) throws Exception {
 		if (socket == null) {
@@ -113,8 +115,11 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 			try {
 				portNum = Integer.parseInt(portNumName);
 			} catch (NumberFormatException e) {
-				// a port number of 0 will let the system pick up an ephemeral port
-				portNum = 0;
+				// The server should only bind to the port number chosen by the user (or the default
+				// port number). If the given port number is not a valid integer then the server
+				// should not be started.
+				throw new Exception("Error parsing port number '" + portNumName
+						+ "' into a valid integer");
 			}
 
 			if (bindLocalhost) {
@@ -128,7 +133,7 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 		// save the socket so we can reuse it to restart the server later on
 		this.socket = socket;
 
-		// create the HttpServer
+		// create the HttpsServer
 		try {
 			httpsServer = HttpsServer.create(socket, 0);
 

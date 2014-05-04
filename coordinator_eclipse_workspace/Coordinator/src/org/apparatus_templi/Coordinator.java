@@ -314,6 +314,9 @@ public class Coordinator {
 				System.exit(0);
 			}
 
+			// TODO this should be simplified to auto read in all command line options in a loop,
+			// instead of reading them individually
+
 			// Load the configuration file URI
 			String configFile;
 			if (cmd.hasOption(Prefs.Keys.configFile)) {
@@ -334,11 +337,8 @@ public class Coordinator {
 
 			// If the user specified a port number then we will only
 			// try binding to that port, else we try the default port number
-			if (cmd.hasOption(Prefs.Keys.portNum)) {
-				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue(Prefs.Keys.portNum));
-				// If the config file has no port number specified but one was given on the command
-				// line then we do not want to auto increment the port number
-				prefs.putPreference(Prefs.Keys.autoIncPort, "false");
+			if (cmd.hasOption("web_portNum")) {
+				prefs.putPreference(Prefs.Keys.portNum, cmd.getOptionValue("web_portNum"));
 			}
 
 			if (cmd.hasOption(Prefs.Keys.webResourceFolder)) {
