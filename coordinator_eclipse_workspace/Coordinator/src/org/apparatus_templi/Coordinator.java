@@ -1,6 +1,5 @@
 package org.apparatus_templi;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -399,15 +398,12 @@ public class Coordinator {
 		}
 
 		webServer.start();
-		if (sysTray != null) {
-			sysTray.setStatus(SysTray.Status.RUNNING);
-		}
+		sysTray.setStatus(SysTray.Status.RUNNING);
 	}
 
 	private static void restartWebServer() throws UnknownHostException {
-		if (sysTray != null) {
-			sysTray.setStatus(SysTray.Status.WAITING);
-		}
+		sysTray.setStatus(SysTray.Status.WAITING);
+
 		assert webServer != null : "attempting to restart web server without one available";
 		Log.w(TAG, "restarting web server");
 		InetSocketAddress socket = webServer.getSocket();
@@ -1277,10 +1273,9 @@ public class Coordinator {
 			e1.printStackTrace();
 		}
 
-		// start the system tray icon listener
-		if (!GraphicsEnvironment.isHeadless()) {
-			sysTray = new SysTray();
-		}
+		// start the system tray icon listener. The sysTray should be save (but useless) in a
+		// headless environment
+		sysTray = new SysTray();
 
 		// parse command line options
 		parseCommandLineOptions(argv);

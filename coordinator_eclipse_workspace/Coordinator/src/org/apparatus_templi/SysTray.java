@@ -3,6 +3,7 @@ package org.apparatus_templi;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.MenuShortcut;
@@ -28,53 +29,61 @@ public class SysTray implements ActionListener {
 	private static String TAG = "SysTrayListener";
 	private TrayIcon trayIcon;
 	private MenuItem webInterface;
-	private final AboutDialog aboutDialog = new AboutDialog();
+	private AboutDialog aboutDialog = null;
 	private final Image imgWaiting = Toolkit.getDefaultToolkit().getImage("icons/waiting32x32.png");
 	private final Image imgRunning = Toolkit.getDefaultToolkit().getImage("icons/icon32x32.png");
 	private final Image imgTerm = Toolkit.getDefaultToolkit().getImage("icons/term32x32.png");
+	private boolean iconExists = false;
 
 	public SysTray() {
-		aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		// display system tray icon
-		if (!SystemTray.isSupported()) {
-			System.out.println("SystemTray is not supported");
-			return;
-		}
-		final PopupMenu popup = new PopupMenu();
-		// default state of WAITING
-		// Image image = Toolkit.getDefaultToolkit().getImage("waiting20x20.png");
-		trayIcon = new TrayIcon(imgWaiting, "Apparatus Templi");
-		trayIcon.setImageAutoSize(true);
-		final SystemTray tray = SystemTray.getSystemTray();
-
-		// Create a pop-up menu
-		MenuItem aboutItem = new MenuItem("About Apparatus Templi", new MenuShortcut(KeyEvent.VK_A,
-				false));
-		aboutItem.setActionCommand("about");
-		aboutItem.addActionListener(this);
-		webInterface = new MenuItem("Open Web Interface", new MenuShortcut(KeyEvent.VK_W, false));
-		webInterface.setActionCommand("web");
-		webInterface.addActionListener(this);
-		webInterface.setEnabled(false);
-		MenuItem exitItem = new MenuItem("Shutdown Service", new MenuShortcut(KeyEvent.VK_Q, false));
-		exitItem.setActionCommand("exit");
-		exitItem.addActionListener(this);
-
-		// Add components to pop-up menu
-		popup.add(aboutItem);
-		popup.addSeparator();
-		popup.add(webInterface);
-		popup.addSeparator();
-		popup.add(exitItem);
-
-		trayIcon.setPopupMenu(popup);
-
 		try {
-			tray.add(trayIcon);
-		} catch (AWTException e) {
-			System.out.println("TrayIcon could not be added.");
-		}
+			this.aboutDialog = new AboutDialog();
+			this.aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			// display system tray icon
+			if (!SystemTray.isSupported()) {
+				System.out.println("SystemTray is not supported");
+				return;
+			}
+			final PopupMenu popup = new PopupMenu();
+			// default state of WAITING
+			// Image image = Toolkit.getDefaultToolkit().getImage("waiting20x20.png");
+			trayIcon = new TrayIcon(imgWaiting, "Apparatus Templi");
+			trayIcon.setImageAutoSize(true);
+			final SystemTray tray = SystemTray.getSystemTray();
 
+			// Create a pop-up menu
+			MenuItem aboutItem = new MenuItem("About Apparatus Templi", new MenuShortcut(
+					KeyEvent.VK_A, false));
+			aboutItem.setActionCommand("about");
+			aboutItem.addActionListener(this);
+			webInterface = new MenuItem("Open Web Interface",
+					new MenuShortcut(KeyEvent.VK_W, false));
+			webInterface.setActionCommand("web");
+			webInterface.addActionListener(this);
+			webInterface.setEnabled(false);
+			MenuItem exitItem = new MenuItem("Shutdown Service", new MenuShortcut(KeyEvent.VK_Q,
+					false));
+			exitItem.setActionCommand("exit");
+			exitItem.addActionListener(this);
+
+			// Add components to pop-up menu
+			popup.add(aboutItem);
+			popup.addSeparator();
+			popup.add(webInterface);
+			popup.addSeparator();
+			popup.add(exitItem);
+
+			trayIcon.setPopupMenu(popup);
+
+			try {
+				tray.add(trayIcon);
+				this.iconExists = true;
+			} catch (AWTException e) {
+				System.out.println("TrayIcon could not be added.");
+			}
+		} catch (HeadlessException e) {
+			Log.w(TAG, "can not create system tray icon when running in headless mode");
+		}
 	}
 
 	/**
@@ -86,25 +95,29 @@ public class SysTray implements ActionListener {
 	 *             if the given status is unknown.
 	 */
 	void setStatus(int status) throws IllegalArgumentException {
-		if (trayIcon != null && webInterface != null) {
-			switch (status) {
-			case Status.WAITING:
+		switch (status) {
+		case Status.WAITING:
+			if (iconExists) {
 				trayIcon.setImage(imgWaiting);
 				trayIcon.setToolTip("Apparatus Templi - waiting");
 				webInterface.setEnabled(false);
-				break;
-			case Status.RUNNING:
+			}
+			break;
+		case Status.RUNNING:
+			if (iconExists) {
 				trayIcon.setImage(imgRunning);
 				trayIcon.setToolTip("Apparatus Templi - running");
 				webInterface.setEnabled(true);
-				break;
-			case Status.TERM:
+			}
+			break;
+		case Status.TERM:
+			if (iconExists) {
 				trayIcon.setImage(imgTerm);
 				trayIcon.setToolTip("Apparatus Templi - terminating");
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown status");
 			}
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown status");
 		}
 	}
 
