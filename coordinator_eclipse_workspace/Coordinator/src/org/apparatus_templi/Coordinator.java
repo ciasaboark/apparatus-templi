@@ -772,8 +772,16 @@ public class Coordinator {
 	 *            a reference to the calling {@link Driver}
 	 * @param command
 	 *            the command to send to the remote module
+	 * @throws IllegalArgumentException
+	 *             if caller or command is null
 	 */
 	public static boolean sendCommand(Driver caller, String command) {
+		if (caller == null) {
+			throw new IllegalArgumentException("caller must not be null");
+		}
+		if (command == null) {
+			throw new IllegalArgumentException("command must not be null");
+		}
 		assert loadedDrivers.contains(caller) : "driver " + caller
 				+ " should exists within loadedDrivers";
 		// Log.d(TAG, "sendCommand()");
@@ -796,15 +804,31 @@ public class Coordinator {
 	 * @param command
 	 *            the command to send to the remote module
 	 * @param waitPeriod
-	 *            how many seconds to wait for a response. Maximum period to wait is 6 seconds.
+	 *            how many seconds to wait for a response. The given wait period will be clamped to
+	 *            within 1 - 6 seconds (inclusive).
 	 * @return the String of data that the remote module responded with, or null if there was no
 	 *         response. Note that the first incoming response is returned. If another message
 	 *         addressed to this
+	 * @throws IllegalArgumentException
+	 *             if caller or command is null.
 	 */
 	public static String sendCommandAndWait(Driver caller, String command, int waitPeriod) {
+		if (caller == null) {
+			throw new IllegalArgumentException("caller must not be null");
+		}
+		if (command == null) {
+			throw new IllegalArgumentException("command must not be null");
+		}
+		if (waitPeriod <= 0) {
+			waitPeriod = 1;
+		}
+		if (waitPeriod > 6) {
+			waitPeriod = 6;
+		}
+
 		// Log.d(TAG, "sendCommandAndWait()");
 		String responseData = null;
-		if (waitPeriod <= 6 && caller.getName() != null) {
+		if (caller.getName() != null) {
 			sendCommand(caller, command);
 			long endTime = (System.currentTimeMillis() + ((1000) * waitPeriod));
 			while (System.currentTimeMillis() < endTime) {
@@ -837,8 +861,17 @@ public class Coordinator {
 	 *            a reference to the calling {@link Driver}
 	 * @param data
 	 *            the binary data to send
+	 * @throws IllegalArgumentException
+	 *             if caller or data is null
 	 */
 	public static boolean sendBinary(Driver caller, byte[] data) {
+		if (caller == null) {
+			throw new IllegalArgumentException("caller must not be null");
+		}
+		if (data == null) {
+			throw new IllegalArgumentException("data must not be null");
+		}
+
 		// Log.d(TAG, "sendBinary()");
 		boolean messageSent = false;
 

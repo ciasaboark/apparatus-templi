@@ -60,7 +60,7 @@ public class CoordinatorTest {
 	/*
 	 * Test sending messages from unloaded drivers
 	 */
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testSendNullCommandFromDriver() {
 		// TODO expose method to set coordinator message center, load dummy serial connection
 		// This test is succeeding only because the serial link is not ready, not because driver is
@@ -70,18 +70,28 @@ public class CoordinatorTest {
 		assertTrue(Coordinator.sendBinary(new BlankControllerDriver(), null) == false);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testSendCommandFromNullDriver() {
 		System.out.println("Sending command from null driver");
-		assertTrue(Coordinator.sendCommand(null, "some command") == false);
-		assertTrue(Coordinator.sendBinary(null, new byte[] { 0x0d }) == false);
+		Coordinator.sendCommand(null, "some command");
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
+	public void testSendBinFromNullDriver() {
+		System.out.println("Sending bin from null driver");
+		Coordinator.sendBinary(null, new byte[] { 0x0d });
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testSendNullCommandFromNullDriver() {
 		System.out.println("Sending null command from null driver");
-		assertTrue(Coordinator.sendCommand(null, null) == false);
-		assertTrue(Coordinator.sendBinary(null, null) == false);
+		Coordinator.sendCommand(null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSendNullBinFromNullDriver() {
+		System.out.println("Sending null command from null driver");
+		Coordinator.sendBinary(null, null);
 	}
 
 	/*

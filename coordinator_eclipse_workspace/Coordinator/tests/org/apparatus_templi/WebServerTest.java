@@ -1,7 +1,5 @@
 package org.apparatus_templi;
 
-import static org.junit.Assert.assertTrue;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
@@ -53,6 +51,12 @@ public class WebServerTest {
 		new WebServer(new InetSocketAddress(80));
 	}
 
+	/*
+	 * These tests are disabled for now. Before they can be re-enabled we need some way to pass
+	 * preferences to the web server (and have it read from that preferences object instead of
+	 * trying to pull from Coordinator).
+	 */
+
 	// @Test
 	// public void startLoopBackServerWithIncPort() throws Exception {
 	// System.out.println("Starting loopback server on port 80 (or next avaiable port)");
@@ -61,15 +65,6 @@ public class WebServerTest {
 	// assertTrue(s.getPort() != 0);
 	// s.terminate();
 	// }
-
-	@Test
-	public void startLocalHostServerWithIncPort() throws Exception {
-		System.out.println("Starting localhost server on port 8000 or next available port");
-		WebServer s = new WebServer(new InetSocketAddress(InetAddress.getLocalHost(), 0));
-		assertTrue(s.getServerLocation() != null);
-		assertTrue(s.getSocket().getAddress().isSiteLocalAddress());
-		s.terminate();
-	}
 
 	// @Test(expected = IllegalArgumentException.class)
 	// public void setNullResourceFolder() throws Exception {
