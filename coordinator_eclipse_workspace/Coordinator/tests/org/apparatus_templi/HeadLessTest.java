@@ -9,7 +9,7 @@ import org.junit.Test;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public class HeadlessTest {
+public class HeadLessTest {
 
 	@BeforeClass
 	public static void before() {
