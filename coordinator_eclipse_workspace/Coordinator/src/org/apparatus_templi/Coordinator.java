@@ -1394,7 +1394,7 @@ public class Coordinator {
 				Log.d(TAG, "system is going down. Notifying all drivers.");
 				sysTray.setStatus(SysTray.Status.TERM);
 				Thread.currentThread().setName("Shutdown Hook");
-				Coordinator.sendNotificationEmail("Shutdown Hook triggered");
+				// Coordinator.sendNotificationEmail("Shutdown Hook triggered");
 
 				// cancel any pending driver restarts
 				scheduledWakeUps.clear();

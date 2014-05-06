@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -16,6 +17,12 @@ import org.junit.Test;
  */
 public class MessageCenterTest {
 	private MessageCenter mc;
+
+	@BeforeClass
+	public static void beforeClass() {
+		System.out
+				.println("Some test on message center can take a few minutes to complete.  Timeouts have been set to 20 minutes");
+	}
 
 	@Before
 	public void begin() {
@@ -121,32 +128,35 @@ public class MessageCenterTest {
 		assertTrue(mc.sendBinary("foo", new byte[] { 0x0D }) == true);
 	}
 
-	@Test
-	public void sendVeryLargeTextCommandUnderMaxSize() {
-		// System.out.println("Sending very large text command that is under the max message size");
-		// StringBuilder sb = new StringBuilder();
-		// // build a string that is 1 byte over of the max command size
-		// StringBuilder fragment = new StringBuilder("1");
-		// // create a fragment
-		// while (fragment.length() < Message.MAX_DATA_SIZE) {
-		// fragment.append("1");
-		// // System.out.println(fragment.length());
-		// }
-		// System.out.println("created fragment of " + fragment.length() + " characters");
-		// System.out.println("Filling command to max size");
-		// while (sb.length() < (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
-		// sb.append(fragment.toString());
-		// // System.out.print(".");
-		// }
-		// System.out.println("\nCreated very large command of size: " + sb.length());
-		// System.out.println("This test will take a few minutes to complete");
-		// mc.setSerialConnection(new DummySerialConnection());
-		// assertTrue(mc.sendCommand("foo", sb.toString()) == true);
+	@Test(expected = IllegalArgumentException.class)
+	public void sendVeryLargeBinCommandOverMaxSize() {
+		System.out
+				.println("Sending very large binary command that is over the max message size.  This test should fail fast.");
+		mc.setSerialConnection(new DummySerialConnection());
+		ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
+		while (byteArrayList.size() < (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
+			byteArrayList.add((byte) 0x0D);
+		}
+		byteArrayList.add((byte) 0x0D);
+		System.out.println("Created very large byte array of size: " + byteArrayList.size());
+		System.out.println("This test should fail immediately");
+
+		Byte[] byteObjectArray = byteArrayList.toArray(new Byte[] {});
+		byte[] byteArray = new byte[byteObjectArray.length];
+		int i = 0;
+		for (Byte b : byteObjectArray) {
+			byteArray[i] = b;
+			i++;
+		}
+
+		mc.sendBinary("foo", byteArray);
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void sendVeryLargeTextCommandOverMaxSize() {
-		System.out.println("Sending very large text command that is over the max message size");
+		System.out
+				.println("Sending very large text command that is over the max message size.  This test should fail fast.");
 		mc.setSerialConnection(new DummySerialConnection());
 
 		StringBuilder sb = new StringBuilder();
@@ -168,12 +178,14 @@ public class MessageCenterTest {
 		System.out.println("\nCreated very large command of size: " + sb.length());
 		System.out.println("This test should fail immediately");
 
-		assertTrue(mc.sendCommand("foo", sb.toString()) == false);
+		mc.sendCommand("foo", sb.toString());
 	}
 
-	@Test(timeout = 500)
+	@Test
+	// set a timeout to 20 minutes
 	public void sendVeryLargeBinCommandUnderMaxSize() {
-		// System.out.println("Sending very large binary command that is under the max message size");
+		// System.out
+		// .println("Sending very large binary command that is under the max message size.  Timeout of 20 minutes enabled.");
 		// mc.setSerialConnection(new DummySerialConnection());
 		// // byte[] byteSegment = new byte[69];
 		//
@@ -196,28 +208,28 @@ public class MessageCenterTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sendVeryLargeBinCommandOverMaxSize() {
-		System.out.println("Sending very large binary command that is over the max message size");
-		mc.setSerialConnection(new DummySerialConnection());
-		ArrayList<Byte> byteArrayList = new ArrayList<Byte>();
-		while (byteArrayList.size() < (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
-			byteArrayList.add((byte) 0x0D);
-		}
-		byteArrayList.add((byte) 0x0D);
-		System.out.println("Created very large byte array of size: " + byteArrayList.size());
-		System.out.println("This test should fail immediately");
-
-		Byte[] byteObjectArray = byteArrayList.toArray(new Byte[] {});
-		byte[] byteArray = new byte[byteObjectArray.length];
-		int i = 0;
-		for (Byte b : byteObjectArray) {
-			byteArray[i] = b;
-			i++;
-		}
-
-		assertTrue(mc.sendBinary("foo", byteArray) == true);
-
+	@Test
+	public void sendVeryLargeTextCommandUnderMaxSize() {
+		// System.out
+		// .println("Sending very large text command that is under the max message size.  Timeout of 20 minutes enabled.");
+		// StringBuilder sb = new StringBuilder();
+		// // build a string that is 1 byte over of the max command size
+		// StringBuilder fragment = new StringBuilder("1");
+		// // create a fragment
+		// while (fragment.length() < Message.MAX_DATA_SIZE) {
+		// fragment.append("1");
+		// // System.out.println(fragment.length());
+		// }
+		// System.out.println("created fragment of " + fragment.length() + " characters");
+		// System.out.println("Filling command to max size");
+		// while (sb.length() < (Message.MAX_DATA_SIZE * Message.MAX_FRAG_NUM)) {
+		// sb.append(fragment.toString());
+		// // System.out.print(".");
+		// }
+		// System.out.println("\nCreated very large command of size: " + sb.length());
+		// System.out.println("This test will take a few minutes to complete");
+		// mc.setSerialConnection(new DummySerialConnection());
+		// assertTrue(mc.sendCommand("foo", sb.toString()) == true);
 	}
 
 	/*
@@ -226,6 +238,7 @@ public class MessageCenterTest {
 
 	@Test
 	public void readMessageAfterFlushing() {
+		System.out.println("read message after flushing");
 		mc.stopReadingMessges();
 		mc.flushMessages();
 		assertTrue(!mc.isMessageAvailable());

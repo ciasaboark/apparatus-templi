@@ -1,6 +1,5 @@
 package org.apparatus_templi.web.handler;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -68,29 +67,6 @@ public class SettingsHandler implements HttpHandler {
 			prefs.remove(Prefs.Keys.userPass);
 
 			String configFile = prefs.get(Prefs.Keys.configFile);
-
-			// if the config file is not the default then we will show the full file path,
-			// otherwise only the short name
-			if (!configFile.equals(Coordinator.getPrefs().getDefPreference(Prefs.Keys.configFile))) {
-				File f = new File(configFile);
-				configFile = f.getAbsolutePath();
-			}
-
-			// if the user is still using the default config file then show a warning
-			boolean usingDefaultConfig = false;
-			html.append("<div id='settings_padder'></div>");
-			if (prefs.get(Prefs.Keys.configFile).equals(
-					Coordinator.getPrefs().getDefPreference(Prefs.Keys.configFile))) {
-				usingDefaultConfig = true;
-			}
-
-			// TODO this should be removed when we remove the overwrite settings check
-			if (usingDefaultConfig) {
-				html.append("<span class='warning_text'>The default config file can not be overwritten.  If you want to save your "
-						+ "preferences, then set a new location below and click save preferences.  To use the "
-						+ "new configuration file restart the service with the command line argument: "
-						+ "<span class='console'>--configFile path/to/the/new/file</span></span>");
-			}
 
 			if (webserver instanceof EncryptedWebServer) {
 				if (!Prefs.isCredentialsSet()) {
@@ -187,7 +163,6 @@ public class SettingsHandler implements HttpHandler {
 								key)) + "\"></i>&nbsp;"
 						+ Coordinator.getPrefs().getPreferenceName(key) + "</span><span "
 						+ "class=\"pref_value\"><input "
-						+ (usingDefaultConfig ? "disabled='disabled'" : "")
 						+ ((key == Prefs.Keys.userPass) ? " type='password' " : " type='text'")
 						+ " name=\"" + key + "\" value=\"" + value + "\" /></span></div><br />\n");
 				prefs.remove(key);
@@ -214,7 +189,6 @@ public class SettingsHandler implements HttpHandler {
 						+ Coordinator.getPrefs().getPreferenceName(key) + "</span><span "
 						+ "class=\"pref_value\"><input "
 						+ (key.equals((Prefs.Keys.portNum)) ? " type='number' " : "")
-						+ (usingDefaultConfig ? " disabled='disabled' " : "")
 						+ " type=\"text\" name=\"" + key + "\" value=\"" + value
 						+ "\" /></span></div><br />\n");
 				prefs.remove(key);
@@ -232,10 +206,8 @@ public class SettingsHandler implements HttpHandler {
 						+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs().getPreferenceDesc(
 								key)) + "\"></i>&nbsp;"
 						+ Coordinator.getPrefs().getPreferenceName(key) + "</span><span "
-						+ "class=\"pref_value\"><input "
-						+ (usingDefaultConfig ? "disabled='disabled'" : "")
-						+ " type=\"password\" name=\"" + key + "\" value=\"" + prefs.get(key)
-						+ "\" /></span></div><br />\n");
+						+ "class=\"pref_value\"><input " + " type=\"password\" name=\"" + key
+						+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 				prefs.remove(key);
 			}
 			html.append("</div>");
@@ -258,7 +230,6 @@ public class SettingsHandler implements HttpHandler {
 						+ Coordinator.getPrefs().getPreferenceName(key)
 						+ "</span><span "
 						+ "class=\"pref_value\"><input "
-						+ (usingDefaultConfig ? "disabled='disabled'" : "")
 						+ ((key == Prefs.Keys.emailPassword) ? "type = 'password' "
 								: " type=\"text\"") + " name=\"" + key + "\" value=\""
 						+ prefs.get(key) + "\" /></span></div><br />\n");
@@ -281,10 +252,8 @@ public class SettingsHandler implements HttpHandler {
 							+ StringEscapeUtils.escapeHtml4(Coordinator.getPrefs()
 									.getPreferenceDesc(key)) + "\"></i>&nbsp;"
 							+ Coordinator.getPrefs().getPreferenceName(key) + "</span><span "
-							+ "class=\"pref_value\"><input "
-							+ (usingDefaultConfig ? "disabled='disabled'" : "")
-							+ " type=\"text\" name=\"" + key + "\" value=\"" + prefs.get(key)
-							+ "\" /></span></div><br />\n");
+							+ "class=\"pref_value\"><input " + " type=\"text\" name=\"" + key
+							+ "\" value=\"" + prefs.get(key) + "\" /></span></div><br />\n");
 				}
 				html.append("</div></div>");
 			}

@@ -5,7 +5,7 @@
     <!-- set global properties for this build -->
     <property name="project-dir"    value="coordinator_eclipse_workspace/Coordinator/" />
     <property name="src"            location="coordinator_eclipse_workspace/Coordinator/src"/>
-    <property name="build"          location="coordinator_eclipse_workspace/Coordinator/bin"/>
+    <property name="build"          location="coordinator_eclipse_workspace/Coordinator/build"/>
     <property name="dist"           location="coordinator_eclipse_workspace/Coordinator/dist"/>
     <property name="tests"          location="coordinator_eclipse_workspace/Coordinator/tests" />
     <property name="major-version-number" value="0" />
@@ -62,8 +62,12 @@
         <delete dir="${dist}"/>
     </target>
 
-    <target name="test" depends="compile-tests">
-        <junit haltonfailure="no" failureproperty="test.failed">
+    <target name="test" depends="compile-tests, test-headless">
+        <mkdir dir="${build}/test-files/" />
+        <copy file="./website/xml/module-schema.xsd" todir="${build}/test-files" />
+        <copy file="./website/xml/driver-list-schema.xsd" todir="${build}/test-files" />
+        <junit fork="yes" haltonfailure="no" failureproperty="test.failed">
+            <jvmarg value="-Duser.dir=${build}"/>
             <classpath>
                 <pathelement path="${build}" />
                 <pathelement path="${classpath}"/>
@@ -74,12 +78,37 @@
             </classpath>  
             <batchtest>
                <fileset dir="${tests}">
-                    <include name="**/*Test*" />
+                    <include  name="**/*Test*" />
+                    <exclude name="**/HeadlessTest*" />
                </fileset>
             </batchtest>
             <formatter type="brief" usefile="false"/>
         </junit>
         <fail message="Test failure detected, check test results." if="test.failed" />
-    </target> 
+    </target>
+
+
+    <target name="test-headless">
+        <junit haltonfailure="no" failureproperty="test.failed">
+            <jvmarg value="-Djava.awt.headless=true" />
+            <classpath>
+                <pathelement path="${build}" />
+                <pathelement path="${classpath}"/>
+                <fileset dir="${project-dir}/lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement location="classes"/>
+            </classpath>  
+            <batchtest>
+               <fileset dir="${tests}">
+                    <include name="**/HeadlessTest*" />
+               </fileset>
+            </batchtest>
+            <formatter type="brief" usefile="false"/>
+        </junit>
+        <fail message="Test failure detected, check test results." if="test.failed" />
+    </target>
+
+    
 
 </project>

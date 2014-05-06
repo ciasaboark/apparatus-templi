@@ -1,10 +1,8 @@
 package org.apparatus_templi;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -28,7 +26,7 @@ public class Prefs {
 	private final HashMap<String, String> preferences = new HashMap<String, String>();
 
 	public Prefs() {
-		DEF_PREFS.put(Keys.configFile, "coordinator.conf");
+		DEF_PREFS.put(Keys.configFile, "");
 		PREF_NAME.put(Keys.configFile, "Configuration file");
 		PREF_DESC.put(Keys.configFile, "The configuration file to read preferences from. "
 				+ "If a preference is not specified in this file then the default value will "
@@ -161,120 +159,125 @@ public class Prefs {
 	 * @param configFile
 	 */
 	public synchronized void readPreferences(String configFile) {
-		// TODO use the default preferences if an IOException is thrown
-
 		// Read the values from the configuration file. If any command line
 		// + parameters were passed, they should overwrite values read, so we
 		// + will continue processing them later.
 		// Log.d(TAG, "reading from config file: '" + configFile + "'");
-		try {
-			Properties props = new Properties();
-			FileInputStream fin = new FileInputStream(configFile);
-			props.load(fin);
-			fin.close();
-			preferences.putAll(DEF_PREFS);
-			preferences.put(Keys.configFile, configFile);
+		preferences.putAll(DEF_PREFS);
 
-			preferences.put(Keys.logFile,
-					props.getProperty(Keys.logFile, DEF_PREFS.get(Keys.logFile)));
+		if (configFile != null && !configFile.equals("")) {
+			try {
+				Properties props = new Properties();
+				FileInputStream fin = new FileInputStream(configFile);
+				props.load(fin);
+				fin.close();
 
-			// TODO remove from dist, this places passwords etc in the log file
-			// Log.d(TAG, "read preference '" + Keys.logFile + "' as '" +
-			// getPreference(Keys.logFile)
-			// + "'");
+				preferences.put(Keys.configFile, configFile);
 
-			preferences.put(Keys.portNum,
-					props.getProperty(Keys.portNum, DEF_PREFS.get(Keys.portNum)));
-			// Log.d(TAG, "read preference '" + Keys.portNum + "' as '" +
-			// getPreference(Keys.portNum)
-			// + "'");
+				preferences.put(Keys.logFile,
+						props.getProperty(Keys.logFile, DEF_PREFS.get(Keys.logFile)));
 
-			// setting the serial port to null from the web interface is not possible, the best we
-			// can do is set it to a blank value or the word 'null'. These values should be
-			// transcribed back to a null value.
-			String sp = props.getProperty(Keys.serialPort, DEF_PREFS.get(Keys.serialPort));
-			if (sp == null || sp.equals("") || sp.equals("null")) {
-				sp = null;
+				// TODO remove from dist, this places passwords etc in the log file
+				// Log.d(TAG, "read preference '" + Keys.logFile + "' as '" +
+				// getPreference(Keys.logFile)
+				// + "'");
+
+				preferences.put(Keys.portNum,
+						props.getProperty(Keys.portNum, DEF_PREFS.get(Keys.portNum)));
+				// Log.d(TAG, "read preference '" + Keys.portNum + "' as '" +
+				// getPreference(Keys.portNum)
+				// + "'");
+
+				// setting the serial port to null from the web interface is not possible, the best
+				// we
+				// can do is set it to a blank value or the word 'null'. These values should be
+				// transcribed back to a null value.
+				String sp = props.getProperty(Keys.serialPort, DEF_PREFS.get(Keys.serialPort));
+				if (sp == null || sp.equals("") || sp.equals("null")) {
+					sp = null;
+				}
+				preferences.put(Keys.serialPort, sp);
+				// Log.d(TAG, "read preference '" + Keys.serialPort + "' as '"
+				// + getPreference(Keys.serialPort) + "'");
+
+				preferences.put(Keys.encryptServer,
+						props.getProperty(Keys.encryptServer, DEF_PREFS.get(Keys.encryptServer)));
+				// Log.d(TAG, "read preferences '" + Keys.encryptServer + "' as '"
+				// + getPreference(Keys.encryptServer) + "'");
+
+				preferences.put(Keys.emailList,
+						props.getProperty(Keys.emailList, DEF_PREFS.get(Keys.emailList)));
+				// Log.d(TAG, "read preferences '" + Keys.emailList + "' as '"
+				// + getPreference(Keys.emailList) + "'");
+
+				preferences.put(
+						Keys.webResourceFolder,
+						props.getProperty(Keys.webResourceFolder,
+								DEF_PREFS.get(Keys.webResourceFolder)));
+				// Log.d(TAG, "read preference '" + Keys.webResourceFolder + "' as '"
+				// + getPreference(Keys.webResourceFolder) + "'");
+
+				preferences.put(Keys.driverList,
+						props.getProperty(Keys.driverList, DEF_PREFS.get(Keys.driverList)));
+				// Log.d(TAG, "read preference '" + Keys.driverList + "' as '"
+				// + getPreference(Keys.driverList) + "'");
+
+				preferences.put(
+						Keys.serverBindLocalhost,
+						props.getProperty(Keys.serverBindLocalhost,
+								DEF_PREFS.get(Keys.serverBindLocalhost)));
+				// Log.d(TAG, "read preference '" + Keys.serverBindLocalhost + "' as '"
+				// + getPreference(Keys.serverBindLocalhost) + "'");
+
+				preferences.put(Keys.twtrAccess,
+						props.getProperty(Keys.twtrAccess, DEF_PREFS.get(Keys.twtrAccess)));
+				// Log.d(TAG, "read preference '" + Keys.twtrAccess + "' as '"
+				// + getPreference(Keys.twtrAccess) + "'");
+
+				preferences.put(Keys.twtrAccessKey,
+						props.getProperty(Keys.twtrAccessKey, DEF_PREFS.get(Keys.twtrAccessKey)));
+				// Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
+				// + getPreference(Keys.twtrAccessKey) + "'");
+
+				preferences.put(Keys.emailServer,
+						props.getProperty(Keys.emailServer, DEF_PREFS.get(Keys.emailServer)));
+				// Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
+				// + getPreference(Keys.emailServer) + "'");
+
+				preferences.put(Keys.emailPort,
+						props.getProperty(Keys.emailPort, DEF_PREFS.get(Keys.emailPort)));
+				// Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
+				// + getPreference(Keys.emailPort) + "'");
+
+				preferences.put(Keys.emailUsername,
+						props.getProperty(Keys.emailUsername, DEF_PREFS.get(Keys.emailUsername)));
+				// Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
+				// + getPreference(Keys.emailUsername) + "'");
+
+				preferences.put(Keys.emailAddress,
+						props.getProperty(Keys.emailAddress, DEF_PREFS.get(Keys.emailAddress)));
+				// Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
+				// + getPreference(Keys.emailAddress) + "'");
+
+				preferences.put(Keys.emailPassword,
+						props.getProperty(Keys.emailPassword, DEF_PREFS.get(Keys.emailPassword)));
+				// Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
+				// + getPreference(Keys.emailPassword) + "'");
+
+				// read username and password from the database (if one exists)
+				String username = Coordinator.readTextData("SYSTEM", "USERNAME");
+				String password = Coordinator.readTextData("SYSTEM", "PASSWORD");
+				if (username != null) {
+					preferences.put(Keys.userName, username);
+				}
+				// we don't really want to store the pass hash here
+				preferences.put(Keys.userPass, "");
+
+			} catch (IOException | NullPointerException e) {
+				Log.e(TAG, "unable to read configuration file '" + configFile + "'");
+				Coordinator.exitWithReason("Unable to read config file '" + configFile + "'");
+
 			}
-			preferences.put(Keys.serialPort, sp);
-			// Log.d(TAG, "read preference '" + Keys.serialPort + "' as '"
-			// + getPreference(Keys.serialPort) + "'");
-
-			preferences.put(Keys.encryptServer,
-					props.getProperty(Keys.encryptServer, DEF_PREFS.get(Keys.encryptServer)));
-			// Log.d(TAG, "read preferences '" + Keys.encryptServer + "' as '"
-			// + getPreference(Keys.encryptServer) + "'");
-
-			preferences.put(Keys.emailList,
-					props.getProperty(Keys.emailList, DEF_PREFS.get(Keys.emailList)));
-			// Log.d(TAG, "read preferences '" + Keys.emailList + "' as '"
-			// + getPreference(Keys.emailList) + "'");
-
-			preferences.put(Keys.webResourceFolder, props.getProperty(Keys.webResourceFolder,
-					DEF_PREFS.get(Keys.webResourceFolder)));
-			// Log.d(TAG, "read preference '" + Keys.webResourceFolder + "' as '"
-			// + getPreference(Keys.webResourceFolder) + "'");
-
-			preferences.put(Keys.driverList,
-					props.getProperty(Keys.driverList, DEF_PREFS.get(Keys.driverList)));
-			// Log.d(TAG, "read preference '" + Keys.driverList + "' as '"
-			// + getPreference(Keys.driverList) + "'");
-
-			preferences.put(
-					Keys.serverBindLocalhost,
-					props.getProperty(Keys.serverBindLocalhost,
-							DEF_PREFS.get(Keys.serverBindLocalhost)));
-			// Log.d(TAG, "read preference '" + Keys.serverBindLocalhost + "' as '"
-			// + getPreference(Keys.serverBindLocalhost) + "'");
-
-			preferences.put(Keys.twtrAccess,
-					props.getProperty(Keys.twtrAccess, DEF_PREFS.get(Keys.twtrAccess)));
-			// Log.d(TAG, "read preference '" + Keys.twtrAccess + "' as '"
-			// + getPreference(Keys.twtrAccess) + "'");
-
-			preferences.put(Keys.twtrAccessKey,
-					props.getProperty(Keys.twtrAccessKey, DEF_PREFS.get(Keys.twtrAccessKey)));
-			// Log.d(TAG, "read preference '" + Keys.twtrAccessKey + "' as '"
-			// + getPreference(Keys.twtrAccessKey) + "'");
-
-			preferences.put(Keys.emailServer,
-					props.getProperty(Keys.emailServer, DEF_PREFS.get(Keys.emailServer)));
-			// Log.d(TAG, "read preference '" + Keys.emailServer + "' as '"
-			// + getPreference(Keys.emailServer) + "'");
-
-			preferences.put(Keys.emailPort,
-					props.getProperty(Keys.emailPort, DEF_PREFS.get(Keys.emailPort)));
-			// Log.d(TAG, "read preference '" + Keys.emailPort + "' as '"
-			// + getPreference(Keys.emailPort) + "'");
-
-			preferences.put(Keys.emailUsername,
-					props.getProperty(Keys.emailUsername, DEF_PREFS.get(Keys.emailUsername)));
-			// Log.d(TAG, "read preference '" + Keys.emailUsername + "' as '"
-			// + getPreference(Keys.emailUsername) + "'");
-
-			preferences.put(Keys.emailAddress,
-					props.getProperty(Keys.emailAddress, DEF_PREFS.get(Keys.emailAddress)));
-			// Log.d(TAG, "read preference '" + Keys.emailAddress + "' as '"
-			// + getPreference(Keys.emailAddress) + "'");
-
-			preferences.put(Keys.emailPassword,
-					props.getProperty(Keys.emailPassword, DEF_PREFS.get(Keys.emailPassword)));
-			// Log.d(TAG, "read preference '" + Keys.emailPassword + "' as '"
-			// + getPreference(Keys.emailPassword) + "'");
-
-			// read username and password from the database (if one exists)
-			String username = Coordinator.readTextData("SYSTEM", "USERNAME");
-			String password = Coordinator.readTextData("SYSTEM", "PASSWORD");
-			if (username != null) {
-				preferences.put(Keys.userName, username);
-			}
-			// we don't really want to store the pass hash here
-			preferences.put(Keys.userPass, "");
-
-		} catch (IOException | NullPointerException e) {
-			Log.e(TAG, "unable to read configuration file '" + configFile + "'");
-			Coordinator.exitWithReason("Unable to read config file '" + configFile + "'");
-
 		}
 	}
 
@@ -400,73 +403,37 @@ public class Prefs {
 		// preference)
 
 		// only save the preferences if the config file is not the default
-		boolean fileUpdated = false;
-		String newPrefsFile = prefs.get(Keys.configFile);
-		String defPrefsFile = DEF_PREFS.get(Keys.configFile);
-		File newPrefsFileName = new File(newPrefsFile);
-		File defPrefsFileName = new File(defPrefsFile);
-
-		// TODO checking for file conflicts should be removed during dist (default config is saved
-		// inside the jar and can not be overwritten)
-		boolean sameFiles = true;
-		try {
-			sameFiles = Files.isSameFile(newPrefsFileName.toPath(), defPrefsFileName.toPath());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		// if (!sameFiles) {
+		boolean fileSaved = false;
 		HashMap<String, String> newPrefs = new HashMap<String, String>();
-		newPrefs.putAll(DEF_PREFS); // store the default preferences
-		// remove the default user/pass so they aren't stored to the DB
-		newPrefs.remove(Keys.userPass);
-		newPrefs.remove(Keys.userName);
+		// store the default preferences
+		newPrefs.putAll(DEF_PREFS);
 
-		// insert the user preferences
-		newPrefs.putAll(prefs); // store the updated preferences
-
-		/*
-		 * // store the user/pass to the database then remove it from the map so they are not //
-		 * written to the config file if (newPrefs.containsKey(Keys.userName)) { String userName =
-		 * newPrefs.get(Keys.userName); if (userName != null && "".equals(userName)) {
-		 * Coordinator.storeTextData("SYSTEM", "USERNAME", newPrefs.get(Keys.userName));
-		 * newPrefs.remove(Keys.userName); } }
-		 * 
-		 * if (newPrefs.containsKey(Keys.userPass)) { String password = newPrefs.get(Keys.userPass);
-		 * newPrefs.remove(Keys.userPass); if (password != null && !"".equals(password)) { String
-		 * hash; try { hash = org.apparatus_templi.web.PasswordHash.createHash(password);
-		 * Coordinator.storeTextData("SYSTEM", "PASSWORD", hash); } catch (NoSuchAlgorithmException
-		 * | InvalidKeySpecException e) { Log.e(TAG, "could not create has of password"); } } }
-		 */
+		// insert the new user preferences
+		newPrefs.putAll(prefs);
 
 		String configFile = newPrefs.remove(Keys.configFile);
-		// for (String key : newPrefs.keySet()) {
-		// Log.d(TAG, "savePreferences key " + key + " = " + newPrefs.get(key));
-		// }
-
-		Properties props = new Properties();
-		// if the value of a key is null then it should not appear in the saved config file
-		for (String key : newPrefs.keySet()) {
-			if (newPrefs.get(key) != null) {
-				props.setProperty(key, newPrefs.get(key));
+		// only attempt to store if the new config file location is not null or empty
+		if (configFile != null && !"".equals(configFile)) {
+			Properties props = new Properties();
+			// if the value of a key is null then it should not appear in the saved config file
+			for (String key : newPrefs.keySet()) {
+				if (newPrefs.get(key) != null) {
+					props.setProperty(key, newPrefs.get(key));
+				}
+			}
+			try {
+				FileOutputStream fout = new FileOutputStream(configFile);
+				props.store(fout, "");
+				fout.close();
+				Log.d(TAG, "wrote preferences to file: '" + configFile);
+				readPreferences(configFile);
+				fileSaved = true;
+			} catch (IOException e) {
+				Log.e(TAG, "could not save preferences to file: '" + newPrefs.get(Keys.configFile)
+						+ "'");
 			}
 		}
-		try {
-			FileOutputStream fout = new FileOutputStream(configFile);
-			props.store(fout, "");
-			fout.close();
-			Log.d(TAG, "wrote preferences to file: '" + configFile);
-			readPreferences(configFile);
-			fileUpdated = true;
-		} catch (IOException e) {
-			Log.e(TAG, "could not save preferences to file: '" + newPrefs.get(Keys.configFile)
-					+ "'");
-		}
-		// } else {
-		// Log.e(TAG, "can not overwrite default config file");
-		// }
-		return fileUpdated;
+		return fileSaved;
 	}
 
 	/**

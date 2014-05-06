@@ -9,23 +9,19 @@ import org.junit.Test;
  * @author Jonathan Nelson <ciasaboark@gmail.com>
  * 
  */
-public class HeadLessTest {
+public class HeadlessTest {
 
 	@BeforeClass
 	public static void before() {
-		System.setProperty("java.awt.headless", "true");
+		//
 	}
 
-	// @Test(expected = HeadlessException.class)
-	// public void a_testHeadless() {
-	// System.out.println("Creating systray while in headless mode");
-	// // we shouldn't be able to create a systray in headless mode
-	// SysTray sysTray = new SysTray();
-	// }
-
 	@Test
-	public void todo() {
-		// stub method so that junit considers this a valid test
+	public void a_testHeadless() {
+		System.out.println("Creating systray while in headless mode");
+		// running in a headless environment should only generate warnings
+		SysTray sysTray = new SysTray();
+		sysTray.setStatus(SysTray.Status.WAITING);
 	}
 
 }
