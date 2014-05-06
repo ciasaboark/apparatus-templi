@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2014  Jonathan Nelson
+ import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+
+import org.apparatus_templi.Coordinator;
+import org.apparatus_templi.Log;
+import org.apparatus_templi.web.AbstractWebServer;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+t it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.apparatus_templi.web.handler;
 
 import java.io.IOException;

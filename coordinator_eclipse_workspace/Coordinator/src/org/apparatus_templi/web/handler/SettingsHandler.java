@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2014  Jonathan Nelson
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.apparatus_templi.web.handler;
 
 import java.io.IOException;
@@ -270,6 +287,8 @@ public class SettingsHandler implements HttpHandler {
 			html.append("</div></div>");
 			template = template.replace("!PROTOCOL!", webserver.getProtocol());
 			template = template.replace("!MAIN_CONTENT!", html.toString());
+			template = template.replace("!JAVASCRIPT!",
+					"<script type='text/javascript' src='/resource?file=js/settings.js'></script>");
 			returnBytes = template.getBytes();
 		}
 		return returnBytes;

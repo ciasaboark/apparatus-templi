@@ -178,6 +178,7 @@ html {
 	min-height: 100%;
 	width: 100%;
 	color: #fff;
+	padding-top: 110px;
 }
 /*
 #main_content_padding
@@ -197,7 +198,7 @@ html {
 	padding-bottom: 100px;
 	width: 100%;
 	text-align: center;
-	padding-top: 150px;
+	
 }
 #prefs_form .fa-exclamation-triangle {
 	color: red;
@@ -279,7 +280,7 @@ html {
 	visibility: hidden;
 }
 #sys_status {
-	padding-top: 85px;
+
 }
 #sys_status_box {
 	height: 100%;
@@ -290,7 +291,6 @@ html {
 	text-align: center;
 }
 #widgets_box {
-	margin-top: 55px;
 	text-align: center;
 	height: 100%;
 	min-height: 100%;
@@ -731,7 +731,7 @@ hr:before {
 	text-shadow: 0px 0px 7px rgb(230, 230, 230);
 }
 .about {
-	margin: 80px 20px 80px 20px;
+	margin: 0px 20px 80px 20px;
 	text-align: center;
 	color: #4D4D4D;
 }
