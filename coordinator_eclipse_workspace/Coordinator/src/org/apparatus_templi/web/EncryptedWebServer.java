@@ -33,6 +33,7 @@ import org.apparatus_templi.web.handler.RestartModuleHandler;
 import org.apparatus_templi.web.handler.RunningDriversHandler;
 import org.apparatus_templi.web.handler.SendCommandHandler;
 import org.apparatus_templi.web.handler.SettingsHandler;
+import org.apparatus_templi.web.handler.SettingsXmlHandler;
 import org.apparatus_templi.web.handler.UpdatePasswordHandler;
 import org.apparatus_templi.web.handler.UpdateSettingsHandler;
 import org.apparatus_templi.web.handler.WidgetXmlHandler;
@@ -220,6 +221,7 @@ public class EncryptedWebServer extends org.apparatus_templi.web.AbstractWebServ
 		contexts.add(httpsServer.createContext("/log.txt", new LogHandler(this)));
 		contexts.add(httpsServer.createContext("/send_command", new SendCommandHandler(this)));
 		contexts.add(httpsServer.createContext("/sys_status", new GetSysStatusHandler(this)));
+		contexts.add(httpsServer.createContext("/settings.xml", new SettingsXmlHandler(this)));
 
 		// for the sake of simplicity these handlers do not use any authenticator. This was done to
 		// make sure that the redirect and password change pages can load resources. This should be

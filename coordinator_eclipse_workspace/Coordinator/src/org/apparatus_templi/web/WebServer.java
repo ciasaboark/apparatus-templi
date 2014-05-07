@@ -21,6 +21,7 @@ import org.apparatus_templi.web.handler.RestartModuleHandler;
 import org.apparatus_templi.web.handler.RunningDriversHandler;
 import org.apparatus_templi.web.handler.SendCommandHandler;
 import org.apparatus_templi.web.handler.SettingsHandler;
+import org.apparatus_templi.web.handler.SettingsXmlHandler;
 import org.apparatus_templi.web.handler.UpdateSettingsHandler;
 import org.apparatus_templi.web.handler.WidgetXmlHandler;
 
@@ -148,6 +149,7 @@ public class WebServer extends org.apparatus_templi.web.AbstractWebServer {
 		httpServer.createContext("/log.txt", new LogHandler(this));
 		httpServer.createContext("/send_command", new SendCommandHandler(this));
 		httpServer.createContext("/sys_status", new GetSysStatusHandler(this));
+		httpServer.createContext("/settings.xml", new SettingsXmlHandler(this));
 		// httpServer.createContext("/", new IndexHandler(this));
 		httpServer.setExecutor(java.util.concurrent.Executors.newCachedThreadPool());
 		Log.d(TAG, "waiting on port " + this.portNum);

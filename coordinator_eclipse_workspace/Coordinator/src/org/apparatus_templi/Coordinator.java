@@ -295,11 +295,9 @@ public class Coordinator {
 		Options options = new Options();
 		options.addOption("help", false, "Display this help message.");
 
-		// @SuppressWarnings("static-access")
-		// Option configOption = OptionBuilder.withArgName(Prefs.Keys.configFile).hasArg()
-		// .withDescription("Path to the configuration file").create(Prefs.Keys.configFile);
-		// options.addOption(configOption);
-
+		// the commons cli parser does not allow '.' within the option names, so we have to replace
+		// the periods with underscores for now. When parsing the args later the underscores will be
+		// converted back to proper dot notation
 		for (String key : prefs.getDefPreferencesMap().keySet()) {
 			String optName;
 			if (key.contains(".")) {
@@ -307,6 +305,7 @@ public class Coordinator {
 			} else {
 				optName = key;
 			}
+
 			options.addOption(OptionBuilder.withArgName(optName).hasArg()
 					.withDescription(prefs.getPreferenceDesc(key)).create(optName));
 		}
@@ -1308,7 +1307,7 @@ public class Coordinator {
 		return prefs;
 	}
 
-	public static void main(String argv[]) throws InterruptedException, IOException {
+	public static void main(String argv[]) {
 		Log.setLogLevel(Log.LEVEL_DEBUG);
 		Log.setLogToConsole(true);
 
@@ -1355,7 +1354,14 @@ public class Coordinator {
 		// block until the local Arduino is ready
 		System.out.print(TAG + ":" + "Waiting for local link to be ready.");
 		if (!(serialConnection instanceof DummySerialConnection)) {
-			byte[] sBytes = messageCenter.readBytesUntil((byte) 0x0A);
+			byte[] sBytes = null;
+			try {
+				sBytes = messageCenter.readBytesUntil((byte) 0x0A);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			String sString = new String(sBytes);
 			if (sString.endsWith("READY")) {
 				connectionReady = true;
@@ -1389,7 +1395,12 @@ public class Coordinator {
 				}
 
 				System.out.print(".");
-				Thread.sleep(1000);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		System.out.println();
@@ -1425,11 +1436,18 @@ public class Coordinator {
 				while (System.currentTimeMillis() < wakeTime) {
 					// do a non-blocking sleep so that incoming message can still be routed
 				}
+				// System.exit(0);
 			}
 		});
 
 		// start the web interface
-		startWebServer(null);
+		try {
+			startWebServer(null);
+		} catch (UnknownHostException e1) {
+			// if we cant start the web server then the service should shut down
+			Log.t(TAG, "can not start web server: " + e1.getMessage());
+			Coordinator.exitWithReason("unable to start web server");
+		}
 
 		// the service should be up and running, send a notification email
 		String serverUp = "Service has started normally.";
@@ -1470,7 +1488,12 @@ public class Coordinator {
 			}
 
 			Thread.yield();
-			Thread.sleep(100);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

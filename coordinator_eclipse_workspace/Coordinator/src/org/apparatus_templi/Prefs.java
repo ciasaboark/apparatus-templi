@@ -3,6 +3,7 @@ package org.apparatus_templi;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -439,7 +440,7 @@ public class Prefs {
 	/**
 	 * A convenience class containing known keys that correspond to preference values.
 	 */
-	public static class Keys {
+	public final static class Keys {
 		// Main section properties
 		public static final String configFile = "configFile";
 		public static final String serialPort = "serialPort";
@@ -469,5 +470,28 @@ public class Prefs {
 		public static final String emailAddress = "email.address";
 		public static final String emailPassword = "email.password";
 
+		public static ArrayList<String> getKeyset() {
+			ArrayList<String> keylist = new ArrayList<String>();
+			keylist.add(configFile);
+			keylist.add(serialPort);
+			keylist.add(driverList);
+			keylist.add(logFile);
+			keylist.add(emailList);
+			keylist.add(debugLevel);
+			keylist.add(portNum);
+			keylist.add(webResourceFolder);
+			keylist.add(encryptServer);
+			keylist.add(userName);
+			keylist.add(userPass);
+			keylist.add(serverBindLocalhost);
+			keylist.add(twtrAccess);
+			keylist.add(twtrAccessKey);
+			keylist.add(emailServer);
+			keylist.add(emailPort);
+			keylist.add(emailUsername);
+			keylist.add(emailAddress);
+			keylist.add(emailPassword);
+			return keylist;
+		}
 	}
 }
