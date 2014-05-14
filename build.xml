@@ -1,24 +1,39 @@
-<project name="ApparatusTempli" default="dist" basedir=".">
+<project name="ApparatusTempli" default="compile" basedir=".">
     <description>
         Home automation.
     </description>
     <!-- set global properties for this build -->
     <property name="project-dir"    value="coordinator_eclipse_workspace/Coordinator/" />
     <property name="src"            location="coordinator_eclipse_workspace/Coordinator/src"/>
-    <property name="build"          location="coordinator_eclipse_workspace/Coordinator/build"/>
-    <property name="dist"           location="coordinator_eclipse_workspace/Coordinator/dist"/>
+    <property name="dist"           location="dist" />
+    <property name="build"          location="${dist}/build"/>
+    <property name="dist-build"     location="${dist}/ApparatusTempli"/>
+    <property name="dist-packages"  location="${dist}/packages" />
     <property name="tests"          location="coordinator_eclipse_workspace/Coordinator/tests" />
-    <property name="major-version-number" value="0" />
-    <property name="minor-version-number" value="5" />
     <property name="project-name" value="${ant.project.name}" />
-    <!-- <property file="../ant-utilities/build-main.properties" /> -->
+
+    <path id="libraries.path">    
+        <fileset dir="${project-dir}/lib">
+            <include name="*.jar"/>
+            <exclude name="*javadoc*" />
+        </fileset>
+    </path>
 
     
+
+    
+    
     <target name="init">
+        <!-- read version properties -->
+        <loadproperties srcFile="${project-dir}/versioning"/>
         <!-- Create the time stamp -->
         <tstamp/>
+        <!-- Increment the build number -->
+        <buildnumber/>
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${build}"/>
+        <mkdir dir="${dist-build}" />
+        <mkdir dir="${dist-packages}" />
     </target>
 
     <target name="compile" depends="init" description="compile the source" >
@@ -48,13 +63,104 @@
         </javac>
     </target>
 
-    <target name="dist" depends="compile" description="generate the distribution" >
-        <!-- Create the distribution directory -->
-        <mkdir dir="${dist}/${major-version-number}-${minor-version-number}"/>
+    <target name="dist" depends="dist-build" />
 
-        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${dist}/${major-version-number}-${minor-version-number}/Coordinator-${DSTAMP}.jar" basedir="${build}"/>
+    <target name="dist-build" depends="compile, package-docs">
+        <mkdir dir="${dist-build}" />
+        <mkdir dir="${dist-build}/lib" />
+        <mkdir dir="${dist-build}/lib/RXTX/macos" />
+        <mkdir dir="${dist-build}/lib/RXTX/linux-i386" />
+        <mkdir dir="${dist-build}/lib/RXTX/linux-x86_64" />
+        <mkdir dir="${dist-build}/lib/RXTX/win-x86" />
+        <mkdir dir="${dist-build}/lib/RXTX/win-x64" />
+
+        
+        <!-- copy all non-dist-build libraries -->
+        <copy todir="${dist-build}/lib" flatten="true">
+            <path refid="libraries.path"/>
+        </copy>
+
+        <!-- <copy todir="${dist-build}/lib" flatten="true">
+            <fileset dir="src_dir">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy> -->
+
+        <!-- copy website resources -->
+        <mkdir dir="${dist-build}/website" />
+        <copydir src="website/" dest="${dist-build}/website" />
+
+        <!-- copy rxtx libraries -->
+        <!-- mac -->
+        <copy file="${project-dir}/lib/RXTX/macos/RXTXcomm.jar" todir="${dist-build}/lib/RXTX/macos" />
+        <copy file="${project-dir}/lib/RXTX/macos/librxtxSerial.jnilib" todir="${dist-build}/lib/RXTX/macos" />
+        <!-- linux x86 -->
+        <copy file="${project-dir}/lib/RXTX/linux-i386/RXTXcomm.jar" todir="${dist-build}/lib/RXTX/linux-i386" />
+        <copy file="${project-dir}/lib/RXTX/linux-i386/librxtxSerial.so" todir="${dist-build}/lib/RXTX/linux-i386" />
+        <!-- linux x86_64 -->
+        <copy file="${project-dir}/lib/RXTX/linux-x86_64/RXTXcomm.jar" todir="${dist-build}/lib/RXTX/linux-x86_64" />
+        <copy file="${project-dir}/lib/RXTX/linux-x86_64/librxtxSerial.so" todir="${dist-build}/lib/RXTX/linux-x86_64" />
+        <!-- windows 32 -->
+        <copy file="${project-dir}/lib/RXTX/win-x86/RXTXcomm.jar" todir="${dist-build}/lib/RXTX/win-x86" />
+        <copy file="${project-dir}/lib/RXTX/win-x86/rxtxSerial.dll" todir="${dist-build}/lib/RXTX/win-x86" />
+        <!-- windows 64 -->
+        <copy file="${project-dir}/lib/RXTX/win-x64/RXTXcomm.jar" todir="${dist-build}/lib/RXTX/win-x64" />
+        <copy file="${project-dir}/lib/RXTX/win-x64/rxtxSerial.dll" todir="${dist-build}/lib/RXTX/win-x64" />
+
+        <!-- copy the start scripts -->
+        <copy file="build-scripts/apparatus-templi" todir="${dist-build}/" />
+        <chmod file="${dist-build}/apparatus-templi" perm="ugo+rx"/>
+        <!-- TODO create batch start script -->
+
+
+        <fileset dir="${dist-build}/lib" id="jar.files">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <pathconvert pathsep=" " property="jarfiles" refid="jar.files">
+            <map from="${dist-build}/lib" to="lib" />
+        </pathconvert>
+
+        <echo message="${jarfiles}" />
+
+        <jar destfile="${dist-build}/apparatus-templi.jar">
+            <fileset dir="${build}">
+                <include name="**/*.class" />
+                <exclude name="**/*Test*" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="org.apparatus_templi.Coordinator"/>
+                <!-- <attribute name="Class-Path" value="lib"/> -->
+                <attribute name="Class-Path" value="${jarfiles}"/>
+            </manifest>
+            <fileset dir="${project-dir}">
+                <include name="lig.keystore"/>
+                <include name="icons/*"/>
+                <include name="versioning" />
+            </fileset>
+        </jar>
+
+       
     </target>
+
+    <target name="archive" depends="archive-zip, archive-tar" />
+    <target name="archive-zip" depends="dist-build">
+        <zip destfile="${dist-packages}/${project-name}-${version.major}.${version.minor}.build-${build.number}.zip">
+            <zipfileset dir="${dist-build}/" prefix="ApparatusTempli"/>
+      </zip>
+      <echo>Zip archive created as ${dist-packages}/${project-name}-${version.major}.${version.minor}.build-${build.number}.zip</echo>
+    </target>
+
+    <target name="archive-tar" depends="dist-build">
+        <exec dir="${dist}" executable="tar" failonerror="true">
+            <arg value="-cvz"/>
+            <arg value="--file=packages/${project-name}-${version.major}.${version.minor}.build-${build.number}.tar.gz"/>
+            <arg value="ApparatusTempli"/>
+        </exec>
+        <echo>Tar archive created as ${dist-packages}/${project-name}-${version.major}.${version.minor}.build-${build.number}.tar.gz</echo>
+    </target>
+
+
 
     <target name="clean" description="clean up" >
         <!-- Delete the ${build} and ${dist} directory trees -->
@@ -78,7 +184,7 @@
             </classpath>  
             <batchtest>
                <fileset dir="${tests}">
-                    <include  name="**/*Test*" />
+                    <include  name="**/*MainTest*" />
                     <exclude name="**/HeadlessTest*" />
                </fileset>
             </batchtest>
@@ -109,6 +215,13 @@
         <fail message="Test failure detected, check test results." if="test.failed" />
     </target>
 
+    <target name="javadoc">
+        <javadoc access="package" additionalparam=" -link http://docs.oracle.com/javase/7/docs/api/" author="true" classpath="coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/RXTXcomm.jar:coordinator_eclipse_workspace/Coordinator/lib/commons-lang3-3.3.jar:coordinator_eclipse_workspace/Coordinator/lib/commons-lang3-3.3-javadoc.jar:coordinator_eclipse_workspace/Coordinator/lib/twitter4j-core-3.0.5.jar:coordinator_eclipse_workspace/Coordinator/lib/RXTX/macos/RXTXcomm.jar:coordinator_eclipse_workspace/Coordinator/lib/hamcrest-core-1.3.jar:coordinator_eclipse_workspace/Coordinator/lib/commons-cli-1.2-javadoc.jar:coordinator_eclipse_workspace/Coordinator/lib/appbundler-1.0.jar:coordinator_eclipse_workspace/Coordinator/lib/commons-cli-1.2.jar:coordinator_eclipse_workspace/Coordinator/lib/sqlite-jdbc-3.7.2.jar:coordinator_eclipse_workspace/Coordinator/lib/tika-core-1.3.jar:coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/RXTXcomm.jar:coordinator_eclipse_workspace/Coordinator/lib/guava-16.0.1.jar:coordinator_eclipse_workspace/Coordinator/lib/junit-4.11.jar:coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/RXTXcomm.jar:coordinator_eclipse_workspace/Coordinator/lib/javax.mail.jar:coordinator_eclipse_workspace/Coordinator/lib/json-simple-1.1.1.jar" destdir="doc/javadoc" doctitle="Apparatus Templi" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.apparatus_templi.web.generator,org.apparatus_templi.service,org.apparatus_templi.web.handler,org.apparatus_templi.event,org.apparatus_templi.web,org.apparatus_templi.xml,org.apparatus_templi.driver" source="1.7" sourcefiles="coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/SysTray.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/EventGenerator.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Event.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Prefs.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/DummySerialConnection.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Log.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/UsbSerialConnection.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/EventWatcher.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/MessageCenter.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Coordinator.java,coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/SerialConnection.java" sourcepath="coordinator_eclipse_workspace/Coordinator/src:coordinator_eclipse_workspace/Coordinator/tests" splitindex="false" use="true" version="true"/>
+    </target>
+
+    <target depends="init, javadoc" description="build javadoc jar" name="package-docs">
+        <jar compress="true" destfile="${dist-build}/javadoc.jar" basedir="doc/javadoc" />
+    </target>
     
 
 </project>

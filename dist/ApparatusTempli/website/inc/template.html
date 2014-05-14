@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="/resource?file=/js/jquery-1.7.0.min.js"></script>
+	<link rel="stylesheet" href="/resource?file=css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="resources?file=css/foundation-icons.css">
+	<link href='!PROTOCOL!fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+	<link href='!PROTOCOL!fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+	<link href="!PROTOCOL!netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/resource?file=css/animate.css">
+	<link rel="stylesheet" type="text/css" href="/resource?file=css/index.css">
+	<link rel="stylesheet" type="text/css" href="/resource?file=css/jquery.qtip.css">
+
+	<!-- Optional theme -->
+	<!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">-->
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+
+	<!--<script type="text/javascript" src="resource?file=js/jquery.tooltipster.min.js"></script>-->
+	<script src="resource?file=js/main.js"></script>
+	<script src="js/default.js"></script>
+
+	<!-- Include either the minifed or production version, NOT both!! -->
+	<script type="text/javascript" src="!PROTOCOL!cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.js"></script>
+	<script type="text/javascript" src="/resource?file=js/jquery.translate-1.4.7-debug-all.js"></script>
+
+	<!-- Optional: imagesLoaded script to better support images inside your tooltips -->
+	<!--<script type="text/javascript" src="resource?file=js/jquery.tooltipster.min.js"></script>-->
+	
+	<!-- include any optional per-page javascript -->
+	!JAVASCRIPT!
+
+	<script type="text/javascript">
+		// Create the tooltips only on document load
+
+		$(document).ready(function() {
+			console.log("replacing tooltips with javascript tooltips");
+			$('[title]').qtip({
+				position: {
+					viewport: $(window)
+				},
+				style: {
+					classes: "qtip-rounded qtip-light tooltip-custom"
+				}
+			});
+		});
+	</script>
+
+
+	<title>Apparatus Templi</title>
+</head>
+
+<body>
+	<div id="header">
+
+		<div id="header_bar">
+			<div id="header_title">
+				<span id="header_logo">
+					<img src="resource?file=images/small_logo.png" alt="small logo">
+				</span>
+				<span id="header_title_text">Apparatus Templi</span>
+			</div>
+			<!-- <div id="header_spacer"></div> -->
+			<div id="header_links">
+				<span>
+					<a id="button_home" class="btn btn-default btn-sm" href="index.html">
+						<i class="fa fa-th-large"></i>&nbsp;&nbsp;Widgets
+					</a>
+				</span>
+
+				<span>
+					<a id="button_about" class="btn btn-default btn-sm" href="about.html">
+						<i class="fa fa-info"></i>&nbsp;&nbsp;About
+					</a>
+				</span>
+				<span>
+					<a id="button_info" class="btn btn-default btn-sm" href="info.html">
+						<i class="fa fa-terminal"></i>&nbsp;&nbsp;Info
+					</a>
+				</span>
+				<span>
+					<a id="button_settings" class="btn btn-default btn-sm" href="settings.html">
+						<i class="fa fa-cogs"></i>&nbsp;&nbsp;Settings
+					</a>
+				</span>
+			</div>
+		</div>
+
+		<!--
+    	<div id="header_content">
+            <div id="logo">
+                <img src="resource?file=images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
+            </div>
+        </div>
+-->
+	</div>
+
+	<div id="main_content">
+		!MAIN_CONTENT!
+	</div>
+
+	<div id="footer">
+		<div>
+			<span id="footer_oshw">
+				<a href="http://www.oshwa.org/definition/" target="_blank">
+					<span class="footer_btn">
+						<img src="resource?file=images/ohw-logo.png" height="32px" width="32px" alt="Arduino" title="Open Source hardware">
+					</span>
+				</a>
+			</span>
+			<span id="footer_arduino">
+				<a href="http://www.arduino.cc" target="_blank">
+					<span class="footer_btn">
+						<img src="resource?file=images/arduino_icon.png" height="32px" width="32px" alt="Arduino" title="Make your own projects using the Arduino platform!">
+					</span>
+				</a>
+			</span>
+			<span id="footer_github">
+				<a href="http://github.com/ciasaboark/apparatus-templi" target="_blank">
+					<span class="footer_btn">
+						<img src="resource?file=images/github-sociocon.png" height="32px" width="32px" title="Project code hosted on Github">
+					</span>
+				</a>
+			</span>
+		</div>
+	</div>
+</body>
+
+</html>

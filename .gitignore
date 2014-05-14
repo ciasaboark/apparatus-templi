@@ -1,6 +1,8 @@
 .DS_Store
 .history/
 bin/
+build/
+coordinator_eclipse_workspace/Coordinator/build/
 .metadata/
 !org.eclipse.core.resources/
 *~

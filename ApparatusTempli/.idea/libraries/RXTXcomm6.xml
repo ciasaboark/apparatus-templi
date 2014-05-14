@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="RXTXcomm6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/bin/RXTX/macos/RXTXcomm.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

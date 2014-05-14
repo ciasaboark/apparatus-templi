@@ -1,0 +1,105 @@
+<!--
+Basic redirect template.  Values for !TIMEOUT!
+and !LOCATION! will be filled in by the pre-processor
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/resource?file=css/index.css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+	<META http-equiv="refresh" content="!TIMEOUT!;URL=!LOCATION!">
+	<script>
+		var $counter;
+		var $count = !TIMEOUT!;
+		function countdown() {
+			$count = $count - 1;
+			if ($count <= 0) {
+				clearInterval($counter);
+				document.getElementById("link").href = "!LOCATION!";
+				return;
+			}
+			document.getElementById("timeout").innerHTML = $count;
+		}
+		window.onload($counter = setInterval(countdown, 1000));
+
+	</script>
+
+
+	<title>Redirecting...</title>
+</head>
+
+<body>
+	<div id="header">
+        
+        <div id="header_bar">
+            <div id="header_title">
+                <span id="header_logo">
+                    <img src="resource?file=images/small_logo.png" alt="small logo">
+                </span>
+                <span id="header_title_text">Apparatus Templi</span>
+            </div>
+            <!-- <div id="header_spacer"></div> -->
+            <div id="header_links">
+                <span>
+                    <a id="button_home" class="btn btn-default btn-sm" href="#">
+                        <i class="fa fa-th-large"></i>&nbsp;&nbsp;Widgets
+                    </a>
+                </span>
+                
+                <span>
+                    <a id="button_about" class="btn btn-default btn-sm" href="#">
+                        <i class="fa fa-info"></i>&nbsp;&nbsp;About
+                    </a>
+                </span>
+                 <span>
+                    <a id="button_info" class="btn btn-default btn-sm" href="#">
+                        <i class="fa fa-terminal"></i>&nbsp;&nbsp;Info
+                    </a>
+                </span>
+                <span>
+                    <a id="button_settings" class="btn btn-default btn-sm" href="#">
+                        <i class="fa fa-cogs"></i>&nbsp;&nbsp;Settings
+                    </a>
+                </span>
+            </div>
+        </div>
+        
+<!--
+    	<div id="header_content">
+            <div id="logo">
+                <img src="resource?file=images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
+            </div>
+        </div>
+-->
+    </div>
+    
+    <div id="main_content">
+        <div class="info-box" style="text-align: center; margin-top: 100px;">
+			<p>Redirecting to new site in <span id="timeout">!TIMEOUT!</span> seconds</p>
+			<p>If you are not automatically redirected you can access the new site at: <a id="link" href="javascript:;">!LOCATION!</a></p>
+    </div>
+        <div id="main_content_padding"></div>
+    </div>
+    
+    <div id="footer">
+        <div>
+            <span id="footer_arduino" >
+                <a href="#" target="_blank">
+                    <span class="footer_btn"><img src="resource?file=images/arduino_icon.png" height="32px" width="32px" alt="Arduino" title="Make your own projects using the Arduino platform!"></span>
+                </a>
+            </span>
+            <span id="footer_github">
+                <a href="#" target="_blank">
+                    <span class="footer_btn"><img src="resource?file=images/github-sociocon.png"  height="32px" width="32px" title="Project code hosted on Github"></span>
+                </a>
+            </span>
+        </div>
+    </div>
+</body>
+</html>

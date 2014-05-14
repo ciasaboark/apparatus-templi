@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/sqlite-jdbc-3.7.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/tika-core-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/appbundler-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/commons-lang3-3.3-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/guava-16.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/json-simple-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/junit-4.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/commons-lang3-3.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/commons-cli-1.2-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/commons-cli-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/javax.mail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/lib/twitter4j-core-3.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

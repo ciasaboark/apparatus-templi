@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="libraries">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/skeleton/arduino-sketches/libraries/Zigbee.zip!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/skeleton/arduino-sketches/libraries/XBee.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

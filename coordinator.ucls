@@ -1,0 +1,1953 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="org.apparatus_templi.Prefs" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/Prefs.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="242" width="308" x="6839" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="org.apparatus_templi.Event" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/Event.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="138" x="1778" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="org.apparatus_templi.SysTray" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/SysTray.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="215" x="6948" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="4" language="java" name="org.apparatus_templi.EventWatcher" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/EventWatcher.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="80" width="162" x="5573" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="5" language="java" name="org.apparatus_templi.SysTray.AboutDialog" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/SysTray.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="80" width="110" x="6905" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="org.apparatus_templi.MessageCenter" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/MessageCenter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="314" width="266" x="8438" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="org.apparatus_templi.DummySerialConnection" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/DummySerialConnection.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="224" width="206" x="8175" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="org.apparatus_templi.UsbSerialConnection" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/UsbSerialConnection.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="242" width="206" x="7929" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="org.apparatus_templi.Message" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/MessageCenter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="386" width="190" x="7224" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="org.apparatus_templi.Prefs.Keys" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/Prefs.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="422" width="176" x="7108" y="3157"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="11" language="java" name="org.apparatus_templi.EventGenerator" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/EventGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="80" width="211" x="1798" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="12" language="java" name="org.apparatus_templi.SerialConnection" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/SerialConnection.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="168" x="7967" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="org.apparatus_templi.MessageCenter.MessageFragment" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/MessageCenter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="258" x="8485" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="org.apparatus_templi.Coordinator" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/Coordinator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="656" width="283" x="8115" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="org.apparatus_templi.MessageCenter.FragmentedMessage" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/MessageCenter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="241" x="8438" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="org.apparatus_templi.SysTray.Status" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/SysTray.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="108" x="7055" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="org.apparatus_templi.Log" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/Log.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="296" width="208" x="4400" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="18" language="java" name="org.apparatus_templi.driver.Driver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/Driver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="422" width="220" x="2823" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="19" language="java" name="org.apparatus_templi.web.WebServer" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/WebServer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="242" width="197" x="6668" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="org.apparatus_templi.web.AbstractWebServer" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/AbstractWebServer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="224" width="196" x="6376" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="org.apparatus_templi.web.HttpHelper" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/HttpHelper.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="311" x="5313" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="org.apparatus_templi.web.EncryptedWebServer" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/EncryptedWebServer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="242" width="252" x="6376" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="23" language="java" name="org.apparatus_templi.web.PasswordHash" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/PasswordHash.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="296" width="246" x="2511" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="24" language="java" name="org.apparatus_templi.web.generator.PageGenerator" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/generator/PageGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="225" x="7182" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="25" language="java" name="org.apparatus_templi.web.handler.AboutHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/AboutHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="215" x="6820" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="org.apparatus_templi.web.handler.LogHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/LogHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="204" x="6006" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="27" language="java" name="org.apparatus_templi.web.handler.JsHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/JsHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="195" x="4652" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="28" language="java" name="org.apparatus_templi.web.handler.SettingsHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/SettingsHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="227" x="4076" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="29" language="java" name="org.apparatus_templi.web.handler.SendCommandHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/SendCommandHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="269" x="5394" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="30" language="java" name="org.apparatus_templi.web.handler.InfoHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/InfoHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="203" x="4887" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="31" language="java" name="org.apparatus_templi.web.handler.UpdateSettingsHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/UpdateSettingsHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="267" x="3769" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="32" language="java" name="org.apparatus_templi.web.handler.ResourceHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/ResourceHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="236" x="7371" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="33" language="java" name="org.apparatus_templi.web.handler.IndexHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/IndexHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="213" x="6250" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="34" language="java" name="org.apparatus_templi.web.handler.GetSysStatusHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/GetSysStatusHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="256" x="7075" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="35" language="java" name="org.apparatus_templi.web.handler.FullXmlHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/FullXmlHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="224" x="5130" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="36" language="java" name="org.apparatus_templi.web.handler.UpdatePasswordHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/UpdatePasswordHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="277" x="6503" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="37" language="java" name="org.apparatus_templi.web.handler.WidgetXmlHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/WidgetXmlHandler.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="242" x="7647" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="38" language="java" name="org.apparatus_templi.web.handler.RunningDriversHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/RunningDriversHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="269" x="4343" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="39" language="java" name="org.apparatus_templi.web.handler.RestartModuleHandler" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/web/handler/RestartModuleHandler.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="98" width="263" x="5703" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="40" language="java" name="org.apparatus_templi.xml.XmlFormatter" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/XmlFormatter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="238" x="2823" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="41" language="java" name="org.apparatus_templi.xml.Controller" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/Controller.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="224" width="201" x="2300" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="42" language="java" name="org.apparatus_templi.xml.Button" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/Button.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="296" width="182" x="5351" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="43" language="java" name="org.apparatus_templi.xml.ElementInterface" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/ElementInterface.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="148" x="3827" y="3157"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="44" language="java" name="org.apparatus_templi.xml.TextArea" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/TextArea.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="206" width="196" x="3576" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="45" language="java" name="org.apparatus_templi.xml.Sensor" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/Sensor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="224" width="186" x="3827" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="46" language="java" name="org.apparatus_templi.xml.Pre" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/Pre.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="206" width="166" x="5145" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="47" language="java" name="org.apparatus_templi.xml.InputType" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/xml/InputType.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="152" width="205" x="1603" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="48" language="java" name="org.apparatus_templi.driver.TempMonitor" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/TempMonitor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="2049" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="49" language="java" name="org.apparatus_templi.driver.TestDriver" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/TestDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="4078" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="50" language="java" name="org.apparatus_templi.driver.SetTopBox" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/SetTopBox.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="2300" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="51" language="java" name="org.apparatus_templi.driver.StatefulLed" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/StatefulLed.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="1547" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="52" language="java" name="org.apparatus_templi.driver.DoorLock" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/DoorLock.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="2572" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="53" language="java" name="org.apparatus_templi.driver.LightSwitch" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/LightSwitch.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="3576" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="54" language="java" name="org.apparatus_templi.driver.MotionWatcher" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/MotionWatcher.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="1045" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="55" language="java" name="org.apparatus_templi.driver.DoorSensor" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/DoorSensor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="1798" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="56" language="java" name="org.apparatus_templi.driver.LedFlash" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/LedFlash.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="41" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="57" language="java" name="org.apparatus_templi.driver.Echo" project="Coordinator" 
+    file="/Coordinator/drivers/org/apparatus_templi/driver/Echo.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="292" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="58" language="java" name="org.apparatus_templi.event.SoundLevelExceededEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/SoundLevelExceededEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="134" width="278" x="1231" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="59" language="java" name="org.apparatus_templi.event.DeviceDetectedEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/DeviceDetectedEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="263" x="928" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="60" language="java" name="org.apparatus_templi.event.TempChangedEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/TempChangedEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="239" x="649" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="61" language="java" name="org.apparatus_templi.event.IRCodeEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/IRCodeEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="189" x="1549" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="62" language="java" name="org.apparatus_templi.event.MotionEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/MotionEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="98" width="162" x="1778" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="63" language="java" name="org.apparatus_templi.event.ProximityEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/ProximityEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="202" x="1980" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="64" language="java" name="org.apparatus_templi.event.LightLevelChangedEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/LightLevelChangedEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="134" width="265" x="2222" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="65" language="java" name="org.apparatus_templi.event.HumidityChangedEvent" project="Coordinator" 
+    file="/Coordinator/events/org/apparatus_templi/event/HumidityChangedEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="134" width="256" x="2527" y="1933"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="66" language="java" name="org.apparatus_templi.service.EmailService" project="Coordinator" 
+    file="/Coordinator/services/org/apparatus_templi/service/EmailService.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="292" x="6248" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="67" language="java" name="org.apparatus_templi.service.TwitterService" project="Coordinator" 
+    file="/Coordinator/services/org/apparatus_templi/service/TwitterService.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="152" width="199" x="6590" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="68" language="java" name="org.apparatus_templi.service.ServiceInterface" project="Coordinator" 
+    file="/Coordinator/services/org/apparatus_templi/service/ServiceInterface.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="176" x="6892" y="3157"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="69" language="java" name="org.apparatus_templi.service.SQLiteDbService" project="Coordinator" 
+    file="/Coordinator/services/org/apparatus_templi/service/SQLiteDbService.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="242" width="228" x="7324" y="2821"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="70" language="java" name="org.apparatus_templi.service.SQLiteDbService.SharedConnection" 
+    project="Coordinator" file="/Coordinator/services/org/apparatus_templi/service/SQLiteDbService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="116" width="191" x="7324" y="3157"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="71" language="java" name="org.apparatus_templi.service.DatabaseService" project="Coordinator" 
+    file="/Coordinator/services/org/apparatus_templi/service/DatabaseService.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="228" x="7699" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="72" language="java" name="org.apparatus_templi.driver.DbTester2" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/DbTester2.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="3074" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="73" language="java" name="org.apparatus_templi.driver.BlankControllerDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/BlankControllerDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="4580" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="74" language="java" name="org.apparatus_templi.driver.LargeCommands" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/LargeCommands.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="4831" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="75" language="java" name="org.apparatus_templi.WebServerTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/WebServerTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="260" width="236" x="3460" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="76" language="java" name="org.apparatus_templi.driver.EmailTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/EmailTester.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="224" width="211" x="5853" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="77" language="java" name="org.apparatus_templi.MessageCenterTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/MessageCenterTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="422" width="305" x="8438" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="78" language="java" name="org.apparatus_templi.CoordinatorTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/CoordinatorTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="1160" width="311" x="8115" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="79" language="java" name="org.apparatus_templi.driver.LazyDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/LazyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="543" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="80" language="java" name="org.apparatus_templi.driver.BlankSensorDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/BlankSensorDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="794" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="81" language="java" name="org.apparatus_templi.driver.MotionGenerator" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotionGenerator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="1296" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="82" language="java" name="org.apparatus_templi.PrefsTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/PrefsTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="205" x="7454" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="83" language="java" name="org.apparatus_templi.SysTrayTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/SysTrayTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="152" width="146" x="7929" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="84" language="java" name="org.apparatus_templi.UsbSerialConnectionTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/UsbSerialConnectionTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="199" x="702" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="85" language="java" name="org.apparatus_templi.driver.FancyWidgetTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/FancyWidgetTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="3325" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="86" language="java" name="org.apparatus_templi.driver.SleepyDriver" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/SleepyDriver.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="4329" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="87" language="java" name="org.apparatus_templi.driver.MotionWatcherTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotionWatcherTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="3827" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="88" language="java" name="org.apparatus_templi.HeadlessTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/HeadlessTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="116" width="145" x="6330" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="89" language="java" name="org.apparatus_templi.driver.MotorTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/MotorTester.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="2823" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="90" language="java" name="org.apparatus_templi.driver.TwitterTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/TwitterTester.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="188" width="211" x="6104" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="91" language="java" name="org.apparatus_templi.DummySerialConnectionTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/DummySerialConnectionTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="152" width="223" x="8175" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="92" language="java" name="org.apparatus_templi.driver.XmlTest" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/XmlTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="5351" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="93" language="java" name="org.apparatus_templi.driver.DbTester" project="Coordinator" 
+    file="/Coordinator/src/org/apparatus_templi/driver/DbTester.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="170" width="211" x="5602" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="94" language="java" name="org.apparatus_templi.XmlFormatterTest" project="Coordinator" 
+    file="/Coordinator/tests/org/apparatus_templi/XmlFormatterTest.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="206" width="229" x="5082" y="2395"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <generalization id="95">    
+    <end type="SOURCE" refId="55"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="96">    
+    <end type="SOURCE" refId="55" navigable="false">      
+      <attribute id="97" name="fullXml"/>      
+      <multiplicity id="98" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="99">    
+    <end type="SOURCE" refId="76"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
+  <generalization id="100">    
+    <end type="SOURCE" refId="61"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <association id="101">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="102" name="longPre"/>      
+      <multiplicity id="103" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="104">    
+    <bendpoint x="2541" y="2395"/>    
+    <end type="SOURCE" refId="40" navigable="false">      
+      <attribute id="105" name="driver"/>      
+      <multiplicity id="106" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="107">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="108" name="fullXml"/>      
+      <multiplicity id="109" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="110">    
+    <end type="SOURCE" refId="22"/>    
+    <end type="TARGET" refId="20"/>  
+  </generalization>  
+  <generalization id="111">    
+    <end type="SOURCE" refId="86"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="112">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="113" name="fullVideo"/>      
+      <multiplicity id="114" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="115">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="116" name="fullXml"/>      
+      <multiplicity id="117" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="118">    
+    <end type="SOURCE" refId="51" navigable="false">      
+      <attribute id="119" name="led2"/>      
+      <multiplicity id="120" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="121">    
+    <end type="SOURCE" refId="72"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="122">    
+    <end type="SOURCE" refId="19" navigable="false">      
+      <attribute id="123" name="prefs"/>      
+      <multiplicity id="124" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="125">    
+    <end type="SOURCE" refId="31" navigable="false">      
+      <attribute id="126" name="webserver"/>      
+      <multiplicity id="127" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="128">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="15"/>  
+  </nesting>  
+  <association id="129">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="130" name="text1"/>      
+      <multiplicity id="131" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="132">    
+    <end type="SOURCE" refId="65"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="133">    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="20"/>  
+  </generalization>  
+  <association id="134">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="135" name="fullXml"/>      
+      <multiplicity id="136" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="137">    
+    <end type="SOURCE" refId="53"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
+  <generalization id="138">    
+    <end type="SOURCE" refId="79"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="139">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="140" name="widgetXml"/>      
+      <multiplicity id="141" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="142">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="143" name="curCycle"/>      
+      <multiplicity id="144" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="145">    
+    <end type="SOURCE" refId="76"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="146">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="147" name="widgetXml"/>      
+      <multiplicity id="148" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="149">    
+    <end type="SOURCE" refId="37" navigable="false">      
+      <attribute id="150" name="webserver"/>      
+      <multiplicity id="151" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="152">    
+    <end type="SOURCE" refId="51"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <realization id="153">    
+    <end type="SOURCE" refId="51"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="154">    
+    <end type="SOURCE" refId="89" navigable="false">      
+      <attribute id="155" name="ta"/>      
+      <multiplicity id="156" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="157">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="158" name="pauseTestButton"/>      
+      <multiplicity id="159" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="160">    
+    <end type="SOURCE" refId="52"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="161">    
+    <end type="SOURCE" refId="57"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="162">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="163" name="widgetXml"/>      
+      <multiplicity id="164" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="165">    
+    <end type="SOURCE" refId="66" navigable="false">      
+      <attribute id="166" name="instance"/>      
+      <multiplicity id="167" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="66" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="168">    
+    <end type="SOURCE" refId="45"/>    
+    <end type="TARGET" refId="43"/>  
+  </realization>  
+  <realization id="169">    
+    <end type="SOURCE" refId="44"/>    
+    <end type="TARGET" refId="43"/>  
+  </realization>  
+  <association id="170">    
+    <end type="SOURCE" refId="89" navigable="false">      
+      <attribute id="171" name="widgetXml"/>      
+      <multiplicity id="172" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="173">    
+    <end type="SOURCE" refId="94" navigable="false">      
+      <attribute id="174" name="xml"/>      
+      <multiplicity id="175" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="176">    
+    <end type="SOURCE" refId="80"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="177">    
+    <end type="SOURCE" refId="77" navigable="false">      
+      <attribute id="178" name="mc"/>      
+      <multiplicity id="179" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="180">    
+    <end type="SOURCE" refId="76" navigable="false">      
+      <attribute id="181" name="emailService"/>      
+      <multiplicity id="182" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="66" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="183">    
+    <end type="SOURCE" refId="33" navigable="false">      
+      <attribute id="184" name="webserver"/>      
+      <multiplicity id="185" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="186">    
+    <end type="SOURCE" refId="15" navigable="false">      
+      <attribute id="187" name="fragments"/>      
+      <multiplicity id="188" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="189">    
+    <bendpoint x="6345" y="1933"/>    
+    <bendpoint x="6345" y="2395"/>    
+    <end type="SOURCE" refId="31" navigable="false">      
+      <attribute id="190" name="prefs"/>      
+      <multiplicity id="191" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="192">    
+    <end type="SOURCE" refId="81"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <generalization id="193">    
+    <end type="SOURCE" refId="59"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <association id="194">    
+    <end type="SOURCE" refId="30" navigable="false">      
+      <attribute id="195" name="webserver"/>      
+      <multiplicity id="196" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="197">    
+    <end type="SOURCE" refId="48"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <generalization id="198">    
+    <end type="SOURCE" refId="63"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="199">    
+    <end type="SOURCE" refId="74"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="200">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="201" name="led3"/>      
+      <multiplicity id="202" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="203">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="204" name="text"/>      
+      <multiplicity id="205" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="206">    
+    <end type="SOURCE" refId="87" navigable="false">      
+      <attribute id="207" name="widgetXml"/>      
+      <multiplicity id="208" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="209">    
+    <end type="SOURCE" refId="49"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="210">    
+    <end type="SOURCE" refId="56"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="211">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="212" name="messageCenter"/>      
+      <multiplicity id="213" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="214">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="215" name="button"/>      
+      <multiplicity id="216" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="217">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="218" name="controller1Button"/>      
+      <multiplicity id="219" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="220">    
+    <end type="SOURCE" refId="38" navigable="false">      
+      <attribute id="221" name="webserver"/>      
+      <multiplicity id="222" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="223">    
+    <bendpoint x="8050" y="1933"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="224" name="serialConnection"/>      
+      <multiplicity id="225" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="226">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="227" name="lock"/>      
+      <multiplicity id="228" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="229">    
+    <end type="SOURCE" refId="41"/>    
+    <end type="TARGET" refId="43"/>  
+  </realization>  
+  <association id="230">    
+    <end type="SOURCE" refId="51" navigable="false">      
+      <attribute id="231" name="led3"/>      
+      <multiplicity id="232" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="233">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="234" name="widgetVideo"/>      
+      <multiplicity id="235" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="236">    
+    <end type="SOURCE" refId="66"/>    
+    <end type="TARGET" refId="68"/>  
+  </realization>  
+  <association id="237">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="238" name="lightBulbHtml"/>      
+      <multiplicity id="239" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="240">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="241" name="widgetXml"/>      
+      <multiplicity id="242" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="243">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="244" name="tempSensButton"/>      
+      <multiplicity id="245" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="246">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="247" name="button"/>      
+      <multiplicity id="248" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="249">    
+    <end type="SOURCE" refId="36" navigable="false">      
+      <attribute id="250" name="webserver"/>      
+      <multiplicity id="251" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="252">    
+    <end type="SOURCE" refId="50"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="253">    
+    <end type="SOURCE" refId="90" navigable="false">      
+      <attribute id="254" name="twitterService"/>      
+      <multiplicity id="255" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="67" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="256">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="257" name="widgetXml"/>      
+      <multiplicity id="258" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="259">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="260" name="description"/>      
+      <multiplicity id="261" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="262">    
+    <end type="SOURCE" refId="87"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="263">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="264" name="pre1"/>      
+      <multiplicity id="265" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="266">    
+    <end type="SOURCE" refId="92"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="267">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="268" name="webserver"/>      
+      <multiplicity id="269" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="270">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="271" name="toggleButton"/>      
+      <multiplicity id="272" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="273">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="274" name="sensDesc"/>      
+      <multiplicity id="275" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="276">    
+    <end type="SOURCE" refId="76"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="277">    
+    <end type="SOURCE" refId="85"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <nesting id="278">    
+    <bendpoint x="8709" y="2395"/>    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="13"/>  
+  </nesting>  
+  <realization id="279">    
+    <end type="SOURCE" refId="67"/>    
+    <end type="TARGET" refId="68"/>  
+  </realization>  
+  <association id="280">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="281" name="b64Pre"/>      
+      <multiplicity id="282" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="283">    
+    <end type="SOURCE" refId="87"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
+  <association id="284">    
+    <end type="SOURCE" refId="40" navigable="false">      
+      <attribute id="285" name="elementInterfaces"/>      
+      <multiplicity id="286" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="43" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="287">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="288" name="light_switch"/>      
+      <multiplicity id="289" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="290">    
+    <end type="SOURCE" refId="28" navigable="false">      
+      <attribute id="291" name="webserver"/>      
+      <multiplicity id="292" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="293">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="294" name="serialConnection"/>      
+      <multiplicity id="295" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="296">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="297" name="sysTray"/>      
+      <multiplicity id="298" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="299">    
+    <end type="SOURCE" refId="87" navigable="false">      
+      <attribute id="300" name="motion"/>      
+      <multiplicity id="301" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="45" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="302">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="303" name="resumeTestButton"/>      
+      <multiplicity id="304" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="305">    
+    <end type="SOURCE" refId="62"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="306">    
+    <end type="SOURCE" refId="81"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="307">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <association id="308">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="309" name="controller1"/>      
+      <multiplicity id="310" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="311">    
+    <end type="SOURCE" refId="48" navigable="false">      
+      <attribute id="312" name="fullPageXml"/>      
+      <multiplicity id="313" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="314">    
+    <end type="SOURCE" refId="26" navigable="false">      
+      <attribute id="315" name="webserver"/>      
+      <multiplicity id="316" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="317">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="318" name="origin"/>      
+      <multiplicity id="319" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="320">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="321" name="aboutDialog"/>      
+      <multiplicity id="322" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="323">    
+    <end type="SOURCE" refId="35" navigable="false">      
+      <attribute id="324" name="webserver"/>      
+      <multiplicity id="325" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="326">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="327" name="tempSensor"/>      
+      <multiplicity id="328" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="45" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="329">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="330" name="description"/>      
+      <multiplicity id="331" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="332">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="333" name="instance"/>      
+      <multiplicity id="334" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="335">    
+    <end type="SOURCE" refId="92" navigable="false">      
+      <attribute id="336" name="sensLink"/>      
+      <multiplicity id="337" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="338">    
+    <end type="SOURCE" refId="78" navigable="false">      
+      <attribute id="339" name="coordinator"/>      
+      <multiplicity id="340" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="341">    
+    <end type="SOURCE" refId="82" navigable="false">      
+      <attribute id="342" name="prefs"/>      
+      <multiplicity id="343" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="344">    
+    <end type="SOURCE" refId="42"/>    
+    <end type="TARGET" refId="43"/>  
+  </realization>  
+  <association id="345">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="346" name="intro"/>      
+      <multiplicity id="347" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="348">    
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="349" name="prefs"/>      
+      <multiplicity id="350" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="351">    
+    <end type="SOURCE" refId="69"/>    
+    <end type="TARGET" refId="71"/>  
+  </generalization>  
+  <realization id="352">    
+    <end type="SOURCE" refId="46"/>    
+    <end type="TARGET" refId="43"/>  
+  </realization>  
+  <association id="353">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="354" name="description"/>      
+      <multiplicity id="355" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="356">    
+    <end type="SOURCE" refId="93"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="357">    
+    <end type="SOURCE" refId="89" navigable="false">      
+      <attribute id="358" name="contButton"/>      
+      <multiplicity id="359" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="360">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="361" name="fullFormatter"/>      
+      <multiplicity id="362" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="363">    
+    <end type="SOURCE" refId="51" navigable="false">      
+      <attribute id="364" name="widgetXml"/>      
+      <multiplicity id="365" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="366">    
+    <end type="SOURCE" refId="83" navigable="false">      
+      <attribute id="367" name="sysTray"/>      
+      <multiplicity id="368" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="369">    
+    <end type="SOURCE" refId="72" navigable="false">      
+      <attribute id="370" name="widgetXml"/>      
+      <multiplicity id="371" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="372">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="373" name="messageQueue"/>      
+      <multiplicity id="374" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="375">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="16"/>  
+  </nesting>  
+  <association id="376">    
+    <end type="SOURCE" refId="89" navigable="false">      
+      <attribute id="377" name="fullXml"/>      
+      <multiplicity id="378" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="379">    
+    <end type="SOURCE" refId="55"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="380">    
+    <end type="SOURCE" refId="91" navigable="false">      
+      <attribute id="381" name="dc"/>      
+      <multiplicity id="382" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="383">    
+    <end type="SOURCE" refId="39" navigable="false">      
+      <attribute id="384" name="webserver"/>      
+      <multiplicity id="385" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="386">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <generalization id="387">    
+    <end type="SOURCE" refId="89"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="388">    
+    <end type="SOURCE" refId="53"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="389">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="390" name="restartTestButton"/>      
+      <multiplicity id="391" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="42" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="392">    
+    <end type="SOURCE" refId="89" navigable="false">      
+      <attribute id="393" name="cont"/>      
+      <multiplicity id="394" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="395">    
+    <end type="SOURCE" refId="54"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="396">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="397" name="loadedDrivers"/>      
+      <multiplicity id="398" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="399">    
+    <end type="SOURCE" refId="60"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <association id="400">    
+    <end type="SOURCE" refId="72" navigable="false">      
+      <attribute id="401" name="description"/>      
+      <multiplicity id="402" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="403">    
+    <end type="SOURCE" refId="55" navigable="false">      
+      <attribute id="404" name="sensor"/>      
+      <multiplicity id="405" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="406">    
+    <end type="SOURCE" refId="90"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <realization id="407">    
+    <end type="SOURCE" refId="90"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
+  <realization id="408">    
+    <end type="SOURCE" refId="54"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="409">    
+    <bendpoint x="7193" y="1933"/>    
+    <bendpoint x="7193" y="2395"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="410" name="prefs"/>      
+      <multiplicity id="411" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="412">    
+    <bendpoint x="7293" y="2821"/>    
+    <end type="SOURCE" refId="71"/>    
+    <end type="TARGET" refId="68"/>  
+  </realization>  
+  <association id="413">    
+    <end type="SOURCE" refId="55" navigable="false">      
+      <attribute id="414" name="widgetXml"/>      
+      <multiplicity id="415" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="416">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="417" name="fragmentedMessages"/>      
+      <multiplicity id="418" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="419">    
+    <end type="SOURCE" refId="48"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <association id="420">    
+    <end type="SOURCE" refId="27" navigable="false">      
+      <attribute id="421" name="webserver"/>      
+      <multiplicity id="422" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="423">    
+    <end type="SOURCE" refId="73"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <nesting id="424">    
+    <end type="SOURCE" refId="69"/>    
+    <end type="TARGET" refId="70"/>  
+  </nesting>  
+  <association id="425">    
+    <end type="SOURCE" refId="51" navigable="false">      
+      <attribute id="426" name="led1"/>      
+      <multiplicity id="427" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="428">    
+    <end type="SOURCE" refId="58"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <realization id="429">    
+    <end type="SOURCE" refId="69"/>    
+    <end type="TARGET" refId="68"/>  
+  </realization>  
+  <association id="430">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="431" name="widgetXml"/>      
+      <multiplicity id="432" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="433">    
+    <end type="SOURCE" refId="32" navigable="false">      
+      <attribute id="434" name="webserver"/>      
+      <multiplicity id="435" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="436">    
+    <end type="SOURCE" refId="34" navigable="false">      
+      <attribute id="437" name="webserver"/>      
+      <multiplicity id="438" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="439">    
+    <end type="SOURCE" refId="48" navigable="false">      
+      <attribute id="440" name="widgetXml"/>      
+      <multiplicity id="441" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="442">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="443" name="led1"/>      
+      <multiplicity id="444" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="445">    
+    <end type="SOURCE" refId="53" navigable="false">      
+      <attribute id="446" name="fullXml"/>      
+      <multiplicity id="447" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="40" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="448">    
+    <end type="SOURCE" refId="64"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <association id="449">    
+    <end type="SOURCE" refId="69" navigable="false">      
+      <attribute id="450" name="instance"/>      
+      <multiplicity id="451" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="69" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="452">    
+    <end type="SOURCE" refId="93" navigable="false">      
+      <attribute id="453" name="status"/>      
+      <multiplicity id="454" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="46" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="455">    
+    <end type="SOURCE" refId="29" navigable="false">      
+      <attribute id="456" name="webserver"/>      
+      <multiplicity id="457" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="458">    
+    <end type="SOURCE" refId="67" navigable="false">      
+      <attribute id="459" name="instance"/>      
+      <multiplicity id="460" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="67" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="461">    
+    <end type="SOURCE" refId="50" navigable="false">      
+      <attribute id="462" name="led2"/>      
+      <multiplicity id="463" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="41" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="464">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="465" name="webServer"/>      
+      <multiplicity id="466" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="467">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
+  <nesting id="468">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="10"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="false" static="true"/>    
+    <operations public="true" package="true" protected="true" private="false" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

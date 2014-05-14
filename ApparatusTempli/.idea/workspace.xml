@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0d613961-e99e-47fb-993e-f1d355dd6028" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/Sensor.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/AboutHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/JsHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/Readme.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/7a/f0d4fc8992870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/IRCodeEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/UsbSerialConnectionTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/Controller.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/ElementInterface.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/run-install.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/rxtxSerial.dll" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/Readme.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/HumidityChangedEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/df/c04655a992870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/CoordinatorTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/d8/90614dd691870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon-24.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/DoorSensor.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/DummySerialConnection.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/MotionWatcher.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/f/90c9886f91870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/librxtxSerial.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/librxtxSerial.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/UpdatePasswordHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/96/4044adec92870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/.classpath" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/Install.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/AbstractWebServer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/term20x20.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/95/104e555990870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/.project" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/e8/20e8395790870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/UpdateSettingsHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/run-install.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/50/a0888e6391870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/service/SQLiteDbService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/58/50f1129991870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/HttpHelper.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/exit.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/term32x32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/history.version" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/RXTXcomm.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/RestartModuleHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/LedFlash.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/HeadLessTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/MessageCenterTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/hamcrest-core-1.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/large_logo.icns" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/Pre.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/BlankControllerDriver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/WebServerTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/SysTrayTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/MotorTester.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/FancyWidgetTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/EventWatcher.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/service/ServiceInterface.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/37/e0f094a190870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/librxtxParallel.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/ee/505d42a391870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/generate_javadoc.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/ec/f01fee8591870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/coordinator.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/waiting32x32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/MotionEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/StatefulLed.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/service/TwitterService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/about.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/LazyDriver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/tika-core-1.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/73/f0bfc69d92870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/rxtxSerial.dll" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/appbundler-1.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/EncryptedWebServer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/85/10743d4393870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/rxtxParallel.dll" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/twitter4j-core-3.0.5.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/MotionGenerator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/a9/d09bd12990870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/coordinator.conf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/DbTester.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/e6/90be658f9a870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/9c/b0ca86f190870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/LogHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/.settings/org.eclipse.core.resources.prefs" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/InputType.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/PrefsTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/SysTray.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/Driver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/XmlFormatterTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/javax.mail.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/SetTopBox.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/ReleaseNotes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/coordinator.ucls" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/b0/9041825292870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/LightLevelChangedEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/Readme.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/BuildProperties.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/BuildInfo.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/TestDriver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/librxtxParallel.so" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon32x32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lig.keystore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/70/a0f22b3392870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/MainTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/RXTXcomm.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/guava-16.0.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/WidgetXmlHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/Echo.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Coordinator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/home.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/SleepyDriver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/service/EmailService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/DbTester2.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/DummySerialConnectionTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/tests/org/apparatus_templi/SQLiteDbServiceTester.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon-32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/commons-cli-1.2-javadoc.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/8d/b09a3d849a870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/SoundLevelExceededEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/DoorLock.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Log.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/json-simple-1.1.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/ReleaseNotes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/BuildInfo.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/large_logo.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/9d/e0122f7c9a870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/ReleaseNotes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/TempChangedEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/GetSysStatusHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/Manifest" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/SettingsXmlHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/version.ini" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/TwitterTester.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/InfoHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/SendCommandHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-i386/Install.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/linux-x86_64/Install.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/RunningDriversHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Prefs.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/Install.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/SettingsHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/MotionWatcherTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/RXTXcomm.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.version" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/ReleaseNotes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon-24.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/35/70b6fc1f91870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/macos/RXTXcomm.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/WebServer.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/IndexHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/ResourceHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/SerialConnection.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/8b/e03fa8a192870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/XmlFormatter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/generator/PageGenerator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/DeviceDetectedEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/TempMonitor.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/waiting20x20.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/RXTXcomm.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/LightSwitch.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/service/DatabaseService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x86/BuildProperties.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/EventGenerator.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/sqlite-jdbc-3.7.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/rxtxParallel.dll" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/MessageCenter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/Event.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/fa/50284db491870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/TextArea.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/6d/a0023acf91870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/TeXDoclet.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/LargeCommands.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/commons-lang3-3.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/macos/librxtxSerial.jnilib" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/RXTX/win-x64/Readme.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/XmlTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/xml/Button.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/EmailTester.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/PasswordHash.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/driver/BlankSensorDriver.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/commons-lang3-3.3-javadoc.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/commons-cli-1.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/.metadata/.plugins/org.eclipse.core.resources/.history/e6/505626db90870013180285bc67266d2d" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/icons/icon20x20.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/web/handler/FullXmlHandler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/lib/junit-4.11.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/event/ProximityEvent.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/coordinator_eclipse_workspace/Coordinator/src/org/apparatus_templi/UsbSerialConnection.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/Driver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/Driver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Button.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Button.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LedFlash.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LedFlash.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DbTester2.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DbTester2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/allclasses-noframe.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/allclasses-noframe.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/TempChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/TempChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/SettingsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/SettingsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DbTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DbTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Sensor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Sensor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/EmailTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/EmailTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionWatcher.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionWatcher.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SysTray.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SysTray.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/RunningDriversHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/RunningDriversHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/EncryptedWebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/EncryptedWebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/UpdateSettingsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/UpdateSettingsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/AboutHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/AboutHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Message.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Message.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/FancyWidgetTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/FancyWidgetTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/StatefulLed.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/StatefulLed.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/WebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/WebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DoorLock.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DoorLock.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/PageGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/PageGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/EmailService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/EmailService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/ServiceInterface.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/ServiceInterface.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/AboutHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/AboutHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Coordinator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Coordinator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/ResourceHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/ResourceHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/HttpHelper.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/HttpHelper.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Prefs.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Prefs.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/SQLiteDbService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/SQLiteDbService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/DummySerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/DummySerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Prefs.Keys.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Prefs.Keys.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/UpdateSettingsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/UpdateSettingsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/help-doc.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/help-doc.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LightSwitch.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LightSwitch.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/constant-values.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/constant-values.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/PasswordHash.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/PasswordHash.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/InfoHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/InfoHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Coordinator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Coordinator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/RestartModuleHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/RestartModuleHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TwitterTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TwitterTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/JsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/JsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/allclasses-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/allclasses-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/LightLevelChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/LightLevelChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TestDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TestDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/ServiceInterface.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/ServiceInterface.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/EmailTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/EmailTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/XmlTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/XmlTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/website/js/settings.js" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/website/js/settings.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/.gitignore" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/index-all.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/index-all.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/UpdatePasswordHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/UpdatePasswordHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LargeCommands.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LargeCommands.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Message.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Message.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/SoundLevelExceededEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/SoundLevelExceededEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/XmlTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/XmlTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/GetSysStatusHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/GetSysStatusHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/SendCommandHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/SendCommandHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Event.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Event.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionWatcher.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionWatcher.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/JsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/JsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/InputType.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/InputType.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/ProximityEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/ProximityEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/index.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SysTray.Status.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SysTray.Status.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Sensor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Sensor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/EventGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/EventGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/UsbSerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/UsbSerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TwitterTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TwitterTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/EncryptedWebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/EncryptedWebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/InfoHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/InfoHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/IndexHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/IndexHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/GetSysStatusHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/GetSysStatusHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Prefs.Keys.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Prefs.Keys.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/RunningDriversHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/RunningDriversHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/MotionEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/MotionEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LightSwitch.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LightSwitch.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/website/inc/info.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/website/inc/info.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/LogHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/LogHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/FancyWidgetTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/FancyWidgetTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/TempChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/TempChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotorTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotorTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/IndexHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/IndexHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LedFlash.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LedFlash.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/InputType.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/InputType.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/DatabaseService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/DatabaseService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/WidgetXmlHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/WidgetXmlHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/SettingsHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/SettingsHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/UpdatePasswordHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/UpdatePasswordHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/LightLevelChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/LightLevelChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/class-use/PageGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/class-use/PageGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/SleepyDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/SleepyDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/SleepyDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/SleepyDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/AbstractWebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/AbstractWebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/Echo.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/Echo.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Controller.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Controller.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Event.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Event.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/BlankSensorDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/BlankSensorDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/EventGenerator.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/EventGenerator.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/ElementInterface.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/ElementInterface.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/WebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/WebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/HttpHelper.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/HttpHelper.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/EmailService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/EmailService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/Driver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/Driver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/deprecated-list.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/deprecated-list.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/BlankSensorDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/BlankSensorDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/MotionEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/MotionEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/FullXmlHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/FullXmlHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/TwitterService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/TwitterService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Pre.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Pre.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/MessageCenter.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/MessageCenter.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/IRCodeEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/IRCodeEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/ElementInterface.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/ElementInterface.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TestDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TestDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/Echo.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/Echo.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotorTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotorTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/AbstractWebServer.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/AbstractWebServer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/BlankControllerDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/BlankControllerDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/RestartModuleHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/RestartModuleHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/HumidityChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/HumidityChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/EventWatcher.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/EventWatcher.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TempMonitor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/TempMonitor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DbTester2.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DbTester2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DoorSensor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/DoorSensor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Log.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/Log.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/SQLiteDbService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/class-use/SQLiteDbService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/DeviceDetectedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/DeviceDetectedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/DummySerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/DummySerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-use.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/package-use.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LargeCommands.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LargeCommands.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/SendCommandHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/SendCommandHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Prefs.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Prefs.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/BlankControllerDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/BlankControllerDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/LogHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/LogHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DbTester.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DbTester.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/MessageCenter.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/MessageCenter.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Pre.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Pre.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionWatcherTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/MotionWatcherTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/HumidityChangedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/HumidityChangedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/TextArea.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/TextArea.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/ProximityEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/ProximityEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TempMonitor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/TempMonitor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-summary.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/generator/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/website/js/info.js" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/website/js/info.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/DeviceDetectedEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/class-use/DeviceDetectedEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LazyDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/LazyDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-frame.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/DatabaseService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/DatabaseService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Button.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/Button.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/IRCodeEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/IRCodeEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DoorLock.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DoorLock.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DoorSensor.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/class-use/DoorSensor.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/TwitterService.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/service/TwitterService.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SysTray.Status.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/SysTray.Status.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/XmlFormatter.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/class-use/XmlFormatter.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/FullXmlHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/class-use/FullXmlHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/SoundLevelExceededEvent.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/event/SoundLevelExceededEvent.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/UsbSerialConnection.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/UsbSerialConnection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/build.xml" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/build.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SysTray.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/SysTray.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-tree.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/overview-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/EventWatcher.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/EventWatcher.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Log.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/class-use/Log.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/TextArea.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/TextArea.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/StatefulLed.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/StatefulLed.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LazyDriver.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/LazyDriver.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionWatcherTest.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/driver/MotionWatcherTest.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/ResourceHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/ResourceHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/WidgetXmlHandler.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/handler/WidgetXmlHandler.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Controller.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/Controller.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/PasswordHash.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/web/class-use/PasswordHash.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/XmlFormatter.html" afterPath="$PROJECT_DIR$/../ApparatusTempli.bak/doc/javadoc/org/apparatus_templi/xml/XmlFormatter.html" />
+    </list>
+    <ignored path="ApparatusTempli.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="ApparatusTempli" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Coordinator.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/Coordinator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.011236" vertical-offset="15060" max-vertical-offset="22215">
+              <caret line="1002" column="20" selection-start-line="1002" selection-start-column="20" selection-end-line="1002" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="true" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../ApparatusTempli.bak" />
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="tasksExpandState">
+      <map>
+        <entry key="" value="true" />
+      </map>
+    </option>
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="ApparatusTempli" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="ApparatusTempli" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="availableTasks">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <list>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects it depends on." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="buildNeeded" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles classes 'test'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="testClasses" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs the unit tests." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="test" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs all checks." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="check" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles Java source 'test:java'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="compileTestJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles the outputs of this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="assemble" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Deletes the build directory." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="clean" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles Java source 'main:java'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="compileJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates Javadoc API documentation for the main source code." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="javadoc" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="build" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects that depend on it." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="buildDependents" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles a jar archive containing the main classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="jar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles classes 'main'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="classes" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes resources 'test:resources'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="processTestResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes resources 'main:resources'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="processResources" />
+              </ExternalTaskPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="modificationStamps">
+      <map>
+        <entry key="$PROJECT_DIR$" value="2800202826152" />
+      </map>
+    </option>
+    <option name="projectBuildClasspath">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <ExternalProjectBuildClasspathPojo>
+              <option name="modulesBuildClasspath">
+                <map>
+                  <entry key="$PROJECT_DIR$">
+                    <value>
+                      <ExternalModuleBuildClasspathPojo>
+                        <option name="path" value="$PROJECT_DIR$" />
+                      </ExternalModuleBuildClasspathPojo>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="name" value="ApparatusTempli" />
+              <option name="projectBuildClasspath">
+                <list>
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-core-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/ivy-2.2.0.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-cli-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-wrapper-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-base-services-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-docs-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-messaging-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/groovy-all-1.8.6.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-resources-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-base-services-groovy-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/ant-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-tooling-api-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-open-api-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-ui-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-launcher-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/gradle-native-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/ant-launcher-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-signing-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-antlr-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-diagnostics-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-announce-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-build-init-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-language-base-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-osgi-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-code-quality-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-jacoco-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-maven-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-build-comparison-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-sonar-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-ear-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-core-impl-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-publish-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-javascript-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-jetty-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-reporting-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/ant-antlr-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-cpp-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-ide-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-plugins-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-language-jvm-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-scala-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-bin/qtvcssosa3asn4t6njd64fm3i/gradle-1.9/lib/plugins/gradle-ivy-1.9.jar" />
+                  <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
+                  <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
+                </list>
+              </option>
+            </ExternalProjectBuildClasspathPojo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-1" />
+    <option name="y" value="26" />
+    <option name="width" value="1922" />
+    <option name="height" value="1055" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Abstraction issues</id>
+          </State>
+          <State>
+            <id>Android Lint</id>
+          </State>
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>Groovy</id>
+          </State>
+          <State>
+            <id>JUnit issues</id>
+          </State>
+          <State>
+            <id>Java language level migration aids</id>
+          </State>
+          <State>
+            <id>Plugin DevKit</id>
+          </State>
+          <State>
+            <id>Potentially confusing code constructsGroovy</id>
+          </State>
+          <State>
+            <id>XML</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Abstraction issues</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="2" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ApparatusTempli" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ApparatusTempli" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ApparatusTempli" />
+              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ApparatusTempli.bak" />
+    <property name="FullScreen" value="false" />
+    <property name="options.lastSelected" value="preferences.sourceCode.Java" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <list size="0" />
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0d613961-e99e-47fb-993e-f1d355dd6028" name="Default" comment="" />
+      <created>1400101410522</created>
+      <updated>1400101410522</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-1" y="26" width="1922" height="1055" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32988626" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32988626" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.171875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/Coordinator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="23010">
+          <caret line="1002" column="20" selection-start-line="1002" selection-start-column="20" selection-end-line="1002" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/xml/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="2745">
+          <caret line="28" column="19" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/MessageCenter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="9825" max-vertical-offset="11055">
+          <caret line="655" column="21" selection-start-line="655" selection-start-column="21" selection-end-line="655" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/Prefs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3858" max-vertical-offset="7470">
+          <caret line="276" column="45" selection-start-line="276" selection-start-column="45" selection-end-line="276" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ApparatusTempli.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="929">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/Prefs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33226323" vertical-offset="3858" max-vertical-offset="7470">
+          <caret line="276" column="45" selection-start-line="276" selection-start-column="45" selection-end-line="276" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/MessageCenter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49438202" vertical-offset="8872" max-vertical-offset="10140">
+          <caret line="655" column="21" selection-start-line="655" selection-start-column="21" selection-end-line="655" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/xml/Button.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2310">
+          <caret line="28" column="19" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/apparatus_templi/Coordinator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.011236" vertical-offset="15060" max-vertical-offset="22215">
+          <caret line="1002" column="20" selection-start-line="1002" selection-start-column="20" selection-end-line="1002" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>ApparatusTempli</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Gradle: hamcrest-core-1.3</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
+

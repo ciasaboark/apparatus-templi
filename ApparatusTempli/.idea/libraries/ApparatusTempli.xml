@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="ApparatusTempli">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/dist/ApparatusTempli/javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/dist/ApparatusTempli/apparatus-templi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

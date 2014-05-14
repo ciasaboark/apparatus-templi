@@ -1,0 +1,700 @@
+1399945540144: Coordinator:SERVICE STARTING
+1399945540145: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945540146: DummySerialConnection:initialized new dummy serial connection
+1399945540147: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945540148: Coordinator:starting web server
+1399945540164: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945540181: SimpleHttpServer:waiting on port 8000
+1399945540184: SimpleHttpServer:using resources in 'website/'
+1399945540194: Coordinator:sending notification email
+1399945540244: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945543450: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945572541: Coordinator:SERVICE STARTING
+1399945572542: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945572542: DummySerialConnection:initialized new dummy serial connection
+1399945572544: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945572544: Coordinator:starting web server
+1399945572556: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945572566: SimpleHttpServer:waiting on port 8000
+1399945572568: SimpleHttpServer:using resources in 'website/'
+1399945572586: Coordinator:sending notification email
+1399945572627: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945577434: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945662695: Coordinator:SERVICE STARTING
+1399945662695: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945662696: DummySerialConnection:initialized new dummy serial connection
+1399945662696: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945662697: Coordinator:starting web server
+1399945662707: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945662719: SimpleHttpServer:waiting on port 8000
+1399945662720: SimpleHttpServer:using resources in 'website/'
+1399945662733: Coordinator:sending notification email
+1399945662772: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945664820: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945717135: Coordinator:SERVICE STARTING
+1399945717136: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945717137: DummySerialConnection:initialized new dummy serial connection
+1399945717137: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945717138: Coordinator:starting web server
+1399945717146: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945717156: SimpleHttpServer:waiting on port 8000
+1399945717157: SimpleHttpServer:using resources in 'website/'
+1399945717172: Coordinator:sending notification email
+1399945717220: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945720795: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945770282: Coordinator:SERVICE STARTING
+1399945770283: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945770283: DummySerialConnection:initialized new dummy serial connection
+1399945770284: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945770284: Coordinator:starting web server
+1399945770297: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945770310: SimpleHttpServer:waiting on port 8000
+1399945770312: SimpleHttpServer:using resources in 'website/'
+1399945770328: Coordinator:sending notification email
+1399945770378: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945772748: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945820205: Coordinator:SERVICE STARTING
+1399945820206: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945820207: DummySerialConnection:initialized new dummy serial connection
+1399945820207: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945820208: Coordinator:starting web server
+1399945820216: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945820228: SimpleHttpServer:waiting on port 8000
+1399945820230: SimpleHttpServer:using resources in 'website/'
+1399945820247: Coordinator:sending notification email
+1399945820292: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945821667: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945839798: Coordinator:SERVICE STARTING
+1399945839799: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945839799: DummySerialConnection:initialized new dummy serial connection
+1399945839800: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945839800: Coordinator:starting web server
+1399945839809: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945839820: SimpleHttpServer:waiting on port 8000
+1399945839821: SimpleHttpServer:using resources in 'website/'
+1399945839838: Coordinator:sending notification email
+1399945839879: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945841828: Warning: Coordinator:system is going down. Notifying all drivers.
+1399945994761: Coordinator:SERVICE STARTING
+1399945994762: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399945994763: DummySerialConnection:initialized new dummy serial connection
+1399945994765: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399945994766: Coordinator:starting web server
+1399945994777: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399945994792: SimpleHttpServer:waiting on port 8000
+1399945994794: SimpleHttpServer:using resources in 'website/'
+1399945994812: Coordinator:sending notification email
+1399945994856: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399945995823: Warning: Coordinator:system is going down. Notifying all drivers.
+1399946083604: Coordinator:SERVICE STARTING
+1399946083605: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399946083606: DummySerialConnection:initialized new dummy serial connection
+1399946083613: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399946083614: Coordinator:starting web server
+1399946083635: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399946083648: SimpleHttpServer:waiting on port 8000
+1399946083650: SimpleHttpServer:using resources in 'website/'
+1399946083664: Coordinator:sending notification email
+1399946083713: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399946097533: Warning: Coordinator:system is going down. Notifying all drivers.
+1399946123624: Coordinator:SERVICE STARTING
+1399946144313: Coordinator:SERVICE STARTING
+1399946187685: Coordinator:SERVICE STARTING
+1399946187730: TERMINAL FAILURE: SerialConnection:Could not connect to port '/dev/tty0'
+1399946187731: TERMINAL FAILURE: Coordinator:Could not connect to port '/dev/tty0'
+1399946217708: Coordinator:SERVICE STARTING
+1399946217752: TERMINAL FAILURE: SerialConnection:Could not connect to port '/dev/tty0'
+1399946217752: TERMINAL FAILURE: Coordinator:Could not connect to port '/dev/tty0'
+1399946239544: Coordinator:SERVICE STARTING
+1399946239545: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399946239545: DummySerialConnection:initialized new dummy serial connection
+1399946239683: Warning: TempMonitr:error reading percent change required from database
+1399946239684: Warning: TempMonitr:error reading max temp from database
+1399946239685: Warning: TempMonitr:error reading min temp from database
+1399946239690: Coordinator:driver TempMonitr of type org.apparatus_templi.driver.TempMonitor initialized
+1399946239691: Coordinator:driver LED_FLASH of type org.apparatus_templi.driver.LedFlash initialized
+1399946239692: Coordinator:driver LOCAL of type org.apparatus_templi.driver.DoorLock initialized
+1399946239693: TempMonitr:readRemoteTemp()
+1399946239693: Coordinator:scheduled an indefinite sleep for driver 'LOCAL'
+1399946239694: MessageCenter:sendMessageFragment() sending '1' bytes to 'TempMonitr', fragment num: 0 of type text
+1399946239694: LED_FLASH:starting
+1399946239694: Coordinator:starting web server
+1399946239695: Error: LED_FLASH:remote module not present, shutting down
+1399946239695: LED_FLASH:terminating
+1399946239705: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399946239726: SimpleHttpServer:waiting on port 8000
+1399946239729: SimpleHttpServer:using resources in 'website/'
+1399946239745: Coordinator:sending notification email
+1399946239823: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399946245142: Warning: Coordinator:system is going down. Notifying all drivers.
+1399946245146: Coordinator:terminating driver 'TempMonitr'
+1399946245146: Coordinator:notified driver 'TempMonitr'
+1399946245146: Coordinator:terminating driver 'LOCAL'
+1399946245147: Coordinator:notified driver 'LOCAL'
+1399946245147: Coordinator:terminating driver 'LED_FLASH'
+1399946245147: Coordinator:notified driver 'LED_FLASH'
+1399946245714: TempMonitr:getLastReading()
+1399946245714: Coordinator:scheduled a wakup for driver 'TempMonitr' in 15 minutes.
+1399946302786: Coordinator:SERVICE STARTING
+1399946302786: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399946302787: DummySerialConnection:initialized new dummy serial connection
+1399946303054: Warning: TempMonitr:error reading percent change required from database
+1399946303055: Warning: TempMonitr:error reading max temp from database
+1399946303056: Warning: TempMonitr:error reading min temp from database
+1399946303059: Coordinator:driver TempMonitr of type org.apparatus_templi.driver.TempMonitor initialized
+1399946303060: Coordinator:driver LED_FLASH of type org.apparatus_templi.driver.LedFlash initialized
+1399946303061: Coordinator:driver LOCAL of type org.apparatus_templi.driver.DoorLock initialized
+1399946303062: TempMonitr:readRemoteTemp()
+1399946303062: MessageCenter:sendMessageFragment() sending '1' bytes to 'TempMonitr', fragment num: 0 of type text
+1399946303063: Coordinator:scheduled an indefinite sleep for driver 'LOCAL'
+1399946303063: Coordinator:starting web server
+1399946303064: LED_FLASH:starting
+1399946303065: Error: LED_FLASH:remote module not present, shutting down
+1399946303065: LED_FLASH:terminating
+1399946303190: EncryptedHttpServer:setting configurator
+1399946303191: EncryptedHttpServer:setting address and port to 192.168.0.101 9000
+1399946303205: EncryptedHttpServer:waiting on port 9000
+1399946303206: EncryptedHttpServer:using resources in 'website/'
+1399946303224: Coordinator:sending notification email
+1399946303265: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399946309083: TempMonitr:getLastReading()
+1399946309083: Coordinator:scheduled a wakup for driver 'TempMonitr' in 15 minutes.
+1399946323021: IndexHandler:received request from raven.local/192.168.0.101:53721 GET: '/index.html'
+1399946323380: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946323715: ResourceHandler:received request from raven.local/192.168.0.101:53728 GET: '/resource?file=css/bootstrap.min.css'
+1399946323723: ResourceHandler:received request from raven.local/192.168.0.101:53730 GET: '/resources?file=css/foundation-icons.css'
+1399946323776: ResourceHandler:received request from raven.local/192.168.0.101:53733 GET: '/resource?file=css/animate.css'
+1399946323815: ResourceHandler:received request from raven.local/192.168.0.101:53732 GET: '/resource?file=css/jquery.qtip.css'
+1399946323883: ResourceHandler:received request from raven.local/192.168.0.101:53734 GET: '/resource?file=css/index.css'
+1399946324090: ResourceHandler:received request from raven.local/192.168.0.101:53730 GET: '/resource?file=js/main.js'
+1399946324101: JsHandler:received request from raven.local/192.168.0.101:53732 GET: '/js/default.js'
+1399946324109: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946324116: ResourceHandler:received request from raven.local/192.168.0.101:53728 GET: '/resource?file=js/widget.js'
+1399946324137: ResourceHandler:received request from raven.local/192.168.0.101:53730 GET: '/resource?file=images/small_logo.png'
+1399946324155: ResourceHandler:received request from raven.local/192.168.0.101:53732 GET: '/resource?file=images/ohw-logo.png'
+1399946324167: ResourceHandler:received request from raven.local/192.168.0.101:53728 GET: '/resource?file=images/arduino_icon.png'
+1399946324179: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=images/github-sociocon.png'
+1399946324265: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=images/body-bg.jpg'
+1399946324375: RunningDriversHandler:received request from raven.local/192.168.0.101:53721 GET: '/drivers.xml'
+1399946324513: IndexHandler:received request from raven.local/192.168.0.101:53721 GET: '/favicon.ico'
+1399946324523: WidgetXmlHandler:received request from raven.local/192.168.0.101:53721 GET: '/widget.xml?driver=TempMonitr'
+1399946324530: WidgetXmlHandler:received request from raven.local/192.168.0.101:53728 GET: '/widget.xml?driver=LOCAL'
+1399946324530: WidgetXmlHandler:received request from raven.local/192.168.0.101:53732 GET: '/widget.xml?driver=LED_FLASH'
+1399946324530: Warning: LED_FLASH:getWidgetXML() unimplimented
+1399946327582: WidgetXmlHandler:received request from raven.local/192.168.0.101:53721 GET: '/widget.xml?driver=TempMonitr'
+1399946330610: WidgetXmlHandler:received request from raven.local/192.168.0.101:53721 GET: '/widget.xml?driver=TempMonitr'
+1399946331070: SettingsHandler:received request from raven.local/192.168.0.101:53721 GET: '/settings.html'
+1399946331188: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946331201: ResourceHandler:received request from raven.local/192.168.0.101:53728 GET: '/resource?file=css/bootstrap.min.css'
+1399946331206: ResourceHandler:received request from raven.local/192.168.0.101:53730 GET: '/resource?file=css/animate.css'
+1399946331214: ResourceHandler:received request from raven.local/192.168.0.101:53733 GET: '/resource?file=css/index.css'
+1399946331218: ResourceHandler:received request from raven.local/192.168.0.101:53732 GET: '/resources?file=css/foundation-icons.css'
+1399946331236: ResourceHandler:received request from raven.local/192.168.0.101:53734 GET: '/resource?file=css/jquery.qtip.css'
+1399946331254: ResourceHandler:received request from raven.local/192.168.0.101:53733 GET: '/resource?file=js/main.js'
+1399946331257: ResourceHandler:received request from raven.local/192.168.0.101:53734 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946331261: JsHandler:received request from raven.local/192.168.0.101:53732 GET: '/js/default.js'
+1399946331271: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=js/settings.js'
+1399946331312: ResourceHandler:received request from raven.local/192.168.0.101:53734 GET: '/resource?file=images/small_logo.png'
+1399946331325: ResourceHandler:received request from raven.local/192.168.0.101:53732 GET: '/resource?file=images/arduino_icon.png'
+1399946331327: ResourceHandler:received request from raven.local/192.168.0.101:53733 GET: '/resource?file=images/ohw-logo.png'
+1399946331351: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=images/github-sociocon.png'
+1399946331467: ResourceHandler:received request from raven.local/192.168.0.101:53721 GET: '/resource?file=images/body-bg.jpg'
+1399946331684: IndexHandler:received request from raven.local/192.168.0.101:53721 GET: '/favicon.ico'
+1399946379723: UpdateSettingsHandler:received request from raven.local/192.168.0.101:53754 POST: '/update_settings'
+1399946379727: Preferences:wrote preferences to file: 'config
+1399946379846: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=css/index.css'
+1399946379865: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=images/small_logo.png'
+1399946379932: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=images/arduino_icon.png'
+1399946379975: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=images/github-sociocon.png'
+1399946380203: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=images/body-bg.jpg'
+1399946380306: IndexHandler:received request from raven.local/192.168.0.101:53760 GET: '/favicon.ico'
+1399946384235: SettingsHandler:received request from raven.local/192.168.0.101:53760 GET: '/settings.html'
+1399946384302: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946384308: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=css/bootstrap.min.css'
+1399946384344: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resources?file=css/foundation-icons.css'
+1399946384348: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=css/animate.css'
+1399946384390: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=css/index.css'
+1399946384395: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=css/jquery.qtip.css'
+1399946384443: JsHandler:received request from raven.local/192.168.0.101:53760 GET: '/js/default.js'
+1399946384445: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=js/main.js'
+1399946384499: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=js/settings.js'
+1399946384503: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946384537: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=images/arduino_icon.png'
+1399946384550: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=images/github-sociocon.png'
+1399946384555: ResourceHandler:received request from raven.local/192.168.0.101:53754 GET: '/resource?file=images/small_logo.png'
+1399946384579: ResourceHandler:received request from raven.local/192.168.0.101:53771 GET: '/resource?file=images/ohw-logo.png'
+1399946384587: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=images/body-bg.jpg'
+1399946384756: IndexHandler:received request from raven.local/192.168.0.101:53771 GET: '/favicon.ico'
+1399946385915: SetFirstPasswordHandler:received request from raven.local/192.168.0.101:53771 GET: '/set_password'
+1399946386135: ResourceHandler:received request from raven.local/192.168.0.101:53771 GET: '/resource?file=css/index.css'
+1399946386137: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=images/small_logo.png'
+1399946386195: ResourceHandler:received request from raven.local/192.168.0.101:53771 GET: '/resource?file=images/body-bg.jpg'
+1399946386342: IndexHandler:received request from raven.local/192.168.0.101:53771 GET: '/favicon.ico'
+1399946390711: SetFirstPasswordHandler:received request from raven.local/192.168.0.101:53771 POST: '/set_password'
+1399946390793: Warning: HttpHelper:Error opening 'website/inc/save_password.html'
+1399946390797: SetFirstPasswordHandler:received request from raven.local/192.168.0.101:53770 POST: '/set_password'
+1399946390893: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=css/index.css'
+1399946390895: ResourceHandler:received request from raven.local/192.168.0.101:53773 GET: '/resource?file=images/small_logo.png'
+1399946390987: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=images/body-bg.jpg'
+1399946391039: IndexHandler:received request from raven.local/192.168.0.101:53770 GET: '/favicon.ico'
+1399946396907: RestartModuleHandler:received request from raven.local/192.168.0.101:53770 GET: '/restart_module?module=web'
+1399946396978: ResourceHandler:received request from raven.local/192.168.0.101:53770 GET: '/resource?file=css/index.css'
+1399946396985: ResourceHandler:received request from raven.local/192.168.0.101:53772 GET: '/resource?file=images/arduino_icon.png'
+1399946396995: ResourceHandler:received request from raven.local/192.168.0.101:53773 GET: '/resource?file=images/small_logo.png'
+1399946397006: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=images/github-sociocon.png'
+1399946397082: ResourceHandler:received request from raven.local/192.168.0.101:53760 GET: '/resource?file=images/body-bg.jpg'
+1399946397199: IndexHandler:received request from raven.local/192.168.0.101:53760 GET: '/favicon.ico'
+1399946399911: Coordinator:restarting web server
+1399946399911: Warning: Coordinator:restarting web server
+1399946402915: Coordinator:reusing socket in new web server
+1399946402915: Coordinator:starting web server at 192.168.0.101:9000
+1399946402920: EncryptedHttpServer:setting configurator
+1399946402920: EncryptedHttpServer:setting address and port to 192.168.0.101 9000
+1399946402924: EncryptedHttpServer:waiting on port 9000
+1399946402924: EncryptedHttpServer:using resources in 'website/'
+1399946402927: Coordinator:sending notification email
+1399946402927: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399946418205: SettingsHandler:received request from raven.local/192.168.0.101:53776 GET: '/settings.html'
+1399946418281: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946418306: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/bootstrap.min.css'
+1399946418403: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resources?file=css/foundation-icons.css'
+1399946418449: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/index.css'
+1399946418491: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/jquery.qtip.css'
+1399946418537: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/animate.css'
+1399946418586: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946418596: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=js/settings.js'
+1399946418610: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/main.js'
+1399946418631: JsHandler:received request from raven.local/192.168.0.101:53776 GET: '/js/default.js'
+1399946418639: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/small_logo.png'
+1399946418644: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=images/arduino_icon.png'
+1399946418645: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/ohw-logo.png'
+1399946418649: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=images/github-sociocon.png'
+1399946418713: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=images/body-bg.jpg'
+1399946418910: IndexHandler:received request from raven.local/192.168.0.101:53787 GET: '/favicon.ico'
+1399946428329: IndexHandler:received request from raven.local/192.168.0.101:53787 GET: '/index.html'
+1399946428390: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=css/bootstrap.min.css'
+1399946428397: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946428412: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resources?file=css/foundation-icons.css'
+1399946428422: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=css/animate.css'
+1399946428430: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/index.css'
+1399946428453: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=css/jquery.qtip.css'
+1399946428459: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/main.js'
+1399946428467: JsHandler:received request from raven.local/192.168.0.101:53776 GET: '/js/default.js'
+1399946428473: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946428478: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/widget.js'
+1399946428479: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=images/small_logo.png'
+1399946428489: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/ohw-logo.png'
+1399946428495: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=images/arduino_icon.png'
+1399946428518: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/github-sociocon.png'
+1399946428567: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/body-bg.jpg'
+1399946428708: RunningDriversHandler:received request from raven.local/192.168.0.101:53784 GET: '/drivers.xml'
+1399946428780: IndexHandler:received request from raven.local/192.168.0.101:53784 GET: '/favicon.ico'
+1399946428787: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=TempMonitr'
+1399946428799: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=LOCAL'
+1399946428803: WidgetXmlHandler:received request from raven.local/192.168.0.101:53788 GET: '/widget.xml?driver=LED_FLASH'
+1399946428804: Warning: LED_FLASH:getWidgetXML() unimplimented
+1399946431525: SettingsHandler:received request from raven.local/192.168.0.101:53786 GET: '/settings.html'
+1399946431584: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946431598: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=css/bootstrap.min.css'
+1399946431601: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resources?file=css/foundation-icons.css'
+1399946431601: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/animate.css'
+1399946431601: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=css/jquery.qtip.css'
+1399946431601: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=css/index.css'
+1399946431619: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=js/main.js'
+1399946431633: JsHandler:received request from raven.local/192.168.0.101:53788 GET: '/js/default.js'
+1399946431638: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946431643: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/settings.js'
+1399946431663: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/small_logo.png'
+1399946431677: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/ohw-logo.png'
+1399946431678: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/arduino_icon.png'
+1399946431690: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/github-sociocon.png'
+1399946431777: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/body-bg.jpg'
+1399946431968: IndexHandler:received request from raven.local/192.168.0.101:53776 GET: '/favicon.ico'
+1399946434372: RestartModuleHandler:received request from raven.local/192.168.0.101:53776 GET: '/restart_module?module=drivers'
+1399946434426: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/index.css'
+1399946434435: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/small_logo.png'
+1399946434438: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/arduino_icon.png'
+1399946434447: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/github-sociocon.png'
+1399946434499: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/body-bg.jpg'
+1399946434673: IndexHandler:received request from raven.local/192.168.0.101:53785 GET: '/favicon.ico'
+1399946437373: Coordinator:restarting drivers
+1399946437374: Warning: Coordinator:Restarting all drivers
+1399946437374: Coordinator:removing all event watchers
+1399946437374: Coordinator:terminating driver TempMonitr
+1399946437375: Coordinator:waking driver TempMonitr
+1399946437375: TempMonitr:waking...
+1399946437375: Coordinator:terminating driver LOCAL
+1399946437376: TempMonitr:terminating
+1399946437376: LOCAL:waking
+1399946437376: Coordinator:waking driver LOCAL
+1399946437377: Coordinator:terminating driver LED_FLASH
+1399946437377: Coordinator:waking driver LED_FLASH
+1399946442377: Coordinator:driver LED_FLASH terminated
+1399946442377: Coordinator:driver LOCAL terminated
+1399946442377: Coordinator:driver TempMonitr terminated
+1399946442377: Warning: Coordinator:all drivers stopped
+1399946442378: Warning: TempMonitr:error reading percent change required from database
+1399946442379: Warning: TempMonitr:error reading max temp from database
+1399946442379: Warning: TempMonitr:error reading min temp from database
+1399946442381: Coordinator:driver TempMonitr of type org.apparatus_templi.driver.TempMonitor initialized
+1399946442382: Coordinator:driver State_LED of type org.apparatus_templi.driver.StatefulLed initialized
+1399946442383: Coordinator: driver 'light' requested to be notified of events of type 'MotionEvent'.
+1399946442383: Coordinator:driver light of type org.apparatus_templi.driver.LightSwitch initialized
+1399946442384: Coordinator:driver LOCAL of type org.apparatus_templi.driver.SetTopBox initialized
+1399946442384: Error: Coordinator:error loading driver org.apparatus_templi.driver.DoorLock a driver with the same name is already loaded
+1399946442384: Coordinator:scheduled an indefinite sleep for driver 'light'
+1399946442384: State_LED:starting
+1399946442385: State_LED:toggling LED 1
+1399946442385: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946442385: TempMonitr:readRemoteTemp()
+1399946442385: LOCAL:starting
+1399946442386: Coordinator:scheduled an indefinite sleep for driver 'LOCAL'
+1399946442405: MessageCenter:sendMessageFragment() sending '1' bytes to 'TempMonitr', fragment num: 0 of type text
+1399946442405: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946442605: SettingsHandler:received request from raven.local/192.168.0.101:53785 GET: '/settings.html'
+1399946442676: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=css/bootstrap.min.css'
+1399946442677: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resources?file=css/foundation-icons.css'
+1399946442676: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=css/animate.css'
+1399946442676: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=css/jquery.qtip.css'
+1399946442677: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946442694: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=css/index.css'
+1399946442734: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=js/main.js'
+1399946442739: JsHandler:received request from raven.local/192.168.0.101:53776 GET: '/js/default.js'
+1399946442743: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946442747: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=js/settings.js'
+1399946442784: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/small_logo.png'
+1399946442784: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=images/ohw-logo.png'
+1399946442790: ResourceHandler:received request from raven.local/192.168.0.101:53784 GET: '/resource?file=images/github-sociocon.png'
+1399946442791: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=images/arduino_icon.png'
+1399946442869: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=images/body-bg.jpg'
+1399946443095: IndexHandler:received request from raven.local/192.168.0.101:53788 GET: '/favicon.ico'
+1399946444615: IndexHandler:received request from raven.local/192.168.0.101:53788 GET: '/index.html'
+1399946444670: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946444763: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=css/bootstrap.min.css'
+1399946444779: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resources?file=css/foundation-icons.css'
+1399946444785: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/animate.css'
+1399946444793: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=css/index.css'
+1399946444795: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=css/jquery.qtip.css'
+1399946444811: ResourceHandler:received request from raven.local/192.168.0.101:53785 GET: '/resource?file=js/main.js'
+1399946444812: JsHandler:received request from raven.local/192.168.0.101:53784 GET: '/js/default.js'
+1399946444814: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=js/widget.js'
+1399946444818: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946444834: ResourceHandler:received request from raven.local/192.168.0.101:53787 GET: '/resource?file=images/small_logo.png'
+1399946444841: ResourceHandler:received request from raven.local/192.168.0.101:53788 GET: '/resource?file=images/arduino_icon.png'
+1399946444844: ResourceHandler:received request from raven.local/192.168.0.101:53786 GET: '/resource?file=images/ohw-logo.png'
+1399946444847: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/github-sociocon.png'
+1399946444921: ResourceHandler:received request from raven.local/192.168.0.101:53776 GET: '/resource?file=images/body-bg.jpg'
+1399946444985: RunningDriversHandler:received request from raven.local/192.168.0.101:53776 GET: '/drivers.xml'
+1399946445084: IndexHandler:received request from raven.local/192.168.0.101:53776 GET: '/favicon.ico'
+1399946445102: WidgetXmlHandler:received request from raven.local/192.168.0.101:53776 GET: '/widget.xml?driver=light'
+1399946445107: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=State_LED'
+1399946445116: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=TempMonitr'
+1399946445124: WidgetXmlHandler:received request from raven.local/192.168.0.101:53788 GET: '/widget.xml?driver=LOCAL'
+1399946448139: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=State_LED'
+1399946448226: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=light'
+1399946448233: WidgetXmlHandler:received request from raven.local/192.168.0.101:53776 GET: '/widget.xml?driver=TempMonitr'
+1399946448426: TempMonitr:getLastReading()
+1399946448427: Coordinator:scheduled a wakup for driver 'TempMonitr' in 15 minutes.
+1399946450676: SendCommandHandler:received request from raven.local/192.168.0.101:53786 GET: '/send_command?driver=light&command=toggle'
+1399946450677: Coordinator:passCommand() given dest:light cmd: toggle
+1399946450677: light:received command (length of: 6) : toggle
+1399946450677: light:toggle command received
+1399946450677: MessageCenter:sendMessageFragment() sending '1' bytes to 'light', fragment num: 0 of type text
+1399946451176: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=State_LED'
+1399946451266: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=TempMonitr'
+1399946451281: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=light'
+1399946452466: Coordinator:waking driver State_LED
+1399946452466: State_LED:toggling LED 0
+1399946452467: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946452487: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946454222: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=State_LED'
+1399946454302: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=TempMonitr'
+1399946454350: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=light'
+1399946457262: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=State_LED'
+1399946457335: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=TempMonitr'
+1399946457375: WidgetXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/widget.xml?driver=light'
+1399946460626: FullXmlHandler:received request from raven.local/192.168.0.101:53786 GET: '/full.xml?driver=TempMonitr'
+1399946460627: Coordinator:requestFullPageXML()
+1399946462490: Coordinator:waking driver State_LED
+1399946462490: State_LED:toggling LED 1
+1399946462491: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946462511: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946472514: Coordinator:waking driver State_LED
+1399946472514: State_LED:toggling LED 0
+1399946472515: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946472535: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946482536: Coordinator:waking driver State_LED
+1399946482536: State_LED:toggling LED 0
+1399946482537: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946482557: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946492558: Coordinator:waking driver State_LED
+1399946492558: State_LED:toggling LED 0
+1399946492559: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946492579: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946493397: IndexHandler:received request from raven.local/192.168.0.101:53795 GET: '/index.html'
+1399946493493: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946493543: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=css/bootstrap.min.css'
+1399946493582: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=js/main.js'
+1399946493624: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=css/animate.css'
+1399946493672: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=css/jquery.qtip.css'
+1399946493710: ResourceHandler:received request from raven.local/192.168.0.101:53805 GET: '/resource?file=css/index.css'
+1399946493717: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resources?file=css/foundation-icons.css'
+1399946493759: JsHandler:received request from raven.local/192.168.0.101:53805 GET: '/js/default.js'
+1399946493760: ResourceHandler:received request from raven.local/192.168.0.101:53806 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946493778: ResourceHandler:received request from raven.local/192.168.0.101:53795 GET: '/resource?file=js/widget.js'
+1399946493787: ResourceHandler:received request from raven.local/192.168.0.101:53808 GET: '/resource?file=images/ohw-logo.png'
+1399946493789: ResourceHandler:received request from raven.local/192.168.0.101:53807 GET: '/resource?file=images/small_logo.png'
+1399946493793: ResourceHandler:received request from raven.local/192.168.0.101:53809 GET: '/resource?file=images/arduino_icon.png'
+1399946493803: ResourceHandler:received request from raven.local/192.168.0.101:53805 GET: '/resource?file=images/github-sociocon.png'
+1399946493835: ResourceHandler:received request from raven.local/192.168.0.101:53808 GET: '/resource?file=images/body-bg.jpg'
+1399946493920: RunningDriversHandler:received request from raven.local/192.168.0.101:53808 GET: '/drivers.xml'
+1399946493986: IndexHandler:received request from raven.local/192.168.0.101:53808 GET: '/favicon.ico'
+1399946493996: WidgetXmlHandler:received request from raven.local/192.168.0.101:53805 GET: '/widget.xml?driver=light'
+1399946494004: WidgetXmlHandler:received request from raven.local/192.168.0.101:53809 GET: '/widget.xml?driver=State_LED'
+1399946494014: WidgetXmlHandler:received request from raven.local/192.168.0.101:53807 GET: '/widget.xml?driver=LOCAL'
+1399946494015: WidgetXmlHandler:received request from raven.local/192.168.0.101:53805 GET: '/widget.xml?driver=TempMonitr'
+1399946498773: FullXmlHandler:received request from raven.local/192.168.0.101:53805 GET: '/full.xml?driver=light'
+1399946498774: Coordinator:requestFullPageXML()
+1399946502603: Coordinator:waking driver State_LED
+1399946502603: State_LED:toggling LED 1
+1399946502604: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946502624: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946503807: RunningDriversHandler:received request from raven.local/192.168.0.101:53805 GET: '/drivers.xml'
+1399946503879: WidgetXmlHandler:received request from raven.local/192.168.0.101:53805 GET: '/widget.xml?driver=light'
+1399946503892: WidgetXmlHandler:received request from raven.local/192.168.0.101:53809 GET: '/widget.xml?driver=LOCAL'
+1399946503899: WidgetXmlHandler:received request from raven.local/192.168.0.101:53808 GET: '/widget.xml?driver=State_LED'
+1399946503902: WidgetXmlHandler:received request from raven.local/192.168.0.101:53807 GET: '/widget.xml?driver=TempMonitr'
+1399946509266: FullXmlHandler:received request from raven.local/192.168.0.101:53807 GET: '/full.xml?driver=LOCAL'
+1399946509267: Coordinator:requestFullPageXML()
+1399946512626: Coordinator:waking driver State_LED
+1399946512626: State_LED:toggling LED 0
+1399946512627: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946512647: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946516599: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=toggle'
+1399946516600: Coordinator:passCommand() given dest:LOCAL cmd: toggle
+1399946516600: LOCAL:toggling indicator led
+1399946516601: MessageCenter:sendMessageFragment() sending '6' bytes to 'LOCAL', fragment num: 0 of type text
+1399946518625: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=toggle'
+1399946518626: Coordinator:passCommand() given dest:LOCAL cmd: toggle
+1399946518626: LOCAL:toggling indicator led
+1399946518627: MessageCenter:sendMessageFragment() sending '6' bytes to 'LOCAL', fragment num: 0 of type text
+1399946519369: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=toggle'
+1399946519370: Coordinator:passCommand() given dest:LOCAL cmd: toggle
+1399946519370: LOCAL:toggling indicator led
+1399946519371: MessageCenter:sendMessageFragment() sending '6' bytes to 'LOCAL', fragment num: 0 of type text
+1399946519985: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=blue240'
+1399946519986: Coordinator:passCommand() given dest:LOCAL cmd: blue240
+1399946519986: LOCAL:setting new blue value
+1399946519987: MessageCenter:sendMessageFragment() sending '4' bytes to 'LOCAL', fragment num: 0 of type text
+1399946520971: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=green200'
+1399946520971: Coordinator:passCommand() given dest:LOCAL cmd: green200
+1399946520972: LOCAL:setting new blue value
+1399946520972: Warning: LOCAL:could not read valid int value from: green200
+1399946521562: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=red50'
+1399946521563: Coordinator:passCommand() given dest:LOCAL cmd: red50
+1399946521563: LOCAL:setting new blue value
+1399946521564: MessageCenter:sendMessageFragment() sending '2' bytes to 'LOCAL', fragment num: 0 of type text
+1399946522656: Coordinator:waking driver State_LED
+1399946522656: State_LED:toggling LED 2
+1399946522656: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946522677: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946532170: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=green188'
+1399946532171: Coordinator:passCommand() given dest:LOCAL cmd: green188
+1399946532171: LOCAL:setting new blue value
+1399946532171: Warning: LOCAL:could not read valid int value from: green188
+1399946532678: Coordinator:waking driver State_LED
+1399946532678: State_LED:toggling LED 1
+1399946532679: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946532699: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946536270: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=green33'
+1399946536272: Coordinator:passCommand() given dest:LOCAL cmd: green33
+1399946536272: LOCAL:setting new blue value
+1399946536273: Warning: LOCAL:could not read valid int value from: green33
+1399946537105: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=green33'
+1399946537106: Coordinator:passCommand() given dest:LOCAL cmd: green33
+1399946537106: LOCAL:setting new blue value
+1399946537107: Warning: LOCAL:could not read valid int value from: green33
+1399946537630: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=green33'
+1399946537630: Coordinator:passCommand() given dest:LOCAL cmd: green33
+1399946537631: LOCAL:setting new blue value
+1399946537631: Warning: LOCAL:could not read valid int value from: green33
+1399946538551: SendCommandHandler:received request from raven.local/192.168.0.101:53807 GET: '/send_command?driver=LOCAL&command=blue240'
+1399946538552: Coordinator:passCommand() given dest:LOCAL cmd: blue240
+1399946538552: LOCAL:setting new blue value
+1399946538552: MessageCenter:sendMessageFragment() sending '4' bytes to 'LOCAL', fragment num: 0 of type text
+1399946542699: Coordinator:waking driver State_LED
+1399946542699: State_LED:toggling LED 1
+1399946542700: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946542720: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946552722: State_LED:toggling LED 1
+1399946552722: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946552722: Coordinator:waking driver State_LED
+1399946552742: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946562841: Coordinator:waking driver State_LED
+1399946562842: State_LED:toggling LED 1
+1399946562842: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946562863: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946572961: Coordinator:waking driver State_LED
+1399946572961: State_LED:toggling LED 0
+1399946572962: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946572982: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946583080: Coordinator:waking driver State_LED
+1399946583080: State_LED:toggling LED 2
+1399946583081: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946583101: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946593199: Coordinator:waking driver State_LED
+1399946593199: State_LED:toggling LED 1
+1399946593200: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946593221: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946603320: Coordinator:waking driver State_LED
+1399946603320: State_LED:toggling LED 0
+1399946603321: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946603341: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946613438: Coordinator:waking driver State_LED
+1399946613438: State_LED:toggling LED 0
+1399946613439: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946613460: Coordinator:scheduled a wakup for driver 'State_LED' in 9 seconds.
+1399946623557: Coordinator:waking driver State_LED
+1399946623557: State_LED:toggling LED 0
+1399946623558: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946623579: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946633676: Coordinator:waking driver State_LED
+1399946633676: State_LED:toggling LED 2
+1399946633677: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946633697: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946643794: Coordinator:waking driver State_LED
+1399946643794: State_LED:toggling LED 1
+1399946643795: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946643815: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946653911: Coordinator:waking driver State_LED
+1399946653911: State_LED:toggling LED 2
+1399946653912: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946653932: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946664028: Coordinator:waking driver State_LED
+1399946664028: State_LED:toggling LED 2
+1399946664029: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946664050: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946674146: Coordinator:waking driver State_LED
+1399946674146: State_LED:toggling LED 2
+1399946674146: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946674167: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946684264: Coordinator:waking driver State_LED
+1399946684264: State_LED:toggling LED 0
+1399946684265: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946684285: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946694383: State_LED:toggling LED 0
+1399946694383: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946694383: Coordinator:waking driver State_LED
+1399946694404: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946704404: Coordinator:waking driver State_LED
+1399946704404: State_LED:toggling LED 2
+1399946704404: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946704425: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946714521: Coordinator:waking driver State_LED
+1399946714521: State_LED:toggling LED 1
+1399946714522: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946714543: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946724639: Coordinator:waking driver State_LED
+1399946724639: State_LED:toggling LED 1
+1399946724640: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946724660: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946734757: Coordinator:waking driver State_LED
+1399946734757: State_LED:toggling LED 1
+1399946734760: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946734780: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946744873: Coordinator:waking driver State_LED
+1399946744873: State_LED:toggling LED 2
+1399946744873: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946744894: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946754987: Coordinator:waking driver State_LED
+1399946754987: State_LED:toggling LED 0
+1399946754988: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946755008: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946765102: Coordinator:waking driver State_LED
+1399946765102: State_LED:toggling LED 0
+1399946765103: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946765123: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946766799: IndexHandler:received request from raven.local/192.168.0.101:53875 GET: '/index.html'
+1399946767049: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=/js/jquery-1.7.0.min.js'
+1399946767066: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=css/bootstrap.min.css'
+1399946767090: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resources?file=css/foundation-icons.css'
+1399946767141: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=js/jquery.translate-1.4.7-debug-all.js'
+1399946767191: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=css/animate.css'
+1399946767236: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=css/index.css'
+1399946767267: ResourceHandler:received request from raven.local/192.168.0.101:53883 GET: '/resource?file=js/widget.js'
+1399946767267: ResourceHandler:received request from raven.local/192.168.0.101:53884 GET: '/resource?file=css/jquery.qtip.css'
+1399946767269: ResourceHandler:received request from raven.local/192.168.0.101:53885 GET: '/resource?file=js/main.js'
+1399946767281: JsHandler:received request from raven.local/192.168.0.101:53875 GET: '/js/default.js'
+1399946767321: ResourceHandler:received request from raven.local/192.168.0.101:53885 GET: '/resource?file=images/small_logo.png'
+1399946767326: ResourceHandler:received request from raven.local/192.168.0.101:53883 GET: '/resource?file=images/ohw-logo.png'
+1399946767327: ResourceHandler:received request from raven.local/192.168.0.101:53875 GET: '/resource?file=images/github-sociocon.png'
+1399946767332: ResourceHandler:received request from raven.local/192.168.0.101:53884 GET: '/resource?file=images/arduino_icon.png'
+1399946767383: ResourceHandler:received request from raven.local/192.168.0.101:53884 GET: '/resource?file=images/body-bg.jpg'
+1399946767498: RunningDriversHandler:received request from raven.local/192.168.0.101:53884 GET: '/drivers.xml'
+1399946767650: WidgetXmlHandler:received request from raven.local/192.168.0.101:53875 GET: '/widget.xml?driver=State_LED'
+1399946767655: IndexHandler:received request from raven.local/192.168.0.101:53884 GET: '/favicon.ico'
+1399946767655: WidgetXmlHandler:received request from raven.local/192.168.0.101:53887 GET: '/widget.xml?driver=LOCAL'
+1399946767656: WidgetXmlHandler:received request from raven.local/192.168.0.101:53883 GET: '/widget.xml?driver=light'
+1399946767657: WidgetXmlHandler:received request from raven.local/192.168.0.101:53885 GET: '/widget.xml?driver=TempMonitr'
+1399946770686: WidgetXmlHandler:received request from raven.local/192.168.0.101:53887 GET: '/widget.xml?driver=State_LED'
+1399946770696: WidgetXmlHandler:received request from raven.local/192.168.0.101:53885 GET: '/widget.xml?driver=light'
+1399946770702: WidgetXmlHandler:received request from raven.local/192.168.0.101:53887 GET: '/widget.xml?driver=TempMonitr'
+1399946773727: WidgetXmlHandler:received request from raven.local/192.168.0.101:53887 GET: '/widget.xml?driver=State_LED'
+1399946773748: WidgetXmlHandler:received request from raven.local/192.168.0.101:53887 GET: '/widget.xml?driver=light'
+1399946773766: WidgetXmlHandler:received request from raven.local/192.168.0.101:53885 GET: '/widget.xml?driver=TempMonitr'
+1399946774249: AboutHandler:received request from raven.local/192.168.0.101:53887 GET: '/settings.xml'
+1399946774404: IndexHandler:received request from raven.local/192.168.0.101:53887 GET: '/favicon.ico'
+1399946775124: Coordinator:waking driver State_LED
+1399946775124: State_LED:toggling LED 0
+1399946775125: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946775145: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946785239: Coordinator:waking driver State_LED
+1399946785239: State_LED:toggling LED 2
+1399946785240: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946785261: Coordinator:scheduled a wakup for driver 'State_LED' in 9 seconds.
+1399946795354: Coordinator:waking driver State_LED
+1399946795355: State_LED:toggling LED 0
+1399946795357: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946795378: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946805469: Coordinator:waking driver State_LED
+1399946805469: State_LED:toggling LED 1
+1399946805471: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946805492: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946815586: Coordinator:waking driver State_LED
+1399946815586: State_LED:toggling LED 2
+1399946815586: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946815607: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946825700: Coordinator:waking driver State_LED
+1399946825700: State_LED:toggling LED 2
+1399946825703: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946825724: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946835814: Coordinator:waking driver State_LED
+1399946835814: State_LED:toggling LED 1
+1399946835815: MessageCenter:sendMessageFragment() sending '2' bytes to 'State_LED', fragment num: 0 of type text
+1399946835836: Coordinator:scheduled a wakup for driver 'State_LED' in 10 seconds.
+1399946837897: Warning: Coordinator:system is going down. Notifying all drivers.
+1399946837900: Coordinator:terminating driver 'light'
+1399946837900: Coordinator:notified driver 'light'
+1399946837900: Coordinator:terminating driver 'State_LED'
+1399946837901: Coordinator:notified driver 'State_LED'
+1399946837901: Coordinator:terminating driver 'TempMonitr'
+1399946837901: Coordinator:notified driver 'TempMonitr'
+1399946837901: Coordinator:terminating driver 'LOCAL'
+1399946837902: Coordinator:notified driver 'LOCAL'
+1399947459670: Coordinator:SERVICE STARTING
+1399947459671: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399947459672: DummySerialConnection:initialized new dummy serial connection
+1399947459672: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399947459674: Coordinator:starting web server
+1399947459759: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399947459777: SimpleHttpServer:waiting on port 8000
+1399947459783: SimpleHttpServer:using resources in 'website/'
+1399947459801: Coordinator:sending notification email
+1399947459855: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399947467311: Warning: Coordinator:system is going down. Notifying all drivers.
+1399947638249: Coordinator:SERVICE STARTING
+1399947638267: SerialConnection:found port '/dev/tty.Bluetooth-Modem' attempting to connect
+1399947644720: TERMINAL FAILURE: Coordinator:could not connect to serial port '/dev/tty.Bluetooth-Modem'
+1399947750021: Coordinator:SERVICE STARTING
+1399947750037: SerialConnection:found port '/dev/tty.Bluetooth-Modem' attempting to connect
+1399947756476: TERMINAL FAILURE: Coordinator:could not connect to serial port '/dev/tty.Bluetooth-Modem'

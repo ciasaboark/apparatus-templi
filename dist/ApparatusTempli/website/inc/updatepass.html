@@ -1,0 +1,61 @@
+<!--
+Basic redirect template.  Values for !TIMEOUT!
+and !LOCATION! will be filled in by the pre-processor
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/resource?file=css/index.css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+	<META http-equiv="refresh" content="!TIMEOUT!;URL=!LOCATION!">
+
+
+	<title>Saving Password</title>
+</head>
+
+<body>
+	<div id="header">
+        
+        <div id="header_bar">
+            <div id="header_title">
+                <span id="header_logo">
+                    <img src="resource?file=images/small_logo.png" alt="small logo">
+                </span>
+                <span id="header_title_text">Apparatus Templi</span>
+            </div>
+            <!-- <div id="header_spacer"></div> -->
+        </div>
+        
+<!--
+    	<div id="header_content">
+            <div id="logo">
+                <img src="resource?file=images/Apparatus%20Templi-logo.png" alt="Apparatus Templi Logo">
+            </div>
+        </div>
+-->
+    </div>
+    
+    <div id="main_content">
+        <div class="info-box" style="text-align: center; margin-top: 100px;">
+			<div class="title">Set password</div>
+			<div class="content">
+				<form action="set_password" method="POST">
+					!OLDPASS!
+					<div>New Username <input id="newuser" type="text" name="newuser"></div>
+					<div>New Password <input id="newpass" type="password" name="newpass"></div>
+					<input type="submit" value="Submit" class="btn btn-default">
+				</form>
+			</div>
+			!WARNING!
+    </div>
+        <div id="main_content_padding"></div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,12 @@
+#
+#Mon May 12 21:59:39 EDT 2014
+web.encryptServer=true
+web.bindLocalhost=true
+debugLevel=debug
+serialPort=dummy
+logFile=coordinator.log
+web.portNum=9000
+web.userPass=
+driverList=TempMonitor,StatefulLed,LightSwitch,SetTopBox,DoorLock
+web.resourceFolder=website/
+web.userName=

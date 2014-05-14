@@ -1,0 +1,48 @@
+#!/bin/sh
+cd "${0%/*}" 
+if `type -p java 2>&1 >> /dev/null`; then
+    # echo found java executable in PATH
+    _java=java
+elif [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ];  then
+    # echo found java executable in JAVA_HOME     
+    _java="$JAVA_HOME/bin/java"
+else
+    echo "Error: Apparatus Templi requires a Java JRE (version 7 or later)to run."
+    echo "You can download a copy from http://java.com/download"
+    echo "If you already have a version of java installed make sure that \$JAVA_HOME is set"
+    exit 1;
+fi
+
+if [ "$_java" ]; then
+    version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    # echo version "$version"
+    if [ "$version" > "1.7" ]; then
+        echo "Found Java version $version"
+        echo "Starting"
+        #TODO check for mac
+        arch=$(uname)
+        if [ "$arch" = "Darwin" ]
+        then
+            echo "Starting with Mac 64 bit libraries"
+            java -Djava.library.path=lib/RXTX/macos/ -jar apparatus-templi.jar $@ 
+        else
+            processor=$(uname -p);
+            x86_64="x86_64";
+            if [ `getconf LONG_BIT` = "64" ]
+            then
+                echo "Starting with 64 bit libraries"
+                java -Djava.library.path=lib/RXTX/linux-x86_64/ -jar apparatus-templi.jar $@ 
+            else
+                echo "Starting with 32 bit libraries"
+                java -Djava.library.path=lib/RXTX/linux-i386/ -jar apparatus-templi.jar $@
+            fi
+        fi
+        echo "Started, process $!"
+    else
+    	echo "Error: Found Java version $version."
+    	echo "Apparatus Templi requires a Java JRE (version 7 or later)to run."
+    	echo "You can download a copy from http://java.com/download"
+    	exit 1
+    fi
+fi
+

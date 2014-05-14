@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="RXTXcomm2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../ApparatusTempli.bak/bin/RXTX/win-x64/RXTXcomm.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

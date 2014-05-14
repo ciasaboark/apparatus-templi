@@ -1,0 +1,22 @@
+1399502110561: Coordinator:SERVICE STARTING
+1399502110562: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399502110563: DummySerialConnection:initialized new dummy serial connection
+1399502110563: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399502110565: Coordinator:starting web server
+1399502110698: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399502110736: SimpleHttpServer:waiting on port 8000
+1399502110766: SimpleHttpServer:using resources in '/'
+1399502110784: Coordinator:sending notification email
+1399502110842: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399502126062: Coordinator:system is going down. Notifying all drivers.
+1399502302564: Coordinator:SERVICE STARTING
+1399502302566: Warning: Coordinator:Using dummy serial connection.  No messages will be sent.
+1399502302566: DummySerialConnection:initialized new dummy serial connection
+1399502302567: Warning: Coordinator:No drivers were specified in the configuration file: '', nothing will be loaded
+1399502302568: Coordinator:starting web server
+1399502302635: SimpleHttpServer:setting address and port to 127.0.0.1 8000
+1399502302653: SimpleHttpServer:waiting on port 8000
+1399502302668: SimpleHttpServer:using resources in '/'
+1399502302689: Coordinator:sending notification email
+1399502302766: Warning: EmailService:Can not send email message, check that the user id and password was provided
+1399502310054: Coordinator:system is going down. Notifying all drivers.
