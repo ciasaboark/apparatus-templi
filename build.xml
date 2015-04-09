@@ -62,7 +62,7 @@
         <delete dir="${dist}"/>
     </target>
 
-    <target name="test" depends="compile-tests, test-headless" classpath="/usr/share/java/junit.jar">
+    <target name="test" depends="compile-tests, test-headless" >
         <mkdir dir="${build}/test-files/" />
         <copy file="./website/xml/module-schema.xsd" todir="${build}/test-files" />
         <copy file="./website/xml/driver-list-schema.xsd" todir="${build}/test-files" />
